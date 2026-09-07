@@ -17,6 +17,7 @@ que indique qué decisión anterior reemplaza y por qué.
 | D-009 | 2026-09-07 | Aprobada | Los manifiestos se almacenan como JSON puro y se validan con JSON Schema.                                    | Cada JSON enlaza su schema y la aplicación lo importa directamente; los tests impiden estructuras inválidas.                                          |
 | D-010 | 2026-09-07 | Aprobada | La aplicación Electron es la referencia canónica de experiencia visual y funcional de la PWA.                | La migración preserva pantallas, flujos, recursos y funciones existentes; solo se adapta la capa técnica incompatible con la web.                     |
 | D-011 | 2026-09-07 | Aprobada | La base visual y de recursos se ejecuta dentro de la Fase 1, antes de habilitar motores.                     | Evita una PWA visualmente ajena a EduColor sin adelantar ni declarar migradas las actividades de la Fase 2.                                           |
+| D-012 | 2026-09-07 | Aprobada | La deuda técnica y las reservas se controlan mediante un registro único y trazable.                          | Se revisan solo filas abiertas y el ámbito tocado en cada cambio; la auditoría completa queda para cierre de fase o release.                          |
 
 ## Cómo añadir una decisión
 

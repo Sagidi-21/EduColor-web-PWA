@@ -40,6 +40,11 @@ Las decisiones completas, su estado y sus consecuencias se mantienen en
 [DECISIONES.md](DECISIONES.md). Esta tabla resume solamente los acuerdos de
 seguimiento.
 
+La deuda técnica y las reservas de recursos se controlan en
+[DEUDA_TECNICA.md](DEUDA_TECNICA.md). Las revisiones ordinarias consultan ese
+registro y el ámbito del cambio; la auditoría completa se reserva para el
+cierre de fase o una release.
+
 | Fecha      | Decisión                                                                                                                | Motivo                                                                       |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | 2026-09-07 | Seguimiento mediante documentos en `docs`, sin tablero externo.                                                         | Reducir gestión adicional y consumo de contexto.                             |
