@@ -86,6 +86,24 @@ Añadir una actividad de ejemplo exclusivamente mediante motor + manifiesto, sin
 5. Geometría, medida, reloj, dinero y restantes comunes.
 6. Específicas de 1.º; después las específicas de 2.º priorizadas por el colegio.
 
+## Seguimiento actual — `ordenar`
+
+- **Pasos 1 y 2:** completados. Es una actividad compartida de 1.º/2.º y se
+  auditó su motor Electron completo. No usa recursos externos ni APIs de
+  Electron.
+- **Pasos 3 y 4:** completados. El generador determinista y el validador viven
+  en `src/core/activities/ordering.ts`; tres pruebas cubren semilla, límites,
+  mezcla y respuesta correcta.
+- **Pasos 5 y 6:** completados. Reutiliza su manifiesto JSON ya validado y
+  dispone de renderer PWA táctil, accesible y registrado en el catálogo.
+- **Paso 7:** pendiente de checklist manual en escritorio, tableta y pizarra.
+  La compilación y las pruebas automáticas están verificadas; la comprobación
+  visual adicional no se pudo ejecutar al no autorizarse el segundo servidor
+  local de validación.
+- **Paso 8:** trazabilidad actualizada en
+  `INVENTARIO_MIGRACION_ACTIVIDADES.md`; el cierre pedagógico queda pendiente
+  del feedback de Matemáticas de 1.º y 2.º.
+
 ## Comprobación de salida
 
 La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tiene test de núcleo y comprobación visual.

@@ -29,6 +29,7 @@ La auditoría completa solo se repite al cerrar una fase o antes de una release.
 | ------ | ------- | ----------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------- |
 | DT-001 | Cerrada | Duplicados y variantes sin referencia en recursos visuales.                         | Fase 1.             | Eliminados en `a707c82`; build comprobada.                                                |
 | DT-002 | Cerrada | Registro de motores PWA que conecte los manifiestos JSON con cada renderer migrado. | Fase 1, paso 10.    | `engine-registry` y selector en catálogo; cada renderer se registra al migrarse (Fase 2). |
+| DT-003 | Abierta | Adaptador compartido de feedback sonoro de acierto para los motores PWA.            | Fase 2.             | Electron lo reproduce; `comparison` y `ordenar` aún no lo incorporan. Revisar antes de la siguiente ola de motores. |
 
 ## Reservas de recursos
 

@@ -119,6 +119,16 @@ Trasladar gradualmente las actividades con mayor valor pedagógico, sin una migr
 - El catálogo V1 está disponible desde manifiestos.
 - Cada motor migrado tiene pruebas de su lógica y una comprobación visual/táctil.
 
+## Evidencia de avance
+
+- `comparison` y `ordenar` están migradas técnicamente: cada una tiene motor
+  PWA independiente, renderer registrado y pruebas de núcleo.
+- `ordenar` conserva la configuración original de 10 ejercicios y sus rangos
+  por dificultad, sin recursos externos.
+- La validación manual de `ordenar` en escritorio, tableta y pizarra, junto
+  con el feedback docente, sigue siendo requisito antes de declararla cerrada
+  pedagógicamente.
+
 ---
 
 # Fase 3 — Sesiones, corrección y resumen

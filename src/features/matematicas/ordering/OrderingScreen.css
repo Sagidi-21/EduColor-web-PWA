@@ -1,0 +1,205 @@
+/* ── Layout general ─────────────────────────────────────────────── */
+.ord {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #f8faff;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
+}
+
+/* ── Header ──────────────────────────────────────────────────────── */
+.ord__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px;
+  background: var(--color-primary-dark);
+  color: #fff;
+  flex-shrink: 0;
+}
+.ord__exit {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ord__exit:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.ord__header-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.ord__title {
+  font-size: 18px;
+  font-weight: 800;
+}
+.ord__grade {
+  font-size: 13px;
+  opacity: 0.75;
+}
+.ord__progress {
+  font-size: 22px;
+  font-weight: 900;
+  opacity: 0.9;
+}
+
+/* ── Main ────────────────────────────────────────────────────────── */
+.ord__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 32px 24px;
+}
+
+.ord__instruction {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  text-align: center;
+}
+
+/* ── Pool de tarjetas ────────────────────────────────────────────── */
+.ord__pool {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 96px;
+  align-items: center;
+}
+
+.ord__pool-placeholder {
+  width: 96px;
+  height: 96px;
+}
+
+.ord__card {
+  width: 88px;
+  height: 88px;
+  border-radius: 16px;
+  border: 3px solid #e2e8f0;
+  background: #fff;
+  font-size: 42px;
+  font-weight: 900;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ord__card:hover {
+  border-color: #94a3b8;
+  transform: translateY(-4px) scale(1.06);
+}
+.ord__card:active {
+  transform: translateY(-1px) scale(1.02);
+}
+
+/* ── Slots (solo visuales, no interactivos) ──────────────────────── */
+.ord__slots {
+  display: flex;
+  gap: 16px;
+}
+
+.ord__slot {
+  width: 88px;
+  height: 88px;
+  border-radius: 16px;
+  border: 3px dashed #cbd5e1;
+  background: #f1f5f9;
+  font-size: 42px;
+  font-weight: 900;
+  color: #1e293b;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ord__slot--correct {
+  border-style: solid;
+  border-color: #22c55e;
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.ord__slot--wrong {
+  border-style: solid;
+  border-color: #ef4444 !important;
+  background: #fef2f2 !important;
+  color: #ef4444;
+  animation: ord-shake 0.45s ease;
+}
+
+@keyframes ord-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(8px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+/* ── Etiquetas de posición ───────────────────────────────────────── */
+.ord__labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 560px;
+  padding: 0 4px;
+}
+.ord__label-end {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Celebración ─────────────────────────────────────────────────── */
+.ord__celebrate {
+  font-size: 40px;
+  font-weight: 900;
+  color: #22c55e;
+  animation: ord-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes ord-pop {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ── Resumen de sesión ───────────────────────────────────────────── */
+.ord--summary {
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #eff6ff 0%, #f5f3ff 100%);
+}

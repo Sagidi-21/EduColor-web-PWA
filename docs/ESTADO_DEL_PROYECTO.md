@@ -3,9 +3,11 @@
 ## Punto de trabajo actual
 
 - **Fase activa:** 2 — Migración del catálogo matemático V1.
-- **Paso activo:** 1 — Siguiente actividad compartida de 1.º/2.º tras conteo y
-  comparación, según el orden de `EJECUCION_PASO_A_PASO.md`. La Fase 1 cerró
-  con manifiestos, selector y un motor extra (`comparison`) no acoplado al conteo.
+- **Paso activo:** 7 — Checklist manual de `ordenar` en escritorio, tableta y
+  pizarra. Su migración técnica está completada; la siguiente actividad se
+  seleccionará tras registrar esta comprobación y el feedback de Matemáticas
+  de 1.º/2.º. La Fase 1 cerró con manifiestos, selector y un motor extra
+  (`comparison`) no acoplado al conteo.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
 

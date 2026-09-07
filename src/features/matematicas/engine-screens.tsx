@@ -4,6 +4,9 @@ import type { ActivityDifficulty, ActivityManifest } from "../../core/content/co
 const ComparisonScreen = lazy(() =>
   import("./comparison/ComparisonScreen").then((module) => ({ default: module.ComparisonScreen })),
 );
+const OrderingScreen = lazy(() =>
+  import("./ordering/OrderingScreen").then((module) => ({ default: module.OrderingScreen })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -18,6 +21,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <ComparisonScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "ordenar") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <OrderingScreen {...props} />
       </Suspense>
     );
   }
