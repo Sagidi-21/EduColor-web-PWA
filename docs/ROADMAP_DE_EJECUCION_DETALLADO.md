@@ -434,12 +434,12 @@ Escalar a nuevos centros, cursos y asignaturas sin perder aislamiento ni manteni
 
 # Gates obligatorios
 
-| Momento | Evidencia mínima |
-| --- | --- |
-| Antes de migrar motores | Contratos, manifiesto y tests de lógica aprobados. |
-| Antes de activar offline | Caché, IndexedDB, actualización y caída de red probadas. |
-| Antes de activar escritura | Dataset, precisión, umbral, latencia y prueba de pizarra. |
-| Antes de login real | DPD/alcance de datos, threat model y pruebas de autorización. |
-| Antes del piloto | Build, pruebas, backup/restauración, seguridad y manual docente. |
-| Tras el piloto | Revisión de arquitectura, incidencias, utilidad pedagógica y siguiente alcance. |
-| Antes de alumnado/multi-colegio | Privacidad aprobada, aislamiento probado y operación madura. |
+| Momento                         | Evidencia mínima                                                                |
+| ------------------------------- | ------------------------------------------------------------------------------- |
+| Antes de migrar motores         | Contratos, manifiesto y tests de lógica aprobados.                              |
+| Antes de activar offline        | Caché, IndexedDB, actualización y caída de red probadas.                        |
+| Antes de activar escritura      | Dataset, precisión, umbral, latencia y prueba de pizarra.                       |
+| Antes de login real             | DPD/alcance de datos, threat model y pruebas de autorización.                   |
+| Antes del piloto                | Build, pruebas, backup/restauración, seguridad y manual docente.                |
+| Tras el piloto                  | Revisión de arquitectura, incidencias, utilidad pedagógica y siguiente alcance. |
+| Antes de alumnado/multi-colegio | Privacidad aprobada, aislamiento probado y operación madura.                    |

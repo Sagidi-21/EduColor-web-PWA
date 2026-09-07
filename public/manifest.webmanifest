@@ -1,1 +1,10 @@
-{"name":"EduColor","short_name":"EduColor","description":"Plataforma educativa de Matemáticas para Primaria","lang":"es","start_url":"/","display":"standalone","background_color":"#f8f7ff","theme_color":"#5b4bdb"}
+{
+  "name": "EduColor",
+  "short_name": "EduColor",
+  "description": "Plataforma educativa de Matemáticas para Primaria",
+  "lang": "es",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f7ff",
+  "theme_color": "#5b4bdb"
+}

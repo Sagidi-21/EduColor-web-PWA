@@ -4,15 +4,15 @@ Registro de decisiones que afectan al producto, arquitectura, operación o
 alcance. Una decisión no se modifica ni se sustituye: se añade una nueva entrada
 que indique qué decisión anterior reemplaza y por qué.
 
-| ID | Fecha | Estado | Decisión | Contexto y consecuencia |
-| --- | --- | --- | --- | --- |
-| D-001 | 2026-09-07 | Aprobada | EduColor web PWA se desarrolla en un repositorio independiente. | El proyecto Electron queda intacto como producto funcional y referencia de migración. No se copia Electron, IPC ni empaquetado Windows. |
-| D-002 | 2026-09-07 | Aprobada | La arquitectura se prepara para crecer, pero la V1 se limita a Matemáticas de 1.º y 2.º. | Evita ampliar contenidos o usuarios antes de validar el uso real de aula. |
-| D-003 | 2026-09-07 | Aprobada | La V1 incluye profesorado, pizarra digital, fichas, sesiones offline y reconocimiento de dígitos. | Alumnado, tareas, familias y multi-colegio se posponen. |
-| D-004 | 2026-09-07 | Aprobada | Una sesión offline conserva y recupera actividad, ejercicios, respuestas, corrección y resumen sin Internet. | La PWA debe persistir la sesión localmente y no depender de una API durante la clase. |
-| D-005 | 2026-09-07 | Aprobada | El director del colegio aprueba el ámbito pedagógico; Salvador aprueba el técnico. | Las actividades de 1.º y 2.º requieren feedback de sus respectivos profesores de Matemáticas. |
-| D-006 | 2026-09-07 | Aprobada | El seguimiento se mantiene en documentos de `docs`, sin tablero externo. | Reduce gestión y consumo de contexto; `ESTADO_DEL_PROYECTO.md` indica fase y paso activos. |
-| D-007 | 2026-09-07 | Aprobada | El modelo de reconocimiento ya entrenado se preserva y reutiliza. | Se conserva `model.json` y sus pesos como artefacto inmutable; al no existir las fotos originales, no se reentrena sin un nuevo dataset y evaluación. |
+| ID    | Fecha      | Estado   | Decisión                                                                                                     | Contexto y consecuencia                                                                                                                               |
+| ----- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D-001 | 2026-09-07 | Aprobada | EduColor web PWA se desarrolla en un repositorio independiente.                                              | El proyecto Electron queda intacto como producto funcional y referencia de migración. No se copia Electron, IPC ni empaquetado Windows.               |
+| D-002 | 2026-09-07 | Aprobada | La arquitectura se prepara para crecer, pero la V1 se limita a Matemáticas de 1.º y 2.º.                     | Evita ampliar contenidos o usuarios antes de validar el uso real de aula.                                                                             |
+| D-003 | 2026-09-07 | Aprobada | La V1 incluye profesorado, pizarra digital, fichas, sesiones offline y reconocimiento de dígitos.            | Alumnado, tareas, familias y multi-colegio se posponen.                                                                                               |
+| D-004 | 2026-09-07 | Aprobada | Una sesión offline conserva y recupera actividad, ejercicios, respuestas, corrección y resumen sin Internet. | La PWA debe persistir la sesión localmente y no depender de una API durante la clase.                                                                 |
+| D-005 | 2026-09-07 | Aprobada | El director del colegio aprueba el ámbito pedagógico; Salvador aprueba el técnico.                           | Las actividades de 1.º y 2.º requieren feedback de sus respectivos profesores de Matemáticas.                                                         |
+| D-006 | 2026-09-07 | Aprobada | El seguimiento se mantiene en documentos de `docs`, sin tablero externo.                                     | Reduce gestión y consumo de contexto; `ESTADO_DEL_PROYECTO.md` indica fase y paso activos.                                                            |
+| D-007 | 2026-09-07 | Aprobada | El modelo de reconocimiento ya entrenado se preserva y reutiliza.                                            | Se conserva `model.json` y sus pesos como artefacto inmutable; al no existir las fotos originales, no se reentrena sin un nuevo dataset y evaluación. |
 
 ## Cómo añadir una decisión
 
