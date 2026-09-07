@@ -1,0 +1,44 @@
+name: Calidad
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Formato, lint, tipos, tests y build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias bloqueadas
+        run: npm ci
+
+      - name: Comprobar formato
+        run: npm run format:check
+
+      - name: Ejecutar lint
+        run: npm run lint
+
+      - name: Comprobar tipos
+        run: npm run typecheck
+
+      - name: Ejecutar tests
+        run: npm test
+
+      - name: Crear build de producción
+        run: npm run build

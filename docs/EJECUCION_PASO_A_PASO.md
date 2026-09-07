@@ -20,7 +20,7 @@ Este documento desarrolla el [roadmap de ejecución](ROADMAP_DE_EJECUCION_DETALL
 3. Confirmar V1: 1.º/2.º, Matemáticas, profesorado, pizarra, fichas, sesión local y offline. Registrar explícitamente que alumnos, tareas y multi-colegio quedan fuera. **Completado:** la sesión offline mantiene y recupera actividad, ejercicios, respuestas, corrección y resumen cuando no hay Internet. El alcance se registra en `ESTADO_DEL_PROYECTO.md` y la decisión D-003 en `DECISIONES.md`.
 4. Mantener la estructura de capas: `core` para lógica pura, `features` para React, `platform` para navegador/PWA y `docs` para decisiones. **Completado:** se crean además `manifests` y `shared`, con reglas de dependencia en `ARQUITECTURA_INICIAL.md`; el vertical slice no se mueve todavía.
 5. Añadir ESLint, Prettier y scripts `lint`, `typecheck`, `test` y `build`. **Completado:** se añaden también `lint:fix`, `format` y `format:check`; las reglas se aplican a TypeScript/React y excluyen dependencias y build.
-6. Crear CI en GitHub que ejecute esos cuatro scripts para cada pull request.
+6. Crear CI en GitHub que ejecute esos cuatro scripts para cada pull request. **Completado:** el workflow `Calidad` ejecuta instalación limpia, formato, lint, tipos, tests y build con Node 22 en cada push o pull request a `main`.
 7. Documentar en README el arranque, verificación, navegador soportado y cómo se despliega una build local.
 8. Crear una plantilla de issue con: objetivo, aceptación, impacto en datos, pruebas y evidencia de pizarra.
 
