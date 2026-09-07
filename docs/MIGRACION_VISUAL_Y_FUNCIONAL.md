@@ -25,6 +25,18 @@ navegador no permite ese arranque, muestra el botón **Iniciar presentación**.
 No se cambia el archivo original ni el flujo posterior de “Toca para
 continuar”.
 
+## Higiene de recursos
+
+- La build actual solo empaqueta el vídeo, el logotipo PNG y el fondo de inicio.
+- Los recursos de objetos, dinero, personajes, laberinto, kilo/litro y figuras
+  se mantienen como reserva trazable para los motores Electron que los cargan
+  dinámicamente y todavía no se han migrado.
+- Se han retirado siete archivos sin referencias: las variantes experimentales
+  de `logo app` y el logo JPEG duplicado. El vídeo y el logo que se usan en la
+  PWA permanecen como única copia.
+- Antes de migrar un motor, se registrarán sus recursos concretos; si no los
+  consume ningún motor ni pantalla, no se incorporarán al repositorio.
+
 ## Pendiente de trasladar sin simular disponibilidad
 
 - Catálogo y ejecución de actividades de pizarra digital.
