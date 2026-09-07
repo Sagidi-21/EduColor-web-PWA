@@ -15,7 +15,7 @@ que indique qué decisión anterior reemplaza y por qué.
 | D-007 | 2026-09-07 | Aprobada | El modelo de reconocimiento ya entrenado se preserva y reutiliza.                                            | Se conserva `model.json` y sus pesos como artefacto inmutable; al no existir las fotos originales, no se reentrena sin un nuevo dataset y evaluación. |
 | D-008 | 2026-09-07 | Aprobada | Los IDs técnicos de contenido se escriben en inglés y los textos visibles en español.                        | Los IDs siguen siendo estables al ampliar materias/cursos; la interfaz permanece natural para profesorado del colegio.                                |
 | D-009 | 2026-09-07 | Aprobada | Los manifiestos se almacenan como JSON puro y se validan con JSON Schema.                                    | Cada JSON enlaza su schema y la aplicación lo importa directamente; los tests impiden estructuras inválidas.                                          |
-| D-008 | 2026-09-07 | Aprobada | Los IDs técnicos de contenido se escriben en inglés y los textos visibles en español.                        | Los IDs siguen siendo estables al ampliar materias/cursos; la interfaz permanece natural para profesorado del colegio.                                |
+| D-010 | 2026-09-07 | Aprobada | La aplicación Electron es la referencia canónica de experiencia visual y funcional de la PWA.                | La migración preserva pantallas, flujos, recursos y funciones existentes; solo se adapta la capa técnica incompatible con la web.                     |
 
 ## Cómo añadir una decisión
 

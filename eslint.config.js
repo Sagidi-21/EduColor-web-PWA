@@ -17,6 +17,13 @@ export default tseslint.config(
     },
   },
   {
+    files: ["src/core/context/**/*.tsx"],
+    rules: {
+      // Los contextos exportan proveedor, hook y tipos por diseño.
+      "react-refresh/only-export-components": "off",
+    },
+  },
+  {
     files: ["public/sw.js"],
     languageOptions: {
       globals: {

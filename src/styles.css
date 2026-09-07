@@ -1,97 +1,43 @@
 :root {
-  font-family: Inter, ui-rounded, system-ui, sans-serif;
-  color: #201c3f;
-  background: #f8f7ff;
+  --color-primary: #2563eb;
+  --color-primary-dark: #1e3a8a;
+  --color-bg: #f1f5f9;
+  --color-surface: #fff;
+  --color-border: #e2e8f0;
+  --color-text: #1e293b;
+  --color-text-muted: #64748b;
+  --radius-lg: 20px;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 6%);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 5%);
+  --font-sans: "Segoe UI", system-ui, -apple-system, sans-serif;
 }
+
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,
+body,
+#root,
+.app {
+  height: 100%;
+  overflow: hidden;
 }
 body {
-  margin: 0;
-  min-width: 320px;
-}
-main {
-  width: min(760px, calc(100% - 2rem));
-  margin: 0 auto;
-  padding: 3rem 0;
-}
-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-h1 {
-  color: #5b4bdb;
-  font-size: clamp(2.5rem, 9vw, 4.5rem);
-  margin: 0;
-}
-h2 {
-  font-size: clamp(1.6rem, 5vw, 2.5rem);
-}
-.eyebrow,
-.tag {
-  color: #6759c9;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.78rem;
-}
-.exercise {
-  background: #fff;
-  border-radius: 28px;
-  padding: clamp(1.5rem, 5vw, 3rem);
-  box-shadow: 0 14px 45px #372f7920;
-  text-align: center;
-}
-.objects {
-  font-size: clamp(2rem, 8vw, 4rem);
-  min-height: 5rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.35rem;
-  margin: 2rem 0;
-}
-.answers {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
 }
 button {
-  border: 0;
-  border-radius: 16px;
-  min-width: 76px;
-  min-height: 64px;
-  background: #eceaff;
-  color: #31296f;
   cursor: pointer;
-  font: inherit;
-  font-size: 1.4rem;
-  font-weight: 800;
+  border: none;
+  background: none;
+  font-family: inherit;
 }
-button:hover,
-button:focus-visible,
-button.selected {
-  background: #5b4bdb;
-  color: #fff;
-  outline: 3px solid #a59af8;
-  outline-offset: 2px;
-}
-.next {
-  margin-top: 1.5rem;
-  padding: 0 1.5rem;
-  font-size: 1rem;
-  background: #ffce63;
-  color: #4e3610;
-}
-.feedback {
-  font-size: 1.2rem;
-  font-weight: 800;
-  margin: 1.25rem 0 0;
-}
-.success {
-  color: #188657;
-}
-.error {
-  color: #bd3d55;
+img {
+  display: block;
+  max-width: 100%;
 }
