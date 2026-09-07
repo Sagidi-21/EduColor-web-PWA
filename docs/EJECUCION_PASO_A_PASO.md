@@ -21,7 +21,7 @@ Este documento desarrolla el [roadmap de ejecución](ROADMAP_DE_EJECUCION_DETALL
 4. Mantener la estructura de capas: `core` para lógica pura, `features` para React, `platform` para navegador/PWA y `docs` para decisiones. **Completado:** se crean además `manifests` y `shared`, con reglas de dependencia en `ARQUITECTURA_INICIAL.md`; el vertical slice no se mueve todavía.
 5. Añadir ESLint, Prettier y scripts `lint`, `typecheck`, `test` y `build`. **Completado:** se añaden también `lint:fix`, `format` y `format:check`; las reglas se aplican a TypeScript/React y excluyen dependencias y build.
 6. Crear CI en GitHub que ejecute esos cuatro scripts para cada pull request. **Completado:** el workflow `Calidad` ejecuta instalación limpia, formato, lint, tipos, tests y build con Node 22 en cada push o pull request a `main`.
-7. Documentar en README el arranque, verificación, navegador soportado y cómo se despliega una build local.
+7. Documentar en README el arranque, verificación, navegador soportado y cómo se despliega una build local. **Completado:** README documenta Node 22, instalación reproducible, scripts, Chrome/Edge como objetivo provisional y límites de validación física pendientes.
 8. Crear una plantilla de issue con: objetivo, aceptación, impacto en datos, pruebas y evidencia de pizarra.
 
 ## Entregables

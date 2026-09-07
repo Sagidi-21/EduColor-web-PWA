@@ -3,7 +3,7 @@
 ## Punto de trabajo actual
 
 - **Fase activa:** 0 — Arranque técnico y límites.
-- **Paso activo:** 7 — Documentación de arranque y verificación.
+- **Paso activo:** 8 — Plantilla de issue y Definition of Done.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
 
