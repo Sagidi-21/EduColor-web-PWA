@@ -14,6 +14,16 @@ por equivalentes web cuando sea necesario.
   acceso originales.
 - Configuración de aula persistida localmente: nombre, color, mascota subida,
   altas y bajas de aula y tamaño de interfaz.
+- Biblioteca completa de recursos originales: 244 archivos (≈39 MB) copiados
+  a `src/assets` para que los renderizadores no usen sustitutos visuales.
+
+## Compatibilidad del vídeo de apertura
+
+Los navegadores bloquean habitualmente el inicio automático de vídeo con audio.
+La PWA inicia el vídeo silenciado para que se reproduzca al abrirla y, si el
+navegador no permite ese arranque, muestra el botón **Iniciar presentación**.
+No se cambia el archivo original ni el flujo posterior de “Toca para
+continuar”.
 
 ## Pendiente de trasladar sin simular disponibilidad
 

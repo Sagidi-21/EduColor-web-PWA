@@ -44,6 +44,20 @@
   animation: hint-fade-in 0.8s 0.2s ease forwards;
 }
 
+.splash__start-btn {
+  position: relative;
+  z-index: 1;
+  border: 0;
+  border-radius: 999px;
+  padding: 14px 24px;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+
 @keyframes logo-fade-in {
   from {
     opacity: 0;

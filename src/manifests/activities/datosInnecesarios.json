@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "datosInnecesarios",
+  "engineId": "datosInnecesarios",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-8"],
+  "title": "Desechar datos inútiles",
+  "description": "Lee el problema y tacha el dato que no sirve",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "📖",
+    "unit": 8,
+    "unitLabel": "Nuestro colegio",
+    "difficultyDescriptions": {
+      "easy": "Problema muy corto con un dato numérico absurdo",
+      "medium": "Problema con datos descriptivos extra",
+      "hard": "Dato extra que parece útil pero no se necesita",
+      "expert": "Textos más complejos con datos trampa"
+    }
+  }
+}

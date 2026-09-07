@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "numeracion6099",
+  "engineId": "numeracion6099",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-7"],
+  "title": "Números del 60 al 99",
+  "description": "Descompone, lee, escribe y ordena números hasta el 99",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔢",
+    "unit": 7,
+    "unitLabel": "¡A cocinar!",
+    "difficultyDescriptions": {
+      "easy": "Bloques de decenas y unidades (60-79)",
+      "medium": "Descomposición y números en letras (80-99)",
+      "hard": "Anterior, posterior y series hasta 99",
+      "expert": "Todos los tipos mezclados con saltos de ±10"
+    }
+  }
+}

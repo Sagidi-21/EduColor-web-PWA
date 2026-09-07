@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "dobleYMitad",
+  "engineId": "dobleYMitad",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-11"],
+  "title": "El doble y la mitad",
+  "description": "Calcula el doble y la mitad de un número",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "✌️",
+    "unit": 11,
+    "unitLabel": "Duplicamos y repartimos",
+    "difficultyDescriptions": {
+      "easy": "Doble de números del 1 al 10",
+      "medium": "Doble y mitad del 1 al 20",
+      "hard": "Encuentra el número original del 1 al 50",
+      "expert": "Todos los tipos hasta el 100"
+    }
+  }
+}

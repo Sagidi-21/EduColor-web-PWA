@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "relacionSumaResta",
+  "engineId": "relacionSumaResta",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-8"],
+  "title": "Familia de operaciones",
+  "description": "Escribe dos restas y una suma a partir de un conjunto total",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔗",
+    "unit": 8,
+    "unitLabel": "Nuestro colegio",
+    "difficultyDescriptions": {
+      "easy": "Números hasta el 10, con apoyo visual",
+      "medium": "Números hasta el 20",
+      "hard": "Números hasta el 50",
+      "expert": "Números hasta el 99, sin apoyo visual"
+    }
+  }
+}

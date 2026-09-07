@@ -35,23 +35,27 @@ Ejecutar desde un clon limpio `npm ci`, `npm run typecheck`, `npm test` y `npm r
 
 ---
 
-# Fase 1 — Modelo de contenido extensible
+# Fase 1 — Modelo de contenido extensible y base de paridad
 
 ## Pasos
 
 1. Inventariar las 62 actividades Electron en una tabla: ID, cursos, motor, generador, renderer, tests, recursos, estado y prioridad. **Completado:** inventario inicial en `INVENTARIO_MIGRACION_ACTIVIDADES.md`; generadores y recursos marcados como pendientes se verifican antes de cada migración.
 2. Definir interfaces TypeScript para `Subject`, `Grade`, `CurriculumBlock`, `ActivityManifest`, `ActivityParameter` y `ActivityResult`. **Completado:** contratos independientes de React en `src/core/content/contracts.ts`; IDs en inglés y textos visibles en español según D-008.
 3. Elegir un formato de manifiesto (JSON/TypeScript validado) y añadir `schemaVersion` desde el primer manifiesto. **Completado:** JSON puro, `$schema` enlazado y validación JSON Schema mediante Ajv (D-009).
-4. Crear manifiestos de Matemáticas, 1.º y 2.º; no codificar cursos como una unión cerrada.
-5. Crear un manifiesto de conteo que represente el vertical slice existente.
-6. Implementar un validador de manifiestos que indique archivo, campo y motivo del error.
-7. Crear cargador, registro de motores y selector por curso/bloque/materia.
-8. Añadir tests: manifiesto válido, ID duplicado, motor inexistente, parámetro inválido y filtro por curso.
-9. Migrar al menos una actividad compartida adicional para demostrar que el sistema no está hecho a medida del conteo.
+4. Crear manifiestos de Matemáticas, 1.º y 2.º; no codificar cursos como una unión cerrada. **Completado:** los 62 manifiestos JSON de actividades de Electron se importan directamente, conservan título, icono, unidad y cuatro niveles de dificultad, y se validan con JSON Schema.
+5. Crear un manifiesto de conteo que represente el vertical slice existente. **Completado:** el manifiesto de conteo forma parte del catálogo original importado.
+6. Implementar un validador de manifiestos que indique archivo, campo y motivo del error. **Completado:** Ajv valida el conjunto de manifiestos durante los tests.
+7. Migrar la base visual compartida antes de habilitar secciones de navegación: vídeo de inicio, inicio, selección de aula y configuración local. **Completado:** se usan recursos y flujo de Electron; perfil, mascota, color, aulas y zoom se guardan localmente en la PWA.
+8. Copiar todos los recursos visuales requeridos por la interfaz y los motores al repositorio PWA, conservando su estructura y trazabilidad. **Completado:** 244 archivos originales (≈39 MB) están en `src/assets`; cada motor seguirá declarando y probando los que use al migrarse.
+9. Adaptar el vídeo de apertura a navegador: reproducción automática compatible y acción de respaldo si el navegador la bloquea. **Completado:** el vídeo se inicia silenciado para cumplir la política de Chrome/Edge y muestra `Iniciar presentación` si no puede reproducirse automáticamente.
+10. Crear cargador, registro de motores y selector por curso/bloque/materia.
+11. Añadir tests: manifiesto válido, ID duplicado, motor inexistente, parámetro inválido y filtro por curso.
+12. Migrar al menos una actividad compartida adicional para demostrar que el sistema no está hecho a medida del conteo.
 
 ## Entregables
 
-- Contratos versionados, manifiestos iniciales y validación automatizada.
+- Contratos versionados, catálogo completo de manifiestos y validación automatizada.
+- Base visual y recursos originales disponibles antes de migrar motores.
 - Matriz de trazabilidad Electron → PWA.
 
 ## Comprobación de salida

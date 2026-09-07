@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "cintaMetrica",
+  "engineId": "cintaMetrica",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-11"],
+  "title": "Cinta métrica",
+  "description": "Elige la unidad correcta: centímetros o metros",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "📏",
+    "unit": 11,
+    "unitLabel": "Hacemos deporte",
+    "difficultyDescriptions": {
+      "easy": "Elige cm o m para objetos cotidianos muy distintos",
+      "medium": "Elige cm o m con más variedad",
+      "hard": "Estima la medida aproximada con unidad",
+      "expert": "Todos los tipos mezclados"
+    }
+  }
+}

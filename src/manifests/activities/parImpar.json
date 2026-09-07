@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "parImpar",
+  "engineId": "parImpar",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-7"],
+  "title": "Pares e impares",
+  "description": "Agrupa objetos de dos en dos y clasifica los números",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🍒",
+    "unit": 7,
+    "unitLabel": "¡A cocinar!",
+    "difficultyDescriptions": {
+      "easy": "Agrupa objetos de dos en dos para ver si sobra alguno",
+      "medium": "Selecciona los números pares o impares de una lista",
+      "hard": "Clasifica números del 30 al 99 usando la última cifra",
+      "expert": "Operaciones con par/impar y escribir en un rango"
+    }
+  }
+}

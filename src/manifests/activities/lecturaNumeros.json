@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "lecturaNumeros",
+  "engineId": "lecturaNumeros",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-3"],
+  "title": "Lectura de números",
+  "description": "Lee y escribe los números en letras y cifras",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "📖",
+    "unit": 3,
+    "unitLabel": "Paseamos por la calle",
+    "difficultyDescriptions": {
+      "easy": "Lee los números del 0 al 9 en cifras y letras",
+      "medium": "Lee los números del 0 al 19 en cifras y letras",
+      "hard": "Lee y escribe números del 0 al 59 mezclados",
+      "expert": "Lee y escribe números del 0 al 99 mezclados"
+    }
+  }
+}

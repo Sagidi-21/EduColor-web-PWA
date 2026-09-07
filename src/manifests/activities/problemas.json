@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "problemas",
+  "engineId": "problemas",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-6"],
+  "title": "Problemas con una operación",
+  "description": "Lee el problema y calcula la respuesta con suma o resta",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "📖",
+    "unit": 6,
+    "unitLabel": "Hacemos deporte",
+    "difficultyDescriptions": {
+      "easy": "Solo sumas, resultado hasta 10",
+      "medium": "Sumas y restas, números hasta 10",
+      "hard": "Sumas y restas, números hasta 19",
+      "expert": "Sumas y restas con números de 2 cifras, resultado hasta 39"
+    }
+  }
+}

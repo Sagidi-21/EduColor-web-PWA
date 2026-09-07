@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "simetria",
+  "engineId": "simetria",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-13"],
+  "title": "Simetría",
+  "description": "Descubre los ejes de simetría de figuras planas",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🪞",
+    "unit": 13,
+    "unitLabel": "Figuras y cuerpos geométricos",
+    "difficultyDescriptions": {
+      "easy": "Cuadrado, rectángulo y triángulos: ¿tiene simetría?",
+      "medium": "Añade rombo y más figuras",
+      "hard": "Identifica figuras simétricas y cuenta ejes",
+      "expert": "Pentágono, hexágono y estrella: todos los tipos"
+    }
+  }
+}

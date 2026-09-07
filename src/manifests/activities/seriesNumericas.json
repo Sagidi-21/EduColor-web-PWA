@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "seriesNumericas",
+  "engineId": "seriesNumericas",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-1"],
+  "title": "Series numéricas",
+  "description": "Completa el número que falta en la serie",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔢",
+    "unit": 1,
+    "unitLabel": "Nos divertimos con los números",
+    "difficultyDescriptions": {
+      "easy": "Series de 1 en 1 (ascendentes)",
+      "medium": "Series de 1, 2 o 5 en 5 (ascendentes)",
+      "hard": "Series de 1, 2, 5 o 10 en 10 (ascendentes y descendentes)",
+      "expert": "Series de 2, 5 o 10 (ascendentes y descendentes)"
+    }
+  }
+}

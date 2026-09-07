@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "probabilidad",
+  "engineId": "probabilidad",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-15"],
+  "title": "Probabilidad",
+  "description": "Clasifica sucesos como seguros, posibles o imposibles",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🎲",
+    "unit": 15,
+    "unitLabel": "La probabilidad",
+    "difficultyDescriptions": {
+      "easy": "Solo sucesos seguros e imposibles (sin posibles)",
+      "medium": "Los tres tipos con situaciones cotidianas",
+      "hard": "Incluye ejercicios con bolsas de pelotas de colores",
+      "expert": "Todos los tipos mezclados"
+    }
+  }
+}

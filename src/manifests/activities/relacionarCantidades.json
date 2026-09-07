@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "relacionarCantidades",
+  "engineId": "relacionarCantidades",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-1"],
+  "title": "Relacionar cantidades",
+  "description": "Une situaciones, transformaciones y descomposiciones de cantidad",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔗",
+    "unit": 1,
+    "unitLabel": "2.º · Los números hasta el 99",
+    "difficultyDescriptions": {
+      "easy": "Complementos hasta 10",
+      "medium": "Añadir y quitar hasta 30",
+      "hard": "Problemas inversos y diferencias hasta 50",
+      "expert": "Descomposición C-D-U con números hasta 999"
+    }
+  }
+}

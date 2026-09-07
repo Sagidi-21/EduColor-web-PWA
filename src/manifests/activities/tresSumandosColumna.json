@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "tresSumandosColumna",
+  "engineId": "tresSumandosColumna",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-6"],
+  "title": "Sumas en columna (3 sumandos)",
+  "description": "Suma tres números con el algoritmo de Decenas y Unidades",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "📐",
+    "unit": 6,
+    "unitLabel": "Hacemos deporte",
+    "difficultyDescriptions": {
+      "easy": "1 número de 2 cifras + 2 de 1 cifra, sin llevada",
+      "medium": "2 números de 2 cifras + 1 de 1 cifra, sin llevada",
+      "hard": "3 números de 2 cifras, sin llevada",
+      "expert": "3 números de 2 cifras, sin llevada, resultado hasta 89"
+    }
+  }
+}

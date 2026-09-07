@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "numeracion1119",
+  "engineId": "numeracion1119",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-3"],
+  "title": "Números del 11 al 19",
+  "description": "Reconoce, descompone y ordena los números 11-19",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔢",
+    "unit": 3,
+    "unitLabel": "Paseamos por la calle",
+    "difficultyDescriptions": {
+      "easy": "Identificar el número con bloques",
+      "medium": "Decenas y unidades (1D + ? U)",
+      "hard": "Número anterior y posterior",
+      "expert": "Los 3 tipos mezclados, 12 ejercicios"
+    }
+  }
+}

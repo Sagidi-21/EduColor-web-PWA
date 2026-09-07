@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "leftRight",
+  "engineId": "leftRight",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-4"],
+  "title": "Izquierda y derecha",
+  "description": "Identifica la posición de objetos: izquierda o derecha",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "↔️",
+    "unit": 4,
+    "unitLabel": "¿Jugamos juntos?",
+    "difficultyDescriptions": {
+      "easy": "¿Dónde está el objeto?",
+      "medium": "¿Cuál está a la izquierda?",
+      "hard": "Los 3 tipos de pregunta mezclados",
+      "expert": "Personajes de frente y espaldas: pulsa o arrastra a la mano correcta"
+    }
+  }
+}

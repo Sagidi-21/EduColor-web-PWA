@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "lineTypes",
+  "engineId": "lineTypes",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-3"],
+  "title": "Tipos de líneas",
+  "description": "Identifica líneas rectas, curvas, horizontales y más",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "〰️",
+    "unit": 3,
+    "unitLabel": "Paseamos por la calle",
+    "difficultyDescriptions": {
+      "easy": "Horizontal, vertical, curva, oblicua",
+      "medium": "Igual que básico + variaciones",
+      "hard": "Líneas abiertas y cerradas",
+      "expert": "Los 7 tipos, 10 ejercicios"
+    }
+  }
+}

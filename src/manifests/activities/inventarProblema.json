@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "inventarProblema",
+  "engineId": "inventarProblema",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-9"],
+  "title": "Laboratorio de problemas",
+  "description": "Resuelve situaciones de compra y venta",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🛒",
+    "unit": 9,
+    "unitLabel": "Nos vamos de viaje",
+    "difficultyDescriptions": {
+      "easy": "¿Qué artículo es más barato? Compara dos precios",
+      "medium": "Suma el precio de dos artículos",
+      "hard": "¿Me alcanza el dinero para comprar los dos?",
+      "expert": "Calcula el cambio que te devuelven"
+    }
+  }
+}

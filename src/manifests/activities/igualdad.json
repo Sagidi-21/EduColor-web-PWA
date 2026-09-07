@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "igualdad",
+  "engineId": "igualdad",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-3"],
+  "title": "El signo igual",
+  "description": "Comprende el signo = y completa igualdades",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "⚖️",
+    "unit": 3,
+    "unitLabel": "Paseamos por la calle",
+    "difficultyDescriptions": {
+      "easy": "a + b = ___ (resultado)",
+      "medium": "___ + b = c (sumando)",
+      "hard": "c = ___ + ___ (descomposición)",
+      "expert": "Los 3 tipos mezclados, hasta 15"
+    }
+  }
+}

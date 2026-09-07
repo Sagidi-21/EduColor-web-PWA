@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "intervalosTiempo",
+  "engineId": "intervalosTiempo",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1"],
+  "curriculumBlockIds": ["mathematics-unit-9"],
+  "title": "Intervalos de tiempo",
+  "description": "Compara duraciones: ¿qué dura más? ¿qué dura menos?",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "⏱️",
+    "unit": 9,
+    "unitLabel": "Nos vamos de viaje",
+    "difficultyDescriptions": {
+      "easy": "Compara dos actividades con diferencia muy clara",
+      "medium": "Duraciones más parecidas, mismas unidades",
+      "hard": "Mezcla unidades (minutos y horas) + clasifica si dura más o menos de 1 hora",
+      "expert": "Todas las variantes con duraciones próximas"
+    }
+  }
+}

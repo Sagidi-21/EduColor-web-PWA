@@ -9,7 +9,10 @@
 - **Motor / renderer:** existe en Electron; se migra separando lógica pura y UI.
 - **Generador:** `Sí` significa que hay un generador asociado en `core/generators`; su contrato se auditará al migrar. `Por localizar` no bloquea el inventario: se revisa antes de seleccionar esa actividad.
 - **Tests actuales:** pruebas directamente localizadas en Electron. El número no mide calidad pedagógica; toda actividad migrada llevará pruebas nuevas de núcleo.
-- **Recursos:** `Revisar` exige comprobar autoría/licencia y desacoplar rutas Electron antes de copiar archivos.
+- **Recursos:** los 244 archivos visuales originales ya están copiados a
+  `src/assets`. `Revisar` ahora significa declarar qué recursos concretos usa
+  cada motor, comprobar sus rutas web y verificarlos visualmente, no volver a
+  sustituirlos ni a copiarlos.
 - **Prioridad:** P1 = primera ola compartida; P2 = V1 tras infraestructura de contenido; P3 = específica posterior o dependiente de interacción compleja.
 
 | ID                      | Cursos   | Motor / renderer Electron                             | Generador     | Tests actuales | Recursos                         | Prioridad |

@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "amigos10",
+  "engineId": "amigos10",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-1"],
+  "title": "Los amigos del 10",
+  "description": "Encuentra el complemento de cada número hasta 10",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🤝",
+    "unit": 1,
+    "unitLabel": "Nos divertimos con los números",
+    "difficultyDescriptions": {
+      "easy": "¿Cuánto le falta al número para llegar a 10?",
+      "medium": "Completa la suma: N + ___ = 10",
+      "hard": "Suma, número que falta y descomposición mezclados",
+      "expert": "Todos los tipos con números del 1 al 9"
+    }
+  }
+}

@@ -17,6 +17,10 @@ npm run dev
 
 Vite mostrará una dirección local, normalmente `http://localhost:5173`. Abrirla en Chrome o Edge. Para detener el servidor, usar `Ctrl+C` en la terminal.
 
+El vídeo de apertura se inicia silenciado porque Chrome y Edge bloquean el
+autoplay con audio. Si el navegador lo bloquea igualmente, aparecerá el botón
+**Iniciar presentación**.
+
 Para instalar dependencias nuevas durante desarrollo se usa `npm install`; para reproducir exactamente las dependencias bloqueadas se usa `npm ci`.
 
 ## Verificación antes de publicar cambios

@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "rutaCuadricula",
+  "engineId": "rutaCuadricula",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-8"],
+  "title": "Taller de programación",
+  "description": "Construye la ruta para llegar a la meta esquivando obstáculos",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🤖",
+    "unit": 8,
+    "unitLabel": "Nuestro colegio",
+    "difficultyDescriptions": {
+      "easy": "Cuadrícula 3x3 sin obstáculos",
+      "medium": "Cuadrícula 4x4 con 2 obstáculos",
+      "hard": "Cuadrícula 5x5 con 4 obstáculos",
+      "expert": "Cuadrícula 6x5 con 6 obstáculos"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "numeracion4059",
+  "engineId": "numeracion4059",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-6"],
+  "title": "Números del 40 al 59",
+  "description": "Reconoce, descompone y ordena los números 40-59",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔢",
+    "unit": 6,
+    "unitLabel": "Hacemos deporte",
+    "difficultyDescriptions": {
+      "easy": "Identificar el número con bloques de decenas",
+      "medium": "Descomponer en decenas y unidades",
+      "hard": "Número anterior y posterior",
+      "expert": "Los 4 tipos mezclados, incluye saltos de ±10"
+    }
+  }
+}

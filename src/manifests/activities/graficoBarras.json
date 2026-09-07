@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "graficoBarras",
+  "engineId": "graficoBarras",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-9"],
+  "title": "Gráfico de barras",
+  "description": "Lee e interpreta gráficos de barras",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "📊",
+    "unit": 9,
+    "unitLabel": "Nos vamos de viaje",
+    "difficultyDescriptions": {
+      "easy": "3 barras, leer valor o máximo",
+      "medium": "4 barras, leer valor, máximo y mínimo",
+      "hard": "5 barras, todos los tipos de pregunta",
+      "expert": "5 barras con comparaciones y diferencias"
+    }
+  }
+}

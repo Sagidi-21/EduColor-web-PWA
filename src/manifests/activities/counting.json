@@ -4,10 +4,21 @@
   "id": "counting",
   "engineId": "counting",
   "subjectId": "mathematics",
-  "gradeIds": ["primary-1", "primary-2"],
-  "curriculumBlockIds": ["numbers"],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-1"],
   "title": "Contamos objetos",
-  "description": "Cuenta cuántos objetos hay y elige la respuesta correcta.",
+  "description": "Cuenta cuántos hay y elige la respuesta",
   "status": "available",
-  "parameters": []
+  "parameters": [],
+  "boardCard": {
+    "icon": "🍎",
+    "unit": 1,
+    "unitLabel": "Nos divertimos con los números",
+    "difficultyDescriptions": {
+      "easy": "Del 1 al 5, objetos en fila",
+      "medium": "Del 1 al 10, objetos dispersos",
+      "hard": "Del 5 al 10, muy dispersos",
+      "expert": "Del 10 al 20, muy dispersos"
+    }
+  }
 }

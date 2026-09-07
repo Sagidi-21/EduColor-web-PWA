@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "capacidad",
+  "engineId": "capacidad",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-6"],
+  "title": "Capacidad y litros",
+  "description": "Compara recipientes y trabaja con litros",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🧴",
+    "unit": 6,
+    "unitLabel": "Hacemos deporte",
+    "difficultyDescriptions": {
+      "easy": "¿Cuál tiene más agua? Compara dos recipientes",
+      "medium": "¿Cuántos litros hay? Lee el nivel del vaso",
+      "hard": "Suma vasos de 1L para hallar el total",
+      "expert": "Los 3 tipos mezclados, hasta 8 litros"
+    }
+  }
+}

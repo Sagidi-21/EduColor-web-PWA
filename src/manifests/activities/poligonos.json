@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "poligonos",
+  "engineId": "poligonos",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-7"],
+  "title": "Los polígonos",
+  "description": "Reconoce polígonos, cuenta sus lados y vértices, y clasifícalos",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "📐",
+    "unit": 7,
+    "unitLabel": "¡A cocinar!",
+    "difficultyDescriptions": {
+      "easy": "Identifica si la figura es un polígono o no",
+      "medium": "Cuenta los lados y vértices de un polígono",
+      "hard": "Nombra polígonos (triángulos, cuadriláteros, pentágonos)",
+      "expert": "Encuentra la figura según lados y vértices dados"
+    }
+  }
+}

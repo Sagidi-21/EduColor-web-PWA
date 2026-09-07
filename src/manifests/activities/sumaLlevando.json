@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "sumaLlevando",
+  "engineId": "sumaLlevando",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-8"],
+  "title": "Sumamos llevando",
+  "description": "Aprende a sumar llevando decenas con el algoritmo vertical",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "➕",
+    "unit": 8,
+    "unitLabel": "Nuestro colegio",
+    "difficultyDescriptions": {
+      "easy": "Sumas de 2 números con llevada, resultado hasta 50",
+      "medium": "Sumas de 2 números (ambos de 2 cifras) con llevada, resultado hasta 99",
+      "hard": "Sumas de 3 números con llevada sencilla",
+      "expert": "Sumas de 3 números con llevadas más complejas"
+    }
+  }
+}

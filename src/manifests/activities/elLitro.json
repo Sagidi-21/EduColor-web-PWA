@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "elLitro",
+  "engineId": "elLitro",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-6"],
+  "title": "El litro",
+  "description": "Clasifica recipientes por capacidad (más/menos de 1 litro)",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🧴",
+    "unit": 6,
+    "unitLabel": "La capacidad",
+    "difficultyDescriptions": {
+      "easy": "¿Más o menos de 1 litro? — clasifica con referencia visual",
+      "medium": "Clasificar + ¿cuál tiene más de un litro?",
+      "hard": "Los tres tipos: clasificar, cuál más, cuál menos",
+      "expert": "Todos los tipos con menor repetición de objetos"
+    }
+  }
+}

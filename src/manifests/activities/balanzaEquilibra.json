@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "balanzaEquilibra",
+  "engineId": "balanzaEquilibra",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-7"],
+  "title": "Equilibra la balanza",
+  "description": "Arrastra pesas hasta equilibrar la balanza con la carga dada",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "⚖️",
+    "unit": 7,
+    "unitLabel": "¡A cocinar!",
+    "difficultyDescriptions": {
+      "easy": "Iguala 2 a 4 pesas de 1 kg",
+      "medium": "Equilibra un objeto de 2 a 6 kg con pesas de 1 kg",
+      "hard": "Objetos más pesados, hasta 10 kg, con pesas de 1 kg",
+      "expert": "Hasta 16 kg componiendo con pesas de 1 kg y 2 kg"
+    }
+  }
+}

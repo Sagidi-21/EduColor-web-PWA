@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "relacionar",
+  "engineId": "relacionar",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1"],
+  "curriculumBlockIds": ["mathematics-unit-1"],
+  "title": "Relacionar número y cantidad",
+  "description": "Une cada número con el grupo de objetos que le corresponde",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔗",
+    "unit": 1,
+    "unitLabel": "Nos divertimos con los números",
+    "difficultyDescriptions": {
+      "easy": "3 parejas, números del 1 al 5",
+      "medium": "4 parejas, números del 1 al 9",
+      "hard": "5 parejas, números del 1 al 9",
+      "expert": "5 parejas, números del 5 al 15"
+    }
+  }
+}

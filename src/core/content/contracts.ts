@@ -62,6 +62,12 @@ export interface ActivityManifest {
   description: string;
   status: "draft" | "available" | "retired";
   parameters: readonly ActivityParameter[];
+  boardCard?: {
+    icon: string;
+    unit: number;
+    unitLabel: string;
+    difficultyDescriptions: Record<"easy" | "medium" | "hard" | "expert", string>;
+  };
 }
 
 /** Resultado de una corrección; V1 no contiene identidad de alumnado. */

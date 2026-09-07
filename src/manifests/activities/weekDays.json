@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "weekDays",
+  "engineId": "weekDays",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-4"],
+  "title": "Días de la semana",
+  "description": "Aprende el orden de los días de la semana",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "📅",
+    "unit": 4,
+    "unitLabel": "¿Jugamos juntos?",
+    "difficultyDescriptions": {
+      "easy": "¿Qué día va después de X?",
+      "medium": "¿Qué día va antes de X?",
+      "hard": "¿Qué día es N días después de X?",
+      "expert": "Los 3 tipos de preguntas mezclados"
+    }
+  }
+}

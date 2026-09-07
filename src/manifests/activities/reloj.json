@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "reloj",
+  "engineId": "reloj",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-9"],
+  "title": "El reloj",
+  "description": "Lee la hora en relojes analógicos y digitales",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🕐",
+    "unit": 9,
+    "unitLabel": "Nos vamos de viaje",
+    "difficultyDescriptions": {
+      "easy": "Horas en punto, del 1 al 6, reloj analógico",
+      "medium": "Horas en punto y media, del 1 al 12, ambos tipos",
+      "hard": "Asocia horas con situaciones cotidianas",
+      "expert": "Todos los tipos mezclados, 10 ejercicios"
+    }
+  }
+}

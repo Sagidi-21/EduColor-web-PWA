@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "abaco3cifras",
+  "engineId": "abaco3cifras",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-10"],
+  "title": "Ábaco de tres cifras",
+  "description": "Lee y representa números de tres cifras en el ábaco",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🧮",
+    "unit": 10,
+    "unitLabel": "Los números hasta el 999",
+    "difficultyDescriptions": {
+      "easy": "100–299: lee el número que muestra el ábaco",
+      "medium": "100–499: ¿qué ábaco representa el número?",
+      "hard": "100–699: ¿qué valor posicional tiene cada columna?",
+      "expert": "100–999: todos los tipos mezclados"
+    }
+  }
+}

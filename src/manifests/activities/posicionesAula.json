@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "posicionesAula",
+  "engineId": "posicionesAula",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1"],
+  "curriculumBlockIds": ["mathematics-unit-2"],
+  "title": "Posiciones en el aula",
+  "description": "Identifica la posición de objetos: encima, debajo, dentro, fuera",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "📦",
+    "unit": 2,
+    "unitLabel": "Nos divertimos con los números",
+    "difficultyDescriptions": {
+      "easy": "Cuatro posiciones básicas: encima, debajo, dentro, fuera",
+      "medium": "Mismas posiciones con más variedad de objetos y recipientes",
+      "hard": "Añade \"al lado\" con mesa y silla",
+      "expert": "Todas las posiciones mezcladas"
+    }
+  }
+}

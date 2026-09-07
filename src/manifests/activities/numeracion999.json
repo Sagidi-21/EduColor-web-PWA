@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "numeracion999",
+  "engineId": "numeracion999",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-10"],
+  "title": "Numeración hasta 999",
+  "description": "Descompón y comprende los números de tres cifras: centenas, decenas y unidades",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔢",
+    "unit": 10,
+    "unitLabel": "Los números hasta el 999",
+    "difficultyDescriptions": {
+      "easy": "100–299: cifra ↔ C–D–U",
+      "medium": "100–499: añade valor posicional",
+      "hard": "100–699: anterior y posterior de 10 en 10 o de 100 en 100",
+      "expert": "100–999: todos los tipos mezclados"
+    }
+  }
+}

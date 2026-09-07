@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "problemas2pasos",
+  "engineId": "problemas2pasos",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-16"],
+  "title": "Problemas de 2 pasos",
+  "description": "Resuelve problemas que necesitan dos operaciones",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🧩",
+    "unit": 16,
+    "unitLabel": "Resolvemos problemas",
+    "difficultyDescriptions": {
+      "easy": "Dos sumas con números hasta 20",
+      "medium": "Suma y resta con números hasta 50",
+      "hard": "Todos los tipos con números hasta 100",
+      "expert": "Todos los tipos con números hasta 200"
+    }
+  }
+}

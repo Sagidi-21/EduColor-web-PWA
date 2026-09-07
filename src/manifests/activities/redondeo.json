@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "redondeo",
+  "engineId": "redondeo",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-10"],
+  "title": "Redondeo a la decena",
+  "description": "Redondea números a la decena más próxima",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🎯",
+    "unit": 10,
+    "unitLabel": "Los números hasta el 999",
+    "difficultyDescriptions": {
+      "easy": "Redondea números de 2 cifras a la decena más próxima",
+      "medium": "Redondea + ¿está más cerca de 20 o de 30?",
+      "hard": "Números de 3 cifras: redondea a la decena más próxima",
+      "expert": "Todas las variantes con números de 3 cifras"
+    }
+  }
+}

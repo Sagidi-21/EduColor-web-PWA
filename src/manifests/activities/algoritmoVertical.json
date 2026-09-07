@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "algoritmoVertical",
+  "engineId": "algoritmoVertical",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-5"],
+  "title": "Sumas en columna",
+  "description": "Suma con el algoritmo de Decenas y Unidades",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "📐",
+    "unit": 5,
+    "unitLabel": "¿Qué día es hoy?",
+    "difficultyDescriptions": {
+      "easy": "Sin llevada, número de 2 cifras + cifra suelta, hasta 50",
+      "medium": "Sin llevada, dos sumandos de 2 cifras, hasta 99",
+      "hard": "Con llevada en unidades, resultado hasta 50",
+      "expert": "Con llevada en unidades, resultado hasta 99"
+    }
+  }
+}

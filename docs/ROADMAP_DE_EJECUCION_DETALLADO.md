@@ -2,7 +2,9 @@
 
 **Fecha:** 2026-09-07  
 **Alcance V1:** Matemáticas de 1.º y 2.º, profesorado, pizarra digital, fichas y uso offline.  
-**Regla principal:** conservar el dominio educativo de Electron y reconstruir la plataforma web sin copiar Electron, IPC ni empaquetado Windows.
+**Regla principal:** conservar la experiencia visual, los recursos y el dominio
+educativo de Electron; reconstruir solo las integraciones incompatibles con la
+web (IPC y empaquetado Windows).
 
 > Este documento es el índice de fases. Para el checklist operativo completo de
 > cada una, consultar [EJECUCION_PASO_A_PASO.md](EJECUCION_PASO_A_PASO.md).
@@ -46,17 +48,24 @@ Tener una base PWA pequeña, verificable y preparada para que el resto del traba
 
 ---
 
-# Fase 1 — Modelo de contenido extensible
+# Fase 1 — Modelo de contenido extensible y base de paridad
 
 ## Objetivo
 
-Poder añadir un curso, materia o actividad sin modificar tipos cerrados, navegación y registros manuales en muchos archivos.
+Poder añadir un curso, materia o actividad sin modificar tipos cerrados,
+navegación y registros manuales en muchos archivos, mientras se establece la
+base visual y de recursos que permitirá migrar la experiencia existente sin
+rediseñarla.
 
 ## Ya disponible
 
 - ✅ 62 actividades activas: 47 para 1.º, 58 para 2.º y 43 compartidas.
 - ✅ Motores separados con `engine.ts`, renderizadores y generadores.
 - 🟡 Registro central manual del proyecto Electron, actualmente limitado a `1 | 2` y Matemáticas.
+- ✅ Pantalla de inicio, vídeo de apertura y configuración local reutilizables
+  desde Electron.
+- ✅ 244 recursos visuales originales para interfaz y motores (≈39 MB),
+  disponibles en el repositorio PWA.
 
 ## Qué hacer
 
@@ -65,13 +74,21 @@ Poder añadir un curso, materia o actividad sin modificar tipos cerrados, navega
 3. Cambiar los tipos cerrados de curso por identificadores de datos.
 4. Crear un cargador y validador de manifiestos que falle con mensajes claros.
 5. Separar el motor reutilizable de los textos, iconos, recursos y parámetros pedagógicos.
-6. Añadir filtros por curso, materia y bloque a la navegación.
-7. Probar que un manifiesto roto no llega a producción y que una actividad nueva se registra sin editar la navegación.
+6. Migrar la base visual compartida: vídeo de inicio, inicio, perfil de aula,
+   color, mascota, zoom y sus equivalentes web locales.
+7. Copiar y versionar los recursos originales necesarios para la interfaz y
+   motores; no sustituir imágenes por recursos provisionales.
+8. Adaptar el vídeo de apertura a la política de reproducción de navegadores:
+   inicio automático silenciado y botón de respaldo si el navegador lo bloquea.
+9. Añadir filtros por curso, materia y bloque a la navegación.
+10. Probar que un manifiesto roto no llega a producción y que una actividad nueva se registra sin editar la navegación.
 
 ## Terminado cuando
 
 - Añadir una actividad o materia piloto solo requiere un manifiesto y un motor compatible.
 - Las actividades existentes de 1.º y 2.º aparecen desde datos versionados.
+- La base visual común procede de los recursos originales y funciona en
+  navegador sin depender de Electron.
 
 ---
 

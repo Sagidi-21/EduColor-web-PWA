@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "multiplicacion",
+  "engineId": "multiplicacion",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-14"],
+  "title": "Multiplicación",
+  "description": "Aprende las tablas del 2, 5 y 10 con grupos de objetos",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "✖️",
+    "unit": 14,
+    "unitLabel": "Multiplicamos",
+    "difficultyDescriptions": {
+      "easy": "Tabla del 2 (resultados hasta 20)",
+      "medium": "Tablas del 2 y del 5",
+      "hard": "Tablas del 2, 5 y 10 con factor desconocido",
+      "expert": "Tablas del 2 al 5 y del 10 con todos los tipos"
+    }
+  }
+}

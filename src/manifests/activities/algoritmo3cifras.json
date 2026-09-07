@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "algoritmo3cifras",
+  "engineId": "algoritmo3cifras",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-12"],
+  "title": "Algoritmo de tres cifras",
+  "description": "Suma y resta de tres cifras con llevada doble",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "➕",
+    "unit": 12,
+    "unitLabel": "Sumamos y restamos con tres cifras",
+    "difficultyDescriptions": {
+      "easy": "Suma sin llevada, resultado ≤ 999",
+      "medium": "Suma con llevada unidades → decenas",
+      "hard": "Suma con llevada decenas → centenas",
+      "expert": "Suma y resta con llevada doble"
+    }
+  }
+}

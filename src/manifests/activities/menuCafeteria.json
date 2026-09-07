@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "menuCafeteria",
+  "engineId": "menuCafeteria",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-9"],
+  "title": "En la cafetería",
+  "description": "Calcula el precio de un menú con varios platos",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🍽️",
+    "unit": 9,
+    "unitLabel": "Nos vamos de viaje",
+    "difficultyDescriptions": {
+      "easy": "Suma 2 platos del menú",
+      "medium": "Suma 2 platos y compara con presupuesto",
+      "hard": "3 platos: ¿me alcanza el dinero?",
+      "expert": "Calcula cuánto dinero te devuelven"
+    }
+  }
+}

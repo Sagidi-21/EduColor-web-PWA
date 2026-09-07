@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "resta",
+  "engineId": "resta",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-2"],
+  "title": "La resta",
+  "description": "Practica restas con teclado numérico",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "➖",
+    "unit": 2,
+    "unitLabel": "Vamos a medir",
+    "difficultyDescriptions": {
+      "easy": "Hasta 5, con apoyo visual",
+      "medium": "Hasta 10, sin apoyo",
+      "hard": "Hasta 20",
+      "expert": "De 10 a 30, 15 ejercicios"
+    }
+  }
+}

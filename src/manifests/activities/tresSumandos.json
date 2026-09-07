@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "tresSumandos",
+  "engineId": "tresSumandos",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-4"],
+  "title": "Sumas con tres sumandos",
+  "description": "Suma tres números con teclado numérico",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔢",
+    "unit": 4,
+    "unitLabel": "¿Jugamos juntos?",
+    "difficultyDescriptions": {
+      "easy": "Resultado hasta 5, con imágenes",
+      "medium": "Resultado hasta 10",
+      "hard": "Resultado hasta 15",
+      "expert": "Resultado hasta 20, 15 ejercicios"
+    }
+  }
+}

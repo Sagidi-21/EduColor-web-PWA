@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "repartoIgual",
+  "engineId": "repartoIgual",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-8"],
+  "title": "Repartos en partes iguales",
+  "description": "Reparte objetos en grupos para ver a cuántos tocan",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "➗",
+    "unit": 8,
+    "unitLabel": "Nuestro colegio",
+    "difficultyDescriptions": {
+      "easy": "Repartos exactos pequeños (hasta 12 objetos)",
+      "medium": "Repartos exactos hasta 20 objetos",
+      "hard": "Repartos exactos mayores, hasta 30 objetos",
+      "expert": "Problemas sencillos de reparto hasta 50 objetos"
+    }
+  }
+}

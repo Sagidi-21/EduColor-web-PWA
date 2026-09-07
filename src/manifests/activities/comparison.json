@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "comparison",
+  "engineId": "comparison",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-1"],
+  "title": "Mayor y menor",
+  "description": "Compara dos grupos, ¿cuál tiene más?",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "⚖️",
+    "unit": 1,
+    "unitLabel": "Nos divertimos con los números",
+    "difficultyDescriptions": {
+      "easy": "Grupos hasta 5, siempre distintos",
+      "medium": "Hasta 10, más o menos",
+      "hard": "Hasta 19, pueden ser iguales",
+      "expert": "Hasta 20, iguales posibles, 12 ejercicios"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "tablaNumerica",
+  "engineId": "tablaNumerica",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-7"],
+  "title": "La tabla de los números",
+  "description": "Completa la tabla del 0 al 99 y busca números según condiciones",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "📋",
+    "unit": 7,
+    "unitLabel": "¡A cocinar!",
+    "difficultyDescriptions": {
+      "easy": "Completa el número que falta en la tabla casi llena",
+      "medium": "Busca números por su cifra o sumas de sus dígitos",
+      "hard": "Completa la tabla muda con números faltantes",
+      "expert": "Calcula decenas y unidades para ir de un número a otro"
+    }
+  }
+}

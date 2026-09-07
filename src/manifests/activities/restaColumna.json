@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "restaColumna",
+  "engineId": "restaColumna",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-6"],
+  "title": "Resta en columna",
+  "description": "Resta números de dos cifras con el algoritmo de Decenas y Unidades",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "➖",
+    "unit": 6,
+    "unitLabel": "Hacemos deporte",
+    "difficultyDescriptions": {
+      "easy": "Sin llevar, minuendo hasta 19, sustraendo de 1 cifra",
+      "medium": "Sin llevar, minuendo hasta 39, dos cifras",
+      "hard": "Sin llevar, minuendo hasta 59, dos cifras",
+      "expert": "Sin llevar, minuendo 40-59, 10 ejercicios"
+    }
+  }
+}

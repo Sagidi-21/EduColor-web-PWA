@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "elKilo",
+  "engineId": "elKilo",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-8"],
+  "title": "El kilo",
+  "description": "Clasifica objetos según si pesan más o menos de 1 kg",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "⚖️",
+    "unit": 8,
+    "unitLabel": "¡A cocinar!",
+    "difficultyDescriptions": {
+      "easy": "Clasifica un objeto: ¿más o menos de 1 kg?",
+      "medium": "Clasifica + compara cuál pesa más entre dos objetos",
+      "hard": "Todos los tipos con mayor variedad de objetos",
+      "expert": "Todos los tipos mezclados"
+    }
+  }
+}

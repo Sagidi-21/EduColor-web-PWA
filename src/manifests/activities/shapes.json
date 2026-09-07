@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "shapes",
+  "engineId": "shapes",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-2"],
+  "title": "Formas y tamaños",
+  "description": "Identifica círculos, cuadrados, triángulos y más",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔷",
+    "unit": 2,
+    "unitLabel": "Vamos a medir",
+    "difficultyDescriptions": {
+      "easy": "Círculo, cuadrado y triángulo",
+      "medium": "+ rectángulo, con rotación",
+      "hard": "+ rombo, rotación completa",
+      "expert": "Las 5 figuras, rotación libre, 5 opciones"
+    }
+  }
+}

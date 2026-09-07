@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "vecinosNumero",
+  "engineId": "vecinosNumero",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-3"],
+  "title": "Vecinos del número",
+  "description": "Encuentra el número anterior y el número posterior",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🏠",
+    "unit": 3,
+    "unitLabel": "Paseamos por la calle",
+    "difficultyDescriptions": {
+      "easy": "Números del 1 al 9: anterior o posterior",
+      "medium": "Números del 1 al 19: anterior o posterior",
+      "hard": "Números del 1 al 59: los dos vecinos",
+      "expert": "Números del 1 al 99: los dos vecinos"
+    }
+  }
+}

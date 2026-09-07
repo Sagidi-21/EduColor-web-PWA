@@ -2,9 +2,10 @@
 
 ## Punto de trabajo actual
 
-- **Fase activa:** 1 — Modelo de contenido extensible.
-- **Paso activo:** 4 — Manifiestos de currículo inicial, con migración visual
-  progresiva desde la aplicación Electron.
+- **Fase activa:** 1 — Modelo de contenido extensible y base de paridad.
+- **Paso activo:** 10 — Cargador, registro de motores y selector por
+  curso/bloque/materia. La base visual, el catálogo JSON y los recursos
+  originales ya se han incorporado sin adelantar la migración de motores.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
 

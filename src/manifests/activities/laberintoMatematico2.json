@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "laberintoMatematico2",
+  "engineId": "laberintoMatematico2",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-5"],
+  "title": "Laberinto matemático",
+  "description": "Sigue los caminos de operaciones y descubre qué resultado es el mayor (o el menor)",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🧮",
+    "unit": 5,
+    "unitLabel": "Sumas y restas",
+    "difficultyDescriptions": {
+      "easy": "Sumas y restas hasta 99",
+      "medium": "Sumas y restas hasta 199",
+      "hard": "Sumas y restas hasta 999",
+      "expert": "Operaciones más complejas hasta 999"
+    }
+  }
+}

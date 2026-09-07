@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "ordenar",
+  "engineId": "ordenar",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-1"],
+  "title": "Ordenar números",
+  "description": "Coloca los números en orden de menor a mayor o de mayor a menor",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔢",
+    "unit": 1,
+    "unitLabel": "Nos divertimos con los números",
+    "difficultyDescriptions": {
+      "easy": "3 números, del 1 al 10, siempre ascendente",
+      "medium": "4 números, del 1 al 20, ascendente y descendente",
+      "hard": "5 números, del 1 al 20, ascendente y descendente",
+      "expert": "5 números de dos cifras, ascendente y descendente"
+    }
+  }
+}

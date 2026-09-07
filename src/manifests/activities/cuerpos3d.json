@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "cuerpos3d",
+  "engineId": "cuerpos3d",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-13"],
+  "title": "Cuerpos geométricos",
+  "description": "Identifica y analiza cuerpos en tres dimensiones: caras, aristas y vértices",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔷",
+    "unit": 13,
+    "unitLabel": "Figuras y cuerpos geométricos",
+    "difficultyDescriptions": {
+      "easy": "Cubo, esfera, cilindro y cono: identifica el nombre",
+      "medium": "Añade prisma y cuenta caras",
+      "hard": "Todos los cuerpos: caras, vértices y objetos reales",
+      "expert": "Todos los tipos mezclados incluyendo aristas"
+    }
+  }
+}

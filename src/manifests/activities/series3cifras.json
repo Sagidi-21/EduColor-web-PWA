@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "series3cifras",
+  "engineId": "series3cifras",
+  "subjectId": "mathematics",
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-unit-10"],
+  "title": "Series de 3 cifras",
+  "description": "Completa series numéricas de 100 a 999",
+  "status": "available",
+  "parameters": [],
+  "boardCard": {
+    "icon": "🔢",
+    "unit": 10,
+    "unitLabel": "Los números hasta el 999",
+    "difficultyDescriptions": {
+      "easy": "Series de 10 en 10 entre 100 y 200",
+      "medium": "Series de 10 en 10 y de 100 en 100",
+      "hard": "Ascendentes y descendentes, paso variable",
+      "expert": "Todos los pasos (10, 50, 100) mezclados"
+    }
+  }
+}
