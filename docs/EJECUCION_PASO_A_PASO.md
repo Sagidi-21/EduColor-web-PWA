@@ -17,7 +17,7 @@ Este documento desarrolla el [roadmap de ejecución](ROADMAP_DE_EJECUCION_DETALL
 
 1. Mantener el seguimiento en `docs/ESTADO_DEL_PROYECTO.md` y definir responsables de aprobación pedagógica y técnica. **Completado:** director del colegio (pedagógica), Salvador (técnica), con feedback de los profesores de Matemáticas de 1.º y 2.º.
 2. Crear `docs/DECISIONES.md`; registrar alcance V1, exclusiones, fecha, autor y razón de cada decisión relevante.
-3. Confirmar V1: 1.º/2.º, Matemáticas, profesorado, pizarra, fichas, sesión local y offline. Registrar explícitamente que alumnos, tareas y multi-colegio quedan fuera. **Completado:** la sesión offline mantiene y recupera actividad, ejercicios, respuestas, corrección y resumen cuando no hay Internet.
+3. Confirmar V1: 1.º/2.º, Matemáticas, profesorado, pizarra, fichas, sesión local y offline. Registrar explícitamente que alumnos, tareas y multi-colegio quedan fuera. **Completado:** la sesión offline mantiene y recupera actividad, ejercicios, respuestas, corrección y resumen cuando no hay Internet. El alcance se registra en `ESTADO_DEL_PROYECTO.md` y la decisión D-003 en `DECISIONES.md`.
 4. Mantener la estructura de capas: `core` para lógica pura, `features` para React, `platform` para navegador/PWA y `docs` para decisiones.
 5. Añadir ESLint, Prettier y scripts `lint`, `typecheck`, `test` y `build`.
 6. Crear CI en GitHub que ejecute esos cuatro scripts para cada pull request.
