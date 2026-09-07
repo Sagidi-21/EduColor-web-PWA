@@ -2,10 +2,10 @@
 
 ## Punto de trabajo actual
 
-- **Fase activa:** 1 — Modelo de contenido extensible y base de paridad.
-- **Paso activo:** 11 — Tests de manifiesto válido, ID duplicado, motor
-  inexistente, parámetro inválido y filtro por curso. El paso 10 dejó
-  cargador, registro de motores y selector por materia/curso/bloque.
+- **Fase activa:** 2 — Migración del catálogo matemático V1.
+- **Paso activo:** 1 — Siguiente actividad compartida de 1.º/2.º tras conteo y
+  comparación, según el orden de `EJECUCION_PASO_A_PASO.md`. La Fase 1 cerró
+  con manifiestos, selector y un motor extra (`comparison`) no acoplado al conteo.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
 

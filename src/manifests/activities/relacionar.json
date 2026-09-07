@@ -4,12 +4,8 @@
   "id": "relacionar",
   "engineId": "relacionar",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-1"
-  ],
+  "gradeIds": ["grade-1"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-1"],
   "title": "Relacionar número y cantidad",
   "description": "Une cada número con el grupo de objetos que le corresponde",
   "status": "available",

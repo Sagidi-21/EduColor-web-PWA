@@ -4,14 +4,8 @@
   "id": "ordinales",
   "engineId": "ordinales",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-6",
-    "mathematics-grade-2-unit-6"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-6", "mathematics-grade-2-unit-6"],
   "title": "Números ordinales",
   "description": "Identifica y usa los números ordinales del 1º al 10º",
   "status": "available",

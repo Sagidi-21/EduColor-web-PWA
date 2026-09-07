@@ -4,14 +4,8 @@
   "id": "relacionSumaResta",
   "engineId": "relacionSumaResta",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-8",
-    "mathematics-grade-2-unit-8"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-8", "mathematics-grade-2-unit-8"],
   "title": "Familia de operaciones",
   "description": "Escribe dos restas y una suma a partir de un conjunto total",
   "status": "available",

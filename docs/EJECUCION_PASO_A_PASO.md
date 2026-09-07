@@ -49,8 +49,8 @@ Ejecutar desde un clon limpio `npm ci`, `npm run typecheck`, `npm test` y `npm r
 8. Copiar todos los recursos visuales requeridos por la interfaz y los motores al repositorio PWA, conservando su estructura y trazabilidad. **Completado:** 244 archivos originales (≈39 MB) están en `src/assets`; cada motor seguirá declarando y probando los que use al migrarse.
 9. Adaptar el vídeo de apertura a navegador: reproducción automática compatible y acción de respaldo si el navegador la bloquea. **Completado:** el vídeo se inicia silenciado para cumplir la política de Chrome/Edge y muestra `Iniciar presentación` si no puede reproducirse automáticamente.
 10. Crear cargador, registro de motores y selector por curso/bloque/materia. **Completado:** `import.meta.glob` carga los JSON; `engine-registry` impide lanzar sin motor PWA; el selector filtra por materia, curso y bloque sin listas de actividades en la navegación.
-11. Añadir tests: manifiesto válido, ID duplicado, motor inexistente, parámetro inválido y filtro por curso.
-12. Migrar al menos una actividad compartida adicional para demostrar que el sistema no está hecho a medida del conteo.
+11. Añadir tests: manifiesto válido, ID duplicado, motor inexistente, parámetro inválido y filtro por curso. **Completado:** el validador indica archivo, campo y motivo; los tests cubren catálogo válido, IDs repetidos, motor no registrado, parámetro incompleto y filtro 1.º/2.º.
+12. Migrar al menos una actividad compartida adicional para demostrar que el sistema no está hecho a medida del conteo. **Completado:** `comparison` (Mayor y menor) se lanza desde manifiesto + motor + renderer; el conteo sigue sin renderer y no hay IDs de actividad en la navegación.
 
 ## Entregables
 

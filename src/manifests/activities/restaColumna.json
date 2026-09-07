@@ -4,14 +4,8 @@
   "id": "restaColumna",
   "engineId": "restaColumna",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-6",
-    "mathematics-grade-2-unit-6"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-6", "mathematics-grade-2-unit-6"],
   "title": "Resta en columna",
   "description": "Resta números de dos cifras con el algoritmo de Decenas y Unidades",
   "status": "available",

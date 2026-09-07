@@ -4,12 +4,8 @@
   "id": "probabilidad",
   "engineId": "probabilidad",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-2-unit-15"
-  ],
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-2-unit-15"],
   "title": "Probabilidad",
   "description": "Clasifica sucesos como seguros, posibles o imposibles",
   "status": "available",

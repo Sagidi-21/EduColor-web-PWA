@@ -4,12 +4,8 @@
   "id": "simetria",
   "engineId": "simetria",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-2-unit-13"
-  ],
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-2-unit-13"],
   "title": "Simetría",
   "description": "Descubre los ejes de simetría de figuras planas",
   "status": "available",

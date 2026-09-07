@@ -11,7 +11,7 @@ export interface EngineRegistration {
  * Solo se añaden aquí motores cuya lógica y renderer ya funcionen en la PWA.
  * Un manifiesto por sí solo nunca habilita el lanzamiento de una actividad.
  */
-const migratedEngines: ReadonlySet<EngineId> = new Set();
+const migratedEngines: ReadonlySet<EngineId> = new Set(["comparison"]);
 
 export function getEngineRegistration(engineId: EngineId): EngineRegistration {
   return {
@@ -21,5 +21,8 @@ export function getEngineRegistration(engineId: EngineId): EngineRegistration {
 }
 
 export function canLaunchActivity(activity: ActivityManifest): boolean {
-  return activity.status === "available" && getEngineRegistration(activity.engineId).status === "available";
+  return (
+    activity.status === "available" &&
+    getEngineRegistration(activity.engineId).status === "available"
+  );
 }

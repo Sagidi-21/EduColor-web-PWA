@@ -4,12 +4,8 @@
   "id": "abaco3cifras",
   "engineId": "abaco3cifras",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-2-unit-10"
-  ],
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-2-unit-10"],
   "title": "Ábaco de tres cifras",
   "description": "Lee y representa números de tres cifras en el ábaco",
   "status": "available",

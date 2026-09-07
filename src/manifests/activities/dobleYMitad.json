@@ -4,12 +4,8 @@
   "id": "dobleYMitad",
   "engineId": "dobleYMitad",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-2-unit-11"
-  ],
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-2-unit-11"],
   "title": "El doble y la mitad",
   "description": "Calcula el doble y la mitad de un número",
   "status": "available",

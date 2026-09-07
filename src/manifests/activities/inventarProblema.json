@@ -4,14 +4,8 @@
   "id": "inventarProblema",
   "engineId": "inventarProblema",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-9",
-    "mathematics-grade-2-unit-9"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-9", "mathematics-grade-2-unit-9"],
   "title": "Laboratorio de problemas",
   "description": "Resuelve situaciones de compra y venta",
   "status": "available",

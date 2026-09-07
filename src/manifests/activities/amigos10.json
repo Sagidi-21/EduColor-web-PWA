@@ -4,14 +4,8 @@
   "id": "amigos10",
   "engineId": "amigos10",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-1",
-    "mathematics-grade-2-unit-1"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-1", "mathematics-grade-2-unit-1"],
   "title": "Los amigos del 10",
   "description": "Encuentra el complemento de cada número hasta 10",
   "status": "available",

@@ -74,7 +74,8 @@ export function getActivities(filters: ActivityFilters): readonly ActivityManife
         activity.status !== "retired" &&
         activity.subjectId === filters.subjectId &&
         activity.gradeIds.includes(filters.gradeId) &&
-        (!filters.curriculumBlockId || activity.curriculumBlockIds.includes(filters.curriculumBlockId)),
+        (!filters.curriculumBlockId ||
+          activity.curriculumBlockIds.includes(filters.curriculumBlockId)),
     ),
   );
 }

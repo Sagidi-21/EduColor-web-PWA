@@ -4,14 +4,8 @@
   "id": "vecinosNumero",
   "engineId": "vecinosNumero",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-3",
-    "mathematics-grade-2-unit-3"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-3", "mathematics-grade-2-unit-3"],
   "title": "Vecinos del número",
   "description": "Encuentra el número anterior y el número posterior",
   "status": "available",

@@ -4,12 +4,8 @@
   "id": "relacionarCantidades",
   "engineId": "relacionarCantidades",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-2-unit-1"
-  ],
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-2-unit-1"],
   "title": "Relacionar cantidades",
   "description": "Une situaciones, transformaciones y descomposiciones de cantidad",
   "status": "available",

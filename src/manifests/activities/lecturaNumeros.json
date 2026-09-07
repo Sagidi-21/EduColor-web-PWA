@@ -4,14 +4,8 @@
   "id": "lecturaNumeros",
   "engineId": "lecturaNumeros",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-3",
-    "mathematics-grade-2-unit-3"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-3", "mathematics-grade-2-unit-3"],
   "title": "Lectura de números",
   "description": "Lee y escribe los números en letras y cifras",
   "status": "available",

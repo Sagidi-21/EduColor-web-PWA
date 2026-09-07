@@ -4,14 +4,8 @@
   "id": "repartoIgual",
   "engineId": "repartoIgual",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-8",
-    "mathematics-grade-2-unit-8"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-8", "mathematics-grade-2-unit-8"],
   "title": "Repartos en partes iguales",
   "description": "Reparte objetos en grupos para ver a cuántos tocan",
   "status": "available",

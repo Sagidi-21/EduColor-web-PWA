@@ -4,14 +4,8 @@
   "id": "tablaNumerica",
   "engineId": "tablaNumerica",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-7",
-    "mathematics-grade-2-unit-7"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-7", "mathematics-grade-2-unit-7"],
   "title": "La tabla de los números",
   "description": "Completa la tabla del 0 al 99 y busca números según condiciones",
   "status": "available",

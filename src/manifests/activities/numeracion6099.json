@@ -4,14 +4,8 @@
   "id": "numeracion6099",
   "engineId": "numeracion6099",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-7",
-    "mathematics-grade-2-unit-7"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-7", "mathematics-grade-2-unit-7"],
   "title": "Números del 60 al 99",
   "description": "Descompone, lee, escribe y ordena números hasta el 99",
   "status": "available",

@@ -4,14 +4,8 @@
   "id": "menuCafeteria",
   "engineId": "menuCafeteria",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-9",
-    "mathematics-grade-2-unit-9"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-9", "mathematics-grade-2-unit-9"],
   "title": "En la cafetería",
   "description": "Calcula el precio de un menú con varios platos",
   "status": "available",

@@ -4,14 +4,8 @@
   "id": "rectaNumerica",
   "engineId": "rectaNumerica",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-3",
-    "mathematics-grade-2-unit-3"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-3", "mathematics-grade-2-unit-3"],
   "title": "Coloca el número en la recta",
   "description": "Arrastra el número hasta su posición en la recta numérica",
   "status": "available",

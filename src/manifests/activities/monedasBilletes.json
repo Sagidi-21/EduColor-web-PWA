@@ -4,14 +4,8 @@
   "id": "monedasBilletes",
   "engineId": "monedasBilletes",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-9",
-    "mathematics-grade-2-unit-9"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-9", "mathematics-grade-2-unit-9"],
   "title": "Monedas y billetes",
   "description": "Suma céntimos y euros, compara precios",
   "status": "available",

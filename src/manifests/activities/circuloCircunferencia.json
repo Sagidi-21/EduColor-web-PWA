@@ -4,12 +4,8 @@
   "id": "circuloCircunferencia",
   "engineId": "circuloCircunferencia",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-2-unit-13"
-  ],
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-2-unit-13"],
   "title": "Círculo y circunferencia",
   "description": "Distingue entre círculo (relleno) y circunferencia (borde)",
   "status": "available",

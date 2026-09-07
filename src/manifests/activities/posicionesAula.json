@@ -4,12 +4,8 @@
   "id": "posicionesAula",
   "engineId": "posicionesAula",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-2"
-  ],
+  "gradeIds": ["grade-1"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-2"],
   "title": "Posiciones en el aula",
   "description": "Identifica la posición de objetos: encima, debajo, dentro, fuera",
   "status": "available",

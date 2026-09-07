@@ -4,14 +4,8 @@
   "id": "numeracion4059",
   "engineId": "numeracion4059",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-6",
-    "mathematics-grade-2-unit-6"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-6", "mathematics-grade-2-unit-6"],
   "title": "Números del 40 al 59",
   "description": "Reconoce, descompone y ordena los números 40-59",
   "status": "available",

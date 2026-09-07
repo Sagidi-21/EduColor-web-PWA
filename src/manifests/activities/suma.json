@@ -4,14 +4,8 @@
   "id": "suma",
   "engineId": "suma",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-2",
-    "mathematics-grade-2-unit-2"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-2", "mathematics-grade-2-unit-2"],
   "title": "La suma",
   "description": "Practica sumas con teclado numérico",
   "status": "available",

@@ -4,12 +4,8 @@
   "id": "problemas2pasos",
   "engineId": "problemas2pasos",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-2-unit-16"
-  ],
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-2-unit-16"],
   "title": "Problemas de 2 pasos",
   "description": "Resuelve problemas que necesitan dos operaciones",
   "status": "available",

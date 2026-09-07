@@ -4,12 +4,8 @@
   "id": "laberintoMatematico2",
   "engineId": "laberintoMatematico2",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-2-unit-5"
-  ],
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-2-unit-5"],
   "title": "Laberinto matemático",
   "description": "Sigue los caminos de operaciones y descubre qué resultado es el mayor (o el menor)",
   "status": "available",

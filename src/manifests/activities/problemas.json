@@ -4,14 +4,8 @@
   "id": "problemas",
   "engineId": "problemas",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-1",
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-1-unit-6",
-    "mathematics-grade-2-unit-6"
-  ],
+  "gradeIds": ["grade-1", "grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-1-unit-6", "mathematics-grade-2-unit-6"],
   "title": "Problemas con una operación",
   "description": "Lee el problema y calcula la respuesta con suma o resta",
   "status": "available",

@@ -25,23 +25,23 @@ La auditoría completa solo se repite al cerrar una fase o antes de una release.
 
 ## Deuda técnica
 
-| ID     | Estado   | Elemento                                                                            | Resolución prevista | Evidencia / disparador de revisión                        |
-| ------ | -------- | ----------------------------------------------------------------------------------- | ------------------- | --------------------------------------------------------- |
-| DT-001 | Cerrada  | Duplicados y variantes sin referencia en recursos visuales.                         | Fase 1.             | Eliminados en `a707c82`; build comprobada.                |
-| DT-002 | Cerrada  | Registro de motores PWA que conecte los manifiestos JSON con cada renderer migrado. | Fase 1, paso 10.    | `engine-registry` y selector en catálogo; cada renderer se registra al migrarse (Fase 2). |
+| ID     | Estado  | Elemento                                                                            | Resolución prevista | Evidencia / disparador de revisión                                                        |
+| ------ | ------- | ----------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------- |
+| DT-001 | Cerrada | Duplicados y variantes sin referencia en recursos visuales.                         | Fase 1.             | Eliminados en `a707c82`; build comprobada.                                                |
+| DT-002 | Cerrada | Registro de motores PWA que conecte los manifiestos JSON con cada renderer migrado. | Fase 1, paso 10.    | `engine-registry` y selector en catálogo; cada renderer se registra al migrarse (Fase 2). |
 
 ## Reservas de recursos
 
-| Recursos                                              | Propietario original identificado                    | Fase de uso | Estado            |
-| ----------------------------------------------------- | ---------------------------------------------------- | ----------- | ----------------- |
-| `video_libro.mp4`, `splash-logo.png`, `school-bg.jpg` | Splash e inicio                                      | Fase 1      | En uso.           |
-| `objects/`                                            | Conteo, comparación y motores que reutilizan objetos | Fase 2      | Reserva trazable. |
-| `dinero/`                                             | `monedasBilletes`                                    | Fase 2      | Reserva trazable. |
-| `izquierda-derecha/`                                  | `leftRight`                                          | Fase 2      | Reserva trazable. |
-| `laberinto/`                                          | `laberintoMatematico`                                | Fase 2      | Reserva trazable. |
-| `+kilo/`, `-kilo/`, `+litro/`, `-litro/`, `litro/`    | `elKilo` y `elLitro`                                 | Fase 2      | Reserva trazable. |
-| `shapes-real/`                                        | `shapes`                                             | Fase 2      | Reserva trazable. |
-| `logo/logo.png`, `logo/logo.ico`                      | Exportación de fichas e iconografía PWA              | Fases 6 y 7 | Reserva trazable. |
+| Recursos                                              | Propietario original identificado                    | Fase de uso | Estado                                 |
+| ----------------------------------------------------- | ---------------------------------------------------- | ----------- | -------------------------------------- |
+| `video_libro.mp4`, `splash-logo.png`, `school-bg.jpg` | Splash e inicio                                      | Fase 1      | En uso.                                |
+| `objects/`                                            | Conteo, comparación y motores que reutilizan objetos | Fases 1-2   | En uso (comparison); conteo pendiente. |
+| `dinero/`                                             | `monedasBilletes`                                    | Fase 2      | Reserva trazable.                      |
+| `izquierda-derecha/`                                  | `leftRight`                                          | Fase 2      | Reserva trazable.                      |
+| `laberinto/`                                          | `laberintoMatematico`                                | Fase 2      | Reserva trazable.                      |
+| `+kilo/`, `-kilo/`, `+litro/`, `-litro/`, `litro/`    | `elKilo` y `elLitro`                                 | Fase 2      | Reserva trazable.                      |
+| `shapes-real/`                                        | `shapes`                                             | Fase 2      | Reserva trazable.                      |
+| `logo/logo.png`, `logo/logo.ico`                      | Exportación de fichas e iconografía PWA              | Fases 6 y 7 | Reserva trazable.                      |
 
 Cuando un motor se migre, su fila pasa a **En uso**; si se descarta, sus
 recursos se revisan y se eliminan en un commit separado.

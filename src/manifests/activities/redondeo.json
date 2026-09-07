@@ -4,12 +4,8 @@
   "id": "redondeo",
   "engineId": "redondeo",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-2-unit-10"
-  ],
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-2-unit-10"],
   "title": "Redondeo a la decena",
   "description": "Redondea números a la decena más próxima",
   "status": "available",

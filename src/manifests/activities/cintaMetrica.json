@@ -4,12 +4,8 @@
   "id": "cintaMetrica",
   "engineId": "cintaMetrica",
   "subjectId": "mathematics",
-  "gradeIds": [
-    "grade-2"
-  ],
-  "curriculumBlockIds": [
-    "mathematics-grade-2-unit-11"
-  ],
+  "gradeIds": ["grade-2"],
+  "curriculumBlockIds": ["mathematics-grade-2-unit-11"],
   "title": "Cinta métrica",
   "description": "Elige la unidad correcta: centímetros o metros",
   "status": "available",

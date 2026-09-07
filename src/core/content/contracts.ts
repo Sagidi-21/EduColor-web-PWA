@@ -9,6 +9,7 @@ export type GradeId = string;
 export type CurriculumBlockId = string;
 export type ActivityId = string;
 export type EngineId = string;
+export type ActivityDifficulty = "easy" | "medium" | "hard" | "expert";
 
 export interface Subject {
   id: SubjectId;
@@ -67,7 +68,7 @@ export interface ActivityManifest {
     icon: string;
     unit: number;
     unitLabel: string;
-    difficultyDescriptions: Record<"easy" | "medium" | "hard" | "expert", string>;
+    difficultyDescriptions: Record<ActivityDifficulty, string>;
   };
 }
 
