@@ -1,5 +1,8 @@
 # Roadmap operativo auditado
 
+> El plan ejecutable completo, con objetivos, tareas, reutilización y criterios
+> de salida por fase, está en [ROADMAP_DE_EJECUCION_DETALLADO.md](ROADMAP_DE_EJECUCION_DETALLADO.md).
+
 ## Activos de partida
 
 El proyecto Electron aporta **62 actividades activas**: 47 para 1.º, 58 para 2.º y 43 compartidas. Aporta además motores matemáticos, generadores, pruebas, exportación DOCX, experiencia táctil y un prototipo de reconocimiento de dígitos.
