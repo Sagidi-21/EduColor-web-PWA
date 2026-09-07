@@ -3,7 +3,7 @@
 ## Punto de trabajo actual
 
 - **Fase activa:** 0 — Arranque técnico y límites.
-- **Paso activo:** 4 — Estructura de capas.
+- **Paso activo:** 5 — Calidad local: ESLint, Prettier y scripts.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
 

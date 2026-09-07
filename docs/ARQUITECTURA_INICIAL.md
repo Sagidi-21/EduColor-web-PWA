@@ -18,7 +18,23 @@ UI React/PWA
 - `src/core`: lógica determinista sin React ni navegador, cubierta con pruebas.
 - `src/features`: renderizadores React y pantallas docentes.
 - `src/platform`: PWA, IndexedDB, red y adaptadores de API.
+- `src/manifests`: descripciones versionadas de currículo y actividades.
+- `src/shared`: componentes y utilidades realmente transversales.
 - `docs`: arquitectura y trazabilidad de migración.
+
+### Dirección permitida de dependencias
+
+```text
+features ──► core, shared, platform
+platform ──► core, shared
+manifests ─► core (solo contratos públicos)
+shared ────► (sin dependencias de las capas anteriores)
+core ──────► (sin React, navegador, red ni almacenamiento)
+```
+
+`App.tsx` y `main.tsx` son composición temporal del arranque. El vertical
+slice de conteo no se mueve todavía: hacerlo sin el formato de manifiesto de la
+Fase 1 sería reorganización prematura.
 
 ## Vertical slice incluido
 
