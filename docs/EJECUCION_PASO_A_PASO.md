@@ -39,7 +39,7 @@ Ejecutar desde un clon limpio `npm ci`, `npm run typecheck`, `npm test` y `npm r
 
 ## Pasos
 
-1. Inventariar las 62 actividades Electron en una tabla: ID, cursos, motor, generador, renderer, tests, recursos, estado y prioridad.
+1. Inventariar las 62 actividades Electron en una tabla: ID, cursos, motor, generador, renderer, tests, recursos, estado y prioridad. **Completado:** inventario inicial en `INVENTARIO_MIGRACION_ACTIVIDADES.md`; generadores y recursos marcados como pendientes se verifican antes de cada migración.
 2. Definir interfaces TypeScript para `Subject`, `Grade`, `CurriculumBlock`, `ActivityManifest`, `ActivityParameter` y `ActivityResult`.
 3. Elegir un formato de manifiesto (JSON/TypeScript validado) y añadir `schemaVersion` desde el primer manifiesto.
 4. Crear manifiestos de Matemáticas, 1.º y 2.º; no codificar cursos como una unión cerrada.
