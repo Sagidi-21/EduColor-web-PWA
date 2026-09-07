@@ -165,7 +165,14 @@ Integrar escritura 0–9 de manera fiable, local y sin bloquear la clase.
 ## Ya disponible
 
 - 🟡 Canvas `DrawableAnswerBox`, preprocesado, umbral 85 %, panel docente, IndexedDB y aprendizaje local TF.js.
-- 🔎 Dataset documentado y modal de entrenamiento; el modelo base no está listo como artefacto de producción reproducible.
+- ✅ **Modelo ya entrenado reutilizable:** el proyecto Electron conserva el artefacto
+  TensorFlow.js en `Colegio/src/renderer/public/model/model.json` y
+  `group1-shard1of1.bin`. No hace falta disponer de las fotos originales para
+  migrarlo e inferir con él. Antes de cualquier migración se hará una copia con
+  hash y se documentará versión, fecha, precisión conocida y compatibilidad.
+- 🔎 No se conservan las fotos/dataset de entrenamiento. Por ello no se debe
+  reentrenar el modelo base ni afirmar una métrica nueva sin crear un dataset de
+  evaluación y validarlo en la pizarra real.
 
 ## Qué hacer
 
@@ -174,6 +181,8 @@ Integrar escritura 0–9 de manera fiable, local y sin bloquear la clase.
 3. Formalizar columnas U/D/C para operaciones y respuestas de varias cifras.
 4. Conservar y probar el preprocesado: recorte, centrado, escalado y normalización.
 5. Decidir mediante evaluación si se mantiene TF.js o se convierte el modelo a ONNX Runtime Web.
+   La conversión se hará siempre a partir de una copia inmutable del modelo ya
+   entrenado; se compararán sus predicciones con el original antes de adoptarla.
 6. Implementar fallback CPU/WASM y, si procede, aceleración WebGPU.
 7. Exponer predicción, confianza, alternativas, versión del modelo e inferencia en milisegundos.
 8. Aplicar umbral inicial 85 %; por debajo, pedir al docente elegir 0–9 o repetir.
