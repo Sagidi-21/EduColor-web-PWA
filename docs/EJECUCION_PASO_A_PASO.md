@@ -15,7 +15,7 @@ Este documento desarrolla el [roadmap de ejecución](ROADMAP_DE_EJECUCION_DETALL
 
 ## Pasos
 
-1. Crear un tablero de trabajo con las fases de este documento y definir una persona responsable de aprobación pedagógica y otra técnica.
+1. Mantener el seguimiento en `docs/ESTADO_DEL_PROYECTO.md` y definir responsables de aprobación pedagógica y técnica. **Completado:** director del colegio (pedagógica), Salvador (técnica), con feedback de los profesores de Matemáticas de 1.º y 2.º.
 2. Crear `docs/DECISIONES.md`; registrar alcance V1, exclusiones, fecha, autor y razón de cada decisión relevante.
 3. Confirmar V1: 1.º/2.º, Matemáticas, profesorado, pizarra, fichas, sesión local y offline. Registrar explícitamente que alumnos, tareas y multi-colegio quedan fuera.
 4. Mantener la estructura de capas: `core` para lógica pura, `features` para React, `platform` para navegador/PWA y `docs` para decisiones.
