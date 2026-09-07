@@ -3,7 +3,7 @@
 ## Punto de trabajo actual
 
 - **Fase activa:** 0 — Arranque técnico y límites.
-- **Paso activo:** 2 — Alcance V1 confirmado.
+- **Paso activo:** 3 — Estructura de capas.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
 
@@ -33,6 +33,10 @@ Cada implementación relevante se revisará con el profesorado correspondiente
 antes de considerar cerrada su fase pedagógica.
 
 ## Decisiones registradas
+
+Las decisiones completas, su estado y sus consecuencias se mantienen en
+[DECISIONES.md](DECISIONES.md). Esta tabla resume solamente los acuerdos de
+seguimiento.
 
 | Fecha | Decisión | Motivo |
 | --- | --- | --- |
