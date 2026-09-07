@@ -4,8 +4,12 @@
   "id": "algoritmo3cifras",
   "engineId": "algoritmo3cifras",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-12"],
+  "gradeIds": [
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-2-unit-12"
+  ],
   "title": "Algoritmo de tres cifras",
   "description": "Suma y resta de tres cifras con llevada doble",
   "status": "available",
@@ -20,5 +24,6 @@
       "hard": "Suma con llevada decenas → centenas",
       "expert": "Suma y resta con llevada doble"
     }
-  }
+  },
+  "order": 47
 }

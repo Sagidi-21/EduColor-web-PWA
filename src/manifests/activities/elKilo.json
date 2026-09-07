@@ -4,8 +4,14 @@
   "id": "elKilo",
   "engineId": "elKilo",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-1", "grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-8"],
+  "gradeIds": [
+    "grade-1",
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-1-unit-8",
+    "mathematics-grade-2-unit-8"
+  ],
   "title": "El kilo",
   "description": "Clasifica objetos según si pesan más o menos de 1 kg",
   "status": "available",
@@ -20,5 +26,6 @@
       "hard": "Todos los tipos con mayor variedad de objetos",
       "expert": "Todos los tipos mezclados"
     }
-  }
+  },
+  "order": 55
 }

@@ -4,8 +4,14 @@
   "id": "resta",
   "engineId": "resta",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-1", "grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-2"],
+  "gradeIds": [
+    "grade-1",
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-1-unit-2",
+    "mathematics-grade-2-unit-2"
+  ],
   "title": "La resta",
   "description": "Practica restas con teclado numérico",
   "status": "available",
@@ -20,5 +26,6 @@
       "hard": "Hasta 20",
       "expert": "De 10 a 30, 15 ejercicios"
     }
-  }
+  },
+  "order": 8
 }

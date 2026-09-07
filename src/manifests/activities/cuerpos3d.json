@@ -4,8 +4,12 @@
   "id": "cuerpos3d",
   "engineId": "cuerpos3d",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-13"],
+  "gradeIds": [
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-2-unit-13"
+  ],
   "title": "Cuerpos geométricos",
   "description": "Identifica y analiza cuerpos en tres dimensiones: caras, aristas y vértices",
   "status": "available",
@@ -20,5 +24,6 @@
       "hard": "Todos los cuerpos: caras, vértices y objetos reales",
       "expert": "Todos los tipos mezclados incluyendo aristas"
     }
-  }
+  },
+  "order": 48
 }

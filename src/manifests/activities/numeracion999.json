@@ -4,8 +4,12 @@
   "id": "numeracion999",
   "engineId": "numeracion999",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-10"],
+  "gradeIds": [
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-2-unit-10"
+  ],
   "title": "Numeración hasta 999",
   "description": "Descompón y comprende los números de tres cifras: centenas, decenas y unidades",
   "status": "available",
@@ -20,5 +24,6 @@
       "hard": "100–699: anterior y posterior de 10 en 10 o de 100 en 100",
       "expert": "100–999: todos los tipos mezclados"
     }
-  }
+  },
+  "order": 44
 }

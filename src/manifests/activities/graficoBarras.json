@@ -4,8 +4,14 @@
   "id": "graficoBarras",
   "engineId": "graficoBarras",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-1", "grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-9"],
+  "gradeIds": [
+    "grade-1",
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-1-unit-9",
+    "mathematics-grade-2-unit-9"
+  ],
   "title": "Gráfico de barras",
   "description": "Lee e interpreta gráficos de barras",
   "status": "available",
@@ -20,5 +26,6 @@
       "hard": "5 barras, todos los tipos de pregunta",
       "expert": "5 barras con comparaciones y diferencias"
     }
-  }
+  },
+  "order": 38
 }

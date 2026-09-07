@@ -4,8 +4,14 @@
   "id": "tresSumandosColumna",
   "engineId": "tresSumandosColumna",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-1", "grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-6"],
+  "gradeIds": [
+    "grade-1",
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-1-unit-6",
+    "mathematics-grade-2-unit-6"
+  ],
   "title": "Sumas en columna (3 sumandos)",
   "description": "Suma tres números con el algoritmo de Decenas y Unidades",
   "status": "available",
@@ -20,5 +26,6 @@
       "hard": "3 números de 2 cifras, sin llevada",
       "expert": "3 números de 2 cifras, sin llevada, resultado hasta 89"
     }
-  }
+  },
+  "order": 20
 }

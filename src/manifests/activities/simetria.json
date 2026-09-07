@@ -4,8 +4,12 @@
   "id": "simetria",
   "engineId": "simetria",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-13"],
+  "gradeIds": [
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-2-unit-13"
+  ],
   "title": "Simetría",
   "description": "Descubre los ejes de simetría de figuras planas",
   "status": "available",
@@ -20,5 +24,6 @@
       "hard": "Identifica figuras simétricas y cuenta ejes",
       "expert": "Pentágono, hexágono y estrella: todos los tipos"
     }
-  }
+  },
+  "order": 50
 }

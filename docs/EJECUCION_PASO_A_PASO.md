@@ -48,7 +48,7 @@ Ejecutar desde un clon limpio `npm ci`, `npm run typecheck`, `npm test` y `npm r
 7. Migrar la base visual compartida antes de habilitar secciones de navegación: vídeo de inicio, inicio, selección de aula y configuración local. **Completado:** se usan recursos y flujo de Electron; perfil, mascota, color, aulas y zoom se guardan localmente en la PWA.
 8. Copiar todos los recursos visuales requeridos por la interfaz y los motores al repositorio PWA, conservando su estructura y trazabilidad. **Completado:** 244 archivos originales (≈39 MB) están en `src/assets`; cada motor seguirá declarando y probando los que use al migrarse.
 9. Adaptar el vídeo de apertura a navegador: reproducción automática compatible y acción de respaldo si el navegador la bloquea. **Completado:** el vídeo se inicia silenciado para cumplir la política de Chrome/Edge y muestra `Iniciar presentación` si no puede reproducirse automáticamente.
-10. Crear cargador, registro de motores y selector por curso/bloque/materia.
+10. Crear cargador, registro de motores y selector por curso/bloque/materia. **Completado:** `import.meta.glob` carga los JSON; `engine-registry` impide lanzar sin motor PWA; el selector filtra por materia, curso y bloque sin listas de actividades en la navegación.
 11. Añadir tests: manifiesto válido, ID duplicado, motor inexistente, parámetro inválido y filtro por curso.
 12. Migrar al menos una actividad compartida adicional para demostrar que el sistema no está hecho a medida del conteo.
 

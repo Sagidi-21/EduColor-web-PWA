@@ -4,8 +4,12 @@
   "id": "redondeo",
   "engineId": "redondeo",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-10"],
+  "gradeIds": [
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-2-unit-10"
+  ],
   "title": "Redondeo a la decena",
   "description": "Redondea números a la decena más próxima",
   "status": "available",
@@ -20,5 +24,6 @@
       "hard": "Números de 3 cifras: redondea a la decena más próxima",
       "expert": "Todas las variantes con números de 3 cifras"
     }
-  }
+  },
+  "order": 56
 }

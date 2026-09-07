@@ -4,8 +4,14 @@
   "id": "comparison",
   "engineId": "comparison",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-1", "grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-1"],
+  "gradeIds": [
+    "grade-1",
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-1-unit-1",
+    "mathematics-grade-2-unit-1"
+  ],
   "title": "Mayor y menor",
   "description": "Compara dos grupos, ¿cuál tiene más?",
   "status": "available",
@@ -20,5 +26,6 @@
       "hard": "Hasta 19, pueden ser iguales",
       "expert": "Hasta 20, iguales posibles, 12 ejercicios"
     }
-  }
+  },
+  "order": 5
 }

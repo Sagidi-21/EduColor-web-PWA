@@ -4,8 +4,14 @@
   "id": "parImpar",
   "engineId": "parImpar",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-1", "grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-7"],
+  "gradeIds": [
+    "grade-1",
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-1-unit-7",
+    "mathematics-grade-2-unit-7"
+  ],
   "title": "Pares e impares",
   "description": "Agrupa objetos de dos en dos y clasifica los números",
   "status": "available",
@@ -20,5 +26,6 @@
       "hard": "Clasifica números del 30 al 99 usando la última cifra",
       "expert": "Operaciones con par/impar y escribir en un rango"
     }
-  }
+  },
+  "order": 27
 }

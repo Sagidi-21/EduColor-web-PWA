@@ -4,8 +4,12 @@
   "id": "intervalosTiempo",
   "engineId": "intervalosTiempo",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-1"],
-  "curriculumBlockIds": ["mathematics-unit-9"],
+  "gradeIds": [
+    "grade-1"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-1-unit-9"
+  ],
   "title": "Intervalos de tiempo",
   "description": "Compara duraciones: ¿qué dura más? ¿qué dura menos?",
   "status": "available",
@@ -20,5 +24,6 @@
       "hard": "Mezcla unidades (minutos y horas) + clasifica si dura más o menos de 1 hora",
       "expert": "Todas las variantes con duraciones próximas"
     }
-  }
+  },
+  "order": 54
 }

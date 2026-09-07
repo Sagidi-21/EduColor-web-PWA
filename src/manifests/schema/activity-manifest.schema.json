@@ -6,6 +6,7 @@
   "additionalProperties": false,
   "required": [
     "schemaVersion",
+    "order",
     "id",
     "engineId",
     "subjectId",
@@ -19,6 +20,7 @@
   "properties": {
     "$schema": { "type": "string", "const": "../schema/activity-manifest.schema.json" },
     "schemaVersion": { "const": 1 },
+    "order": { "type": "integer", "minimum": 1 },
     "id": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9-]*$" },
     "engineId": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9-]*$" },
     "subjectId": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },

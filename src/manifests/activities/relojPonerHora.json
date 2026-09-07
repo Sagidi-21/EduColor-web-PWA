@@ -4,8 +4,14 @@
   "id": "relojPonerHora",
   "engineId": "relojPonerHora",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-1", "grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-9"],
+  "gradeIds": [
+    "grade-1",
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-1-unit-9",
+    "mathematics-grade-2-unit-9"
+  ],
   "title": "Pon la hora",
   "description": "Arrastra las agujas del reloj para marcar la hora pedida",
   "status": "available",
@@ -20,5 +26,6 @@
       "hard": "Horas y cuartos (en punto, y cuarto, y media, menos cuarto)",
       "expert": "Cualquier minuto de 5 en 5"
     }
-  }
+  },
+  "order": 35
 }

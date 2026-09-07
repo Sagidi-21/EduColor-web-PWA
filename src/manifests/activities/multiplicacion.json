@@ -4,8 +4,12 @@
   "id": "multiplicacion",
   "engineId": "multiplicacion",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-14"],
+  "gradeIds": [
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-2-unit-14"
+  ],
   "title": "Multiplicación",
   "description": "Aprende las tablas del 2, 5 y 10 con grupos de objetos",
   "status": "available",
@@ -20,5 +24,6 @@
       "hard": "Tablas del 2, 5 y 10 con factor desconocido",
       "expert": "Tablas del 2 al 5 y del 10 con todos los tipos"
     }
-  }
+  },
+  "order": 49
 }

@@ -4,8 +4,14 @@
   "id": "balanzaEquilibra",
   "engineId": "balanzaEquilibra",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-1", "grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-7"],
+  "gradeIds": [
+    "grade-1",
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-1-unit-7",
+    "mathematics-grade-2-unit-7"
+  ],
   "title": "Equilibra la balanza",
   "description": "Arrastra pesas hasta equilibrar la balanza con la carga dada",
   "status": "available",
@@ -20,5 +26,6 @@
       "hard": "Objetos más pesados, hasta 10 kg, con pesas de 1 kg",
       "expert": "Hasta 16 kg componiendo con pesas de 1 kg y 2 kg"
     }
-  }
+  },
+  "order": 24
 }

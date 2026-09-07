@@ -95,7 +95,7 @@ export function HomeScreen({ onNavigate }: { onNavigate: (view: AppView) => void
           </h2>
           <div className="home__mode-grid">
             {modes.map((mode) => {
-              const isMigrated = mode.id === "configuration";
+              const isMigrated = mode.id === "configuration" || mode.id === "mathematics";
               const blocked = !isMigrated || (!selected && mode.id !== "configuration");
               return (
                 <button

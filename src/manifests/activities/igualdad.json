@@ -4,8 +4,14 @@
   "id": "igualdad",
   "engineId": "igualdad",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-1", "grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-3"],
+  "gradeIds": [
+    "grade-1",
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-1-unit-3",
+    "mathematics-grade-2-unit-3"
+  ],
   "title": "El signo igual",
   "description": "Comprende el signo = y completa igualdades",
   "status": "available",
@@ -20,5 +26,6 @@
       "hard": "c = ___ + ___ (descomposición)",
       "expert": "Los 3 tipos mezclados, hasta 15"
     }
-  }
+  },
+  "order": 10
 }

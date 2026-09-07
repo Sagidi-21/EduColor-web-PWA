@@ -4,8 +4,14 @@
   "id": "lineTypes",
   "engineId": "lineTypes",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-1", "grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-3"],
+  "gradeIds": [
+    "grade-1",
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-1-unit-3",
+    "mathematics-grade-2-unit-3"
+  ],
   "title": "Tipos de líneas",
   "description": "Identifica líneas rectas, curvas, horizontales y más",
   "status": "available",
@@ -20,5 +26,6 @@
       "hard": "Líneas abiertas y cerradas",
       "expert": "Los 7 tipos, 10 ejercicios"
     }
-  }
+  },
+  "order": 11
 }

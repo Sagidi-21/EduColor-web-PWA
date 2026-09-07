@@ -4,8 +4,14 @@
   "id": "numeracion1119",
   "engineId": "numeracion1119",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-1", "grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-3"],
+  "gradeIds": [
+    "grade-1",
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-1-unit-3",
+    "mathematics-grade-2-unit-3"
+  ],
   "title": "Números del 11 al 19",
   "description": "Reconoce, descompone y ordena los números 11-19",
   "status": "available",
@@ -20,5 +26,6 @@
       "hard": "Número anterior y posterior",
       "expert": "Los 3 tipos mezclados, 12 ejercicios"
     }
-  }
+  },
+  "order": 9
 }

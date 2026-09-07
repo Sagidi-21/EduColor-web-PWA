@@ -4,8 +4,12 @@
   "id": "probabilidad",
   "engineId": "probabilidad",
   "subjectId": "mathematics",
-  "gradeIds": ["grade-2"],
-  "curriculumBlockIds": ["mathematics-unit-15"],
+  "gradeIds": [
+    "grade-2"
+  ],
+  "curriculumBlockIds": [
+    "mathematics-grade-2-unit-15"
+  ],
   "title": "Probabilidad",
   "description": "Clasifica sucesos como seguros, posibles o imposibles",
   "status": "available",
@@ -20,5 +24,6 @@
       "hard": "Incluye ejercicios con bolsas de pelotas de colores",
       "expert": "Todos los tipos mezclados"
     }
-  }
+  },
+  "order": 51
 }
