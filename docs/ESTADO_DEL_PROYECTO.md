@@ -3,7 +3,7 @@
 ## Punto de trabajo actual
 
 - **Fase activa:** 1 — Modelo de contenido extensible.
-- **Paso activo:** 2 — Contratos de contenido.
+- **Paso activo:** 3 — Formato de manifiestos.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
 

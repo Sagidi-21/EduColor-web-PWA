@@ -16,6 +16,7 @@ UI React/PWA
 ## Límites de capas
 
 - `src/core`: lógica determinista sin React ni navegador, cubierta con pruebas.
+- `src/core/content`: contratos estables de currículo, actividades y resultados.
 - `src/features`: renderizadores React y pantallas docentes.
 - `src/platform`: PWA, IndexedDB, red y adaptadores de API.
 - `src/manifests`: descripciones versionadas de currículo y actividades.
