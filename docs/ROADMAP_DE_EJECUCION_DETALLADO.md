@@ -4,6 +4,9 @@
 **Alcance V1:** Matemáticas de 1.º y 2.º, profesorado, pizarra digital, fichas y uso offline.  
 **Regla principal:** conservar el dominio educativo de Electron y reconstruir la plataforma web sin copiar Electron, IPC ni empaquetado Windows.
 
+> Este documento es el índice de fases. Para el checklist operativo completo de
+> cada una, consultar [EJECUCION_PASO_A_PASO.md](EJECUCION_PASO_A_PASO.md).
+
 ## Estados de reutilización
 
 - ✅ Migrar: activo probado o lógica válida del proyecto Electron.
