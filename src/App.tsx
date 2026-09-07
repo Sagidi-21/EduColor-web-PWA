@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
 import { createCountingExercise, isCorrectAnswer } from "./core/activities/counting";
+import { getActivityManifest } from "./manifests/content-registry";
 
 export default function App() {
   const [seed, setSeed] = useState(1);
   const [answer, setAnswer] = useState<number | null>(null);
   const exercise = useMemo(() => createCountingExercise(seed), [seed]);
+  const manifest = getActivityManifest("counting");
   const checked = answer === null ? null : isCorrectAnswer(exercise, answer);
   const next = () => {
     setSeed((current) => current + 1);
@@ -18,7 +20,7 @@ export default function App() {
         <p>Matemáticas para Primaria, lista para crecer desde un núcleo reutilizable.</p>
       </header>
       <section className="exercise" aria-labelledby="exercise-title">
-        <p className="tag">Actividad reutilizada · Conteo</p>
+        <p className="tag">Actividad reutilizada · {manifest?.title ?? "Conteo"}</p>
         <h2 id="exercise-title">¿Cuántas estrellas hay?</h2>
         <div className="objects" aria-label={`${exercise.objects} estrellas`}>
           {Array.from({ length: exercise.objects }, (_, index) => (

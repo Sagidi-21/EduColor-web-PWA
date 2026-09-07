@@ -1,0 +1,13 @@
+{
+  "$schema": "../schema/activity-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "counting",
+  "engineId": "counting",
+  "subjectId": "mathematics",
+  "gradeIds": ["primary-1", "primary-2"],
+  "curriculumBlockIds": ["numbers"],
+  "title": "Contamos objetos",
+  "description": "Cuenta cuántos objetos hay y elige la respuesta correcta.",
+  "status": "available",
+  "parameters": []
+}

@@ -14,6 +14,8 @@ que indique qué decisión anterior reemplaza y por qué.
 | D-006 | 2026-09-07 | Aprobada | El seguimiento se mantiene en documentos de `docs`, sin tablero externo.                                     | Reduce gestión y consumo de contexto; `ESTADO_DEL_PROYECTO.md` indica fase y paso activos.                                                            |
 | D-007 | 2026-09-07 | Aprobada | El modelo de reconocimiento ya entrenado se preserva y reutiliza.                                            | Se conserva `model.json` y sus pesos como artefacto inmutable; al no existir las fotos originales, no se reentrena sin un nuevo dataset y evaluación. |
 | D-008 | 2026-09-07 | Aprobada | Los IDs técnicos de contenido se escriben en inglés y los textos visibles en español.                        | Los IDs siguen siendo estables al ampliar materias/cursos; la interfaz permanece natural para profesorado del colegio.                                |
+| D-009 | 2026-09-07 | Aprobada | Los manifiestos se almacenan como JSON puro y se validan con JSON Schema.                                    | Cada JSON enlaza su schema y la aplicación lo importa directamente; los tests impiden estructuras inválidas.                                          |
+| D-008 | 2026-09-07 | Aprobada | Los IDs técnicos de contenido se escriben en inglés y los textos visibles en español.                        | Los IDs siguen siendo estables al ampliar materias/cursos; la interfaz permanece natural para profesorado del colegio.                                |
 
 ## Cómo añadir una decisión
 

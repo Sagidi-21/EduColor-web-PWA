@@ -51,6 +51,7 @@ export type ActivityParameter =
     };
 
 export interface ActivityManifest {
+  $schema?: string;
   schemaVersion: 1;
   id: ActivityId;
   engineId: EngineId;
