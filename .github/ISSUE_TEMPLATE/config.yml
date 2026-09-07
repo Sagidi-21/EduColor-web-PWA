@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentación del proyecto
+    url: https://github.com/Sagidi-21/EduColor-web-PWA/tree/main/docs
+    about: Consulta arquitectura, roadmap, estado y decisiones antes de abrir una issue.

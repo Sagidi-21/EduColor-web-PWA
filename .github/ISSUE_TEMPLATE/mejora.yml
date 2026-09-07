@@ -1,0 +1,57 @@
+name: Mejora o tarea
+description: Propón una tarea de producto, contenido, arquitectura o calidad.
+title: "[Mejora]: "
+labels: ["mejora"]
+body:
+  - type: markdown
+    attributes:
+      value: "Describe el resultado esperado. No incluyas datos personales de alumnado."
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objetivo
+      description: ¿Qué resultado debe conseguirse y para quién?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Alcance y fuera de alcance
+      description: Indica qué se incluye y qué no se pretende resolver ahora.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Criterios de aceptación
+      description: Lista condiciones observables para considerar el trabajo terminado.
+      placeholder: "- [ ] ..."
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área principal
+      options:
+        - Contenido o actividad de Matemáticas
+        - Pizarra o interacción táctil
+        - Sesión, corrección u offline
+        - Fichas
+        - Arquitectura o calidad
+        - Seguridad, datos o infraestructura
+        - Documentación
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validación necesaria
+      description: Indica tests, prueba manual y feedback pedagógico que requiere.
+      placeholder: "Tests: ...\nPrueba manual: ...\nFeedback de 1.º/2.º: ..."
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencias o decisiones pendientes
+      description: Enlaza decisiones, fases, issues o reuniones relevantes.

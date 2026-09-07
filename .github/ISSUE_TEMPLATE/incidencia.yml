@@ -1,0 +1,45 @@
+name: Incidencia
+description: Informa de un comportamiento incorrecto o una regresión.
+title: "[Incidencia]: "
+labels: ["incidencia"]
+body:
+  - type: markdown
+    attributes:
+      value: "No incluyas nombres, imágenes ni datos identificativos de alumnos."
+  - type: textarea
+    id: summary
+    attributes:
+      label: Qué ocurre
+      description: Describe el problema de forma breve y observable.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Pasos para reproducirlo
+      placeholder: "1. ...\n2. ...\n3. ..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Resultado esperado y resultado real
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Entorno
+      description: Navegador, versión de la PWA, dispositivo y si había Internet.
+    validations:
+      required: true
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impacto
+      options:
+        - Bloquea una clase o una actividad
+        - Dificulta el uso, pero hay alternativa
+        - Error visual o menor
+    validations:
+      required: true

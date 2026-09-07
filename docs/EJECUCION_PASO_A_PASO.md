@@ -22,7 +22,7 @@ Este documento desarrolla el [roadmap de ejecución](ROADMAP_DE_EJECUCION_DETALL
 5. Añadir ESLint, Prettier y scripts `lint`, `typecheck`, `test` y `build`. **Completado:** se añaden también `lint:fix`, `format` y `format:check`; las reglas se aplican a TypeScript/React y excluyen dependencias y build.
 6. Crear CI en GitHub que ejecute esos cuatro scripts para cada pull request. **Completado:** el workflow `Calidad` ejecuta instalación limpia, formato, lint, tipos, tests y build con Node 22 en cada push o pull request a `main`.
 7. Documentar en README el arranque, verificación, navegador soportado y cómo se despliega una build local. **Completado:** README documenta Node 22, instalación reproducible, scripts, Chrome/Edge como objetivo provisional y límites de validación física pendientes.
-8. Crear una plantilla de issue con: objetivo, aceptación, impacto en datos, pruebas y evidencia de pizarra.
+8. Crear una plantilla de issue con: objetivo, aceptación, impacto en datos, pruebas y evidencia de pizarra. **Completado:** se añaden formularios de mejora/incidencia en GitHub y `DEFINITION_OF_DONE.md` con requisitos de calidad, feedback docente y seguridad.
 
 ## Entregables
 

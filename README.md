@@ -51,3 +51,5 @@ También se puede aplicar el formato automáticamente con `npm run format` y las
 | `npm run build`        | Genera la build de producción.                    |
 
 Consulta [la arquitectura inicial](docs/ARQUITECTURA_INICIAL.md), el [roadmap operativo auditado](docs/ROADMAP_AUDITADO.md), el [plan de ejecución detallado](docs/ROADMAP_DE_EJECUCION_DETALLADO.md) y el [estado actual del proyecto](docs/ESTADO_DEL_PROYECTO.md).
+
+La lista mínima para cerrar una tarea está en [Definition of Done](docs/DEFINITION_OF_DONE.md).
