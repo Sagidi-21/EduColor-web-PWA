@@ -30,6 +30,7 @@ export function ConfiguracionScreen({ onBack }: { onBack: () => void }) {
 
   useEffect(() => {
     document.body.style.setProperty("zoom", String(zoom));
+    document.body.style.setProperty("--zoom", String(zoom));
     localStorage.setItem(zoomKey, String(zoom));
   }, [zoom]);
   const changeAula = (id: string) => {
