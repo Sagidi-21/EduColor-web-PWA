@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { unlockAudio } from "../../platform/audio";
 import videoUrl from "../../assets/video_libro.mp4";
 import "./SplashScreen.css";
 
@@ -8,15 +9,27 @@ export function SplashScreen({ onDone }: { onDone: () => void }) {
   const video = useRef<HTMLVideoElement>(null);
 
   const startVideo = () => {
-    void video.current?.play().then(
+    unlockAudio();
+    const el = video.current;
+    if (!el) return;
+    // Intentar con audio; si falla, silenciar y volver a intentar
+    el.muted = false;
+    void el.play().then(
       () => setNeedsStart(false),
-      () => setNeedsStart(true),
+      () => {
+        el.muted = true;
+        void el.play().then(
+          () => setNeedsStart(false),
+          () => setNeedsStart(true),
+        );
+      },
     );
   };
 
   const handleClick = () => {
+    unlockAudio();
     if (ended) onDone();
-    else if (needsStart) startVideo();
+    else startVideo();
   };
 
   return (

@@ -13,6 +13,11 @@ export interface EngineScreenProps {
   difficulty: ActivityDifficulty;
   seed: number;
   onExit: () => void;
+  /** Datos de contexto para mostrar en el header de la actividad */
+  gradeTitle?: string;
+  className?: string;
+  mascotUrl?: string;
+  difficultyStars?: string;
 }
 
 /** Registro de renderers PWA. Añadir aquí un motor no exige cambiar la navegación. */

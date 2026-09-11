@@ -96,10 +96,18 @@ Añadir una actividad de ejemplo exclusivamente mediante motor + manifiesto, sin
   mezcla y respuesta correcta.
 - **Pasos 5 y 6:** completados. Reutiliza su manifiesto JSON ya validado y
   dispone de renderer PWA táctil, accesible y registrado en el catálogo.
-- **Paso 7:** pendiente de checklist manual en escritorio, tableta y pizarra.
-  La compilación y las pruebas automáticas están verificadas; la comprobación
-  visual adicional no se pudo ejecutar al no autorizarse el segundo servidor
-  local de validación.
+- **Paso 7:** completado. Verificación manual realizada en escritorio (Chrome).
+  Se identificaron y corrigieron tres problemas respecto al original Electron:
+  (1) audio del vídeo de intro bloqueado por política de autoplay del navegador
+  → se reproduce con audio tras el primer gesto del usuario (fallback a muted si
+  persiste el bloqueo); (2) objetos en las cajas acumulados en la parte inferior
+  → ahora centrados con `align-items: center; justify-content: center`; (3)
+  lógica de botones incorrecta → las cajas son contenedores visuales (no
+  clicables), los botones "← Izquierda" / "Derecha →" están independientes
+  debajo, hay avance automático a 900 ms en acierto con piribip sintético (Web
+  Audio API), y los botones "Reintentar" / "Siguiente →" del profesor aparecen
+  solo en fallo. Contador 1 / 10 añadido al header. CI verde (typecheck +
+  18/18 tests).
 - **Paso 8:** trazabilidad actualizada en
   `INVENTARIO_MIGRACION_ACTIVIDADES.md`; el cierre pedagógico queda pendiente
   del feedback de Matemáticas de 1.º y 2.º.

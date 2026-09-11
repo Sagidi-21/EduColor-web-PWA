@@ -49,12 +49,17 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
     activities: getActivities({ subjectId, gradeId, curriculumBlockId: block.id }),
   }));
   if (session) {
+    const diffStars = difficultyOptions.find((d) => d.id === session.difficulty)?.stars ?? "";
     return (
       <EngineScreen
         activity={session.activity}
         difficulty={session.difficulty}
         seed={session.seed}
         onExit={() => setSession(null)}
+        gradeTitle={gradeTitle}
+        className={profile.className}
+        mascotUrl={profile.mascotUrl}
+        difficultyStars={diffStars}
       />
     );
   }
