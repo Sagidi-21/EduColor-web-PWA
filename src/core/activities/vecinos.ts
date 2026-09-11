@@ -1,4 +1,4 @@
-import type { ActivityDifficulty } from "../../content/contracts";
+import type { ActivityDifficulty } from "../content/contracts";
 
 export type VecinosQuestionType = "anterior" | "posterior" | "ambos";
 

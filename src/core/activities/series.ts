@@ -1,4 +1,4 @@
-import type { ActivityDifficulty } from "../../content/contracts";
+import type { ActivityDifficulty } from "../content/contracts";
 
 export interface SeriesExercise {
   sequence: number[]; // 5 numbers, -1 marks the blank
