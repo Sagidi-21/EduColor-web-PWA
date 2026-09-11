@@ -11,7 +11,13 @@ export interface EngineRegistration {
  * Solo se añaden aquí motores cuya lógica y renderer ya funcionen en la PWA.
  * Un manifiesto por sí solo nunca habilita el lanzamiento de una actividad.
  */
-const migratedEngines: ReadonlySet<EngineId> = new Set(["comparison", "ordenar"]);
+const migratedEngines: ReadonlySet<EngineId> = new Set([
+  "comparison",
+  "ordenar",
+  "seriesNumericas",
+  "vecinosNumero",
+  "numeracion1119",
+]);
 
 export function getEngineRegistration(engineId: EngineId): EngineRegistration {
   return {
