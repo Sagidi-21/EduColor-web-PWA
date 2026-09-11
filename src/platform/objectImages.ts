@@ -7,7 +7,7 @@
  */
 
 // Vite resuelve el glob en build-time y genera las URLs optimizadas.
-const modules = import.meta.glob("../../assets/objects/**/*.{jpg,jpeg,png,svg,webp}", {
+const modules = import.meta.glob("../assets/objects/**/*.{jpg,jpeg,png,svg,webp}", {
   eager: true,
 }) as Record<string, { default: string }>;
 
