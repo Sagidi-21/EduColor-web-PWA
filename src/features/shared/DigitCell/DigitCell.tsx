@@ -17,8 +17,8 @@
  */
 
 import { useRef, useEffect, useCallback, useReducer, useState } from "react";
-import { subscribeStatus, getStatus, predict, CONFIDENCE_THRESHOLD } from "../../platform/digit/digitModel";
-import { saveSample } from "../../platform/digit/sampleStore";
+import { subscribeStatus, getStatus, predict, CONFIDENCE_THRESHOLD } from "../../../platform/digit/digitModel";
+import { saveSample } from "../../../platform/digit/sampleStore";
 import TeacherConfirmPanel from "./TeacherConfirmPanel";
 import "./DigitCell.css";
 
