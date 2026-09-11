@@ -1,9 +1,9 @@
-/**
+﻿/**
  * TeacherConfirmPanel
  * -------------------
- * Aparece cuando el modelo reconoce un dígito con confianza baja (<85%).
- * El profesor ve lo que ha dibujado el niño y selecciona el dígito correcto.
- * La muestra queda guardada para mejorar el modelo automáticamente.
+ * Aparece cuando el modelo reconoce un dÃ­gito con confianza baja (<85%).
+ * El profesor ve lo que ha dibujado el niÃ±o y selecciona el dÃ­gito correcto.
+ * La muestra queda guardada para mejorar el modelo automÃ¡ticamente.
  */
 
 import { useEffect, useRef } from "react";
@@ -13,8 +13,8 @@ interface Props {
   imageData: ImageData;
   predictedDigit: number;
   confidence: number;
-  onConfirm: (digit: string) => void; // profesor identifica el dígito
-  onRetry: () => void; // niño borra y vuelve a intentarlo
+  onConfirm: (digit: string) => void; // profesor identifica el dÃ­gito
+  onRetry: () => void; // niÃ±o borra y vuelve a intentarlo
 }
 
 export default function TeacherConfirmPanel({
@@ -26,7 +26,7 @@ export default function TeacherConfirmPanel({
 }: Props) {
   const previewRef = useRef<HTMLCanvasElement>(null);
 
-  // Dibuja la imagen del niño en el canvas de previsualización
+  // Dibuja la imagen del niÃ±o en el canvas de previsualizaciÃ³n
   useEffect(() => {
     const canvas = previewRef.current;
     if (!canvas) return;
@@ -41,7 +41,7 @@ export default function TeacherConfirmPanel({
   return (
     <div className="tcp__overlay">
       <div className="tcp__panel">
-        <p className="tcp__title">¿Qué número ha escrito?</p>
+        <p className="tcp__title">Â¿QuÃ© nÃºmero ha escrito?</p>
         <p className="tcp__sub">
           El sistema cree que es <strong className="tcp__predicted">{predictedDigit}</strong> ({pct}
           % seguro). Confirma para ayudarlo a aprender.
@@ -62,9 +62,10 @@ export default function TeacherConfirmPanel({
         </div>
 
         <button className="tcp__retry-btn" onClick={onRetry}>
-          No se entiende — borrar y repetir
+          No se entiende â€” borrar y repetir
         </button>
       </div>
     </div>
   );
 }
+

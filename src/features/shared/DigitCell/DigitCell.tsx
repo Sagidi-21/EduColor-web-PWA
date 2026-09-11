@@ -102,7 +102,6 @@ export function DigitCell({
   };
 
   // ── Pointer Events (sustituye handlers separados mouse/touch del original) ──
-  // Las pizarras digitales emiten PointerEvent; mouse y touch son casos especiales.
   const onPointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!isActive || state !== "idle") return;
     (e.target as HTMLCanvasElement).setPointerCapture(e.pointerId);
@@ -187,6 +186,9 @@ export function DigitCell({
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerLeave={onPointerUp}
+          
+          
+          
           style={{ touchAction: "none" }}
         />
 
@@ -209,7 +211,7 @@ export function DigitCell({
                       : ""
               }
             >
-              âœ“
+              ✔
             </button>
           </div>
         )}
