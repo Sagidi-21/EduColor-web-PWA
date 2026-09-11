@@ -3,3 +3,6 @@ dist/
 *.tsbuildinfo
 vite.config.js
 vite.config.d.ts
+
+# Referencia local del proyecto Electron original — no subir al repositorio
+electron-reference/

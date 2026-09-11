@@ -4,10 +4,20 @@ import {
   isCorrectOrderingValue,
   type OrderingExercise,
 } from "../../../core/activities/ordering";
+import { playCorrect } from "../../../platform/audio";
 import type { EngineScreenProps } from "../engine-screens";
+import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import "./OrderingScreen.css";
 
-export function OrderingScreen({ activity, difficulty, seed, onExit }: EngineScreenProps) {
+export function OrderingScreen({
+  activity,
+  difficulty,
+  seed,
+  onExit,
+  gradeTitle,
+  className,
+  difficultyStars,
+}: EngineScreenProps) {
   const [exercises] = useState(() => createOrderingSession(seed, difficulty));
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [placedNumbers, setPlacedNumbers] = useState<readonly number[]>([]);
@@ -49,6 +59,7 @@ export function OrderingScreen({ activity, difficulty, seed, onExit }: EngineScr
       return;
     }
     setPlacedNumbers((current) => [...current, number]);
+    playCorrect();
   };
 
   const restart = () => {
@@ -61,34 +72,18 @@ export function OrderingScreen({ activity, difficulty, seed, onExit }: EngineScr
   };
 
   if (finished) {
+    const sessionResult: SessionResult = {
+      correct: exercises.length,
+      total: exercises.length,
+      duration: durationSeconds ? durationSeconds * 1000 : 0,
+    };
     return (
-      <div className="ord ord--summary">
-        <div className="summary">
-          <div className="summary__stars">⭐⭐⭐</div>
-          <h1 className="summary__title">¡Muy bien!</h1>
-          <p className="summary__grade">{activity.title}</p>
-          <div className="summary__stats">
-            <div className="summary__stat">
-              <span className="summary__stat-value">
-                {exercises.length}/{exercises.length}
-              </span>
-              <span className="summary__stat-label">ordenados</span>
-            </div>
-            <div className="summary__stat">
-              <span className="summary__stat-value">{durationSeconds ?? 0}s</span>
-              <span className="summary__stat-label">tiempo</span>
-            </div>
-          </div>
-          <div className="summary__actions">
-            <button className="summary__btn summary__btn--primary" onClick={restart}>
-              🔄 Repetir
-            </button>
-            <button className="summary__btn summary__btn--secondary" onClick={onExit}>
-              ← Volver
-            </button>
-          </div>
-        </div>
-      </div>
+      <SummaryScreen
+        result={sessionResult}
+        gradeLabel={gradeTitle || "Matemáticas"}
+        onRestart={restart}
+        onExit={onExit}
+      />
     );
   }
 
@@ -102,7 +97,8 @@ export function OrderingScreen({ activity, difficulty, seed, onExit }: EngineScr
         <div className="ord__header-info">
           <span className="ord__title">{activity.title}</span>
           <span className="ord__grade">
-            {difficulty === "easy" ? "Fácil" : "Practicamos juntos"}
+            {gradeTitle} {difficultyStars ? ` · ${difficultyStars}` : ""}
+            {className ? ` — ${className}` : ""}
           </span>
         </div>
         <span className="ord__progress">

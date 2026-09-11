@@ -8,6 +8,9 @@ web (IPC y empaquetado Windows).
 
 > Este documento es el índice de fases. Para el checklist operativo completo de
 > cada una, consultar [EJECUCION_PASO_A_PASO.md](EJECUCION_PASO_A_PASO.md).
+>
+> ⚠️ **ATENCIÓN AGENTES**: Debéis cumplir estrictamente las reglas definidas en
+> [AGENT_RULES.md](AGENT_RULES.md) antes de proponer o ejecutar cualquier cambio.
 
 ## Estados de reutilización
 
@@ -45,6 +48,17 @@ Tener una base PWA pequeña, verificable y preparada para que el resto del traba
 - Una actividad mínima funciona, se prueba y se compila como PWA.
 - No hay importaciones de Electron ni `window.api` fuera del repositorio original.
 - La V1 y sus exclusiones están documentadas y aprobadas.
+
+---
+
+# Principio de Migración Visual y Funcional
+
+La aplicación de `Colegio` es la referencia canónica de EduColor. La PWA **no rediseña su experiencia**: conserva sus pantallas, recursos, textos, flujos y funciones, sustituyendo únicamente las integraciones que dependen de Electron por equivalentes web cuando sea necesario.
+
+**Reglas de higiene visual:**
+- Los navegadores bloquean habitualmente el inicio automático de vídeo con audio. La PWA inicia el vídeo silenciado y si el navegador lo bloquea, muestra un botón. No se cambia el flujo.
+- La biblioteca completa de recursos originales se copiará a `src/assets` bajo demanda para que los renderizadores no usen sustitutos visuales.
+- Antes de migrar un motor, se registrarán sus recursos concretos; si no los consume ningún motor ni pantalla, no se incorporarán al repositorio PWA.
 
 ---
 
@@ -123,10 +137,12 @@ Trasladar gradualmente las actividades con mayor valor pedagógico, sin una migr
 
 - `comparison` y `ordenar` están migradas técnicamente: cada una tiene motor
   PWA independiente, renderer registrado y pruebas de núcleo.
+- `comparison` cuenta con la pantalla de resumen compartida y paridad con el
+  comportamiento visual y de audio de Electron.
 - `ordenar` conserva la configuración original de 10 ejercicios y sus rangos
-  por dificultad, sin recursos externos.
-- La validación manual de `ordenar` en escritorio, tableta y pizarra, junto
-  con el feedback docente, sigue siendo requisito antes de declararla cerrada
+  por dificultad, pendiente de añadirle el `SummaryScreen`.
+- La validación manual en escritorio, tableta y pizarra, junto
+  con el feedback docente, sigue siendo requisito antes de declararlas cerradas
   pedagógicamente.
 
 ---

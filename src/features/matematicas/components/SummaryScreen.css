@@ -1,4 +1,4 @@
-.summary-screen {
+.summary {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8,7 +8,7 @@
   padding: 24px;
 }
 
-.summary-screen__card {
+.summary__card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,46 +21,46 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
-.summary-screen__stars {
+.summary__stars {
   font-size: 64px;
   margin-bottom: 16px;
   line-height: 1;
 }
 
-.summary-screen__title {
+.summary__title {
   font-size: 32px;
   font-weight: 800;
   color: var(--color-text, #1e293b);
   margin: 0 0 8px 0;
 }
 
-.summary-screen__grade {
+.summary__grade {
   font-size: 18px;
   font-weight: 600;
   color: #64748b;
   margin: 0 0 32px 0;
 }
 
-.summary-screen__stats {
+.summary__stats {
   display: flex;
   gap: 32px;
   margin-bottom: 40px;
 }
 
-.summary-screen__stat {
+.summary__stat {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
 }
 
-.summary-screen__stat-value {
+.summary__stat-value {
   font-size: 28px;
   font-weight: 800;
   color: #2563eb;
 }
 
-.summary-screen__stat-label {
+.summary__stat-label {
   font-size: 14px;
   font-weight: 700;
   color: #64748b;
@@ -68,12 +68,12 @@
   letter-spacing: 0.05em;
 }
 
-.summary-screen__actions {
+.summary__actions {
   display: flex;
   gap: 16px;
 }
 
-.summary-screen__btn {
+.summary__btn {
   min-width: 160px;
   min-height: 52px;
   padding: 0 28px;
@@ -85,20 +85,20 @@
   transition: filter 0.15s, transform 0.1s;
 }
 
-.summary-screen__btn:hover {
+.summary__btn:hover {
   filter: brightness(1.08);
 }
 
-.summary-screen__btn:active {
+.summary__btn:active {
   transform: scale(0.97);
 }
 
-.summary-screen__btn--primary {
+.summary__btn--primary {
   background: #2563eb;
   color: #fff;
 }
 
-.summary-screen__btn--secondary {
+.summary__btn--secondary {
   background: #e2e8f0;
   color: #1e293b;
 }
