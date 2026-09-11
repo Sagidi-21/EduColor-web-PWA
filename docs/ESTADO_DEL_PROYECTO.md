@@ -2,12 +2,8 @@
 
 ## Punto de trabajo actual
 
-- **Fase activa:** 2 — Migración del catálogo matemático V1.
-- **Paso activo:** 7 — Checklist manual de `ordenar` en escritorio, tableta y
-  pizarra. Su migración técnica está completada; la siguiente actividad se
-  seleccionará tras registrar esta comprobación y el feedback de Matemáticas
-  de 1.º/2.º. La Fase 1 cerró con manifiestos, selector y un motor extra
-  (`comparison`) no acoplado al conteo.
+- **Fase activa:** 2 — Migración del catálogo matemático V1 (con Fase 5 adelantada ya completada).
+- **Paso activo:** Implementación de las actividades `suma` y `resta`. El punto 7 (`ordenar`) de la Fase 2 y la Fase 5 del canvas (reconocimiento de dígitos y preprocesado) ya están completados. La Fase 1 cerró con manifiestos, selector y un motor extra (`comparison`) no acoplado al conteo.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
 
