@@ -7,6 +7,9 @@ const ComparisonScreen = lazy(() =>
 const OrderingScreen = lazy(() =>
   import("./ordering/OrderingScreen").then((module) => ({ default: module.OrderingScreen })),
 );
+const SeriesScreen = lazy(() =>
+  import("./series/SeriesScreen").then((module) => ({ default: module.SeriesScreen })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -33,6 +36,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <OrderingScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "seriesNumericas") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <SeriesScreen {...props} />
       </Suspense>
     );
   }
