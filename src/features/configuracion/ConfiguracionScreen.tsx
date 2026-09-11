@@ -16,7 +16,7 @@ const zoomLevels = [
   { value: 1.5, label: "Muy grande", desc: "PDI lejos / pantalla grande", icon: "📺" },
 ];
 const zoomKey = "educolor_zoom";
-const storedZoom = () => Number.parseFloat(localStorage.getItem(zoomKey) ?? "1") || 1;
+const storedZoom = () => Number.parseFloat(localStorage.getItem(zoomKey) ?? "1.5") || 1.5;
 
 export function ConfiguracionScreen({ onBack }: { onBack: () => void }) {
   const { aulas, activeAulaId, profile, setActiveAula, save, getProfile, addAula, removeAula } =

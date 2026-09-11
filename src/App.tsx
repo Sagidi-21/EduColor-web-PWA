@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { ClassProfileProvider } from "./core/context/ClassProfileContext";
 import { useClassProfile } from "./core/context/ClassProfileContext";
 import { ConfiguracionScreen } from "./features/configuracion/ConfiguracionScreen";
@@ -13,6 +13,14 @@ function AppShell() {
   const [showVideo, setShowVideo] = useState(false);
   const [splashDone, setSplashDone] = useState(false);
   const [view, setView] = useState<AppView>("home");
+
+  // Aplicar zoom por defecto al inicio
+  React.useEffect(() => {
+    const zoomKey = "educolor_zoom";
+    const zoom = Number.parseFloat(localStorage.getItem(zoomKey) ?? "1.5") || 1.5;
+    document.body.style.setProperty("zoom", String(zoom));
+    document.body.style.setProperty("--zoom", String(zoom));
+  }, []);
 
   // Fase 1: pantalla de bienvenida
   if (!welcomeDone) {
