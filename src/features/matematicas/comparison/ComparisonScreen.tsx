@@ -40,7 +40,7 @@ export function ComparisonScreen({
   const [choice, setChoice] = useState<ComparisonChoice | null>(null);
   
   // Tracking para el resumen
-  const [startTime, setStartTime] = useState(Date.now());
+  const [startTime, setStartTime] = useState(() => Date.now());
   const [correctCount, setCorrectCount] = useState(0);
   const [isFirstAttempt, setIsFirstAttempt] = useState(true);
   const [summary, setSummary] = useState<SessionResult | null>(null);
