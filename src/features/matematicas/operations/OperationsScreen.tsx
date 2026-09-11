@@ -87,15 +87,15 @@ function ImageRow({ count, imageUrl }: { count: number; imageUrl: string }): JSX
   );
 }
 
-export function createOperationsScreen(op: OperationType) {
-  return function OperationsScreen({
-    activity,
-    difficulty,
-    seed,
-    onExit,
-    gradeTitle,
-    className,
-  }: EngineScreenProps): JSX.Element {
+export function OperationsScreen({
+  activity,
+  difficulty,
+  seed,
+  onExit,
+  gradeTitle,
+  className,
+}: EngineScreenProps): JSX.Element {
+  const op: OperationType = activity.engineId as OperationType;
     const [mode, setMode] = useState<"numpad" | "canvas">("numpad");
     const [canvasKey, setCanvasKey] = useState(0);
 
@@ -422,5 +422,4 @@ export function createOperationsScreen(op: OperationType) {
         </footer>
       </div>
     );
-  };
-}
+  }

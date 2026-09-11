@@ -1,2 +1,2 @@
-import { createOperationsScreen } from "./OperationsScreen";
-export const RestaScreen = createOperationsScreen("resta");
+import { OperationsScreen } from "./OperationsScreen";
+export { OperationsScreen as RestaScreen };
