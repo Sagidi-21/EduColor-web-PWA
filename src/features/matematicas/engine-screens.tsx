@@ -10,6 +10,9 @@ const OrderingScreen = lazy(() =>
 const SeriesScreen = lazy(() =>
   import("./series/SeriesScreen").then((module) => ({ default: module.SeriesScreen })),
 );
+const VecinosScreen = lazy(() =>
+  import("./vecinos/VecinosScreen").then((module) => ({ default: module.VecinosScreen })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -43,6 +46,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <SeriesScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "vecinosNumero") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <VecinosScreen {...props} />
       </Suspense>
     );
   }

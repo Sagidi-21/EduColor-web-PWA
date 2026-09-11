@@ -1,0 +1,253 @@
+/* ── VecinosScreen ────────────────────────────────────────────────── */
+/* Porta el CSS original de VecinosNumeroRenderer.css de Electron      */
+
+.vec {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: var(--color-primary-dark, #1e3a8a);
+  font-family: "Inter", sans-serif;
+  overflow: hidden;
+}
+
+/* Header */
+.vec__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 1.4rem;
+  background: rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid rgba(99, 179, 237, 0.2);
+  flex-shrink: 0;
+}
+.vec__exit {
+  background: rgba(99, 179, 237, 0.12);
+  border: 1px solid rgba(99, 179, 237, 0.25);
+  color: var(--color-primary-dark, #1e3a8a);
+  padding: 0.4rem 0.9rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.vec__exit:hover {
+  background: rgba(99, 179, 237, 0.22);
+}
+.vec__meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.vec__grade {
+  font-size: 0.7rem;
+  color: #63b3ed;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.vec__unit {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+.vec__progress {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+.vec__progress-text {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+.vec__progress-bar {
+  width: 110px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.vec__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #63b3ed, #3182ce);
+  border-radius: 10px;
+  transition: width 0.4s;
+}
+
+/* Stage */
+.vec__stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+  padding: 1.5rem;
+  transition: background 0.3s;
+  position: relative;
+  overflow-y: auto;
+}
+.vec__stage--correct {
+  background: rgba(16, 185, 129, 0.07);
+}
+.vec__stage--wrong {
+  background: rgba(239, 68, 68, 0.07);
+}
+.vec__cheer {
+  position: absolute;
+  top: 1rem;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #10b981;
+  animation: vec-pop 0.4s ease;
+  pointer-events: none;
+}
+@keyframes vec-pop {
+  0% { transform: scale(0); }
+  80% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.vec__question {
+  font-size: 1.35rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-primary-dark, #1e3a8a);
+  max-width: 560px;
+  text-wrap: balance;
+}
+
+/* Number track */
+.vec__track {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.vec__house {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 96px;
+  height: 96px;
+  border-radius: 16px;
+  background: rgba(99, 179, 237, 0.12);
+  border: 2px solid rgba(99, 179, 237, 0.3);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--color-primary-dark, #1e3a8a);
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.2s;
+}
+.vec__house--blank {
+  border-color: rgba(99, 179, 237, 0.6);
+  background: rgba(99, 179, 237, 0.06);
+  color: #63b3ed;
+}
+.vec__house--center {
+  background: rgba(99, 179, 237, 0.22);
+  border-color: #63b3ed;
+  color: #fff;
+  font-size: 2.5rem;
+  width: 110px;
+  height: 110px;
+}
+.vec__house-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.vec__arrow {
+  font-size: 1.5rem;
+  color: rgba(99, 179, 237, 0.5);
+  font-weight: 700;
+}
+
+/* Options */
+.vec__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  max-width: 520px;
+}
+.vec__options--ambos .vec__opt {
+  min-width: 140px;
+  font-size: 1.1rem;
+}
+.vec__opt {
+  padding: 0.75rem 1.6rem;
+  min-height: 52px;
+  min-width: 80px;
+  border-radius: 14px;
+  border: 2px solid rgba(99, 179, 237, 0.25);
+  background: rgba(99, 179, 237, 0.08);
+  color: var(--color-primary-dark, #1e3a8a);
+  font-size: 1.35rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.16s;
+  font-family: "Inter", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.vec__opt:hover:not(:disabled) {
+  border-color: #63b3ed;
+  background: rgba(99, 179, 237, 0.2);
+  transform: translateY(-2px);
+}
+.vec__opt:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.vec__opt--correct {
+  border-color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #10b981 !important;
+}
+.vec__opt--wrong {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #ef4444 !important;
+}
+.vec__opt-pair {
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+.vec__opt-sep {
+  color: #64748b;
+  margin: 0 0.3rem;
+}
+
+/* Wrong feedback actions */
+.vec__wrong-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.vec__next {
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, #63b3ed, #3182ce);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-family: inherit;
+}
+.vec__next:hover {
+  opacity: 0.88;
+}
+.vec__next--retry {
+  background: #64748b;
+}
