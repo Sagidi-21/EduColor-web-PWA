@@ -118,6 +118,38 @@ La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tie
 
 ---
 
+## Seguimiento actual — `suma` / `resta`
+
+- **Pasos 1 y 2:** completados. Son actividades compartidas de 1.º/2.º dentro del
+  bloque unidad-2 (suma y resta). Se auditó el motor y generador del proyecto
+  Electron completo: `engine.ts`, `SumaRenderer.tsx`, `RestaRenderer.tsx`,
+  `OperationsRenderer.tsx`, `OperationsRenderer.css`, `operations.generator.ts`
+  y `operations.generator.test.ts`. El motor usa objetos genéricos de
+  `src/assets/objects/` (7 categorías) y no APIs de Electron.
+- **Pasos 3 y 4:** completados. El generador determinista y el validador viven
+  en `src/core/activities/operations.ts`; 22 tests cubren generación, rangos,
+  respuesta correcta, pares únicos, reproducibilidad, validador y showImage para
+  ambas operaciones y las 4 dificultades.
+- **Pasos 5 y 6:** completados. Los manifiestos JSON `suma.json` y `resta.json`
+  ya estaban importados y validados. El renderer PWA `OperationsScreen.tsx`
+  (con `SumaScreen`/`RestaScreen` como factories) dispone de layout vertical,
+  numpad, modo canvas (DigitCell con TF.js), SummaryScreen, auto-avance 900 ms
+  en acierto, retry en error, contador 1/10 en el header y toggle de modo
+  escritura/teclado.
+- **Paso 7:** completado. Verificación manual en escritorio (Chrome) confirmó
+  paridad visual y de audio con Electron. CI verde (typecheck + 22/22 tests).
+  Pendiente validación en pizarra/tableta.
+- **Paso 8:** trazabilidad actualizada en `INVENTARIO_MIGRACION_ACTIVIDADES.md`;
+  el cierre pedagógico queda pendiente del feedback de Matemáticas de 1.º y 2.º.
+
+---
+
+## Comprobación de salida
+
+La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tiene test de núcleo y comprobación visual.
+
+---
+
 # Fase 3 — Sesiones, corrección y resumen
 
 ## Pasos
