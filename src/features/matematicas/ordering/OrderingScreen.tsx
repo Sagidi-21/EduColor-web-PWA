@@ -6,6 +6,7 @@ import {
 } from "../../../core/activities/ordering";
 import { playCorrect } from "../../../platform/audio";
 import type { EngineScreenProps } from "../engine-screens";
+import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import "./OrderingScreen.css";
 
@@ -17,6 +18,7 @@ export function OrderingScreen({
   gradeTitle,
   className,
   difficultyStars,
+  mascotUrl,
 }: EngineScreenProps) {
   const [exercises] = useState(() => createOrderingSession(seed, difficulty));
   const [exerciseIndex, setExerciseIndex] = useState(0);
@@ -90,21 +92,15 @@ export function OrderingScreen({
   const ascending = exercise.direction === "ascending";
   return (
     <div className="ord">
-      <header className="ord__header">
-        <button className="ord__exit" onClick={onExit}>
-          ← Actividades
-        </button>
-        <div className="ord__header-info">
-          <span className="ord__title">{activity.title}</span>
-          <span className="ord__grade">
-            {gradeTitle} {difficultyStars ? ` · ${difficultyStars}` : ""}
-            {className ? ` — ${className}` : ""}
-          </span>
-        </div>
-        <span className="ord__progress">
-          {exerciseIndex + 1}/{exercises.length}
-        </span>
-      </header>
+      <ActivityHeader
+        onExit={onExit}
+        gradeTitle={gradeTitle}
+        className={className}
+        unitTitle={activity.title}
+        difficultyStars={difficultyStars}
+        mascotUrl={mascotUrl}
+        progress={`${exerciseIndex + 1}/${exercises.length}`}
+      />
       <main className="ord__main">
         <p className="ord__instruction">
           Ordena de {ascending ? "menor a mayor" : "mayor a menor"} →

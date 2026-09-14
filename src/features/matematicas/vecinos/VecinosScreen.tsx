@@ -3,6 +3,8 @@ import { generateVecinosSession, validateVecinosAnswer } from "../../../core/act
 import { playCorrect } from "../../../platform/audio";
 import type { EngineScreenProps } from "../engine-screens";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
+import { ActivityHeader } from "../components/ActivityHeader";
+import { ActionButtons } from "../components/ActivityActionButtons";
 import "./VecinosScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -36,6 +38,8 @@ export function VecinosScreen({
   onExit,
   gradeTitle,
   className,
+  mascotUrl,
+  difficultyStars,
 }: EngineScreenProps) {
   const [session, setSession] = useState<SessionState>(() => freshSession(seed, difficulty));
   const [finished, setFinished] = useState<SessionResult | null>(null);
@@ -135,29 +139,15 @@ export function VecinosScreen({
 
   return (
     <div className="vec">
-      <header className="vec__header">
-        <button className="vec__exit" onClick={onExit}>
-          ← Actividades
-        </button>
-        <div className="vec__meta">
-          <span className="vec__grade">
-            {gradeTitle}
-            {className ? ` — ${className}` : ""}
-          </span>
-          <span className="vec__unit">{activity.title}</span>
-        </div>
-        <div className="vec__progress">
-          <span className="vec__progress-text">
-            {session.currentIndex + 1}/{total}
-          </span>
-          <div className="vec__progress-bar">
-            <div
-              className="vec__progress-fill"
-              style={{ width: `${((session.currentIndex + 1) / total) * 100}%` }}
-            />
-          </div>
-        </div>
-      </header>
+      <ActivityHeader
+        onExit={onExit}
+        gradeTitle={gradeTitle}
+        className={className}
+        unitTitle={activity.title}
+        difficultyStars={difficultyStars}
+        mascotUrl={mascotUrl}
+        progress={`${session.currentIndex + 1}/${total}`}
+      />
 
       <div className={`vec__stage ${stageClass}`}>
         {session.answerState === "correct" && <div className="vec__cheer">¡Correcto! ⭐</div>}
@@ -208,14 +198,7 @@ export function VecinosScreen({
         </div>
 
         {session.answerState === "wrong" && (
-          <div className="vec__wrong-actions">
-            <button className="vec__next vec__next--retry" onClick={handleRetry}>
-              🔄 Reintentar
-            </button>
-            <button className="vec__next" onClick={handleNext}>
-              Siguiente →
-            </button>
-          </div>
+          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
         )}
       </div>
     </div>

@@ -6,6 +6,8 @@ import {
 } from "../../../core/activities/comparison";
 import { playCorrect } from "../../../platform/audio";
 import type { EngineScreenProps } from "../engine-screens";
+import { ActivityHeader } from "../components/ActivityHeader";
+import { ActionButtons } from "../components/ActivityActionButtons";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import "./ComparisonScreen.css";
 
@@ -118,28 +120,16 @@ export function ComparisonScreen({
 
   return (
     <div className="cmp">
-      {/* Header */}
-      <header className="cmp__header">
-        <button className="cmp__back" onClick={onExit} aria-label="Salir de la actividad">
-          ← Salir
-        </button>
-        <div className="cmp__header-info">
-          {(gradeTitle || difficultyStars || className) && (
-            <span className="cmp__header-meta">
-              {gradeTitle}
-              {difficultyStars && ` · ${difficultyStars}`}
-              {className && ` — ${className}`}
-            </span>
-          )}
-          <span className="cmp__title">{activity.title}</span>
-        </div>
-        <div className="cmp__header-right">
-          <span className="cmp__counter" aria-label={`Ejercicio ${exerciseNumber} de ${TOTAL_EXERCISES}`}>
-            {exerciseNumber} / {TOTAL_EXERCISES}
-          </span>
-          {mascotUrl && <img src={mascotUrl} alt="" className="cmp__mascot" />}
-        </div>
-      </header>
+    <ActivityHeader
+      onExit={onExit}
+      exitLabel="← Salir"
+      gradeTitle={gradeTitle}
+      className={className}
+      unitTitle={activity.title}
+      difficultyStars={difficultyStars}
+      mascotUrl={mascotUrl}
+      progress={`${exerciseNumber} / ${TOTAL_EXERCISES}`}
+    />
 
       {/* Área principal: dos cajas visuales centradas + balanza entre ellas */}
       <div className="cmp__arena">
@@ -220,16 +210,8 @@ export function ComparisonScreen({
         </button>
       </div>
 
-      {/* Botones del profesor — solo aparecen en fallo */}
       {evaluated && !correct && (
-        <div className="cmp__teacher-row" role="status">
-          <button className="cmp__teacher-btn cmp__teacher-btn--retry" onClick={handleRetry}>
-            🔄 Reintentar
-          </button>
-          <button className="cmp__teacher-btn cmp__teacher-btn--next" onClick={handleNext}>
-            Siguiente →
-          </button>
-        </div>
+        <ActionButtons onRetry={handleRetry} onNext={handleNext} />
       )}
     </div>
   );

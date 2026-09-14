@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { generateNumeracion1119Session, validateNumeracion1119Answer } from "../../../core/activities/numeracion1119";
 import { playCorrect } from "../../../platform/audio";
 import type { EngineScreenProps } from "../engine-screens";
+import { ActivityHeader } from "../components/ActivityHeader";
+import { ActionButtons } from "../components/ActivityActionButtons";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { useInputMode } from "../../shared/hooks/useInputMode";
 import InputModeToggle from "../../shared/components/InputModeToggle";
@@ -93,6 +95,8 @@ export function Numeracion1119Screen({
   onExit,
   gradeTitle,
   className,
+  mascotUrl,
+  difficultyStars,
 }: EngineScreenProps) {
   const isMultiChoice = difficulty === "easy";
 
@@ -195,30 +199,17 @@ export function Numeracion1119Screen({
 
   return (
     <div className="ops">
-      <header className="ops__header">
-        <button className="ops__exit" onClick={onExit}>
-          ← Actividades
-        </button>
-        <div className="ops__meta">
-          <span className="ops__grade">
-            {gradeTitle}
-            {className ? ` — ${className}` : ""}
-          </span>
-          <span className="ops__unit">{activity.title}</span>
-        </div>
-        <div className="ops__progress">
-          <span className="ops__progress-text">
-            {session.currentIndex + 1}/{total}
-          </span>
-          <div className="ops__progress-bar">
-            <div
-              className="ops__progress-fill"
-              style={{ width: `${((session.currentIndex + 1) / total) * 100}%` }}
-            />
-          </div>
-        </div>
+      <ActivityHeader
+        onExit={onExit}
+        gradeTitle={gradeTitle}
+        className={className}
+        unitTitle={activity.title}
+        difficultyStars={difficultyStars}
+        mascotUrl={mascotUrl}
+        progress={`${session.currentIndex + 1}/${total}`}
+      >
         {!isMultiChoice && <InputModeToggle mode={mode} onToggle={toggle} />}
-      </header>
+      </ActivityHeader>
 
       <div className={`ops__stage ${stageClass}`}>
         {session.answerState === "correct" && <div className="ops__celebration">¡Correcto! ⭐</div>}
@@ -285,14 +276,7 @@ export function Numeracion1119Screen({
               );
             })}
             {session.answerState === "wrong" && (
-              <div className="ops__wrong-actions">
-                <button className="ops__next ops__next--retry" onClick={handleRetry}>
-                  🔄 Reintentar
-                </button>
-                <button className="ops__next" onClick={handleNext}>
-                  Siguiente →
-                </button>
-              </div>
+              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
             )}
           </div>
         ) : (
@@ -312,14 +296,7 @@ export function Numeracion1119Screen({
               />
             )}
             {session.answerState === "wrong" && (
-              <div className="ops__wrong-actions">
-                <button className="ops__next ops__next--retry" onClick={handleRetry}>
-                  🔄 Reintentar
-                </button>
-                <button className="ops__next" onClick={handleNext}>
-                  Siguiente →
-                </button>
-              </div>
+              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
             )}
           </>
         )}

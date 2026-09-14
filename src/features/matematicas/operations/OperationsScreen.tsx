@@ -5,6 +5,8 @@ import type { EngineScreenProps } from "../engine-screens";
 import { playCorrect } from "../../../platform/audio";
 import { DigitCell } from "../../shared/DigitCell/DigitCell";
 import { SummaryScreen } from "../components/SummaryScreen";
+import { ActivityHeader } from "../components/ActivityHeader";
+import { ActionButtons } from "../components/ActivityActionButtons";
 import "./OperationsScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -94,6 +96,8 @@ export function OperationsScreen({
   onExit,
   gradeTitle,
   className,
+  mascotUrl,
+  difficultyStars,
 }: EngineScreenProps): JSX.Element {
   const op: OperationType = activity.engineId as OperationType;
     const [mode, setMode] = useState<"numpad" | "canvas">("numpad");
@@ -264,45 +268,30 @@ export function OperationsScreen({
 
     return (
       <div className="ops">
-        <header className="ops__header">
-          <button className="ops__exit-btn" onClick={onExit}>
-            ← Actividades
-          </button>
-          <div className="ops__meta">
-            <span className="ops__grade">
-              {gradeTitle}
-              {className ? ` — ${className}` : ""}
-            </span>
-            <span className="ops__unit">{activity.title}</span>
+      <ActivityHeader
+        onExit={onExit}
+        gradeTitle={gradeTitle}
+        className={className}
+        unitTitle={activity.title}
+        mascotUrl={mascotUrl}
+        difficultyStars={difficultyStars}
+        progress={`${session.currentIndex + 1}/${total}`}
+      >
+        <div
+          className="ops__mode-toggle"
+          onClick={() => setMode(mode === "numpad" ? "canvas" : "numpad")}
+        >
+          <span className="ops__mode-icon" style={{ opacity: mode === "numpad" ? 1 : 0.5 }}>
+            ⌨️
+          </span>
+          <div className={`ops__mode-track ${mode === "canvas" ? "ops__mode-track--on" : ""}`}>
+            <div className="ops__mode-thumb" />
           </div>
-
-          <div
-            className="ops__mode-toggle"
-            onClick={() => setMode(mode === "numpad" ? "canvas" : "numpad")}
-          >
-            <span className="ops__mode-icon" style={{ opacity: mode === "numpad" ? 1 : 0.5 }}>
-              ⌨️
-            </span>
-            <div className={`ops__mode-track ${mode === "canvas" ? "ops__mode-track--on" : ""}`}>
-              <div className="ops__mode-thumb" />
-            </div>
-            <span className="ops__mode-icon" style={{ opacity: mode === "canvas" ? 1 : 0.5 }}>
-              ✍️
-            </span>
-          </div>
-
-          <div className="ops__progress">
-            <span className="ops__progress-text">
-              {session.currentIndex + 1}/{total}
-            </span>
-            <div className="ops__progress-bar">
-              <div
-                className="ops__progress-fill"
-                style={{ width: `${((session.currentIndex + 1) / total) * 100}%` }}
-              />
-            </div>
-          </div>
-        </header>
+          <span className="ops__mode-icon" style={{ opacity: mode === "canvas" ? 1 : 0.5 }}>
+            ✍️
+          </span>
+        </div>
+      </ActivityHeader>
 
         <div className={`ops__stage ${stageClass}`}>
           {session.answerState === "correct" && (
@@ -410,14 +399,7 @@ export function OperationsScreen({
             />
           )}
           {session.answerState === "wrong" && (
-            <div className="vec__wrong-actions" style={{ marginTop: "10px" }}>
-              <button className="vec__next vec__next--retry" onClick={handleRetry}>
-                🔄 Reintentar
-              </button>
-              <button className="vec__next" onClick={handleNext}>
-                Siguiente →
-              </button>
-            </div>
+            <ActionButtons onRetry={handleRetry} onNext={handleNext} />
           )}
         </footer>
       </div>

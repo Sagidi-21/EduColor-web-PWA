@@ -3,6 +3,8 @@ import { generateSeriesSession, validateSeriesAnswer } from "../../../core/activ
 import { playCorrect } from "../../../platform/audio";
 import type { EngineScreenProps } from "../engine-screens";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
+import { ActivityHeader } from "../components/ActivityHeader";
+import { ActionButtons } from "../components/ActivityActionButtons";
 import "./SeriesScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -36,6 +38,8 @@ export function SeriesScreen({
   onExit,
   gradeTitle,
   className,
+  mascotUrl,
+  difficultyStars,
 }: EngineScreenProps) {
   const [session, setSession] = useState<SessionState>(() => freshSession(seed, difficulty));
   const [finished, setFinished] = useState<SessionResult | null>(null);
@@ -118,29 +122,15 @@ export function SeriesScreen({
 
   return (
     <div className="ser">
-      <header className="ser__header">
-        <button className="ser__exit" onClick={onExit}>
-          ← Actividades
-        </button>
-        <div className="ser__meta">
-          <span className="ser__grade">
-            {gradeTitle}
-            {className ? ` — ${className}` : ""}
-          </span>
-          <span className="ser__unit">{activity.title}</span>
-        </div>
-        <div className="ser__progress">
-          <span className="ser__progress-text">
-            {session.currentIndex + 1}/{total}
-          </span>
-          <div className="ser__progress-bar">
-            <div
-              className="ser__progress-fill"
-              style={{ width: `${((session.currentIndex + 1) / total) * 100}%` }}
-            />
-          </div>
-        </div>
-      </header>
+      <ActivityHeader
+        onExit={onExit}
+        gradeTitle={gradeTitle}
+        className={className}
+        unitTitle={activity.title}
+        difficultyStars={difficultyStars}
+        mascotUrl={mascotUrl}
+        progress={`${session.currentIndex + 1}/${total}`}
+      />
 
       <div className={`ser__stage ${stageClass}`}>
         {session.answerState === "correct" && (
@@ -183,14 +173,7 @@ export function SeriesScreen({
         </div>
 
         {session.answerState === "wrong" && (
-          <div className="ser__wrong-actions">
-            <button className="ser__next ser__next--retry" onClick={handleRetry}>
-              🔄 Reintentar
-            </button>
-            <button className="ser__next" onClick={handleNext}>
-              Siguiente →
-            </button>
-          </div>
+          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
         )}
       </div>
     </div>

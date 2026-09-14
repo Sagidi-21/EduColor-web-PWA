@@ -1,0 +1,41 @@
+.activity-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 0 24px 20px;
+  flex-shrink: 0;
+}
+
+.activity-action {
+  min-width: 160px;
+  min-height: 52px;
+  padding: 0 28px;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition:
+    filter 0.15s,
+    transform 0.1s;
+  touch-action: manipulation;
+  font-family: inherit;
+}
+
+.activity-action:hover {
+  filter: brightness(1.08);
+}
+
+.activity-action:active {
+  transform: scale(0.97);
+}
+
+.activity-action--retry {
+  background: #f59e0b;
+  color: #fff;
+}
+
+.activity-action--next {
+  background: var(--color-primary, #2563eb);
+  color: #fff;
+}
