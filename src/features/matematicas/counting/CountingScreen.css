@@ -40,8 +40,8 @@
 
 .counting__object {
   position: absolute;
-  width: clamp(52px, 7vw, 88px);
-  height: clamp(52px, 7vw, 88px);
+  width: clamp(98px, 7vw, 118px);
+  height: clamp(98px, 7vw, 118px);
   object-fit: contain;
   cursor: default;
   animation: popIn 0.3s ease-out backwards;
@@ -127,9 +127,11 @@
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.4) rotate(var(--r, 0deg));
   }
+
   70% {
     transform: translate(-50%, -50%) scale(1.15) rotate(var(--r, 0deg));
   }
+
   to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(var(--s, 1)) rotate(var(--r, 0deg));
@@ -141,9 +143,11 @@
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.5);
   }
+
   60% {
     transform: translate(-50%, -50%) scale(1.15);
   }
+
   to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
@@ -154,28 +158,35 @@
   0% {
     transform: scale(1);
   }
+
   40% {
     transform: scale(1.12);
   }
+
   100% {
     transform: scale(1);
   }
 }
 
 @keyframes wrongShake {
+
   0%,
   100% {
     transform: translateX(0);
   }
+
   20% {
     transform: translateX(-8px);
   }
+
   40% {
     transform: translateX(8px);
   }
+
   60% {
     transform: translateX(-5px);
   }
+
   80% {
     transform: translateX(5px);
   }
