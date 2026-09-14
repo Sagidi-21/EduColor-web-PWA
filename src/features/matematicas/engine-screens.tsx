@@ -23,6 +23,10 @@ const RestaScreen = lazy(() =>
   import("./operations/RestaScreen").then((module) => ({ default: module.RestaScreen })),
 );
 
+const IgualdadScreen = lazy(() =>
+  import("./igualdad/IgualdadScreen").then((module) => ({ default: module.IgualdadScreen })),
+);
+
 export interface EngineScreenProps {
   activity: ActivityManifest;
   difficulty: ActivityDifficulty;
@@ -83,6 +87,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <RestaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "igualdad") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <IgualdadScreen {...props} />
       </Suspense>
     );
   }
