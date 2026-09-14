@@ -26,6 +26,9 @@ const RestaScreen = lazy(() =>
 const IgualdadScreen = lazy(() =>
   import("./igualdad/IgualdadScreen").then((module) => ({ default: module.IgualdadScreen })),
 );
+const CountingScreen = lazy(() =>
+  import("./counting/CountingScreen").then((module) => ({ default: module.CountingScreen })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -87,6 +90,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <RestaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "counting") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <CountingScreen {...props} />
       </Suspense>
     );
   }

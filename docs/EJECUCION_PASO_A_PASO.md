@@ -144,6 +144,38 @@ La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tie
 
 ---
 
+## Seguimiento actual — `igualdad`
+
+- **Pasos 1 y 2:** completados. Actividad compartida de 1.º/2.º dentro del
+  bloque unidad-3. Se auditó el motor del proyecto Electron completo.
+  No usa recursos externos ni APIs de Electron.
+- **Pasos 3 y 4:** completados. El generador determinista y el validador viven
+  en `src/core/activities/igualdad.ts`; 16 tests cubren generación, rangos,
+  estructura, matemáticas por tipo y validador. Se añadió restricción
+  `alreadyFailed` para el control de reintentos y `imageUrl` vacío en nivel experto.
+- **Pasos 5 y 6:** completados. El manifiesto JSON `igualdad.json`
+  ya estaba importado y validado. El renderer PWA `IgualdadScreen.tsx`
+  (`.css`) dispone de tres tipos de ejercicio (resultado, sumando, descomposición),
+  opciones con estados visuales, auto-avance 900 ms en acierto, retry en error,
+  contador 1/10 en el header y sin dibujos de apoyo en nivel experto.
+- **Paso 7:** completado. CI verde (typecheck + 16/16 tests).
+- **Paso 8:** trazabilidad actualizada en `INVENTARIO_MIGRACION_ACTIVIDADES.md`.
+
+---
+
+## Seguimiento actual — `counting`
+
+- **Pasos 1 y 2:** en progreso. Actividad compartida de 1.º/2.º dentro del
+  bloque unidad-1. Motor en `src/core/activities/counting.ts` con 16 tests
+  que cubren configuraciones por dificultad, generación, reproducibilidad,
+  rangos, respuestas, opciones y posiciones.
+- **Pasos 5 y 6:** en progreso. Renderer PWA `CountingScreen.tsx` (`.css`)
+  con objetos posicionados, opciones numéricas, auto-avance, retry y SummaryScreen.
+- **Paso 7:** pendiente de verificación.
+- **Paso 8:** pendiente.
+
+---
+
 ## Comprobación de salida
 
 La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tiene test de núcleo y comprobación visual.

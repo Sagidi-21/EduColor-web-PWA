@@ -28,8 +28,8 @@ describe("catálogo de contenido", () => {
   it("lanza comparison y bloquea un manifiesto sin motor PWA", () => {
     const grade1 = getActivities({ subjectId: "mathematics", gradeId: "grade-1" });
     const comparison = grade1.find((activity) => activity.id === "comparison");
-    const counting = grade1.find((activity) => activity.id === "counting");
+    const tresSumandos = grade1.find((activity) => activity.id === "tresSumandos");
     expect(comparison && canLaunchActivity(comparison)).toBe(true);
-    expect(counting && canLaunchActivity(counting)).toBe(false);
+    expect(tresSumandos && canLaunchActivity(tresSumandos)).toBe(false);
   });
 });

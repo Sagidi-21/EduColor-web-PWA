@@ -3,7 +3,7 @@
 ## Punto de trabajo actual
 
 - **Fase activa:** 2 — Migración del catálogo matemático V1 (con Fase 5 adelantada ya completada).
-- **Paso activo:** Las actividades `suma` y `resta` están técnicamente implementadas (core, tests, manifiestos, renderer, routing y módulo `platform/objectImages` operativo). El punto 7 (`ordenar`) de la Fase 2 y la Fase 5 del canvas (reconocimiento de dígitos y preprocesado) ya están completados. La Fase 1 cerró con manifiestos, selector y un motor extra (`comparison`) no acoplado al conteo.
+- **Paso activo:** Las actividades `suma`, `resta` e `igualdad` están técnicamente implementadas (core, tests, manifiestos, renderer, routing). Se está implementando `counting` (Contamos objetos). El punto 7 (`ordenar`) de la Fase 2 y la Fase 5 del canvas (reconocimiento de dígitos y preprocesado) ya están completados. La Fase 1 cerró con manifiestos, selector y un motor extra (`comparison`) no acoplado al conteo.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
 
