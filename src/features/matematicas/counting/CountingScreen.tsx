@@ -19,6 +19,14 @@ interface SessionState {
   alreadyFailed: boolean;
 }
 
+function cuantos(objectLabel: string): string {
+  const FEMININE: Record<string, boolean> = {
+    manzanas: true,
+    flores: true,
+  };
+  return FEMININE[objectLabel] ? "Cuántas" : "Cuántos";
+}
+
 export function CountingScreen({
   activity,
   difficulty,
@@ -160,7 +168,7 @@ export function CountingScreen({
       {/* ── Pregunta y opciones ── */}
       <footer className="counting__footer">
         <p className="counting__question">
-          ¿Cuántos <strong>{current.objectLabel}</strong> hay?
+          ¿{cuantos(current.objectLabel)} <strong>{current.objectLabel}</strong> hay?
         </p>
 
         <div className="counting__options">
