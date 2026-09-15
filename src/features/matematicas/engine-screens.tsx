@@ -29,6 +29,12 @@ const IgualdadScreen = lazy(() =>
 const CountingScreen = lazy(() =>
   import("./counting/CountingScreen").then((module) => ({ default: module.CountingScreen })),
 );
+const ProblemaScreen = lazy(() =>
+  import("./problemas/ProblemaScreen").then((module) => ({ default: module.ProblemaScreen })),
+);
+const RelacionarScreen = lazy(() =>
+  import("./relacionar/RelacionarScreen").then((module) => ({ default: module.RelacionarScreen })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -93,6 +99,13 @@ export function EngineScreen(props: EngineScreenProps) {
       </Suspense>
     );
   }
+  if (props.activity.engineId === "igualdad") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <IgualdadScreen {...props} />
+      </Suspense>
+    );
+  }
   if (props.activity.engineId === "counting") {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
@@ -100,10 +113,17 @@ export function EngineScreen(props: EngineScreenProps) {
       </Suspense>
     );
   }
-  if (props.activity.engineId === "igualdad") {
+  if (props.activity.engineId === "problemas") {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
-        <IgualdadScreen {...props} />
+        <ProblemaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "relacionar") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <RelacionarScreen {...props} />
       </Suspense>
     );
   }

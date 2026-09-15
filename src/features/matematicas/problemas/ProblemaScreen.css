@@ -1,0 +1,307 @@
+.prob {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #f8faff;
+  overflow: hidden;
+}
+
+/* ── Story card ────────────────────────────────────────── */
+
+.prob__card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  padding: 20px 28px;
+  max-width: 700px;
+  width: 100%;
+}
+
+.prob__emoji {
+  font-size: 52px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.prob__card-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.prob__story {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.prob__question {
+  font-size: 17px;
+  font-weight: 800;
+  color: #6d28d9;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ── Section blocks (OPERACIÓN / SOLUCIÓN) ─────────────── */
+
+.prob__section-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.prob__section-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  align-self: flex-start;
+}
+
+/* ── Vertical operation layout ────────────────────────── */
+
+.prob__vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.prob__vcell {
+  font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 900;
+  color: var(--color-primary-dark);
+  min-width: clamp(50px, 7vw, 80px);
+  text-align: center;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prob__vcell--sym {
+  color: #475569;
+  font-size: clamp(28px, 3.5vw, 44px);
+}
+
+.prob__vdivider {
+  width: 80%;
+  height: 2px;
+  background: #cbd5e1;
+  margin: 4px 0;
+}
+
+.prob__vbox {
+  font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 900;
+  color: var(--color-primary-dark);
+  min-width: clamp(50px, 7vw, 80px);
+  text-align: center;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 3px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  height: clamp(50px, 7vw, 70px);
+}
+
+.prob__vbox:hover {
+  border-color: #2563eb;
+}
+
+.prob__vbox--active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.prob__vbox--correct {
+  border-color: #16a34a;
+  background: #dcfce7;
+}
+
+.prob__vbox--wrong {
+  border-color: #dc2626;
+  background: #fee2e2;
+}
+
+.prob__cursor {
+  font-size: clamp(28px, 4vw, 44px);
+  color: #2563eb;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ── Solution template ─────────────────────────────────── */
+
+.prob__solution-text {
+  font-size: clamp(18px, 2.4vw, 26px);
+  font-weight: 700;
+  color: #475569;
+  margin: 0;
+  padding: 14px 28px;
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 14px;
+  letter-spacing: 0.01em;
+  min-width: 260px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.prob__solution-text--filled {
+  color: #15803d;
+  background: #dcfce7;
+  border-color: #86efac;
+  border-style: solid;
+  font-size: clamp(20px, 2.6vw, 30px);
+}
+
+/* ── Selector de tema ──────────────────────────────────── */
+
+.prob__theme-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 24px;
+}
+
+.prob__theme-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  text-align: center;
+}
+
+.prob__theme-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.prob__theme-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px 16px;
+  border: 3px solid #6d28d9;
+  border-radius: 20px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.prob__theme-card:hover {
+  background: rgba(109, 40, 217, 0.12);
+  transform: scale(1.04);
+}
+
+.prob__theme-card:active {
+  transform: scale(0.97);
+}
+
+.prob__theme-emoji {
+  font-size: 44px;
+  line-height: 1;
+}
+
+.prob__theme-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #6d28d9;
+}
+
+/* ── Footer ────────────────────────────────────────────── */
+
+.prob__footer {
+  flex-shrink: 0;
+  background: #fff;
+  border-top: 2px solid #e2e8f0;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ── Celebration ───────────────────────────────────────── */
+
+.prob__celebration {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  font-weight: 900;
+  color: #16a34a;
+  z-index: 10;
+  pointer-events: none;
+  animation: celebrate 0.4s ease-out;
+  white-space: nowrap;
+  text-shadow: 0 2px 12px rgba(22, 163, 74, 0.3);
+}
+
+/* ── Stage ─────────────────────────────────────────────── */
+
+.prob__stage {
+  flex: 1;
+  position: relative;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px;
+  padding: 24px;
+  transition: background 0.3s;
+}
+
+.prob__stage--correct {
+  background: linear-gradient(160deg, #d1fae5 0%, #ecfdf5 100%);
+}
+
+.prob__stage--wrong {
+  background: linear-gradient(160deg, #fee2e2 0%, #fef2f2 100%);
+}
+
+/* ── Animaciones ───────────────────────────────────────── */
+
+@keyframes celebrate {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  60% {
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}

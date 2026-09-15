@@ -21,6 +21,8 @@ const migratedEngines: ReadonlySet<EngineId> = new Set([
   "resta",
   "igualdad",
   "counting",
+  "problemas",
+  "relacionar",
 ]);
 
 export function getEngineRegistration(engineId: EngineId): EngineRegistration {

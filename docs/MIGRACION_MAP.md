@@ -8,3 +8,57 @@ Registro de dónde acaban los componentes de la aplicación original en la nueva
 | React Components (Desktop) | `src/features/*` | Adaptados a responsive y touch-first |
 | `src/renderer/src/core/engines/comparison/ComparisonRenderer.tsx` | `src/features/matematicas/comparison/ComparisonScreen.tsx` | Migrado |
 | `src/renderer/src/core/engines/ordering/*` | `src/core/activities/ordering.ts` | Generador extraído de React |
+| `src/renderer/src/core/engines/operations/*` | `src/core/activities/operations.ts`, `src/features/matematicas/operations/OperationsScreen.tsx` | Migrado (suma, resta, igualdad) |
+| `src/renderer/src/core/engines/counting/*` | `src/core/activities/counting.ts` | Generador migrado; renderer pendiente (Fase 2) |
+| `src/renderer/src/core/engines/vecinosNumero/*` | `src/core/activities/vecinos.ts`, `src/features/matematicas/vecinos/VecinosScreen.tsx` | Migrado |
+| `src/renderer/src/core/engines/igualdad/*` | `src/core/activities/igualdad.ts`, `src/features/matematicas/igualdad/IgualdadScreen.tsx` | Migrado |
+| `src/renderer/src/core/engines/numeracion1119/*` | `src/core/activities/numeracion1119.ts`, `src/features/matematicas/numeracion1119/Numeracion1119Screen.tsx` | Migrado |
+| `src/renderer/src/core/engines/numeracion4059/*` | `src/core/activities/numeracion4059.ts` | Generador migrado; renderer pendiente (Fase 2) |
+| `src/renderer/src/core/engines/numeracion6099/*` | `src/core/activities/numeracion6099.ts` | Generador migrado; renderer pendiente (Fase 2) |
+| `src/renderer/src/core/engines/numeracion999/*` | `src/core/activities/numeracion999.ts` | Generador migrado; renderer pendiente (Fase 2) |
+| `src/renderer/src/core/engines/seriesNumericas/*` | `src/core/activities/series.ts`, `src/features/matematicas/series/SeriesScreen.tsx` | Migrado |
+| `src/renderer/src/core/engines/series3cifras/*` | `src/core/activities/series3cifras.ts` | Generador migrado; renderer pendiente (Fase 2) |
+| `src/renderer/src/core/engines/problemas/*` | `src/core/activities/problemas.ts`, `src/features/matematicas/problemas/ProblemaScreen.tsx` | Migrado |
+| `src/renderer/src/core/engines/problemas2pasos/*` | `src/core/activities/problemas2pasos.ts` | Generador migrado; renderer pendiente (Fase 2) |
+| `src/renderer/src/core/engines/ordenar/*` | `src/core/activities/ordering.ts` (ya incluido) | Migrado |
+| `src/renderer/src/core/engines/comparison/*` | `src/core/activities/comparison.ts` (ya incluido) | Migrado |
+| `src/renderer/src/core/engines/monedasBilletes/*` | `src/core/activities/monedasBilletes.ts` | Pendiente (Fase 2) - Reserva trazable `dinero/` |
+| `src/renderer/src/core/engines/leftRight/*` | `src/core/activities/leftRight.ts` | Pendiente (Fase 2) - Reserva trazable `izquierda-derecha/` |
+| `src/renderer/src/core/engines/rutaCuadricula/*` | `src/core/activities/laberintoMatematico.ts` | Pendiente (Fase 2) - Reserva trazable `laberinto/` |
+| `src/renderer/src/core/engines/elKilo/*`, `elLitro/*` | `src/core/activities/elKilo.ts`, `elLitro.ts` | Pendiente (Fase 2) - Reserva trazable `+kilo/`, `-kilo/`, `+litro/`, `-litro/`, `litro/` |
+| `src/renderer/src/core/engines/shapes/*` | `src/core/activities/shapes.ts` | Pendiente (Fase 2) - Reserva trazable `shapes-real/` |
+| `src/renderer/src/core/engines/sumaLlevando/*` | `src/core/activities/sumaLlevando.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/restaColumna/*` | `src/core/activities/restaColumna.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/tresSumandos/*` | `src/core/activities/tresSumandos.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/tresSumandosColumna/*` | `src/core/activities/tresSumandosColumna.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/multiplicacion/*` | `src/core/activities/multiplicacion.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/division/*` | `src/core/activities/division.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/fracciones/*` | `src/core/activities/fracciones.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/relacionar/*` | `src/core/activities/relacionar.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/relacionarCantidades/*` | `src/core/activities/relacionarCantidades.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/relacionSumaResta/*` | `src/core/activities/relacionSumaResta.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/parImpar/*` | `src/core/activities/parImpar.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/posicionesAula/*` | `src/core/activities/posicionesAula.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/probabilidad/*` | `src/core/activities/probabilidad.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/poligonos/*` | `src/core/activities/poligonos.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/redondeo/*` | `src/core/activities/redondeo.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/reloj/*` | `src/core/activities/reloj.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/relojPonerHora/*` | `src/core/activities/relojPonerHora.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/repartoIgual/*` | `src/core/activities/repartoIgual.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/rectaNumerica/*` | `src/core/activities/rectaNumerica.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/simetria/*` | `src/core/activities/simetria.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/tablaNumerica/*` | `src/core/activities/tablaNumerica.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/weekDays/*` | `src/core/activities/weekDays.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/lineTypes/*` | `src/core/activities/lineTypes.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/ordinales/*` | `src/core/activities/ordinales.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/core/engines/menuCafeteria/*` | `src/core/activities/menuCafeteria.ts` | Pendiente (Fase 2) |
+| `src/renderer/src/shared/components/InputModeToggle.tsx` | `src/features/shared/components/InputModeToggle.tsx` | Migrado |
+| `src/renderer/src/shared/hooks/useInputMode.ts` | `src/features/shared/hooks/useInputMode.ts` | Migrado |
+| `src/renderer/src/shared/components/Numpad.tsx` | `src/features/shared/components/Numpad.tsx` | Migrado |
+| `src/renderer/src/shared/components/SummaryScreen.tsx` | `src/features/matematicas/components/SummaryScreen.tsx` | Migrado |
+| `src/renderer/src/shared/components/ExerciseHeader.tsx` | `src/features/matematicas/components/ActivityHeader.tsx` | Migrado |
+| `src/renderer/src/features/matematicas/MatematicasScreen.tsx` | `src/features/matematicas/CatalogScreen.tsx` | Migrado (selector de actividades) |
+| `src/renderer/src/features/splash/SplashScreen.tsx` | `src/features/splash/SplashScreen.tsx` | Migrado |
+| `src/renderer/src/features/home/HomeScreen.tsx` | `src/features/home/HomeScreen.tsx` | Migrado |
+| `src/renderer/src/core/generators/*` | `src/core/activities/*.ts` | Generadores extraídos a core puro |
+| `src/renderer/src/core/registry/activities.ts` | `src/core/content/engine-registry.ts`, `src/manifests/*.json` | Registro centralizado + manifiestos JSON |
