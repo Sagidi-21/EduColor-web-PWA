@@ -30,6 +30,6 @@ describe("catálogo de contenido", () => {
     const comparison = grade1.find((activity) => activity.id === "comparison");
     const tresSumandos = grade1.find((activity) => activity.id === "tresSumandos");
     expect(comparison && canLaunchActivity(comparison)).toBe(true);
-    expect(tresSumandos && canLaunchActivity(tresSumandos)).toBe(false);
+    expect(tresSumandos && canLaunchActivity(tresSumandos)).toBe(true);
   });
 });

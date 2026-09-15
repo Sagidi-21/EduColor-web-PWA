@@ -252,7 +252,7 @@ export function Numeracion1119Screen({
                 key={canvasKey}
                 isActive={true}
                 onActivate={() => {}}
-                onConfirm={mode === "canvas" ? handleCanvasConfirm : undefined}
+                onConfirm={handleCanvasConfirm}
                 onClear={() => setSession((s) => ({ ...s, input: "" }))}
                 state={session.answerState}
                 value={session.input}

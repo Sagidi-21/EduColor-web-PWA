@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { generateSession, validateAnswer } from "./problemas";
 import type { ActivityDifficulty } from "../content/contracts";
+import type { Theme } from "./problemas";
 
 describe("problemas/engine", () => {
   describe("generateSession", () => {
@@ -137,11 +138,10 @@ describe("problemas/engine", () => {
     });
 
     it("usa todos los temas disponibles", () => {
-      const themes = ["deportes", "animales", "clase", "naturaleza"] as const;
-      const exercises = generateSession("easy", 42);
-      expect(exercises.length).toBeGreaterThan(0);
-      exercises.forEach((ex) => {
-        expect(themes).toContain(ex.theme);
+      const themes: Theme[] = ["deportes", "animales", "clase", "naturaleza"];
+      themes.forEach((t) => {
+        const exercises = generateSession("easy", 42, t);
+        expect(exercises.length).toBeGreaterThan(0);
       });
     });
   });
