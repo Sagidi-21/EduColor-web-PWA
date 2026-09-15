@@ -1,0 +1,54 @@
+/* Motor "Coloca el número en la recta" */
+
+.rct {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #f8faff;
+  overflow: hidden;
+}
+
+.rct__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  position: relative;
+  flex: 1;
+}
+
+.rct__instruction {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-align: center;
+  margin: 0;
+}
+.rct__target {
+  color: #d97706;
+  font-size: 1.5em;
+}
+
+.rct__svg {
+  width: min(94vw, 1100px);
+  height: auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.rct__celebration {
+  position: absolute;
+  top: 1rem;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #10b981;
+}
+
+.rct__hint {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #dc2626;
+  margin: 0;
+}

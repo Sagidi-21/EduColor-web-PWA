@@ -165,14 +165,34 @@ export function Numeracion1119Screen({
       correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
       alreadyFailed: !ok ? true : s.alreadyFailed,
     }));
-  }, [session, current]);
+  }, [session.answerState, session.input, current]);
 
-  useEffect(() => {
-    if (mode !== "canvas") return;
-    if (session.answerState !== "idle") return;
-    if (session.input.length < (current?.type === "units" ? 1 : 2)) return;
-    confirm();
-  }, [session.input.length, mode, session.answerState, confirm, current]);
+  const handleCanvasConfirm = useCallback(
+    (digit: string) => {
+      if (session.answerState !== "idle") return;
+      setSession((s) => {
+        const nextInput = s.input.length < 2 ? s.input + digit : s.input;
+        const needsConfirm =
+          current?.type === "units"
+            ? nextInput.length >= 1
+            : nextInput.length >= 2;
+        if (!needsConfirm) {
+          return { ...s, input: nextInput };
+        }
+        const ok = validateNumeracion1119Answer(current, nextInput);
+        if (ok) playCorrect();
+        return {
+          ...s,
+          input: nextInput,
+          answerState: ok ? "correct" : "wrong",
+          correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+          alreadyFailed: !ok ? true : s.alreadyFailed,
+        };
+      });
+      setCanvasKey((k) => k + 1);
+    },
+    [current, session.answerState],
+  );
 
   if (finished) {
     return (
@@ -232,14 +252,7 @@ export function Numeracion1119Screen({
                 key={canvasKey}
                 isActive={true}
                 onActivate={() => {}}
-                onConfirm={(digit) => {
-                  if (session.answerState !== "idle") return;
-                  setSession((s) => ({
-                    ...s,
-                    input: s.input.length < 2 ? s.input + digit : s.input,
-                  }));
-                  setCanvasKey((k) => k + 1);
-                }}
+                onConfirm={mode === "canvas" ? handleCanvasConfirm : undefined}
                 onClear={() => setSession((s) => ({ ...s, input: "" }))}
                 state={session.answerState}
                 value={session.input}

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { generateSession, validateAnswer } from "../../../core/activities/igualdad";
-import type { IgualdadExercise, IgualdadType } from "../../../core/activities/igualdad";
+import type { IgualdadExercise } from "../../../core/activities/igualdad";
 import type { EngineScreenProps } from "../engine-screens";
 import { playCorrect } from "../../../platform/audio";
 import { ActivityHeader } from "../components/ActivityHeader";

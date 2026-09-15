@@ -35,6 +35,9 @@ const ProblemaScreen = lazy(() =>
 const RelacionarScreen = lazy(() =>
   import("./relacionar/RelacionarScreen").then((module) => ({ default: module.RelacionarScreen })),
 );
+const RectaNumericaScreen = lazy(() =>
+  import("./rectaNumerica/RectaNumericaScreen").then((module) => ({ default: module.RectaNumericaScreen })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -124,6 +127,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <RelacionarScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "rectaNumerica") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <RectaNumericaScreen {...props} />
       </Suspense>
     );
   }

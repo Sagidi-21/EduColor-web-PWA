@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState } from "react";
-import { generateSession, validateAnswer } from "../../../core/activities/problemas";
+import { generateSession } from "../../../core/activities/problemas";
 import type { ProblemaExercise, SessionResult, Theme } from "../../../core/activities/problemas";
 import type { EngineScreenProps } from "../engine-screens";
 import { playCorrect } from "../../../platform/audio";

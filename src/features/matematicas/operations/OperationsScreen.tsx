@@ -7,6 +7,9 @@ import { DigitCell } from "../../shared/DigitCell/DigitCell";
 import { SummaryScreen } from "../components/SummaryScreen";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { ActionButtons } from "../components/ActivityActionButtons";
+import { Numpad } from "../../shared/components/Numpad";
+import InputModeToggle from "../../shared/components/InputModeToggle";
+import { useInputMode } from "../../shared/hooks/useInputMode";
 import "./OperationsScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -33,52 +36,6 @@ function padLeft(n: number, cols: number): (string | null)[] {
   return [...Array(cols - s.length).fill(null), ...s.split("")];
 }
 
-const NUMPAD_KEYS = [
-  ["7", "8", "9"],
-  ["4", "5", "6"],
-  ["1", "2", "3"],
-  ["←", "0", "✓"],
-];
-
-function Numpad({
-  onDigit,
-  onDelete,
-  onConfirm,
-  disabled,
-}: {
-  onDigit: (d: string) => void;
-  onDelete: () => void;
-  onConfirm: () => void;
-  disabled: boolean;
-}): JSX.Element {
-  return (
-    <div className="ops__numpad">
-      {NUMPAD_KEYS.map((row, r) => (
-        <div key={r} className="ops__numpad-row">
-          {row.map((k) => {
-            const isDel = k === "←";
-            const isConf = k === "✓";
-            return (
-              <button
-                key={k}
-                className={`ops__key ${isConf ? "ops__key--confirm" : ""} ${isDel ? "ops__key--del" : ""}`}
-                onClick={() => {
-                  if (isDel) onDelete();
-                  else if (isConf) onConfirm();
-                  else onDigit(k);
-                }}
-                disabled={disabled}
-              >
-                {k}
-              </button>
-            );
-          })}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function ImageRow({ count, imageUrl }: { count: number; imageUrl: string }): JSX.Element {
   return (
     <div className="ops__emoji-row">
@@ -100,7 +57,7 @@ export function OperationsScreen({
   difficultyStars,
 }: EngineScreenProps): JSX.Element {
   const op: OperationType = activity.engineId as OperationType;
-    const [mode, setMode] = useState<"numpad" | "canvas">("numpad");
+  const { mode, toggle } = useInputMode();
     const [canvasKey, setCanvasKey] = useState(0);
 
     const [session, setSession] = useState<SessionState>(() => {
@@ -277,20 +234,7 @@ export function OperationsScreen({
         difficultyStars={difficultyStars}
         progress={`${session.currentIndex + 1}/${total}`}
       >
-        <div
-          className="ops__mode-toggle"
-          onClick={() => setMode(mode === "numpad" ? "canvas" : "numpad")}
-        >
-          <span className="ops__mode-icon" style={{ opacity: mode === "numpad" ? 1 : 0.5 }}>
-            ⌨️
-          </span>
-          <div className={`ops__mode-track ${mode === "canvas" ? "ops__mode-track--on" : ""}`}>
-            <div className="ops__mode-thumb" />
-          </div>
-          <span className="ops__mode-icon" style={{ opacity: mode === "canvas" ? 1 : 0.5 }}>
-            ✍️
-          </span>
-        </div>
+        <InputModeToggle mode={mode} onToggle={toggle} />
       </ActivityHeader>
 
         <div className={`ops__stage ${stageClass}`}>
