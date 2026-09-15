@@ -1,0 +1,17 @@
+.tres__formula {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.tres__triple-imgs {
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Cajas de respuesta multi-cifra (unidades a la derecha) */
+.tres__answer-boxes {
+  display: inline-flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+}

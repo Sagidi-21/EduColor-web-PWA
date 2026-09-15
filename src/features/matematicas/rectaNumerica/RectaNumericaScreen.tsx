@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { generateSession, type RectaExercise } from "../../../core/activities/rectaNumerica";
+import { generateSession } from "../../../core/activities/rectaNumerica";
 import { playCorrect } from "../../../platform/audio";
 import type { EngineScreenProps } from "../engine-screens";
 import { ActivityHeader } from "../components/ActivityHeader";
@@ -44,7 +44,7 @@ export function RectaNumericaScreen({
   const [finished, setFinished] = useState<SessionResult | null>(null);
 
   const svgRef = useRef<SVGSVGElement>(null);
-  const dragRef = useRef(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
@@ -74,12 +74,12 @@ export function RectaNumericaScreen({
   const onDown = (e: React.PointerEvent) => {
     if (feedback === "ok") return;
     e.preventDefault();
-    dragRef.current = true;
+    setIsDragging(true);
     setFeedback("none");
     (e.target as Element).setPointerCapture?.(e.pointerId);
   };
   const onMove = (e: React.PointerEvent) => {
-    if (!dragRef.current || !svgRef.current) return;
+    if (!isDragging || !svgRef.current) return;
     const p = toSvg(e.clientX, e.clientY, svgRef.current);
     setCard({
       x: Math.max(X0, Math.min(X1, p.x)),
@@ -88,8 +88,8 @@ export function RectaNumericaScreen({
     });
   };
   const onUp = () => {
-    if (!dragRef.current || !current) return;
-    dragRef.current = false;
+    if (!isDragging || !current) return;
+    setIsDragging(false);
     const v = valueAt(card.x);
     setCard({ x: xOf(v), y: LINE_Y - 76, placed: true });
     if (v === current.target) {
@@ -112,6 +112,7 @@ export function RectaNumericaScreen({
     });
     setCard({ x: HOME_X, y: HOME_Y, placed: false });
     setFeedback("none");
+    setIsDragging(false);
   };
 
   if (finished) {
@@ -206,7 +207,7 @@ export function RectaNumericaScreen({
           />
           {ticks}
 
-          {(dragRef.current || card.placed) && (
+          {(isDragging || card.placed) && (
             <g pointerEvents="none">
               <line
                 x1={markerX}
