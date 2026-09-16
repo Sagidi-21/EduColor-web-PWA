@@ -147,7 +147,6 @@ export function CountingScreen({
   }
 
   const arrangement = current.visualArrangement || (useCurriculum ? cfg.visualArrangement : "default");
-  const mechanic = current.interactiveMechanic || (useCurriculum ? cfg.interactiveMechanic : "default");
 
   return (
     <div className={`counting counting--${arrangement}`}>

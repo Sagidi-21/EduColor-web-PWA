@@ -40,6 +40,7 @@ export interface CurriculumLevel {
   name: string;
   rangeMin: number;
   rangeMax: number;
+  quantity: number;
   visualArrangement: VisualArrangement;
   interactiveMechanic: InteractiveMechanic;
   pdi: string;

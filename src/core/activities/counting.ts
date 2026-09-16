@@ -1,4 +1,5 @@
-import type { ActivityDifficulty, CurriculumLevelId, CurriculumLevel, VisualArrangement, InteractiveMechanic } from "../content/contracts";
+import type { ActivityDifficulty, CurriculumLevel, CurriculumLevelId, VisualArrangement, InteractiveMechanic } from "../content/contracts";
+export type { CurriculumLevelId };
 import { IMAGE_CATEGORIES, pickImage } from "../../platform/objectImages";
 import type { ImageCategory } from "../../platform/objectImages";
 
@@ -51,14 +52,14 @@ export interface SessionResult {
 }
 
 export const LEVELS: Record<CurriculumLevelId, CurriculumLevel> = {
-  "1-L1": { id: "1-L1", course: 1, level: 1, name: "Conteo 1 a 1 y Subitización", rangeMin: 1, rangeMax: 10, visualArrangement: "scattered-large", interactiveMechanic: "touch-audio", pdi: "Correspondencia biunívoca", cognitiveSkill: 9 },
-  "1-L2": { id: "1-L2", course: 1, level: 2, name: "Cuadrículas y Conteo por Pares", rangeMin: 1, rangeMax: 20, visualArrangement: "ten-frames", interactiveMechanic: "pair-ordinal", pdi: "Conteo estructurado y orden", cognitiveSkill: 10 },
-  "1-L3": { id: "1-L3", course: 1, level: 3, name: "Agrupación en Decenas", rangeMin: 1, rangeMax: 50, visualArrangement: "semi-dispersed-tens", interactiveMechanic: "drag-tens-containers", pdi: "Seriación y formación de decenas", cognitiveSkill: 11 },
-  "1-L4": { id: "1-L4", course: 1, level: 4, name: "Descomposición D + U", rangeMin: 1, rangeMax: 99, visualArrangement: "bundles-tens-units", interactiveMechanic: "drag-positional", pdi: "Abstracción de valor posicional", cognitiveSkill: 12 },
-  "2-L1": { id: "2-L1", course: 2, level: 1, name: "Saltos Numéricos Extendidos", rangeMin: 100, rangeMax: 200, visualArrangement: "packages", interactiveMechanic: "line-trace", pdi: "Seriación en rangos superiores", cognitiveSkill: 14 },
-  "2-L2": { id: "2-L2", course: 2, level: 2, name: "Arreglos Matriciales", rangeMin: 100, rangeMax: 500, visualArrangement: "matrix-grid", interactiveMechanic: "cut-separate", pdi: "Razonamiento pre-multiplicativo", cognitiveSkill: 15 },
-  "2-L3": { id: "2-L3", course: 2, level: 3, name: "Estimación y Centenas", rangeMin: 100, rangeMax: 999, visualArrangement: "mass-vs-blocks", interactiveMechanic: "slider-multibase", pdi: "Estimación y estructura tridigital", cognitiveSkill: 16 },
-  "2-L4": { id: "2-L4", course: 2, level: 4, name: "Conteo Condicional y Patrones", rangeMin: 1, rangeMax: 999, visualArrangement: "containers-gaps", interactiveMechanic: "conditional-scale", pdi: "Pensamiento deductivo e hipotético", cognitiveSkill: 5 },
+  "1-L1": { id: "1-L1", course: 1, level: 1, name: "Conteo 1 a 1 y Subitización", rangeMin: 1, rangeMax: 10, visualArrangement: "scattered-large", interactiveMechanic: "touch-audio", pdi: "Correspondencia biunívoca", cognitiveSkill: 9, quantity: 10 },
+  "1-L2": { id: "1-L2", course: 1, level: 2, name: "Cuadrículas y Conteo por Pares", rangeMin: 1, rangeMax: 20, visualArrangement: "ten-frames", interactiveMechanic: "pair-ordinal", pdi: "Conteo estructurado y orden", cognitiveSkill: 10, quantity: 10 },
+  "1-L3": { id: "1-L3", course: 1, level: 3, name: "Agrupación en Decenas", rangeMin: 1, rangeMax: 50, visualArrangement: "semi-dispersed-tens", interactiveMechanic: "drag-tens-containers", pdi: "Seriación y formación de decenas", cognitiveSkill: 11, quantity: 10 },
+  "1-L4": { id: "1-L4", course: 1, level: 4, name: "Descomposición D + U", rangeMin: 1, rangeMax: 99, visualArrangement: "bundles-tens-units", interactiveMechanic: "drag-positional", pdi: "Abstracción de valor posicional", cognitiveSkill: 12, quantity: 10 },
+  "2-L1": { id: "2-L1", course: 2, level: 1, name: "Saltos Numéricos Extendidos", rangeMin: 100, rangeMax: 200, visualArrangement: "packages", interactiveMechanic: "line-trace", pdi: "Seriación en rangos superiores", cognitiveSkill: 14, quantity: 10 },
+  "2-L2": { id: "2-L2", course: 2, level: 2, name: "Arreglos Matriciales", rangeMin: 100, rangeMax: 500, visualArrangement: "matrix-grid", interactiveMechanic: "cut-separate", pdi: "Razonamiento pre-multiplicativo", cognitiveSkill: 15, quantity: 10 },
+  "2-L3": { id: "2-L3", course: 2, level: 3, name: "Estimación y Centenas", rangeMin: 100, rangeMax: 999, visualArrangement: "mass-vs-blocks", interactiveMechanic: "slider-multibase", pdi: "Estimación y estructura tridigital", cognitiveSkill: 16, quantity: 10 },
+  "2-L4": { id: "2-L4", course: 2, level: 4, name: "Conteo Condicional y Patrones", rangeMin: 1, rangeMax: 999, visualArrangement: "containers-gaps", interactiveMechanic: "conditional-scale", pdi: "Pensamiento deductivo e hipotético", cognitiveSkill: 5, quantity: 10 },
 };
 
 export const CURRICULUM_LEVELS: Record<CurriculumLevelId, CurriculumCountingConfig> = {
@@ -102,18 +103,19 @@ function generateDistractors(correct: number, max: number, rng: () => number): n
   return shuffle(candidates.slice(0, 4), rng).slice(0, 3);
 }
 
-function gridCells(count: number, rng: () => number, jitter: number): { x: number; y: number }[] {
+function gridCells(count: number, rng: () => number, jitter: number): ObjectPosition[] {
   const cols = count <= 4 ? count : Math.ceil(Math.sqrt(count * 1.4));
   const rows = Math.ceil(count / cols);
   const paddingX = 12, paddingY = 10;
   const cellW = (100 - paddingX * 2) / cols;
   const cellH = (100 - paddingY * 2) / rows;
-  const cells: { x: number; y: number }[] = [];
+  const cells: ObjectPosition[] = [];
   for (let r = 0; r < rows; r++)
     for (let c = 0; c < cols; c++)
-      cells.push({ x: paddingX + (c + 0.5) * cellW, y: paddingY + (r + 0.5) * cellH });
+      cells.push({ x: paddingX + (c + 0.5) * cellW, y: paddingY + (r + 0.5) * cellH, rotation: 0, scale: 1 });
   const chosen = shuffle(cells, rng).slice(0, count);
   return chosen.map((cell) => ({
+    ...cell,
     x: Math.max(8, Math.min(92, cell.x + (rng() - 0.5) * cellW * jitter * 2)),
     y: Math.max(8, Math.min(92, cell.y + (rng() - 0.5) * cellH * jitter * 2)),
   }));
