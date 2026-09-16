@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { generateSession, validateAnswer } from "../../../core/activities/igualdad";
 import type { IgualdadExercise } from "../../../core/activities/igualdad";
 import type { EngineScreenProps } from "../engine-screens";
-import { playCorrect } from "../../../platform/audio";
+import { playFeedback } from "../../shared/audioFeedback";
 import { ActivityHeader } from "../components/ActivityHeader";
 import "../components/ActivityHeader.css";
 import { ActionButtons } from "../components/ActivityActionButtons";
@@ -100,7 +100,7 @@ export function IgualdadScreen({
     (opt: number | string) => {
       if (session.answerState !== "idle") return;
       const ok = validateAnswer(current, opt);
-      if (ok) playCorrect();
+      playFeedback(ok);
       setSession((s) => ({
         ...s,
         answerState: ok ? "correct" : "wrong",

@@ -4,7 +4,7 @@ import {
   type RelacionarPair,
   type RelacionarSession,
 } from "../../../core/activities/relacionar";
-import { playCorrect } from "../../../platform/audio";
+import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
@@ -162,7 +162,7 @@ export function RelacionarScreen({
       next.set(selectedLeft, pair.id);
       setConnections(next);
       setSelectedLeft(null);
-      playCorrect();
+      playFeedback(true);
 
       if (next.size === currentRound.pairs.length) {
         setCelebrating(true);

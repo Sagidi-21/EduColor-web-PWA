@@ -58,6 +58,21 @@
             "hard": { "type": "string", "minLength": 1 },
             "expert": { "type": "string", "minLength": 1 }
           }
+        },
+        "levelDescriptions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"],
+          "properties": {
+            "1-L1": { "type": "string", "minLength": 1 },
+            "1-L2": { "type": "string", "minLength": 1 },
+            "1-L3": { "type": "string", "minLength": 1 },
+            "1-L4": { "type": "string", "minLength": 1 },
+            "2-L1": { "type": "string", "minLength": 1 },
+            "2-L2": { "type": "string", "minLength": 1 },
+            "2-L3": { "type": "string", "minLength": 1 },
+            "2-L4": { "type": "string", "minLength": 1 }
+          }
         }
       }
     }

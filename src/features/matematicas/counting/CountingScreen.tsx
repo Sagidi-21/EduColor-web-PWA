@@ -1,8 +1,16 @@
 import { useState, useCallback, useEffect } from "react";
-import { generateSession, validateAnswer, PRESET_CONFIGS } from "../../../core/activities/counting";
-import type { CountingExercise, SessionResult } from "../../../core/activities/counting";
+import {
+  generateSession,
+  generateSessionForLevel,
+  validateAnswer,
+  PRESET_CONFIGS,
+  CURRICULUM_LEVELS,
+  type CountingExercise,
+  type SessionResult,
+  type CurriculumLevelId,
+} from "../../../core/activities/counting";
 import type { EngineScreenProps } from "../engine-screens";
-import { playCorrect } from "../../../platform/audio";
+import { playFeedback } from "../../shared/audioFeedback";
 import { ActivityHeader } from "../components/ActivityHeader";
 import "../components/ActivityHeader.css";
 import { ActionButtons } from "../components/ActivityActionButtons";
@@ -27,6 +35,13 @@ function cuantos(objectLabel: string): string {
   return FEMININE[objectLabel] ? "Cuántas" : "Cuántos";
 }
 
+function getLevelConfig(difficulty: string, levelId?: CurriculumLevelId) {
+  if (levelId && CURRICULUM_LEVELS[levelId]) {
+    return CURRICULUM_LEVELS[levelId];
+  }
+  return PRESET_CONFIGS[difficulty as keyof typeof PRESET_CONFIGS];
+}
+
 export function CountingScreen({
   activity,
   difficulty,
@@ -36,10 +51,13 @@ export function CountingScreen({
   className,
   mascotUrl,
   difficultyStars,
+  levelId,
 }: EngineScreenProps): JSX.Element {
-  const cfg = PRESET_CONFIGS[difficulty];
+  const cfg = getLevelConfig(difficulty, levelId);
+  const useCurriculum = !!levelId && !!CURRICULUM_LEVELS[levelId];
+  
   const [session, setSession] = useState<SessionState>(() => ({
-    exercises: generateSession(cfg, seed),
+    exercises: useCurriculum ? generateSessionForLevel(levelId!, seed) : generateSession(cfg, seed),
     currentIndex: 0,
     correctCount: 0,
     startTime: Date.now(),
@@ -57,7 +75,7 @@ export function CountingScreen({
       if (session.answerState !== "idle") return;
 
       const isCorrect = validateAnswer(current, option);
-      if (isCorrect) playCorrect();
+      playFeedback(isCorrect);
       setSession((s) => ({
         ...s,
         answerState: isCorrect ? "correct" : "wrong",
@@ -105,7 +123,9 @@ export function CountingScreen({
   const handleRestart = () => {
     setFinished(null);
     setSession({
-      exercises: generateSession(cfg, Date.now() % 999983),
+      exercises: useCurriculum 
+        ? generateSessionForLevel(levelId!, Date.now() % 999983)
+        : generateSession(cfg, Date.now() % 999983),
       currentIndex: 0,
       correctCount: 0,
       startTime: Date.now(),
@@ -126,8 +146,11 @@ export function CountingScreen({
     );
   }
 
+  const arrangement = current.visualArrangement || (useCurriculum ? cfg.visualArrangement : "default");
+  const mechanic = current.interactiveMechanic || (useCurriculum ? cfg.interactiveMechanic : "default");
+
   return (
-    <div className="counting">
+    <div className={`counting counting--${arrangement}`}>
       {/* ── Barra superior ── */}
       <ActivityHeader
         onExit={onExit}
@@ -153,7 +176,7 @@ export function CountingScreen({
               key={i}
               src={current.imageUrl}
               alt={current.objectLabel}
-              className="counting__object"
+              className={`counting__object ${arrangement !== "default" ? `counting__object--${arrangement}` : ""}`}
               style={{
                 left: `${pos.x}%`,
                 top: `${pos.y}%`,

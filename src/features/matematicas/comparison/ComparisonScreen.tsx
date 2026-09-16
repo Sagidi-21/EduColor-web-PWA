@@ -4,7 +4,7 @@ import {
   isCorrectComparison,
   type ComparisonChoice,
 } from "../../../core/activities/comparison";
-import { playCorrect } from "../../../platform/audio";
+import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { ActionButtons } from "../components/ActivityActionButtons";
@@ -94,7 +94,7 @@ export function ComparisonScreen({
   // Avance automático 900 ms tras el acierto (igual que Electron)
   useEffect(() => {
     if (!correct) return;
-    playCorrect();
+    playFeedback(true);
     const t = setTimeout(handleNext, AUTO_ADVANCE_MS);
     return () => clearTimeout(t);
   }, [correct, handleNext]);
