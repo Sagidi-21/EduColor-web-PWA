@@ -81,7 +81,7 @@ export function ProblemaScreen({
         alreadyFailed: !isCorrect ? true : s.alreadyFailed,
       }));
     },
-    [current]
+    [current],
   );
 
   const handleCanvasConfirm = useCallback(
@@ -95,7 +95,7 @@ export function ProblemaScreen({
       }
       setCanvasKey((k) => k + 1);
     },
-    [session.digits, submitDigits]
+    [session.digits, submitDigits],
   );
 
   const handleDigit = useCallback(
@@ -111,7 +111,7 @@ export function ProblemaScreen({
         submitDigits(newDigits);
       }
     },
-    [session, submitDigits]
+    [session, submitDigits],
   );
 
   const handleDelete = useCallback(() => {
@@ -187,21 +187,24 @@ export function ProblemaScreen({
     });
   }, [difficulty, session.theme]);
 
-  const startSession = useCallback((t: Theme) => {
-    const exs = generateSession(difficulty, seed, t);
-    const firstLen = exs.length > 0 ? String(exs[0].answer).length : 1;
-    setSession({
-      exercises: exs,
-      currentIndex: 0,
-      correctCount: 0,
-      startTime: Date.now(),
-      answerState: "idle",
-      digits: Array(firstLen).fill(""),
-      activeDigit: Math.max(firstLen - 1, 0),
-      theme: t,
-      alreadyFailed: false,
-    });
-  }, [difficulty, seed]);
+  const startSession = useCallback(
+    (t: Theme) => {
+      const exs = generateSession(difficulty, seed, t);
+      const firstLen = exs.length > 0 ? String(exs[0].answer).length : 1;
+      setSession({
+        exercises: exs,
+        currentIndex: 0,
+        correctCount: 0,
+        startTime: Date.now(),
+        answerState: "idle",
+        digits: Array(firstLen).fill(""),
+        activeDigit: Math.max(firstLen - 1, 0),
+        theme: t,
+        alreadyFailed: false,
+      });
+    },
+    [difficulty, seed],
+  );
 
   if (finished) {
     return (
@@ -231,11 +234,7 @@ export function ProblemaScreen({
           <p className="prob__theme-title">¿De qué trata el problema?</p>
           <div className="prob__theme-grid">
             {THEMES.map((t) => (
-              <button
-                key={t.id}
-                className="prob__theme-card"
-                onClick={() => startSession(t.id)}
-              >
+              <button key={t.id} className="prob__theme-card" onClick={() => startSession(t.id)}>
                 <span className="prob__theme-emoji">{t.emoji}</span>
                 <span className="prob__theme-label">{t.label}</span>
               </button>
@@ -261,7 +260,10 @@ export function ProblemaScreen({
 
   const aDigits = [...Array(numCols - aLen).fill(null), ...String(current.a).split("")];
   const bDigits = [...Array(numCols - bLen).fill(null), ...String(current.b).split("")];
-  const answerDigits = [...Array(numCols - answerLen).fill(null), ...String(current.answer).split("")];
+  const answerDigits = [
+    ...Array(numCols - answerLen).fill(null),
+    ...String(current.answer).split(""),
+  ];
 
   return (
     <div className="prob">
@@ -347,7 +349,8 @@ export function ProblemaScreen({
                     setSession((s) => ({ ...s, activeDigit: i, digits: nd }));
                   }}
                 >
-                  {session.digits[i] || (isActiveBox ? <span className="prob__cursor">_</span> : "")}
+                  {session.digits[i] ||
+                    (isActiveBox ? <span className="prob__cursor">_</span> : "")}
                 </div>
               );
             })}

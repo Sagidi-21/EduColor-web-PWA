@@ -7,20 +7,16 @@ interface WelcomeScreenProps {
   onEnterWithoutVideo: () => void;
 }
 
-export function WelcomeScreen({
-  onEnterWithVideo,
-  onEnterWithoutVideo,
-}: WelcomeScreenProps) {
+export function WelcomeScreen({ onEnterWithVideo, onEnterWithoutVideo }: WelcomeScreenProps) {
   return (
-    <div
-      className="welcome"
-      style={{ backgroundImage: `url(${bgUrl})` }}
-    >
+    <div className="welcome" style={{ backgroundImage: `url(${bgUrl})` }}>
       <img className="welcome__logo" src={logoUrl} alt="EduColor logo" />
 
       <div className="welcome__actions">
         <p className="welcome__tagline">
-          Aprender también<br />puede ser una aventura
+          Aprender también
+          <br />
+          puede ser una aventura
         </p>
 
         <button

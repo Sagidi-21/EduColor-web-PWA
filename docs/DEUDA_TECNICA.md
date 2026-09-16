@@ -25,29 +25,29 @@ La auditoría completa solo se repite al cerrar una fase o antes de una release.
 
 ## Deuda técnica
 
-| ID     | Estado  | Elemento                                                                            | Resolución prevista | Evidencia / disparador de revisión                                                        |
-| ------ | ------- | ----------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------- |
-| DT-001 | Cerrada | Duplicados y variantes sin referencia en recursos visuales.                         | Fase 1.             | Eliminados en `a707c82`; build comprobada.                                                |
-| DT-002 | Cerrada | Registro de motores PWA que conecte los manifiestos JSON con cada renderer migrado. | Fase 1, paso 10.    | `engine-registry` y selector en catálogo; cada renderer se registra al migrarse (Fase 2). |
-| DT-003 | Abierta | Adaptador compartido de feedback sonoro de acierto para los motores PWA.            | Fase 2.             | Electron lo reproduce; `comparison`, `ordenar` y `problemas` aún no lo incorporan unificado. |
-| DT-004 | Abierta | Unificación y estandarización del teclado numérico (`Numpad`) y modos de entrada en motores. | Fase 2. | Implementado en operaciones y problemas; extraer a componente compartido común. |
-| DT-005 | Abierta | Variables/importaciones sin usar detectadas por linter (`themes` en problemas.test.ts, `IgualdadType` en IgualdadScreen, `validateAnswer` en ProblemaScreen). | Inmediato. | `npm run lint` reporta 3 warnings de `@typescript-eslint/no-unused-vars`. |
-| DT-006 | Abierta | `setState` síncrono dentro de `useEffect` en `Numeracion1119Screen.tsx:174` (anti-patrón React). | Fase 2. | Linter `react-hooks/set-state-in-effect`; refactorizar a `useEffect` con dependencias correctas o mover lógica a handler. |
-| DT-007 | Abierta | Chunk principal > 500 kB (`index-D71E8bmF.js` 215 kB gzipped, `DigitCell-DZOebpE0.js` 890 kB gzipped por TensorFlow.js). | Fase 3-4. | Build warning; code-split con `dynamic import()` para TensorFlow.js y lazy-loading de motores pesados. |
+| ID     | Estado  | Elemento                                                                                                                                                      | Resolución prevista | Evidencia / disparador de revisión                                                                                        |
+| ------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| DT-001 | Cerrada | Duplicados y variantes sin referencia en recursos visuales.                                                                                                   | Fase 1.             | Eliminados en `a707c82`; build comprobada.                                                                                |
+| DT-002 | Cerrada | Registro de motores PWA que conecte los manifiestos JSON con cada renderer migrado.                                                                           | Fase 1, paso 10.    | `engine-registry` y selector en catálogo; cada renderer se registra al migrarse (Fase 2).                                 |
+| DT-003 | Abierta | Adaptador compartido de feedback sonoro de acierto para los motores PWA.                                                                                      | Fase 2.             | Electron lo reproduce; `comparison`, `ordenar` y `problemas` aún no lo incorporan unificado.                              |
+| DT-004 | Abierta | Unificación y estandarización del teclado numérico (`Numpad`) y modos de entrada en motores.                                                                  | Fase 2.             | Implementado en operaciones y problemas; extraer a componente compartido común.                                           |
+| DT-005 | Abierta | Variables/importaciones sin usar detectadas por linter (`themes` en problemas.test.ts, `IgualdadType` en IgualdadScreen, `validateAnswer` en ProblemaScreen). | Inmediato.          | `npm run lint` reporta 3 warnings de `@typescript-eslint/no-unused-vars`.                                                 |
+| DT-006 | Abierta | `setState` síncrono dentro de `useEffect` en `Numeracion1119Screen.tsx:174` (anti-patrón React).                                                              | Fase 2.             | Linter `react-hooks/set-state-in-effect`; refactorizar a `useEffect` con dependencias correctas o mover lógica a handler. |
+| DT-007 | Abierta | Chunk principal > 500 kB (`index-D71E8bmF.js` 215 kB gzipped, `DigitCell-DZOebpE0.js` 890 kB gzipped por TensorFlow.js).                                      | Fase 3-4.           | Build warning; code-split con `dynamic import()` para TensorFlow.js y lazy-loading de motores pesados.                    |
 
 ## Reservas de recursos
 
-| Resources / Directorios                               | Propietario original identificado                    | Fase de uso | Estado                                 |
-| ----------------------------------------------------- | ---------------------------------------------------- | ----------- | -------------------------------------- |
-| `video_libro.mp4`, `splash-logo.png`, `school-bg.jpg` | Splash e inicio                                      | Fase 1      | En uso.                                |
+| Resources / Directorios                               | Propietario original identificado                    | Fase de uso | Estado                                       |
+| ----------------------------------------------------- | ---------------------------------------------------- | ----------- | -------------------------------------------- |
+| `video_libro.mp4`, `splash-logo.png`, `school-bg.jpg` | Splash e inicio                                      | Fase 1      | En uso.                                      |
 | `objects/`                                            | Conteo, comparación y motores que reutilizan objetos | Fases 1-2   | En uso (comparison, etc.); conteo pendiente. |
-| `problemas/`                                          | `problemas` (Problemas de operaciones)               | Fase 2      | En uso.                                |
-| `dinero/`                                             | `monedasBilletes`                                    | Fase 2      | Reserva trazable.                      |
-| `izquierda-derecha/`                                  | `leftRight`                                          | Fase 2      | Reserva trazable.                      |
-| `laberinto/`                                          | `laberintoMatematico`                                | Fase 2      | Reserva trazable.                      |
-| `+kilo/`, `-kilo/`, `+litro/`, `-litro/`, `litro/`    | `elKilo` y `elLitro`                                 | Fase 2      | Reserva trazable.                      |
-| `shapes-real/`                                        | `shapes`                                             | Fase 2      | Reserva trazable.                      |
-| `logo/logo.png`, `logo/logo.ico`                      | Exportación de fichas e iconografía PWA              | Fases 6 y 7 | Reserva trazable.                      |
+| `problemas/`                                          | `problemas` (Problemas de operaciones)               | Fase 2      | En uso.                                      |
+| `dinero/`                                             | `monedasBilletes`                                    | Fase 2      | Reserva trazable.                            |
+| `izquierda-derecha/`                                  | `leftRight`                                          | Fase 2      | Reserva trazable.                            |
+| `laberinto/`                                          | `laberintoMatematico`                                | Fase 2      | Reserva trazable.                            |
+| `+kilo/`, `-kilo/`, `+litro/`, `-litro/`, `litro/`    | `elKilo` y `elLitro`                                 | Fase 2      | Reserva trazable.                            |
+| `shapes-real/`                                        | `shapes`                                             | Fase 2      | Reserva trazable.                            |
+| `logo/logo.png`, `logo/logo.ico`                      | Exportación de fichas e iconografía PWA              | Fases 6 y 7 | Reserva trazable.                            |
 
 Cuando un motor se migre, su fila pasa a **En uso**; si se descarta, sus
 recursos se revisan y se eliminan en un commit separado.

@@ -1090,6 +1090,7 @@ No mezclar:
 ```text
 qué es una actividad
 ```
+
 con:
 
 ```text
@@ -2087,33 +2088,33 @@ Los pasos 1–239 del roadmap original se mantienen íntegros. Los bloques añad
 >
 > ### Inventario marcado por bloque
 >
-> | Ítems del roadmap | Estado | Evidencia reutilizable en `Colegio` | Decisión para la nueva EduColor |
-> | --- | --- | --- | --- |
-> | 1–2 (alcance y futuro) | 🟡 | Documentación de diseño, currículo y auditoría de escalado para 1.º/2.º y crecimiento. | Consolidar en un único alcance V1; la documentación actual mezcla prototipo, ideas y arquitectura futura. |
-> | 3–7 (PWA, arquitectura, stack, coste, migración) | ❌ | React, TypeScript y Vite son aprovechables; la app actual es Electron offline. | Crear PWA y decidir Cloudflare/alternativa tras revisar costes, salida y operación. No migrar Electron ni `window.api`. |
-> | 8–9 (privacidad y multi-colegio) | 🟡/❌ | Auditoría con modelo de minimización y recomendaciones RGPD. No hay datos de alumnado ni aislamiento. | Reutilizar el análisis; definir con DPD y construir el modelo multi-tenant desde API/base de datos. |
-> | 10–15 (hardware y navegador) | 🔎 | Guías de HDMI, USB Touch y matriz de compatibilidad; la app soporta táctil. | Ejecutar el plan de pruebas en la pizarra real con Chrome/Edge y registrar resultados. |
-> | 16–20 (canvas, trazos y rendimiento) | 🟡/🔎 | `DrawableAnswerBox` ofrece canvas, borrado y entrada mouse/touch. | Migrar el componente/preprocesado; rehacer con Pointer Events, historial undo/redo, strokes estructurados y medición de rendimiento. |
-> | 21–24 (DigitCell y preprocesado) | 🟡 | Casilla de un dígito y pipeline de caja, escalado, centrado y normalización (`operations`). | Extraerlos como módulo independiente de React y sustituir handlers mouse/touch por Pointer Events. |
-> | 25–28 (ONNX/WebGPU/WASM) | ❌ | El prototipo usa TensorFlow.js, no ONNX Runtime ni WebGPU/WASM explícito. | Elegir: adaptar el modelo existente a TF.js o convertir/evaluar ONNX. Implementar los fallbacks y medirlos antes de adoptar. |
-> | 29–36 (confianza y aprendizaje) | 🟡 | Umbral 0,85, panel docente, muestras IndexedDB, exportación/backup y fine-tuning local. | Reutilizar la lógica, pero añadir alternativas/versionado, límites/selección, reset y UX de administración. Validar que el fine-tuning no degrade precisión. |
-> | 37–41 (lab, dataset y métricas) | 🟡/❌ | Modal de entrenamiento y ~2.475 muestras documentadas. No hay dataset de evaluación, matriz de confusión ni benchmark reproducible. | Convertir el modal en Recognition Lab y crear conjunto de evaluación, métricas de precisión/confianza y latencia. |
-> | 42–45 (Exercise Engine) | ✅/🟡 | Motores con `engine.ts`, renderizadores React, registro y generadores ya separados. | Conservar contratos matemáticos y convertir el registro manual a manifiestos de datos versionados. |
-> | 46–56 (contenido matemático V1) | ✅/🟡 | Catálogo activo de 1.º y 2.º: 43 actividades compartidas, 4 específicas de 1.º y 15 de 2.º; incluye numeración, U/D/C, suma/resta, comparación, series, problemas, ábaco, tablas y más. | Migrar primero los motores alineados con V1; formalizar un layout posicional común. No todos los motores usan aún `DigitCell`. |
-> | 57–69 (actividades, intentos y resumen) | 🟡 | Registro de actividades, selección por curso, feedback, repetición y `SummaryScreen`. | Reutilizar los patrones UI/lógica; crear modelo de actividad parametrizada, sesiones persistentes, intentos máximos y resúmenes de repetición. |
-> | 70–78 (offline) | 🟡 | La app Electron funciona sin red; TF.js e IndexedDB ya se usan localmente. | Implementar explícitamente service worker, caché de recursos, sesión y recuperación de red para la PWA. |
-> | 79–86 (profesor/administración) | 🟡/❌ | Inicio, perfiles/temas de aula y generador local; no hay autenticación. | Adaptar dashboard y temática; construir login, sesiones, actividades y controles docentes con autorización server-side. |
-> | 87–92 (fichas) | ✅/🟡 | `docxExporter`, cabecera/mascota, muchos renderizadores de ficha y prueba automatizada. | Reutilizar generadores/renderizado; añadir plantilla A4 validada, hoja de soluciones y conversión/exportación PDF. |
-> | 93–104 (alumnos, tareas y progreso) | ❌ | No existe modelo de alumnos, entregas ni analítica individual. | Construir tras decisión DPD y arquitectura de datos; no almacenar datos personales en el prototipo migrado. |
-> | 105–108 (más cursos, materias y reconocimiento) | 🟡 | Hay contenido hasta 2.º y motores reutilizables, pero tipos y registro aún están acoplados a 1.º/2.º y Matemáticas. | Desacoplar currículo/contenido antes de ampliar; añadir una materia piloto después. |
-> | 109–120 (operación/documentación) | 🟡/❌ | Guías de instalación, pizarra, distribución, backup de muestras, changelog y checklist de producción. | Reutilizar y actualizar las guías para web; crear backup/restauración de datos, logs, monitorización, actualizaciones PWA, CI/CD, staging y producción. |
-> | 121–145 (multi-colegio) | ❌ | Solo documentación conceptual y temática local. | Diseñar `School/Organization`, roles, aislamiento, retención y onboarding en backend antes de abrir a otro centro. |
-> | 146–150 (asignaciones e histórico) | ❌ | No existen asignaciones ni registros persistentes de resultados. | Depende del bloque de alumnos, clases, API y seguridad. |
-> | 151–162 (calidad y tests de lógica) | ✅/🟡 | TypeScript, ESLint, Prettier/Husky, Vitest y 17 tests, principalmente de generadores, motores, UI y DOCX. | Copiar configuración útil y ampliar cobertura de manifiestos, validadores y rutas críticas. |
-> | 163–172 (tests DigitCell/offline/PDF) | 🟡/❌ | Hay tests de motores y componentes; no hay pruebas específicas del canvas/preprocesado, IndexedDB/PWA ni PDF. | Crear estas suites al extraer el núcleo web. |
-> | 173–184 (gates y deuda) | 🟡 | `release:verify` ejecuta tipado, lint, tests y build; hay auditoría de deuda/riesgos. | Convertirlo en CI obligatorio, Definition of Done, registro de deuda y gates de release. |
-> | 185–224 (ciberseguridad) | 🟡/❌ | Auditoría de riesgos y recomendaciones de privacidad; dependencia revisada según documentación. No existe backend/API. | Reutilizar las políticas y threat model como punto de partida; implementar todos los controles de identidad, API, secretos, logs y copias en la plataforma nueva. |
-> | 225–239 (revisiones por hito) | 🟡 | Auditoría previa y checklist de producción son buenos antecedentes. | Adoptar los gates del roadmap como proceso real, con evidencia de pruebas y aprobación DPD cuando aplique. |
+> | Ítems del roadmap                                | Estado | Evidencia reutilizable en `Colegio`                                                                                                                                                     | Decisión para la nueva EduColor                                                                                                                                   |
+> | ------------------------------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+> | 1–2 (alcance y futuro)                           | 🟡     | Documentación de diseño, currículo y auditoría de escalado para 1.º/2.º y crecimiento.                                                                                                  | Consolidar en un único alcance V1; la documentación actual mezcla prototipo, ideas y arquitectura futura.                                                         |
+> | 3–7 (PWA, arquitectura, stack, coste, migración) | ❌     | React, TypeScript y Vite son aprovechables; la app actual es Electron offline.                                                                                                          | Crear PWA y decidir Cloudflare/alternativa tras revisar costes, salida y operación. No migrar Electron ni `window.api`.                                           |
+> | 8–9 (privacidad y multi-colegio)                 | 🟡/❌  | Auditoría con modelo de minimización y recomendaciones RGPD. No hay datos de alumnado ni aislamiento.                                                                                   | Reutilizar el análisis; definir con DPD y construir el modelo multi-tenant desde API/base de datos.                                                               |
+> | 10–15 (hardware y navegador)                     | 🔎     | Guías de HDMI, USB Touch y matriz de compatibilidad; la app soporta táctil.                                                                                                             | Ejecutar el plan de pruebas en la pizarra real con Chrome/Edge y registrar resultados.                                                                            |
+> | 16–20 (canvas, trazos y rendimiento)             | 🟡/🔎  | `DrawableAnswerBox` ofrece canvas, borrado y entrada mouse/touch.                                                                                                                       | Migrar el componente/preprocesado; rehacer con Pointer Events, historial undo/redo, strokes estructurados y medición de rendimiento.                              |
+> | 21–24 (DigitCell y preprocesado)                 | 🟡     | Casilla de un dígito y pipeline de caja, escalado, centrado y normalización (`operations`).                                                                                             | Extraerlos como módulo independiente de React y sustituir handlers mouse/touch por Pointer Events.                                                                |
+> | 25–28 (ONNX/WebGPU/WASM)                         | ❌     | El prototipo usa TensorFlow.js, no ONNX Runtime ni WebGPU/WASM explícito.                                                                                                               | Elegir: adaptar el modelo existente a TF.js o convertir/evaluar ONNX. Implementar los fallbacks y medirlos antes de adoptar.                                      |
+> | 29–36 (confianza y aprendizaje)                  | 🟡     | Umbral 0,85, panel docente, muestras IndexedDB, exportación/backup y fine-tuning local.                                                                                                 | Reutilizar la lógica, pero añadir alternativas/versionado, límites/selección, reset y UX de administración. Validar que el fine-tuning no degrade precisión.      |
+> | 37–41 (lab, dataset y métricas)                  | 🟡/❌  | Modal de entrenamiento y ~2.475 muestras documentadas. No hay dataset de evaluación, matriz de confusión ni benchmark reproducible.                                                     | Convertir el modal en Recognition Lab y crear conjunto de evaluación, métricas de precisión/confianza y latencia.                                                 |
+> | 42–45 (Exercise Engine)                          | ✅/🟡  | Motores con `engine.ts`, renderizadores React, registro y generadores ya separados.                                                                                                     | Conservar contratos matemáticos y convertir el registro manual a manifiestos de datos versionados.                                                                |
+> | 46–56 (contenido matemático V1)                  | ✅/🟡  | Catálogo activo de 1.º y 2.º: 43 actividades compartidas, 4 específicas de 1.º y 15 de 2.º; incluye numeración, U/D/C, suma/resta, comparación, series, problemas, ábaco, tablas y más. | Migrar primero los motores alineados con V1; formalizar un layout posicional común. No todos los motores usan aún `DigitCell`.                                    |
+> | 57–69 (actividades, intentos y resumen)          | 🟡     | Registro de actividades, selección por curso, feedback, repetición y `SummaryScreen`.                                                                                                   | Reutilizar los patrones UI/lógica; crear modelo de actividad parametrizada, sesiones persistentes, intentos máximos y resúmenes de repetición.                    |
+> | 70–78 (offline)                                  | 🟡     | La app Electron funciona sin red; TF.js e IndexedDB ya se usan localmente.                                                                                                              | Implementar explícitamente service worker, caché de recursos, sesión y recuperación de red para la PWA.                                                           |
+> | 79–86 (profesor/administración)                  | 🟡/❌  | Inicio, perfiles/temas de aula y generador local; no hay autenticación.                                                                                                                 | Adaptar dashboard y temática; construir login, sesiones, actividades y controles docentes con autorización server-side.                                           |
+> | 87–92 (fichas)                                   | ✅/🟡  | `docxExporter`, cabecera/mascota, muchos renderizadores de ficha y prueba automatizada.                                                                                                 | Reutilizar generadores/renderizado; añadir plantilla A4 validada, hoja de soluciones y conversión/exportación PDF.                                                |
+> | 93–104 (alumnos, tareas y progreso)              | ❌     | No existe modelo de alumnos, entregas ni analítica individual.                                                                                                                          | Construir tras decisión DPD y arquitectura de datos; no almacenar datos personales en el prototipo migrado.                                                       |
+> | 105–108 (más cursos, materias y reconocimiento)  | 🟡     | Hay contenido hasta 2.º y motores reutilizables, pero tipos y registro aún están acoplados a 1.º/2.º y Matemáticas.                                                                     | Desacoplar currículo/contenido antes de ampliar; añadir una materia piloto después.                                                                               |
+> | 109–120 (operación/documentación)                | 🟡/❌  | Guías de instalación, pizarra, distribución, backup de muestras, changelog y checklist de producción.                                                                                   | Reutilizar y actualizar las guías para web; crear backup/restauración de datos, logs, monitorización, actualizaciones PWA, CI/CD, staging y producción.           |
+> | 121–145 (multi-colegio)                          | ❌     | Solo documentación conceptual y temática local.                                                                                                                                         | Diseñar `School/Organization`, roles, aislamiento, retención y onboarding en backend antes de abrir a otro centro.                                                |
+> | 146–150 (asignaciones e histórico)               | ❌     | No existen asignaciones ni registros persistentes de resultados.                                                                                                                        | Depende del bloque de alumnos, clases, API y seguridad.                                                                                                           |
+> | 151–162 (calidad y tests de lógica)              | ✅/🟡  | TypeScript, ESLint, Prettier/Husky, Vitest y 17 tests, principalmente de generadores, motores, UI y DOCX.                                                                               | Copiar configuración útil y ampliar cobertura de manifiestos, validadores y rutas críticas.                                                                       |
+> | 163–172 (tests DigitCell/offline/PDF)            | 🟡/❌  | Hay tests de motores y componentes; no hay pruebas específicas del canvas/preprocesado, IndexedDB/PWA ni PDF.                                                                           | Crear estas suites al extraer el núcleo web.                                                                                                                      |
+> | 173–184 (gates y deuda)                          | 🟡     | `release:verify` ejecuta tipado, lint, tests y build; hay auditoría de deuda/riesgos.                                                                                                   | Convertirlo en CI obligatorio, Definition of Done, registro de deuda y gates de release.                                                                          |
+> | 185–224 (ciberseguridad)                         | 🟡/❌  | Auditoría de riesgos y recomendaciones de privacidad; dependencia revisada según documentación. No existe backend/API.                                                                  | Reutilizar las políticas y threat model como punto de partida; implementar todos los controles de identidad, API, secretos, logs y copias en la plataforma nueva. |
+> | 225–239 (revisiones por hito)                    | 🟡     | Auditoría previa y checklist de producción son buenos antecedentes.                                                                                                                     | Adoptar los gates del roadmap como proceso real, con evidencia de pruebas y aprobación DPD cuando aplique.                                                        |
 >
 > ### Activos que deben migrarse primero
 >
@@ -2146,7 +2147,6 @@ Los pasos 1–239 del roadmap original se mantienen íntegros. Los bloques añad
 > Se parte de un buen prototipo local que debe transformarse en una plataforma:
 > conservar el dominio y el contenido, y reconstruir con intención la capa web,
 > datos, seguridad y operación.
-
 
 ## Versión
 
@@ -4643,7 +4643,6 @@ La V1 correcta es:
 
 > Una aplicación web/PWA de Matemáticas para 1.º y 2.º de Primaria que permite al profesor crear y ejecutar actividades en una pizarra digital táctil, donde los alumnos escriben directamente en casillas separadas para unidades, decenas y centenas. Cada casilla reconoce localmente un dígito del 0 al 9. Si la confianza del reconocimiento es igual o superior al 85 %, se acepta automáticamente; si no, se pregunta al profesor y la corrección alimenta una memoria adaptativa local. Los ejercicios se autocorrigen y el profesor controla por actividad si se muestra el resultado durante la actividad, si se muestra el resultado final y si se permite repetir los ejercicios fallados. La actividad puede ejecutarse offline y terminar con un resumen de resultados. El mismo motor genera posteriormente fichas PDF y queda preparado para incorporar alumnos, tareas, corrección y nuevas asignaturas.
 
-
 ---
 
 # Nuevos puntos del Roadmap — Multi-colegio, organización escolar y asignaciones
@@ -5576,7 +5575,6 @@ Asignaciones + alumnos + histórico
 ```
 
 La idea es que **el Colegio 1 sea nuestro primer tenant real**, no una excepción codificada especialmente para el proyecto.
-
 
 ---
 
@@ -7341,19 +7339,19 @@ Evitar que la arquitectura se degrade con el crecimiento.
 
 # BLOQUE 17 — MATRIZ PRÁCTICA DE CUÁNDO HACER CADA COSA
 
-| Momento | Tests | RGF | Calidad código | Deuda técnica | Seguridad |
-|---|---|---|---|---|---|
-| Antes de empezar | configurar | definir criterio | configurar lint/typecheck | crear registro | threat model inicial |
-| Cada feature crítica | unit/integration | **Red → Green → Refactor** | review | registrar/cerrar | revisar superficie afectada |
-| Cada módulo | suite del módulo | refactor si procede | architecture review | debt review | security review |
-| Primer vertical slice | E2E crítico | revisar ciclo | primera arquitectura real | revisar | security end-to-end |
-| Antes de MVP | regresión completa | refactor estructural | quality gate | resolver deuda crítica | security gate |
-| Antes de piloto | smoke + E2E | solo refactor con riesgo controlado | release gate | no dejar deuda crítica | security gate + backups |
-| Primer mes real | regresiones/incidencias | RGF para fixes importantes | revisión de salud | sprint de deuda | revisión de incidentes |
-| Antes de 2.º colegio | multi-tenant tests | refactor de escalabilidad | architecture review | debt review | pentest/revisión de aislamiento |
-| Antes de alumnos | E2E de tareas | RGF en auth/assignment | API review | revisar deuda | privacy + auth review |
-| Cada release | suite crítica | según cambios | CI verde | revisar nuevas entradas | security regression |
-| Gran versión | full regression | refactor estructural | architecture review | burn-down | security review |
+| Momento               | Tests                   | RGF                                 | Calidad código            | Deuda técnica           | Seguridad                       |
+| --------------------- | ----------------------- | ----------------------------------- | ------------------------- | ----------------------- | ------------------------------- |
+| Antes de empezar      | configurar              | definir criterio                    | configurar lint/typecheck | crear registro          | threat model inicial            |
+| Cada feature crítica  | unit/integration        | **Red → Green → Refactor**          | review                    | registrar/cerrar        | revisar superficie afectada     |
+| Cada módulo           | suite del módulo        | refactor si procede                 | architecture review       | debt review             | security review                 |
+| Primer vertical slice | E2E crítico             | revisar ciclo                       | primera arquitectura real | revisar                 | security end-to-end             |
+| Antes de MVP          | regresión completa      | refactor estructural                | quality gate              | resolver deuda crítica  | security gate                   |
+| Antes de piloto       | smoke + E2E             | solo refactor con riesgo controlado | release gate              | no dejar deuda crítica  | security gate + backups         |
+| Primer mes real       | regresiones/incidencias | RGF para fixes importantes          | revisión de salud         | sprint de deuda         | revisión de incidentes          |
+| Antes de 2.º colegio  | multi-tenant tests      | refactor de escalabilidad           | architecture review       | debt review             | pentest/revisión de aislamiento |
+| Antes de alumnos      | E2E de tareas           | RGF en auth/assignment              | API review                | revisar deuda           | privacy + auth review           |
+| Cada release          | suite crítica           | según cambios                       | CI verde                  | revisar nuevas entradas | security regression             |
+| Gran versión          | full regression         | refactor estructural                | architecture review       | burn-down               | security review                 |
 
 ---
 

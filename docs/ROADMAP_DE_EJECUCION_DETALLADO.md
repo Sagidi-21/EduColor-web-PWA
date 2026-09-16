@@ -56,6 +56,7 @@ Tener una base PWA pequeña, verificable y preparada para que el resto del traba
 La aplicación de `Colegio` es la referencia canónica de EduColor. La PWA **no rediseña su experiencia**: conserva sus pantallas, recursos, textos, flujos y funciones, sustituyendo únicamente las integraciones que dependen de Electron por equivalentes web cuando sea necesario.
 
 **Reglas de higiene visual:**
+
 - Los navegadores bloquean habitualmente el inicio automático de vídeo con audio. La PWA inicia el vídeo silenciado y si el navegador lo bloquea, muestra un botón. No se cambia el flujo.
 - La biblioteca completa de recursos originales se copiará a `src/assets` bajo demanda para que los renderizadores no usen sustitutos visuales.
 - Antes de migrar un motor, se registrarán sus recursos concretos; si no los consume ningún motor ni pantalla, no se incorporarán al repositorio PWA.

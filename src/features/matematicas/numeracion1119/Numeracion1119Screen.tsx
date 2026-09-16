@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { generateNumeracion1119Session, validateNumeracion1119Answer } from "../../../core/activities/numeracion1119";
+import {
+  generateNumeracion1119Session,
+  validateNumeracion1119Answer,
+} from "../../../core/activities/numeracion1119";
 import { playCorrect } from "../../../platform/audio";
 import type { EngineScreenProps } from "../engine-screens";
 import { ActivityHeader } from "../components/ActivityHeader";
@@ -129,7 +132,13 @@ export function Numeracion1119Screen({
   }, [session, total]);
 
   const handleRetry = useCallback(() => {
-    setSession((s) => ({ ...s, answerState: "idle", chosen: null, input: "", alreadyFailed: true }));
+    setSession((s) => ({
+      ...s,
+      answerState: "idle",
+      chosen: null,
+      input: "",
+      alreadyFailed: true,
+    }));
     setCanvasKey((k) => k + 1);
   }, []);
 
@@ -173,9 +182,7 @@ export function Numeracion1119Screen({
       setSession((s) => {
         const nextInput = s.input.length < 2 ? s.input + digit : s.input;
         const needsConfirm =
-          current?.type === "units"
-            ? nextInput.length >= 1
-            : nextInput.length >= 2;
+          current?.type === "units" ? nextInput.length >= 1 : nextInput.length >= 2;
         if (!needsConfirm) {
           return { ...s, input: nextInput };
         }

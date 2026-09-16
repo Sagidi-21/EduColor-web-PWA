@@ -9,10 +9,10 @@
 
 ## Aprobaciones
 
-| Ãmbito          | Responsable                      | CuÃ¡ndo interviene                                                      |
-| --------------- | -------------------------------- | ---------------------------------------------------------------------- |
-| PedagÃ³gico      | Director del colegio             | Cambios de alcance, currÃ­culo, metodologÃ­a y salida de piloto.         |
-| TÃ©cnico         | Salvador                         | Arquitectura, implementaciÃ³n, calidad, despliegue y seguridad tÃ©cnica. |
+| Ãmbito           | Responsable                        | CuÃ¡ndo interviene                                                       |
+| ---------------- | ---------------------------------- | ------------------------------------------------------------------------ |
+| PedagÃ³gico      | Director del colegio               | Cambios de alcance, currÃ­culo, metodologÃ­a y salida de piloto.         |
+| TÃ©cnico         | Salvador                           | Arquitectura, implementaciÃ³n, calidad, despliegue y seguridad tÃ©cnica. |
 | Feedback de 1.Âº | Profesor/a de MatemÃ¡ticas de 1.Âº | ValidaciÃ³n de actividades y experiencia de aula de 1.Âº.                |
 | Feedback de 2.Âº | Profesor/a de MatemÃ¡ticas de 2.Âº | ValidaciÃ³n de actividades y experiencia de aula de 2.Âº.                |
 
@@ -43,11 +43,11 @@ La deuda tÃ©cnica y las reservas de recursos se controlan en
 registro y el Ã¡mbito del cambio; la auditorÃ­a completa se reserva para el
 cierre de fase o una release.
 
-| Fecha      | DecisiÃ³n                                                                                                                | Motivo                                                                       |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| 2026-09-07 | Seguimiento mediante documentos en `docs`, sin tablero externo.                                                         | Reducir gestiÃ³n adicional y consumo de contexto.                             |
-| 2026-09-07 | Director como aprobaciÃ³n pedagÃ³gica; Salvador como aprobaciÃ³n tÃ©cnica.                                                  | Separar decisiÃ³n educativa y responsabilidad de implementaciÃ³n.              |
-| 2026-09-07 | Feedback de profesorado de MatemÃ¡ticas de 1.Âº y 2.Âº en las implementaciones.                                            | Validar el producto en los dos cursos objetivo de V1.                        |
+| Fecha      | DecisiÃ³n                                                                                                                   | Motivo                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 2026-09-07 | Seguimiento mediante documentos en `docs`, sin tablero externo.                                                             | Reducir gestiÃ³n adicional y consumo de contexto.                             |
+| 2026-09-07 | Director como aprobaciÃ³n pedagÃ³gica; Salvador como aprobaciÃ³n tÃ©cnica.                                                  | Separar decisiÃ³n educativa y responsabilidad de implementaciÃ³n.             |
+| 2026-09-07 | Feedback de profesorado de MatemÃ¡ticas de 1.Âº y 2.Âº en las implementaciones.                                             | Validar el producto en los dos cursos objetivo de V1.                         |
 | 2026-09-07 | Alcance V1 confirmado: MatemÃ¡ticas 1.Âº/2.Âº, profesorado, pizarra, fichas, sesiones offline y reconocimiento de dÃ­gitos. | Concentrar la primera versiÃ³n en el uso real de aula.                        |
-| 2026-09-07 | RevisiÃ³n tÃ©cnica de la Fase 0 aprobada.                                                                                 | CI verde y estructura, documentaciÃ³n y controles de calidad verificados.     |
-| 2026-09-07 | Electron queda como referencia canÃ³nica de paridad visual y funcional de la PWA.                                        | Evitar rediseÃ±ar o perder pantallas y funciones que ya operan en el colegio. |
+| 2026-09-07 | RevisiÃ³n tÃ©cnica de la Fase 0 aprobada.                                                                                   | CI verde y estructura, documentaciÃ³n y controles de calidad verificados.     |
+| 2026-09-07 | Electron queda como referencia canÃ³nica de paridad visual y funcional de la PWA.                                           | Evitar rediseÃ±ar o perder pantallas y funciones que ya operan en el colegio. |

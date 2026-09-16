@@ -22,10 +22,7 @@ function randInt(rng: () => number, min: number, max: number) {
   return min + Math.floor(rng() * (max - min + 1));
 }
 
-export function generateSession(
-  difficulty: ActivityDifficulty,
-  seed = 42
-): RectaExercise[] {
+export function generateSession(difficulty: ActivityDifficulty, seed = 42): RectaExercise[] {
   const rng = lcg(seed);
   const out: RectaExercise[] = [];
   const used = new Set<number>();

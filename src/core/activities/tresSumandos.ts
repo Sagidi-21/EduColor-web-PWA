@@ -30,10 +30,7 @@ function randInt(rng: () => number, min: number, max: number) {
   return min + Math.floor(rng() * (max - min + 1));
 }
 
-export function generateSession(
-  difficulty: ActivityDifficulty,
-  seed = 42
-): TresSumandosExercise[] {
+export function generateSession(difficulty: ActivityDifficulty, seed = 42): TresSumandosExercise[] {
   const cfg = CONFIGS[difficulty];
   const rng = lcg(seed);
   const seen = new Set<string>();

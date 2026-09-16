@@ -29,7 +29,10 @@ const STEPS_BY_DIFF: Record<string, number[]> = {
 };
 
 /** Genera una sesión de 10 ejercicios de series numéricas. */
-export function generateSeriesSession(seed: number, difficulty: ActivityDifficulty): SeriesExercise[] {
+export function generateSeriesSession(
+  seed: number,
+  difficulty: ActivityDifficulty,
+): SeriesExercise[] {
   const rng = lcg(seed);
   const count = 10;
   const out: SeriesExercise[] = [];
@@ -41,18 +44,11 @@ export function generateSeriesSession(seed: number, difficulty: ActivityDifficul
 
     const steps = STEPS_BY_DIFF[difficulty] ?? STEPS_BY_DIFF.easy;
     const step = steps[Math.floor(rng() * steps.length)];
-    const ascending =
-      difficulty === "easy" || difficulty === "medium" ? true : rng() > 0.35;
+    const ascending = difficulty === "easy" || difficulty === "medium" ? true : rng() > 0.35;
 
     const seriesLen = 5;
     const maxStart =
-      difficulty === "easy"
-        ? 8
-        : difficulty === "medium"
-          ? 14
-          : difficulty === "hard"
-            ? 49
-            : 79;
+      difficulty === "easy" ? 8 : difficulty === "medium" ? 14 : difficulty === "hard" ? 49 : 79;
     const start = randInt(rng, 0, Math.max(0, maxStart - step * (seriesLen - 1)));
     const base = ascending ? start : start + step * (seriesLen - 1);
 
@@ -75,8 +71,7 @@ export function generateSeriesSession(seed: number, difficulty: ActivityDifficul
       w++;
       const delta = randInt(rng, 1, 3) * step * (rng() > 0.5 ? 1 : -1);
       const cand = full[blankIndex] + delta;
-      if (cand >= 0 && cand <= 99 && String(cand) !== correctAnswer)
-        wrongs.add(String(cand));
+      if (cand >= 0 && cand <= 99 && String(cand) !== correctAnswer) wrongs.add(String(cand));
     }
     const options = [correctAnswer, ...Array.from(wrongs)].sort(() => rng() - 0.5);
 

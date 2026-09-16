@@ -62,7 +62,7 @@ function generateDistractors(correct: number, max: number, rng: () => number): n
 function generatePositions(
   count: number,
   randomLayout: boolean,
-  rng: () => number
+  rng: () => number,
 ): ObjectPosition[] {
   const cols = count <= 4 ? count : Math.ceil(Math.sqrt(count * 1.4));
   const rows = Math.ceil(count / cols);

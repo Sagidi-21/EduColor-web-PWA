@@ -40,7 +40,7 @@ export function ComparisonScreen({
   const [exerciseNumber, setExerciseNumber] = useState(1);
   const [exerciseSeed, setExerciseSeed] = useState(seed);
   const [choice, setChoice] = useState<ComparisonChoice | null>(null);
-  
+
   // Tracking para el resumen
   const [startTime, setStartTime] = useState(() => Date.now());
   const [correctCount, setCorrectCount] = useState(0);
@@ -70,11 +70,11 @@ export function ComparisonScreen({
       });
       return;
     }
-    
+
     if (correct && isFirstAttempt) {
       setCorrectCount((c) => c + 1);
     }
-    
+
     setChoice(null);
     setIsFirstAttempt(true);
     setExerciseSeed((s) => s + 1);
@@ -120,16 +120,16 @@ export function ComparisonScreen({
 
   return (
     <div className="cmp">
-    <ActivityHeader
-      onExit={onExit}
-      exitLabel="← Salir"
-      gradeTitle={gradeTitle}
-      className={className}
-      unitTitle={activity.title}
-      difficultyStars={difficultyStars}
-      mascotUrl={mascotUrl}
-      progress={`${exerciseNumber} / ${TOTAL_EXERCISES}`}
-    />
+      <ActivityHeader
+        onExit={onExit}
+        exitLabel="← Salir"
+        gradeTitle={gradeTitle}
+        className={className}
+        unitTitle={activity.title}
+        difficultyStars={difficultyStars}
+        mascotUrl={mascotUrl}
+        progress={`${exerciseNumber} / ${TOTAL_EXERCISES}`}
+      />
 
       {/* Área principal: dos cajas visuales centradas + balanza entre ellas */}
       <div className="cmp__arena">
@@ -153,7 +153,9 @@ export function ComparisonScreen({
         </div>
 
         {/* Balanza entre las cajas */}
-        <div className="cmp__scale" aria-hidden="true">⚖️</div>
+        <div className="cmp__scale" aria-hidden="true">
+          ⚖️
+        </div>
 
         {/* Caja derecha */}
         <div
@@ -210,9 +212,7 @@ export function ComparisonScreen({
         </button>
       </div>
 
-      {evaluated && !correct && (
-        <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-      )}
+      {evaluated && !correct && <ActionButtons onRetry={handleRetry} onNext={handleNext} />}
     </div>
   );
 }

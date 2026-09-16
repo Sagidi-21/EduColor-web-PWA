@@ -260,8 +260,7 @@
 /* -- Layout vertical ------------------------------------------- */
 .ops__vertical {
   display: grid;
-  grid-template-columns:
-    clamp(44px, 6vw, 64px) repeat(var(--ncols, 1), clamp(110px, 16vw, 180px));
+  grid-template-columns: clamp(44px, 6vw, 64px) repeat(var(--ncols, 1), clamp(110px, 16vw, 180px));
   row-gap: 0;
   column-gap: 4px;
   align-items: center;
@@ -412,7 +411,6 @@
 }
 
 @keyframes wrongShake {
-
   0%,
   100% {
     transform: translateX(0);
@@ -436,7 +434,6 @@
 }
 
 @keyframes blink {
-
   0%,
   100% {
     opacity: 1;

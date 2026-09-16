@@ -13,7 +13,12 @@ export interface SummaryProps {
   gradeLabel: string;
 }
 
-export function SummaryScreen({ result, onRestart, onExit, gradeLabel }: SummaryProps): JSX.Element {
+export function SummaryScreen({
+  result,
+  onRestart,
+  onExit,
+  gradeLabel,
+}: SummaryProps): JSX.Element {
   const pct = Math.round((result.correct / result.total) * 100);
   const mins = Math.floor(result.duration / 60000);
   const secs = Math.floor((result.duration % 60000) / 1000);

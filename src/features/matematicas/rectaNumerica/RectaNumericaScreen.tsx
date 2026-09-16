@@ -53,7 +53,7 @@ export function RectaNumericaScreen({
   const xOf = useCallback((v: number) => X0 + (v / max) * W, [max]);
   const valueAt = useCallback(
     (x: number) => Math.max(0, Math.min(max, Math.round(((x - X0) / W) * max))),
-    [max]
+    [max],
   );
 
   const handleNext = useCallback(() => {
@@ -144,7 +144,7 @@ export function RectaNumericaScreen({
         y2={LINE_Y + (major ? 18 : 9)}
         stroke={major ? "#475569" : "#94a3b8"}
         strokeWidth={major ? 3 : 1.5}
-      />
+      />,
     );
     if (major)
       ticks.push(
@@ -158,7 +158,7 @@ export function RectaNumericaScreen({
           textAnchor="middle"
         >
           {v}
-        </text>
+        </text>,
       );
   }
 

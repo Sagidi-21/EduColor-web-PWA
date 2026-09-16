@@ -113,8 +113,8 @@ async function finetuneIfNeeded(model: tf.LayersModel, force: boolean = false): 
           const gray = new Float32Array(s.pixels.length);
           for (let i = 0; i < s.pixels.length; i++) gray[i] = s.pixels[i] / 255;
           return tf.tensor3d(Array.from(gray), [PROC_SIZE, PROC_SIZE, 1]);
-        })
-      )
+        }),
+      ),
     );
     const oneHot = new Float32Array(N * 10);
     for (let i = 0; i < N; i++) oneHot[i * 10 + samples[i].digit] = 1.0;
@@ -140,7 +140,7 @@ async function finetuneIfNeeded(model: tf.LayersModel, force: boolean = false): 
     localStorage.setItem(LAST_COUNT, String(total));
     localStorage.setItem(FINETUNE_TS_KEY, new Date().toISOString());
     console.log(
-      `[digitModel] Fine-tuning completado. Accuracy: ${lastAcc !== null ? (lastAcc * 100).toFixed(1) + "%" : "N/A"}`
+      `[digitModel] Fine-tuning completado. Accuracy: ${lastAcc !== null ? (lastAcc * 100).toFixed(1) + "%" : "N/A"}`,
     );
 
     // Backup: descarga de archivo (PWA — no hay acceso a disco del servidor)
@@ -222,7 +222,7 @@ export function getModelMetrics(): { accuracy: number | null; lastFinetune: stri
  * Devuelve null si el modelo no está disponible.
  */
 export async function predict(
-  imageData: ImageData
+  imageData: ImageData,
 ): Promise<{ digit: number; confidence: number } | null> {
   if (!_model) return null;
 

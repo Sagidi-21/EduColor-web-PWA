@@ -133,9 +133,7 @@ export function SeriesScreen({
       />
 
       <div className={`ser__stage ${stageClass}`}>
-        {session.answerState === "correct" && (
-          <div className="ser__cheer">¡Correcto! ⭐</div>
-        )}
+        {session.answerState === "correct" && <div className="ser__cheer">¡Correcto! ⭐</div>}
 
         <p className="ser__question">
           ¿Qué número falta? <span className="ser__dir">({dir})</span>

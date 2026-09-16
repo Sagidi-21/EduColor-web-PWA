@@ -13,16 +13,16 @@ export interface IgualdadExercise {
   imageUrl: string;
 }
 
-export function generateSession(
-  difficulty: ActivityDifficulty,
-  seed: number
-): IgualdadExercise[] {
+export function generateSession(difficulty: ActivityDifficulty, seed: number): IgualdadExercise[] {
   const rng = lcg(seed);
   const seen = new Set<string>();
   const exercises: IgualdadExercise[] = [];
   let attempts = 0;
 
-  const CONFIGS: Record<ActivityDifficulty, { type: IgualdadType | "mixed"; max: number; count: number }> = {
+  const CONFIGS: Record<
+    ActivityDifficulty,
+    { type: IgualdadType | "mixed"; max: number; count: number }
+  > = {
     easy: { type: "resultado", max: 5, count: 10 },
     medium: { type: "sumando", max: 10, count: 10 },
     hard: { type: "descomposicion", max: 10, count: 10 },
@@ -101,7 +101,15 @@ export function generateSession(
         if (da + db !== c) distSet.add(ds); // suma diferente = distractor
       }
       const options = shuffle([...distSet].slice(0, 4) as string[], rng);
-      exercises.push({ type: "descomposicion", a, b, c, options, answer: correctStr, imageUrl: "" });
+      exercises.push({
+        type: "descomposicion",
+        a,
+        b,
+        c,
+        options,
+        answer: correctStr,
+        imageUrl: "",
+      });
     }
   }
 

@@ -132,7 +132,7 @@ function randInt(rng: () => number, min: number, max: number): number {
 export function generateSession(
   op: OperationType,
   difficulty: "easy" | "medium" | "hard" | "expert",
-  seed: number
+  seed: number,
 ): OperationsExercise[] {
   const cfg = CONFIGS[op][difficulty];
   const rng = lcg(seed);
@@ -183,8 +183,7 @@ export function validateAnswer(ex: OperationsExercise, input: string): boolean {
 
 export function showImageSupport(
   op: OperationType,
-  difficulty: "easy" | "medium" | "hard" | "expert"
+  difficulty: "easy" | "medium" | "hard" | "expert",
 ): boolean {
   return CONFIGS[op][difficulty].showImage;
 }
-

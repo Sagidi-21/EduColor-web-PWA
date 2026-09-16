@@ -115,7 +115,9 @@
   border: 3px solid #e2e8f0;
   border-radius: 12px;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
   height: clamp(50px, 7vw, 70px);
 }
 
@@ -146,8 +148,13 @@
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 /* ── Solution template ─────────────────────────────────── */
@@ -214,7 +221,9 @@
   border-radius: 20px;
   background: transparent;
   cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
+  transition:
+    background 0.15s,
+    transform 0.1s;
 }
 
 .prob__theme-card:hover {

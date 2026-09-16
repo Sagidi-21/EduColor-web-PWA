@@ -17,7 +17,12 @@
  */
 
 import { useRef, useEffect, useCallback, useReducer, useState } from "react";
-import { subscribeStatus, getStatus, predict, CONFIDENCE_THRESHOLD } from "../../../platform/digit/digitModel";
+import {
+  subscribeStatus,
+  getStatus,
+  predict,
+  CONFIDENCE_THRESHOLD,
+} from "../../../platform/digit/digitModel";
 import { saveSample } from "../../../platform/digit/sampleStore";
 import TeacherConfirmPanel from "./TeacherConfirmPanel";
 import "./DigitCell.css";
@@ -33,14 +38,7 @@ interface Props {
 
 const CANVAS_SIZE = 240;
 
-export function DigitCell({
-  isActive,
-  onActivate,
-  onConfirm,
-  onClear,
-  state,
-  value,
-}: Props) {
+export function DigitCell({ isActive, onActivate, onConfirm, onClear, state, value }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
   const hasStrokes = useRef(false);
@@ -148,7 +146,7 @@ export function DigitCell({
       setConfirmData(null);
       onConfirm(digit);
     },
-    [confirmData, onConfirm]
+    [confirmData, onConfirm],
   );
 
   const handleTeacherRetry = useCallback(() => {
@@ -186,9 +184,7 @@ export function DigitCell({
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerLeave={onPointerUp}
-          
-          
-          
+
           style={{ touchAction: "none" }}
         />
 
@@ -229,4 +225,3 @@ export function DigitCell({
     </>
   );
 }
-

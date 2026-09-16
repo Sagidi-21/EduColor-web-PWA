@@ -80,10 +80,46 @@ const THEMED_NOUNS: Record<Theme, Noun[]> = {
 };
 
 const THEMED_PLACES: Record<Theme, string[]> = {
-  deportes: ["el parque", "el campo de fútbol", "la piscina", "la cancha", "la carrera", "el polideportivo", "el estadio", "el gimnasio"],
-  animales: ["el jardín", "el parque", "el bosque", "la granja", "el estanque", "el campo", "el zoo", "la pradera"],
-  clase: ["la clase", "el aula", "la mochila", "el estuche", "la mesa", "el cajón", "la estantería", "el recreo"],
-  naturaleza: ["el jardín", "el parque", "el bosque", "la cesta", "el campo", "el huerto", "el prado", "el árbol"],
+  deportes: [
+    "el parque",
+    "el campo de fútbol",
+    "la piscina",
+    "la cancha",
+    "la carrera",
+    "el polideportivo",
+    "el estadio",
+    "el gimnasio",
+  ],
+  animales: [
+    "el jardín",
+    "el parque",
+    "el bosque",
+    "la granja",
+    "el estanque",
+    "el campo",
+    "el zoo",
+    "la pradera",
+  ],
+  clase: [
+    "la clase",
+    "el aula",
+    "la mochila",
+    "el estuche",
+    "la mesa",
+    "el cajón",
+    "la estantería",
+    "el recreo",
+  ],
+  naturaleza: [
+    "el jardín",
+    "el parque",
+    "el bosque",
+    "la cesta",
+    "el campo",
+    "el huerto",
+    "el prado",
+    "el árbol",
+  ],
 };
 
 interface Slot {
@@ -181,7 +217,7 @@ const COUNT = 10;
 export function generateSession(
   difficulty: ActivityDifficulty,
   seed = 42,
-  theme: Theme = "deportes"
+  theme: Theme = "deportes",
 ): ProblemaExercise[] {
   const rng = lcg(seed);
   const nouns = shuffle(THEMED_NOUNS[theme], rng);
@@ -228,7 +264,13 @@ export function generateSession(
     const pregs = op === "suma" ? PREGUNTAS_SUMA : PREGUNTAS_RESTA;
     const pItem = pregs[Math.floor(rng() * pregs.length)];
     const intro = fill(pickSlot(INTROS, noun.type, rng), noun, place, a, b);
-    const evento = fill(pickSlot(op === "suma" ? EVENTOS_SUMA : EVENTOS_RESTA, noun.type, rng), noun, place, a, b);
+    const evento = fill(
+      pickSlot(op === "suma" ? EVENTOS_SUMA : EVENTOS_RESTA, noun.type, rng),
+      noun,
+      place,
+      a,
+      b,
+    );
 
     out.push({
       story: `${intro} ${evento}`,

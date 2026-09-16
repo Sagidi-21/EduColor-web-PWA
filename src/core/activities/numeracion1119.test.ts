@@ -32,7 +32,7 @@ describe("generateNumeracion1119Session", () => {
 
   it("en expert alterna entre identify, units y sequence", () => {
     const session = generateNumeracion1119Session(42, "expert");
-    const types = session.map(ex => ex.type);
+    const types = session.map((ex) => ex.type);
     expect(types).toContain("identify");
     expect(types).toContain("units");
     expect(types).toContain("sequence");

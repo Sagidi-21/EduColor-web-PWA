@@ -24,7 +24,12 @@ export function SplashScreen({ onDone }: { onDone: () => void }) {
   }, [onDone]);
 
   return (
-    <div className="splash" onClick={() => { if (ended) onDone(); }}>
+    <div
+      className="splash"
+      onClick={() => {
+        if (ended) onDone();
+      }}
+    >
       <video
         ref={video}
         className="splash__video"

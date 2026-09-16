@@ -22,7 +22,10 @@
   background: #f8faff;
   color: var(--color-primary-dark, #1e293b);
   cursor: pointer;
-  transition: background 0.12s, transform 0.12s, border-color 0.12s;
+  transition:
+    background 0.12s,
+    transform 0.12s,
+    border-color 0.12s;
   user-select: none;
   -webkit-user-select: none;
   display: flex;

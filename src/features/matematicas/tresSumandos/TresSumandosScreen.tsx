@@ -66,7 +66,7 @@ export function TresSumandosScreen({
         correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
       }));
     },
-    [current]
+    [current],
   );
 
   const handleCanvasConfirm = useCallback(
@@ -77,7 +77,7 @@ export function TresSumandosScreen({
       else submitDigits(nd);
       setCanvasKey((k) => k + 1);
     },
-    [session.digits, submitDigits]
+    [session.digits, submitDigits],
   );
 
   const handleNumpadDigit = (d: string) => {
@@ -198,9 +198,7 @@ export function TresSumandosScreen({
       </ActivityHeader>
 
       <div className={`ops__stage ${stageClass}`}>
-        {session.answerState === "correct" && (
-          <div className="ops__celebration">¡Muy bien! ⭐</div>
-        )}
+        {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
 
         <div className="ops__exercise">
           {showImg && current.imageUrl && (
@@ -275,11 +273,7 @@ export function TresSumandosScreen({
           />
         )}
         {session.answerState === "wrong" && (
-          <WrongFeedback
-            correctAnswer={correctStr}
-            onNext={handleNext}
-            onRetry={handleRetry}
-          />
+          <WrongFeedback correctAnswer={correctStr} onNext={handleNext} onRetry={handleRetry} />
         )}
       </footer>
     </div>

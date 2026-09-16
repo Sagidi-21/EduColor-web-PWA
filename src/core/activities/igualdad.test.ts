@@ -32,7 +32,7 @@ describe("igualdad generator", () => {
           easy: ["resultado"],
           medium: ["resultado", "sumando"],
           hard: ["resultado", "sumando", "descomposicion"],
-          expert: ["resultado", "sumando", "descomposicion"]
+          expert: ["resultado", "sumando", "descomposicion"],
         }[difficulty];
 
         exercises.forEach((ex) => {

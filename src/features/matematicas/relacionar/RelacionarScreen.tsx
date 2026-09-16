@@ -60,7 +60,7 @@ function ScatteredImages({ pair }: { pair: RelacionarPair }) {
           <img key={i} src={url} className="rel__obj-img" alt="" />
         ) : (
           <span key={i} className="rel__obj-empty" />
-        )
+        ),
       )}
     </div>
   );
@@ -79,7 +79,7 @@ export function RelacionarScreen({
   difficultyStars,
 }: EngineScreenProps) {
   const [rounds, setRounds] = useState<RelacionarSession[]>(() =>
-    generateSession(difficulty, seed, TOTAL_ROUNDS)
+    generateSession(difficulty, seed, TOTAL_ROUNDS),
   );
   const [roundIdx, setRoundIdx] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
@@ -238,14 +238,7 @@ export function RelacionarScreen({
         <div className="rel__columns" ref={containerRef}>
           <svg className="rel__svg" aria-hidden="true">
             {lines.map((l) => (
-              <line
-                key={l.id}
-                x1={l.x1}
-                y1={l.y1}
-                x2={l.x2}
-                y2={l.y2}
-                className="rel__line"
-              />
+              <line key={l.id} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} className="rel__line" />
             ))}
           </svg>
 

@@ -108,7 +108,7 @@ export function IgualdadScreen({
         correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
       }));
     },
-    [session, current]
+    [session, current],
   );
 
   const handleRetry = useCallback(() => {
@@ -171,8 +171,8 @@ export function IgualdadScreen({
     session.answerState === "correct"
       ? "igl__stage--correct"
       : session.answerState === "wrong"
-      ? "igl__stage--wrong"
-      : "";
+        ? "igl__stage--wrong"
+        : "";
 
   return (
     <div className="igl">
@@ -187,9 +187,7 @@ export function IgualdadScreen({
       />
 
       <div className={`igl__stage ${stageClass}`}>
-        {session.answerState === "correct" && (
-          <div className="igl__celebration">¡Muy bien! 🎉</div>
-        )}
+        {session.answerState === "correct" && <div className="igl__celebration">¡Muy bien! 🎉</div>}
         {current.type === "resultado" && current.imageUrl && (
           <div className="igl__img-row">
             {Array.from({ length: current.a }, (_, i) => (

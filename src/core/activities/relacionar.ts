@@ -88,7 +88,7 @@ function generateSingleRound(difficulty: ActivityDifficulty, rng: () => number):
 export function generateSession(
   difficulty: ActivityDifficulty,
   seed = 42,
-  totalRounds = 5
+  totalRounds = 5,
 ): RelacionarSession[] {
   const rng = makeRng(seed);
   const rounds: RelacionarSession[] = [];

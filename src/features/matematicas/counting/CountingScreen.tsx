@@ -65,7 +65,7 @@ export function CountingScreen({
         correctCount: isCorrect && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
       }));
     },
-    [session.answerState, current]
+    [session.answerState, current],
   );
 
   const handleRetry = useCallback(() => {
@@ -154,7 +154,7 @@ export function CountingScreen({
               src={current.imageUrl}
               alt={current.objectLabel}
               className="counting__object"
-              style={{ 
+              style={{
                 left: `${pos.x}%`,
                 top: `${pos.y}%`,
                 transform: `translate(-50%, -50%) rotate(${pos.rotation}deg) scale(${pos.scale})`,

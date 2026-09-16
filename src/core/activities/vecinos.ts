@@ -37,13 +37,7 @@ export function generateVecinosSession(
     tries++;
 
     const maxN =
-      difficulty === "easy"
-        ? 9
-        : difficulty === "medium"
-          ? 19
-          : difficulty === "hard"
-            ? 59
-            : 99;
+      difficulty === "easy" ? 9 : difficulty === "medium" ? 19 : difficulty === "hard" ? 59 : 99;
     const n = randInt(rng, 2, maxN - 1);
 
     let type: VecinosQuestionType;

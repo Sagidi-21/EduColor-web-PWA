@@ -20,6 +20,7 @@ No se debe crear una segunda implementación equivalente sin justificarlo.
 ## 2. El código original es la fuente de verdad funcional [V1] · CRÍTICA
 
 Cuando exista una discrepancia entre:
+
 - una idea nueva del agente;
 - una implementación nueva;
 - y el comportamiento existente;
@@ -29,6 +30,7 @@ la implementación existente será la referencia, salvo que el roadmap indique e
 ## 3. No borrar archivos sin autorización [V1] · CRÍTICA
 
 El agente no debe eliminar:
+
 - motores;
 - generadores;
 - validators;
@@ -45,6 +47,7 @@ solo porque ya exista una versión nueva. Primero debe demostrar que el elemento
 Un refactor que cambie el resultado educativo no es un refactor aceptable.
 
 Especialmente protegidos:
+
 - generación;
 - semillas;
 - dificultad;
@@ -57,6 +60,7 @@ Especialmente protegidos:
 ## 5. Adaptar Electron, no copiar Electron [V1] · CRÍTICA
 
 No copiar al frontend web:
+
 - IPC;
 - `window.api`;
 - APIs específicas de Electron;
@@ -68,6 +72,7 @@ Sustituirlos mediante la API web correspondiente (Browser API, IndexedDB, etc.) 
 ## 6. No introducir backend donde no sea necesario [V1] · ALTA
 
 La lógica que pueda ejecutarse localmente y no necesite datos del servidor debe permanecer local, especialmente:
+
 - reconocimiento;
 - validación educativa local;
 - ejecución offline;
@@ -84,6 +89,7 @@ No crear una arquitectura genérica gigantesca “por si algún día”. Primero
 ## 9. Documentar antes de hacer una migración compleja [V1] · CRÍTICA
 
 Antes de modificar un módulo crítico, el agente debe indicar:
+
 1. qué hace actualmente;
 2. qué dependencias tiene;
 3. qué se va a conservar;
@@ -109,7 +115,7 @@ No cambiar colores, estructura, navegación, textos, posiciones, tamaños o fluj
 
 ## 14. El agente debe detenerse ante ambigüedad crítica [V1] · ALTA
 
-Si no puede determinar si una funcionalidad existente debe conservarse o cambiarse, o si tiene cualquier tipo de duda sobre cómo proceder, **no debe inventar una solución silenciosamente**. 
+Si no puede determinar si una funcionalidad existente debe conservarse o cambiarse, o si tiene cualquier tipo de duda sobre cómo proceder, **no debe inventar una solución silenciosamente**.
 
 Debe detenerse inmediatamente y generar una **batería de preguntas clara y estructurada** para que el usuario pueda resolverlas. Debe dejar constancia de la ambigüedad, el impacto, las opciones y solicitar decisión antes de continuar.
 

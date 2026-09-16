@@ -35,7 +35,7 @@ const COUNTS: Record<ActivityDifficulty, number> = { easy: 10, medium: 10, hard:
 
 export function generateNumeracion1119Session(
   seed: number,
-  difficulty: ActivityDifficulty
+  difficulty: ActivityDifficulty,
 ): NumExercise[] {
   const rng = lcg(seed);
   const count = COUNTS[difficulty];

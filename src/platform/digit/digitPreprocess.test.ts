@@ -30,18 +30,22 @@ describe("preprocessGray", () => {
   it("centra el contenido por centro de masa", () => {
     // Dígito en la esquina superior izquierda
     const gray = new Float32Array(32 * 32).fill(1.0);
-    for (let y = 0; y < 5; y++)
-      for (let x = 0; x < 5; x++) gray[y * 32 + x] = 0.0;
+    for (let y = 0; y < 5; y++) for (let x = 0; x < 5; x++) gray[y * 32 + x] = 0.0;
     const result = preprocessGray(gray, 32, 32);
     // El centro de masa debería estar cerca del centro de la imagen resultante
-    let mx = 0, my = 0, mt = 0;
+    let mx = 0,
+      my = 0,
+      mt = 0;
     for (let y = 0; y < PROC_SIZE; y++)
       for (let x = 0; x < PROC_SIZE; x++) {
         const m = 1 - result[y * PROC_SIZE + x];
-        mx += m * x; my += m * y; mt += m;
+        mx += m * x;
+        my += m * y;
+        mt += m;
       }
     if (mt > 0) {
-      const cx = mx / mt, cy = my / mt;
+      const cx = mx / mt,
+        cy = my / mt;
       const center = (PROC_SIZE - 1) / 2;
       // El centro de masa debe estar a menos de 4 px del centro
       expect(Math.abs(cx - center)).toBeLessThan(4);

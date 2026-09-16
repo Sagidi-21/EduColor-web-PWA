@@ -74,7 +74,7 @@ export async function saveSample(
   digit: number,
   imageData: ImageData,
   source: SampleSource = "teacher",
-  confidence: number = 0
+  confidence: number = 0,
 ): Promise<void> {
   const pixels = processToGray(imageData);
   const db = await getDB();

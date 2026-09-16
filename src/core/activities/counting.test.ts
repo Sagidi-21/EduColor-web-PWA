@@ -130,7 +130,7 @@ describe("counting/engine", () => {
           randomLayout: false,
           difficulty: "easy",
         },
-        42
+        42,
       );
       const ex = exercises[0];
       expect(validateAnswer(ex, ex.correctAnswer)).toBe(true);
@@ -145,7 +145,7 @@ describe("counting/engine", () => {
           randomLayout: false,
           difficulty: "easy",
         },
-        42
+        42,
       );
       const ex = exercises[0];
       const wrong = ex.correctAnswer === 3 ? 5 : 3;

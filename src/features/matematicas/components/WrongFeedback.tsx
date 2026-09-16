@@ -9,9 +9,7 @@ export interface WrongFeedbackProps {
 export function WrongFeedback({ correctAnswer, onNext, onRetry }: WrongFeedbackProps): JSX.Element {
   return (
     <div className="wrong-feedback">
-      {correctAnswer && (
-        <div className="wrong-feedback__answer">Respuesta: {correctAnswer}</div>
-      )}
+      {correctAnswer && <div className="wrong-feedback__answer">Respuesta: {correctAnswer}</div>}
       <div className="wrong-feedback__actions">
         <button
           type="button"

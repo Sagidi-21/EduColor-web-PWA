@@ -14,7 +14,9 @@ const VecinosScreen = lazy(() =>
   import("./vecinos/VecinosScreen").then((module) => ({ default: module.VecinosScreen })),
 );
 const Numeracion1119Screen = lazy(() =>
-  import("./numeracion1119/Numeracion1119Screen").then((module) => ({ default: module.Numeracion1119Screen })),
+  import("./numeracion1119/Numeracion1119Screen").then((module) => ({
+    default: module.Numeracion1119Screen,
+  })),
 );
 const SumaScreen = lazy(() =>
   import("./operations/SumaScreen").then((module) => ({ default: module.SumaScreen })),
@@ -36,7 +38,9 @@ const RelacionarScreen = lazy(() =>
   import("./relacionar/RelacionarScreen").then((module) => ({ default: module.RelacionarScreen })),
 );
 const RectaNumericaScreen = lazy(() =>
-  import("./rectaNumerica/RectaNumericaScreen").then((module) => ({ default: module.RectaNumericaScreen })),
+  import("./rectaNumerica/RectaNumericaScreen").then((module) => ({
+    default: module.RectaNumericaScreen,
+  })),
 );
 
 export interface EngineScreenProps {
