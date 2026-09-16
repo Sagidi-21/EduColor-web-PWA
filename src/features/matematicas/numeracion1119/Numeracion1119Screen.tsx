@@ -11,18 +11,12 @@ import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { useInputMode } from "../../shared/hooks/useInputMode";
 import InputModeToggle from "../../shared/components/InputModeToggle";
 import { DigitCell } from "../../shared/DigitCell";
+import { Numpad } from "../../shared/components/Numpad";
 
 import "../operations/OperationsScreen.css";
 import "./Numeracion1119Screen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
-
-const NUMPAD = [
-  ["7", "8", "9"],
-  ["4", "5", "6"],
-  ["1", "2", "3"],
-  ["?", "0", "?"],
-];
 
 function TensBlock({ number }: { number: number }) {
   const units = number % 10;
@@ -31,37 +25,6 @@ function TensBlock({ number }: { number: number }) {
       <div className="num__decena">10</div>
       {Array.from({ length: units }, (_, i) => (
         <div key={i} className="num__unit-dot" />
-      ))}
-    </div>
-  );
-}
-
-function Numpad({
-  onDigit,
-  onDelete,
-  onConfirm,
-  disabled,
-}: {
-  onDigit: (d: string) => void;
-  onDelete: () => void;
-  onConfirm: () => void;
-  disabled: boolean;
-}) {
-  return (
-    <div className="ops__numpad">
-      {NUMPAD.map((row, r) => (
-        <div key={r} className="ops__numpad-row">
-          {row.map((k) => (
-            <button
-              key={k}
-              className={`ops__key ${k === "?" ? "ops__key--confirm" : ""} ${k === "?" ? "ops__key--del" : ""}`}
-              onClick={() => (k === "?" ? onDelete() : k === "?" ? onConfirm() : onDigit(k))}
-              disabled={disabled}
-            >
-              {k}
-            </button>
-          ))}
-        </div>
       ))}
     </div>
   );
