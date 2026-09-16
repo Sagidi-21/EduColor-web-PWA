@@ -58,3 +58,16 @@ export function playCorrect(): void {
     /* sin dispositivo de audio */
   }
 }
+
+// Tono grave descendente G3-C3 (severo, corto) para respuesta incorrecta
+export function playWrong(): void {
+  try {
+    const c = getCtx();
+    if (!c) return;
+    const now = c.currentTime;
+    tone(196, now, 0.2); // G3
+    tone(131, now + 0.15, 0.28); // C3
+  } catch {
+    /* sin dispositivo de audio */
+  }
+}

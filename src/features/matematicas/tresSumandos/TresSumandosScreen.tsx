@@ -4,13 +4,13 @@ import {
   validateAnswer,
   showImageSupport,
 } from "../../../core/activities/tresSumandos";
-import { playCorrect } from "../../../platform/audio";
+import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { Numpad } from "../../shared/components/Numpad";
 import InputModeToggle from "../../shared/components/InputModeToggle";
-import { DigitCell } from "../../shared/DigitCell";
+import { LazyDigitCell } from "../../shared/DigitCell";
 import { WrongFeedback } from "../components/WrongFeedback";
 import { useInputMode } from "../../shared/hooks/useInputMode";
 import "../../operations/OperationsScreen.css";
@@ -59,7 +59,7 @@ export function TresSumandosScreen({
     (digits: string[]) => {
       if (digits.some((d) => d === "")) return;
       const ok = validateAnswer(current, digits.join(""));
-      if (ok) playCorrect();
+      playFeedback(ok);
       setSession((s) => ({
         ...s,
         answerState: ok ? "correct" : "wrong",
@@ -225,7 +225,7 @@ export function TresSumandosScreen({
                 const isActiveBox = session.answerState === "idle" && session.activeDigit === i;
                 if (mode === "canvas" && isActiveBox) {
                   return (
-                    <DigitCell
+                    <LazyDigitCell
                       key={`dab-${session.activeDigit}-${canvasKey}`}
                       isActive={true}
                       onActivate={() => {}}

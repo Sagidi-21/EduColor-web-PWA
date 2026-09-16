@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { generateSeriesSession, validateSeriesAnswer } from "../../../core/activities/series";
-import { playCorrect } from "../../../platform/audio";
+import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { ActivityHeader } from "../components/ActivityHeader";
@@ -81,7 +81,7 @@ export function SeriesScreen({
     (val: string) => {
       if (session.answerState !== "idle") return;
       const ok = validateSeriesAnswer(current, val);
-      if (ok) playCorrect();
+      playFeedback(ok);
       setSession((s) => ({
         ...s,
         answerState: ok ? "correct" : "wrong",

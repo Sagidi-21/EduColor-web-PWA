@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { generateVecinosSession, validateVecinosAnswer } from "../../../core/activities/vecinos";
-import { playCorrect } from "../../../platform/audio";
+import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { ActivityHeader } from "../components/ActivityHeader";
@@ -80,7 +80,7 @@ export function VecinosScreen({
     (val: string) => {
       if (session.answerState !== "idle") return;
       const ok = validateVecinosAnswer(current, val);
-      if (ok) playCorrect();
+      playFeedback(ok);
       setSession((s) => ({
         ...s,
         answerState: ok ? "correct" : "wrong",

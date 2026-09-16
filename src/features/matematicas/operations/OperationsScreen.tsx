@@ -6,8 +6,8 @@ import type {
   SessionResult,
 } from "../../../core/activities/operations";
 import type { EngineScreenProps } from "../engine-screens";
-import { playCorrect } from "../../../platform/audio";
-import { DigitCell } from "../../shared/DigitCell/DigitCell";
+import { playFeedback } from "../../shared/audioFeedback";
+import { LazyDigitCell } from "../../shared/DigitCell";
 import { SummaryScreen } from "../components/SummaryScreen";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { ActionButtons } from "../components/ActivityActionButtons";
@@ -92,7 +92,7 @@ export function OperationsScreen({
     (newDigits: string[]) => {
       const answer = parseInt(newDigits.join(""), 10);
       const isCorrect = !isNaN(answer) && answer === current.answer;
-      if (isCorrect) playCorrect();
+      playFeedback(isCorrect);
       setSession((s) => ({
         ...s,
         digits: newDigits,
@@ -290,11 +290,11 @@ export function OperationsScreen({
 
               if (mode === "canvas" && isActiveBox) {
                 return (
-                  <DigitCell
+                  <LazyDigitCell
                     key={`dab-${session.activeDigit}-${canvasKey}`}
                     isActive={true}
                     onActivate={() => {}}
-                    onConfirm={(d) => {
+                    onConfirm={(d: string) => {
                       handleCanvasConfirm(i, d);
                       setCanvasKey((k) => k + 1);
                     }}

@@ -2,12 +2,12 @@ import { useEffect, useCallback, useState } from "react";
 import { generateSession } from "../../../core/activities/problemas";
 import type { ProblemaExercise, SessionResult, Theme } from "../../../core/activities/problemas";
 import type { EngineScreenProps } from "../engine-screens";
-import { playCorrect } from "../../../platform/audio";
+import { playFeedback } from "../../shared/audioFeedback";
 import { ActivityHeader } from "../components/ActivityHeader";
 import "../components/ActivityHeader.css";
 import { ActionButtons } from "../components/ActivityActionButtons";
 import { SummaryScreen } from "../components/SummaryScreen";
-import { DigitCell } from "../../shared/DigitCell/DigitCell";
+import { LazyDigitCell } from "../../shared/DigitCell";
 import { Numpad } from "../../shared/components/Numpad";
 import InputModeToggle from "../../shared/components/InputModeToggle";
 import { useInputMode } from "../../shared/hooks/useInputMode";
@@ -72,7 +72,7 @@ export function ProblemaScreen({
     (newDigits: string[]) => {
       const answer = parseInt(newDigits.join(""), 10);
       const isCorrect = !isNaN(answer) && answer === current.answer;
-      if (isCorrect) playCorrect();
+      playFeedback(isCorrect);
       setSession((s) => ({
         ...s,
         digits: newDigits,
@@ -316,7 +316,7 @@ export function ProblemaScreen({
               const isActiveBox = session.answerState === "idle" && session.activeDigit === i;
               if (mode === "canvas" && isActiveBox) {
                 return (
-                  <DigitCell
+                  <LazyDigitCell
                     key={`dab-${i}-${canvasKey}`}
                     isActive={true}
                     onActivate={() => {}}

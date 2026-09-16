@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import type { ActivityDifficulty, ActivityManifest } from "../../core/content/contracts";
+import type { ActivityDifficulty, ActivityManifest, CurriculumLevelId } from "../../core/content/contracts";
 
 const ComparisonScreen = lazy(() =>
   import("./comparison/ComparisonScreen").then((module) => ({ default: module.ComparisonScreen })),
@@ -53,6 +53,7 @@ export interface EngineScreenProps {
   className?: string;
   mascotUrl?: string;
   difficultyStars?: string;
+  levelId?: CurriculumLevelId;
 }
 
 /** Registro de renderers PWA. Añadir aquí un motor no exige cambiar la navegación. */

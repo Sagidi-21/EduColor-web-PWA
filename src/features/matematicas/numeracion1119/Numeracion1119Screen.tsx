@@ -3,14 +3,14 @@ import {
   generateNumeracion1119Session,
   validateNumeracion1119Answer,
 } from "../../../core/activities/numeracion1119";
-import { playCorrect } from "../../../platform/audio";
+import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { ActionButtons } from "../components/ActivityActionButtons";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { useInputMode } from "../../shared/hooks/useInputMode";
 import InputModeToggle from "../../shared/components/InputModeToggle";
-import { DigitCell } from "../../shared/DigitCell";
+import { LazyDigitCell } from "../../shared/DigitCell";
 import { Numpad } from "../../shared/components/Numpad";
 
 import "../operations/OperationsScreen.css";
@@ -115,7 +115,7 @@ export function Numeracion1119Screen({
     (opt: number) => {
       if (session.answerState !== "idle") return;
       const ok = validateNumeracion1119Answer(current, String(opt));
-      if (ok) playCorrect();
+      playFeedback(ok);
       setSession((s) => ({
         ...s,
         answerState: ok ? "correct" : "wrong",
@@ -130,7 +130,7 @@ export function Numeracion1119Screen({
   const confirm = useCallback(() => {
     if (session.answerState !== "idle" || session.input === "") return;
     const ok = validateNumeracion1119Answer(current, session.input);
-    if (ok) playCorrect();
+    playFeedback(ok);
     setSession((s) => ({
       ...s,
       answerState: ok ? "correct" : "wrong",
@@ -150,7 +150,7 @@ export function Numeracion1119Screen({
           return { ...s, input: nextInput };
         }
         const ok = validateNumeracion1119Answer(current, nextInput);
-        if (ok) playCorrect();
+        playFeedback(ok);
         return {
           ...s,
           input: nextInput,
@@ -218,7 +218,7 @@ export function Numeracion1119Screen({
                   : session.input || <span className="ops__cursor">_</span>}
               </div>
             ) : session.answerState === "idle" ? (
-              <DigitCell
+              <LazyDigitCell
                 key={canvasKey}
                 isActive={true}
                 onActivate={() => {}}

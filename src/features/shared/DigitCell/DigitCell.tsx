@@ -38,6 +38,8 @@ interface Props {
 
 const CANVAS_SIZE = 240;
 
+export type DigitCellProps = Props;
+
 export function DigitCell({ isActive, onActivate, onConfirm, onClear, state, value }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);

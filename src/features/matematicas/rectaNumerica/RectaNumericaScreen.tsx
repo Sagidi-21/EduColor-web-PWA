@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { generateSession } from "../../../core/activities/rectaNumerica";
-import { playCorrect } from "../../../platform/audio";
+import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
@@ -93,7 +93,7 @@ export function RectaNumericaScreen({
     const v = valueAt(card.x);
     setCard({ x: xOf(v), y: LINE_Y - 76, placed: true });
     if (v === current.target) {
-      playCorrect();
+      playFeedback(true);
       setFeedback("ok");
       setSession((s) => ({ ...s, correctCount: s.correctCount + 1 }));
       setTimeout(handleNext, 1300);

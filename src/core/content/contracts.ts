@@ -11,6 +11,41 @@ export type ActivityId = string;
 export type EngineId = string;
 export type ActivityDifficulty = "easy" | "medium" | "hard" | "expert";
 
+export type CurriculumLevelId = "1-L1" | "1-L2" | "1-L3" | "1-L4" | "2-L1" | "2-L2" | "2-L3" | "2-L4";
+
+export type VisualArrangement =
+  | "scattered-large"        // Desordenada, elementos grandes
+  | "ten-frames"             // Marcos de 10
+  | "semi-dispersed-tens"    // Semidispersa + Cajas de 10
+  | "bundles-tens-units"     // Atados de 10 y unidades libres
+  | "packages"               // Paquetes de 5, 10 y 50
+  | "matrix-grid"            // Rejillas de filas y columnas
+  | "mass-vs-blocks"         // Masa fluida vs Bloques C-D-U
+  | "containers-gaps";       // Contenedores con vacíos e incógnitas
+
+export type InteractiveMechanic =
+  | "touch-audio"            // Toque individual con audio e iluminación
+  | "pair-ordinal"           // Selección por pares y posición ordinal
+  | "drag-tens-containers"   // Arrastre a contenedores decenales
+  | "drag-positional"        // Arrastre a tabla posicional D-U
+  | "line-trace"             // Trazo de líneas continuas entre paquetes
+  | "cut-separate"           // Herramienta de corte y separación
+  | "slider-multibase"       // Control deslizante + Bloques multibase
+  | "conditional-scale";     // Arrastre condicional y balanza digital
+
+export interface CurriculumLevel {
+  id: CurriculumLevelId;
+  course: 1 | 2;
+  level: 1 | 2 | 3 | 4;
+  name: string;
+  rangeMin: number;
+  rangeMax: number;
+  visualArrangement: VisualArrangement;
+  interactiveMechanic: InteractiveMechanic;
+  pdi: string;
+  cognitiveSkill: number;
+}
+
 export interface Subject {
   id: SubjectId;
   title: string;
@@ -69,6 +104,7 @@ export interface ActivityManifest {
     unit: number;
     unitLabel: string;
     difficultyDescriptions: Record<ActivityDifficulty, string>;
+    levelDescriptions?: Record<CurriculumLevelId, string>;
   };
 }
 

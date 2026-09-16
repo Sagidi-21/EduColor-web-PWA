@@ -19,6 +19,16 @@
       "medium": "Del 1 al 10, objetos dispersos",
       "hard": "Del 5 al 10, muy dispersos",
       "expert": "Del 10 al 20, muy dispersos"
+    },
+    "levelDescriptions": {
+      "1-L1": "Conteo 1 a 1 y Subitización — Rango 1-10, objetos grandes desordenados",
+      "1-L2": "Cuadrículas y Conteo por Pares — Rango 1-20, marcos de 10",
+      "1-L3": "Agrupación en Decenas — Rango 1-50, semidispersa + cajas de 10",
+      "1-L4": "Descomposición D+U — Rango 1-99, atados de 10 + unidades libres",
+      "2-L1": "Saltos Numéricos Extendidos — Rango 100-200, paquetes de 5/10/50",
+      "2-L2": "Arreglos Matriciales — Rango 100-500, rejillas filas×columnas",
+      "2-L3": "Estimación y Centenas — Rango 100-999, masa fluida vs bloques C-D-U",
+      "2-L4": "Conteo Condicional y Patrones — Hasta 999, contenedores con vacíos"
     }
   },
   "order": 4

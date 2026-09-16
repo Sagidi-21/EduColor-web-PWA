@@ -4,7 +4,7 @@ import {
   isCorrectOrderingValue,
   type OrderingExercise,
 } from "../../../core/activities/ordering";
-import { playCorrect } from "../../../platform/audio";
+import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
@@ -61,7 +61,7 @@ export function OrderingScreen({
       return;
     }
     setPlacedNumbers((current) => [...current, number]);
-    playCorrect();
+    playFeedback(true);
   };
 
   const restart = () => {
