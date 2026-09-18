@@ -258,7 +258,10 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                       if (!launchable) return;
                       setSelected(activity);
                       setDifficulty("easy");
-                      if (activity.engineId === "counting" || activity.engineId === "tresSumandos") {
+                      if (
+                        activity.engineId === "counting" ||
+                        activity.engineId === "tresSumandos"
+                      ) {
                         setLevelId(getLevelsForActivity(activity, gradeId)[0]);
                       } else {
                         setLevelId(null);

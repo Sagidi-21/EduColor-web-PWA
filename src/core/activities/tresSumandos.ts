@@ -35,18 +35,60 @@ function configForLevel(levelId: string): LevelConfig {
     case "1-L2":
       return { maxEach: 9, maxSum: 20, count: 10, showImage: false, carryRule: "at-least-one" }; // up to 20, con llevadas
     case "1-L3":
-      return { minEach: 10, maxEach: 30, maxSum: 90, count: 10, showImage: false, carryRule: "none" }; // 2‑digit column, no carry
+      return {
+        minEach: 10,
+        maxEach: 30,
+        maxSum: 90,
+        count: 10,
+        showImage: false,
+        carryRule: "none",
+      }; // 2‑digit column, no carry
     case "1-L4":
-      return { minEach: 10, maxEach: 40, maxSum: 99, count: 10, showImage: false, carryRule: "units-only" }; // 2‑digit column, with exactly one carry
+      return {
+        minEach: 10,
+        maxEach: 40,
+        maxSum: 99,
+        count: 10,
+        showImage: false,
+        carryRule: "units-only",
+      }; // 2‑digit column, with exactly one carry
     // 2.º Primaria levels
     case "2-L1":
-      return { minEach: 10, maxEach: 30, maxSum: 90, count: 10, showImage: false, carryRule: "none" }; // 3 sumandos de 2 cifras, sin llevadas
+      return {
+        minEach: 10,
+        maxEach: 30,
+        maxSum: 90,
+        count: 10,
+        showImage: false,
+        carryRule: "none",
+      }; // 3 sumandos de 2 cifras, sin llevadas
     case "2-L2":
-      return { minEach: 10, maxEach: 40, maxSum: 99, count: 10, showImage: false, carryRule: "at-least-one" }; // 3 sumandos de 2 cifras, con llevadas
+      return {
+        minEach: 10,
+        maxEach: 40,
+        maxSum: 99,
+        count: 10,
+        showImage: false,
+        carryRule: "at-least-one",
+      }; // 3 sumandos de 2 cifras, con llevadas
     case "2-L3":
-      return { minEach: 100, maxEach: 300, maxSum: 900, count: 10, showImage: false, carryRule: "none" }; // 3 sumandos de 3 cifras, sin llevadas
+      return {
+        minEach: 100,
+        maxEach: 300,
+        maxSum: 900,
+        count: 10,
+        showImage: false,
+        carryRule: "none",
+      }; // 3 sumandos de 3 cifras, sin llevadas
     case "2-L4":
-      return { minEach: 100, maxEach: 400, maxSum: 999, count: 10, showImage: false, carryRule: "at-least-one" }; // 3 sumandos de 3 cifras, con llevadas
+      return {
+        minEach: 100,
+        maxEach: 400,
+        maxSum: 999,
+        count: 10,
+        showImage: false,
+        carryRule: "at-least-one",
+      }; // 3 sumandos de 3 cifras, con llevadas
     default:
       // Fallback to easy config if unknown level
       return CONFIGS.easy;
@@ -65,19 +107,25 @@ function randInt(rng: () => number, min: number, max: number) {
 }
 
 function checkCarries(a: number, b: number, c: number) {
-  const uA = a % 10, uB = b % 10, uC = c % 10;
-  const tA = Math.floor(a / 10) % 10, tB = Math.floor(b / 10) % 10, tC = Math.floor(c / 10) % 10;
-  const hA = Math.floor(a / 100) % 10, hB = Math.floor(b / 100) % 10, hC = Math.floor(c / 100) % 10;
-  
+  const uA = a % 10,
+    uB = b % 10,
+    uC = c % 10;
+  const tA = Math.floor(a / 10) % 10,
+    tB = Math.floor(b / 10) % 10,
+    tC = Math.floor(c / 10) % 10;
+  const hA = Math.floor(a / 100) % 10,
+    hB = Math.floor(b / 100) % 10,
+    hC = Math.floor(c / 100) % 10;
+
   const sumU = uA + uB + uC;
   const unitsCarry = sumU >= 10;
-  
+
   const sumT = tA + tB + tC + Math.floor(sumU / 10);
   const tensCarry = sumT >= 10;
-  
+
   const sumH = hA + hB + hC + Math.floor(sumT / 10);
   const hundredsCarry = sumH >= 10;
-  
+
   return { unitsCarry, tensCarry, hundredsCarry };
 }
 
@@ -100,9 +148,9 @@ export function generateSession(
     const a = randInt(rng, minE, cfg.maxEach);
     const b = randInt(rng, minE, cfg.maxEach);
     const c = randInt(rng, minE, cfg.maxEach);
-    
+
     if (a + b + c > cfg.maxSum) continue;
-    
+
     // Check carry rules
     if (cfg.carryRule && cfg.carryRule !== "any") {
       const { unitsCarry, tensCarry, hundredsCarry } = checkCarries(a, b, c);
@@ -115,7 +163,7 @@ export function generateSession(
     const key = `${a}-${b}-${c}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    
+
     const cat = cfg.showImage && cats.length > 0 ? cats[exercises.length % cats.length] : null;
     exercises.push({ a, b, c, answer: a + b + c, imageUrl: cat ? pickImage(cat, rng) : "" });
   }

@@ -97,9 +97,15 @@ describe("generateSession", () => {
 
 describe("curriculum level logic", () => {
   function getCarries(a: number, b: number, c: number) {
-    const uA = a % 10, uB = b % 10, uC = c % 10;
-    const tA = Math.floor(a / 10) % 10, tB = Math.floor(b / 10) % 10, tC = Math.floor(c / 10) % 10;
-    const hA = Math.floor(a / 100) % 10, hB = Math.floor(b / 100) % 10, hC = Math.floor(c / 100) % 10;
+    const uA = a % 10,
+      uB = b % 10,
+      uC = c % 10;
+    const tA = Math.floor(a / 10) % 10,
+      tB = Math.floor(b / 10) % 10,
+      tC = Math.floor(c / 10) % 10;
+    const hA = Math.floor(a / 100) % 10,
+      hB = Math.floor(b / 100) % 10,
+      hC = Math.floor(c / 100) % 10;
     const sumU = uA + uB + uC;
     const unitsCarry = sumU >= 10;
     const sumT = tA + tB + tC + Math.floor(sumU / 10);
@@ -149,7 +155,7 @@ describe("curriculum level logic", () => {
       expect(unitsCarry || tensCarry || hundredsCarry).toBe(true);
     }
   });
-  
+
   it("respects 2-L3 constraints: 3-digit numbers, no carry", () => {
     const session = generateSession("easy", "2-L3", 42);
     for (const e of session) {

@@ -199,8 +199,8 @@ export function TresSumandosScreen({
     session.answerState === "correct"
       ? "ops__stage--correct"
       : session.answerState === "wrong"
-      ? "ops__stage--wrong"
-      : "";
+        ? "ops__stage--wrong"
+        : "";
 
   const correctStr = String(current.answer);
 
@@ -321,9 +321,16 @@ export function TresSumandosScreen({
 
       <footer className="ops__footer">
         {mode === "numpad" && (
-          <Numpad onDigit={handleNumpadDigit} onDelete={handleDelete} onConfirm={handleConfirm} disabled={session.answerState !== "idle"} />
+          <Numpad
+            onDigit={handleNumpadDigit}
+            onDelete={handleDelete}
+            onConfirm={handleConfirm}
+            disabled={session.answerState !== "idle"}
+          />
         )}
-        {session.answerState === "wrong" && <ActionButtons onRetry={handleRetry} onNext={handleNext} />}
+        {session.answerState === "wrong" && (
+          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+        )}
       </footer>
     </div>
   );
