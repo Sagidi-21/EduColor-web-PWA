@@ -229,7 +229,11 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                       if (!launchable) return;
                       setSelected(activity);
                       setDifficulty("easy");
-                      setLevelId(getLevelsForActivity(activity, gradeId)[0]);
+                      if (activity.engineId === "counting") {
+                        setLevelId(getLevelsForActivity(activity, gradeId)[0]);
+                      } else {
+                        setLevelId(null);
+                      }
                     }}
                   >
                     <span className="activity-card__icon">{activity.boardCard?.icon ?? "🔢"}</span>
@@ -266,53 +270,94 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
               </h2>
             </div>
             <div className="mat__level-selector">
-              {getLevelsForActivity(selected, gradeId).map((level) => {
-                const levelName = getLevelName(level);
-                const levelRange = getLevelRange(level);
-                const levelMechanic = getLevelMechanic(level);
-                const stars = getStarsForLevel(level);
-                const isSelected = levelId === level;
-                return (
-                  <div
-                    key={level}
-                    className={`level-card ${isSelected ? "level-card--selected" : ""}`}
-                    onClick={() => {
-                      setLevelId(level);
-                      setDifficulty(
-                        level === "1-L1"
-                          ? "easy"
-                          : level === "1-L2"
-                            ? "medium"
-                            : level === "1-L3"
-                              ? "hard"
-                              : level === "1-L4"
-                                ? "expert"
-                                : level === "2-L1"
+              {selected.engineId === "counting"
+                ? // Selector de niveles de currículo — solo para "counting"
+                  getLevelsForActivity(selected, gradeId).map((level) => {
+                    const levelName = getLevelName(level);
+                    const levelRange = getLevelRange(level);
+                    const levelMechanic = getLevelMechanic(level);
+                    const stars = getStarsForLevel(level);
+                    const isSelected = levelId === level;
+                    return (
+                      <div
+                        key={level}
+                        className={`level-card ${isSelected ? "level-card--selected" : ""}`}
+                        onClick={() => {
+                          setLevelId(level);
+                          setDifficulty(
+                            level === "1-L1"
+                              ? "easy"
+                              : level === "1-L2"
+                                ? "medium"
+                                : level === "1-L3"
                                   ? "hard"
-                                  : level === "2-L2"
+                                  : level === "1-L4"
                                     ? "expert"
-                                    : level === "2-L3"
-                                      ? "expert"
-                                      : "expert",
-                      );
-                    }}
-                  >
-                    <div className="level-header">
-                      <span className="level-stars">{stars}</span>
-                      <span className="level-title">{levelName}</span>
-                    </div>
-                    <div className="level-info">
-                      {levelRange && <span className="level-range">Rango: {levelRange}</span>}
-                      <span className="level-mechanic">Mecánica: {levelMechanic}</span>
-                    </div>
-                  </div>
-                );
-              })}
+                                    : level === "2-L1"
+                                      ? "hard"
+                                      : level === "2-L2"
+                                        ? "expert"
+                                        : level === "2-L3"
+                                          ? "expert"
+                                          : "expert",
+                          );
+                        }}
+                      >
+                        <div className="level-header">
+                          <span className="level-stars">{stars}</span>
+                          <span className="level-title">{levelName}</span>
+                        </div>
+                        <div className="level-info">
+                          {levelRange && <span className="level-range">Rango: {levelRange}</span>}
+                          <span className="level-mechanic">Mecánica: {levelMechanic}</span>
+                        </div>
+                      </div>
+                    );
+                  })
+                : // Selector de dificultad — para el resto de motores
+                  (["easy", "medium", "hard", "expert"] as const).map((diff) => {
+                    const desc = selected.boardCard?.difficultyDescriptions?.[diff];
+                    const stars = getDifficultyStars(diff);
+                    const isSelected = difficulty === diff && levelId === null;
+                    return (
+                      <div
+                        key={diff}
+                        className={`level-card ${isSelected ? "level-card--selected" : ""}`}
+                        onClick={() => {
+                          setDifficulty(diff);
+                          setLevelId(null);
+                        }}
+                      >
+                        <div className="level-header">
+                          <span className="level-stars">{stars}</span>
+                          <span className="level-title">
+                            {diff === "easy"
+                              ? "Fácil"
+                              : diff === "medium"
+                                ? "Medio"
+                                : diff === "hard"
+                                  ? "Difícil"
+                                  : "Experto"}
+                          </span>
+                        </div>
+                        {desc && (
+                          <div className="level-info">
+                            <span className="level-mechanic">{desc}</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
             </div>
             <button
               className="mat__start-btn"
               onClick={() => {
-                setSession({ activity: selected, difficulty, levelId: levelId!, seed: Date.now() });
+                setSession({
+                  activity: selected,
+                  difficulty,
+                  levelId: levelId ?? undefined,
+                  seed: Date.now(),
+                });
                 setSelected(null);
               }}
             >

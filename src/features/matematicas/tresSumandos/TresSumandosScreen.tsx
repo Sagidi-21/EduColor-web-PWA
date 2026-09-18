@@ -13,7 +13,7 @@ import InputModeToggle from "../../shared/components/InputModeToggle";
 import { LazyDigitCell } from "../../shared/DigitCell";
 import { WrongFeedback } from "../components/WrongFeedback";
 import { useInputMode } from "../../shared/hooks/useInputMode";
-import "../../operations/OperationsScreen.css";
+import "../operations/OperationsScreen.css";
 import "./TresSumandosScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
