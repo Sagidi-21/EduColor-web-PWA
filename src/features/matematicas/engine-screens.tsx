@@ -1,5 +1,9 @@
 import { lazy, Suspense } from "react";
-import type { ActivityDifficulty, ActivityManifest, CurriculumLevelId } from "../../core/content/contracts";
+import type {
+  ActivityDifficulty,
+  ActivityManifest,
+  CurriculumLevelId,
+} from "../../core/content/contracts";
 
 const ComparisonScreen = lazy(() =>
   import("./comparison/ComparisonScreen").then((module) => ({ default: module.ComparisonScreen })),

@@ -51,6 +51,6 @@ cierre de fase o una release.
 | 2026-09-07 | Alcance V1 confirmado: MatemÃ¡ticas 1.Âº/2.Âº, profesorado, pizarra, fichas, sesiones offline y reconocimiento de dÃ­gitos. | Concentrar la primera versiÃ³n en el uso real de aula.                        |
 | 2026-09-07 | RevisiÃ³n tÃ©cnica de la Fase 0 aprobada.                                                                                   | CI verde y estructura, documentaciÃ³n y controles de calidad verificados.     |
 | 2026-09-07 | Electron queda como referencia canÃ³nica de paridad visual y funcional de la PWA.                                           | Evitar rediseÃ±ar o perder pantallas y funciones que ya operan en el colegio. |
-| 2026-09-18 | Curriculo de `counting` disenado con 8 niveles (1-L1 a 2-L4) con mecanicas progresivas TOUCH > GROUP > FILL_TABLE > SELECT. | Alineamiento pedagogico con la progresion de 1.o y 2.o de Primaria. |
-| 2026-09-18 | En 2-L3 se eliminan preguntas guiadas CDU dejando solo la pregunta final de composicion. | El nino que ha superado 2-L2 debe llegar al numero sin andamiaje intermedio. |
-| 2026-09-18 | Numpad en layout horizontal para niveles con tabla posicional FILL_TABLE. | Ganar espacio vertical para objetos visuales en pantalla de pizarra. |
+| 2026-09-18 | Curriculo de `counting` disenado con 8 niveles (1-L1 a 2-L4) con mecanicas progresivas TOUCH > GROUP > FILL_TABLE > SELECT. | Alineamiento pedagogico con la progresion de 1.o y 2.o de Primaria.           |
+| 2026-09-18 | En 2-L3 se eliminan preguntas guiadas CDU dejando solo la pregunta final de composicion.                                    | El nino que ha superado 2-L2 debe llegar al numero sin andamiaje intermedio.  |
+| 2026-09-18 | Numpad en layout horizontal para niveles con tabla posicional FILL_TABLE.                                                   | Ganar espacio vertical para objetos visuales en pantalla de pizarra.          |

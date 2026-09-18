@@ -17,39 +17,40 @@ Solo el motor `counting`. No se tocan otros motores (`comparison`, `suma`, etc.)
 **Añadir** (no modificar existentes, extender):
 
 ```ts
-export type CurriculumLevelId = "1-L1" | "1-L2" | "1-L3" | "1-L4" | "2-L1" | "2-L2" | "2-L3" | "2-L4";
+export type CurriculumLevelId =
+  "1-L1" | "1-L2" | "1-L3" | "1-L4" | "2-L1" | "2-L2" | "2-L3" | "2-L4";
 
 export type VisualArrangement =
-  | "scattered-large"        // Desordenada, elementos grandes
-  | "ten-frames"             // Marcos de 10
-  | "semi-dispersed-tens"    // Semidispersa + Cajas de 10
-  | "bundles-tens-units"     // Atados de 10 y unidades libres
-  | "packages"               // Paquetes de 5, 10 y 50
-  | "matrix-grid"            // Rejillas de filas y columnas
-  | "mass-vs-blocks"         // Masa fluida vs Bloques C-D-U
-  | "containers-gaps";       // Contenedores con vacíos e incógnitas
+  | "scattered-large" // Desordenada, elementos grandes
+  | "ten-frames" // Marcos de 10
+  | "semi-dispersed-tens" // Semidispersa + Cajas de 10
+  | "bundles-tens-units" // Atados de 10 y unidades libres
+  | "packages" // Paquetes de 5, 10 y 50
+  | "matrix-grid" // Rejillas de filas y columnas
+  | "mass-vs-blocks" // Masa fluida vs Bloques C-D-U
+  | "containers-gaps"; // Contenedores con vacíos e incógnitas
 
 export type InteractiveMechanic =
-  | "touch-audio"            // Toque individual con audio e iluminación
-  | "pair-ordinal"           // Selección por pares y posición ordinal
-  | "drag-tens-containers"   // Arrastre a contenedores decenales
-  | "drag-positional"        // Arrastre a tabla posicional D-U
-  | "line-trace"             // Trazo de líneas continuas entre paquetes
-  | "cut-separate"           // Herramienta de corte y separación
-  | "slider-multibase"       // Control deslizante + Bloques multibase
-  | "conditional-scale";     // Arrastre condicional y balanza digital
+  | "touch-audio" // Toque individual con audio e iluminación
+  | "pair-ordinal" // Selección por pares y posición ordinal
+  | "drag-tens-containers" // Arrastre a contenedores decenales
+  | "drag-positional" // Arrastre a tabla posicional D-U
+  | "line-trace" // Trazo de líneas continuas entre paquetes
+  | "cut-separate" // Herramienta de corte y separación
+  | "slider-multibase" // Control deslizante + Bloques multibase
+  | "conditional-scale"; // Arrastre condicional y balanza digital
 
 export interface CurriculumLevel {
   id: CurriculumLevelId;
   course: 1 | 2;
   level: 1 | 2 | 3 | 4;
-  name: string;                // Nombre del Nivel
+  name: string; // Nombre del Nivel
   rangeMin: number;
   rangeMax: number;
   visualArrangement: VisualArrangement;
   interactiveMechanic: InteractiveMechanic;
-  pdi: string;                 // Disposición Visual / Mecánica / PDI
-  cognitiveSkill: number;      // Habilidad Cognitiva (9-16)
+  pdi: string; // Disposición Visual / Mecánica / PDI
+  cognitiveSkill: number; // Habilidad Cognitiva (9-16)
 }
 ```
 
@@ -70,22 +71,22 @@ export interface CountingConfig {
   interactiveMechanic: InteractiveMechanic;
   pdi: string;
   cognitiveSkill: number;
-  difficulty: ActivityDifficulty;     // back-mapping: 1-L1→easy, 1-L2→medium, etc.
+  difficulty: ActivityDifficulty; // back-mapping: 1-L1→easy, 1-L2→medium, etc.
 }
 ```
 
 **Configuraciones por nivel:**
 
-| Nivel | minCount | maxCount | quantity | visualArrangement | mechanic |
-|-------|----------|----------|----------|-------------------|----------|
-| 1-L1 | 1 | 10 | 10 | scattered-large | touch-audio |
-| 1-L2 | 1 | 20 | 10 | ten-frames | pair-ordinal |
-| 1-L3 | 1 | 50 | 10 | semi-dispersed-tens | drag-tens-containers |
-| 1-L4 | 1 | 99 | 10 | bundles-tens-units | drag-positional |
-| 2-L1 | 100 | 200 | 10 | packages | line-trace |
-| 2-L2 | 100 | 500 | 10 | matrix-grid | cut-separate |
-| 2-L3 | 100 | 999 | 10 | mass-vs-blocks | slider-multibase |
-| 2-L4 | 1 | 999 | 10 | containers-gaps | conditional-scale |
+| Nivel | minCount | maxCount | quantity | visualArrangement   | mechanic             |
+| ----- | -------- | -------- | -------- | ------------------- | -------------------- |
+| 1-L1  | 1        | 10       | 10       | scattered-large     | touch-audio          |
+| 1-L2  | 1        | 20       | 10       | ten-frames          | pair-ordinal         |
+| 1-L3  | 1        | 50       | 10       | semi-dispersed-tens | drag-tens-containers |
+| 1-L4  | 1        | 99       | 10       | bundles-tens-units  | drag-positional      |
+| 2-L1  | 100      | 200      | 10       | packages            | line-trace           |
+| 2-L2  | 100      | 500      | 10       | matrix-grid         | cut-separate         |
+| 2-L3  | 100      | 999      | 10       | mass-vs-blocks      | slider-multibase     |
+| 2-L4  | 1        | 999      | 10       | containers-gaps     | conditional-scale    |
 
 **Nueva función** `generateLevelConfig(levelId: CurriculumLevelId): CountingConfig` — devuelve la config del nivel dado.
 
@@ -135,6 +136,7 @@ export interface CountingConfig {
 **Modificar** para recibir `levelId: CurriculumLevelId` (o `levelConfig: CountingConfig`) en vez de solo `difficulty`.
 
 **Añadir** renderizado condicional según `visualArrangement`:
+
 - `ten-frames`: fondo con cuadrícula 2×5 visible
 - `bundles-tens-units`: zona de decenas + zona de unidades
 - `matrix-grid`: grid estricto sin desplazamiento
@@ -142,6 +144,7 @@ export interface CountingConfig {
 - `containers-gaps`: contenedores con huecos predefinidos
 
 **Añadir** interacción según `interactiveMechanic`:
+
 - `touch-audio`: toque individual → playCorrect/playError con audio, efecto de iluminación (radial gradient flash)
 - `pair-ordinal`: selección de 2 objetos, validación de par/posición ordinal
 - `drag-tens-containers`: drag & drop a contenedores "decena" (cada contenedor acepta 10)
@@ -174,6 +177,7 @@ Cada opción muestra: estrellas (según cognitiveSkill), nombre del nivel, rango
 **Reemplazar** las pruebas de `PRESET_CONFIGS` por pruebas de `CURRICULUM_LEVELS` (8 niveles, rangos correctos, tipos de arreglo/mecánica).
 
 **Añadir** pruebas para:
+
 - Cada arreglo visual genera posiciones distintas
 - `generateLevelConfig` devuelve rango correcto por nivel
 - `generateSessionForLevel` respeta el nivel y es reproducible

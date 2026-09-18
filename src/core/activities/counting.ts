@@ -83,25 +83,217 @@ export interface SessionResult {
 // ---------------------------------------------------------------------------
 
 export const LEVELS: Record<CurriculumLevelId, CurriculumLevel> = {
-  "1-L1": { id: "1-L1", course: 1, level: 1, name: "Conteo 1 a 1 y Subitización", rangeMin: 1, rangeMax: 10, visualArrangement: "scattered-large", interactiveMechanic: "touch-audio", pdi: "Correspondencia biunívoca", cognitiveSkill: 9, quantity: 10 },
-  "1-L2": { id: "1-L2", course: 1, level: 2, name: "Cuadrícula, Decenas y Unidades", rangeMin: 1, rangeMax: 20, visualArrangement: "double-row", interactiveMechanic: "touch-audio", pdi: "Conteo estructurado y valor posicional", cognitiveSkill: 10, quantity: 10 },
-  "1-L3": { id: "1-L3", course: 1, level: 3, name: "Agrupación en Decenas", rangeMin: 10, rangeMax: 50, visualArrangement: "semi-dispersed-tens", interactiveMechanic: "drag-tens-containers", pdi: "Seriación y formación de decenas", cognitiveSkill: 11, quantity: 10 },
-  "1-L4": { id: "1-L4", course: 1, level: 4, name: "Descomposición D + U", rangeMin: 10, rangeMax: 99, visualArrangement: "bundles-tens-units", interactiveMechanic: "drag-positional", pdi: "Abstracción de valor posicional", cognitiveSkill: 12, quantity: 10 },
-  "2-L1": { id: "2-L1", course: 2, level: 1, name: "Saltos Numéricos Extendidos", rangeMin: 100, rangeMax: 200, visualArrangement: "packages", interactiveMechanic: "package-select", pdi: "Seriación en rangos superiores", cognitiveSkill: 14, quantity: 10 },
-  "2-L2": { id: "2-L2", course: 2, level: 2, name: "Centenas, Decenas y Unidades", rangeMin: 100, rangeMax: 999, visualArrangement: "mass-vs-blocks", interactiveMechanic: "slider-multibase", pdi: "Estimación y estructura tridigital", cognitiveSkill: 16, quantity: 10 },
-  "2-L3": { id: "2-L3", course: 2, level: 3, name: "Descomposición C, D y U libre", rangeMin: 1, rangeMax: 999, visualArrangement: "mass-vs-blocks", interactiveMechanic: "drag-positional", pdi: "Estructura tridigital avanzada", cognitiveSkill: 17, quantity: 10 },
-  "2-L4": { id: "2-L4", course: 2, level: 4, name: "Arreglos Matriciales", rangeMin: 100, rangeMax: 500, visualArrangement: "matrix-grid", interactiveMechanic: "matrix-select", pdi: "Razonamiento pre-multiplicativo", cognitiveSkill: 15, quantity: 10 },
+  "1-L1": {
+    id: "1-L1",
+    course: 1,
+    level: 1,
+    name: "Conteo 1 a 1 y Subitización",
+    rangeMin: 1,
+    rangeMax: 10,
+    visualArrangement: "scattered-large",
+    interactiveMechanic: "touch-audio",
+    pdi: "Correspondencia biunívoca",
+    cognitiveSkill: 9,
+    quantity: 10,
+  },
+  "1-L2": {
+    id: "1-L2",
+    course: 1,
+    level: 2,
+    name: "Cuadrícula, Decenas y Unidades",
+    rangeMin: 1,
+    rangeMax: 20,
+    visualArrangement: "double-row",
+    interactiveMechanic: "touch-audio",
+    pdi: "Conteo estructurado y valor posicional",
+    cognitiveSkill: 10,
+    quantity: 10,
+  },
+  "1-L3": {
+    id: "1-L3",
+    course: 1,
+    level: 3,
+    name: "Agrupación en Decenas",
+    rangeMin: 10,
+    rangeMax: 50,
+    visualArrangement: "semi-dispersed-tens",
+    interactiveMechanic: "drag-tens-containers",
+    pdi: "Seriación y formación de decenas",
+    cognitiveSkill: 11,
+    quantity: 10,
+  },
+  "1-L4": {
+    id: "1-L4",
+    course: 1,
+    level: 4,
+    name: "Descomposición D + U",
+    rangeMin: 10,
+    rangeMax: 99,
+    visualArrangement: "bundles-tens-units",
+    interactiveMechanic: "drag-positional",
+    pdi: "Abstracción de valor posicional",
+    cognitiveSkill: 12,
+    quantity: 10,
+  },
+  "2-L1": {
+    id: "2-L1",
+    course: 2,
+    level: 1,
+    name: "Saltos Numéricos Extendidos",
+    rangeMin: 100,
+    rangeMax: 200,
+    visualArrangement: "packages",
+    interactiveMechanic: "package-select",
+    pdi: "Seriación en rangos superiores",
+    cognitiveSkill: 14,
+    quantity: 10,
+  },
+  "2-L2": {
+    id: "2-L2",
+    course: 2,
+    level: 2,
+    name: "Centenas, Decenas y Unidades",
+    rangeMin: 100,
+    rangeMax: 999,
+    visualArrangement: "mass-vs-blocks",
+    interactiveMechanic: "slider-multibase",
+    pdi: "Estimación y estructura tridigital",
+    cognitiveSkill: 16,
+    quantity: 10,
+  },
+  "2-L3": {
+    id: "2-L3",
+    course: 2,
+    level: 3,
+    name: "Descomposición C, D y U libre",
+    rangeMin: 1,
+    rangeMax: 999,
+    visualArrangement: "mass-vs-blocks",
+    interactiveMechanic: "drag-positional",
+    pdi: "Estructura tridigital avanzada",
+    cognitiveSkill: 17,
+    quantity: 10,
+  },
+  "2-L4": {
+    id: "2-L4",
+    course: 2,
+    level: 4,
+    name: "Arreglos Matriciales",
+    rangeMin: 100,
+    rangeMax: 500,
+    visualArrangement: "matrix-grid",
+    interactiveMechanic: "matrix-select",
+    pdi: "Razonamiento pre-multiplicativo",
+    cognitiveSkill: 15,
+    quantity: 10,
+  },
 };
 
 export const CURRICULUM_LEVELS: Record<CurriculumLevelId, CurriculumCountingConfig> = {
-  "1-L1": { curriculumLevelId: "1-L1", minCount: 1, maxCount: 10, randomLayout: false, quantity: 10, difficulty: "easy", interactionType: "TOUCH", visualArrangement: "scattered-large", interactiveMechanic: "touch-audio", pdi: "Correspondencia biunívoca", cognitiveSkill: 9 },
-  "1-L2": { curriculumLevelId: "1-L2", minCount: 1, maxCount: 20, randomLayout: false, quantity: 10, difficulty: "medium", interactionType: "TOUCH", visualArrangement: "double-row", interactiveMechanic: "touch-audio", pdi: "Conteo estructurado y valor posicional", cognitiveSkill: 10 },
-  "1-L3": { curriculumLevelId: "1-L3", minCount: 10, maxCount: 50, randomLayout: false, quantity: 10, difficulty: "hard", interactionType: "GROUP", visualArrangement: "semi-dispersed-tens", interactiveMechanic: "drag-tens-containers", pdi: "Seriación y formación de decenas", cognitiveSkill: 11 },
-  "1-L4": { curriculumLevelId: "1-L4", minCount: 10, maxCount: 99, randomLayout: false, quantity: 10, difficulty: "expert", interactionType: "FILL_TABLE", visualArrangement: "bundles-tens-units", interactiveMechanic: "drag-positional", pdi: "Abstracción de valor posicional", cognitiveSkill: 12 },
-  "2-L1": { curriculumLevelId: "2-L1", minCount: 100, maxCount: 200, randomLayout: false, quantity: 10, difficulty: "hard", interactionType: "SELECT", visualArrangement: "packages", interactiveMechanic: "package-select", pdi: "Seriación en rangos superiores", cognitiveSkill: 14 },
-  "2-L2": { curriculumLevelId: "2-L2", minCount: 100, maxCount: 999, randomLayout: false, quantity: 10, difficulty: "expert", interactionType: "FILL_TABLE", visualArrangement: "mass-vs-blocks", interactiveMechanic: "drag-positional", pdi: "Estimación y estructura tridigital", cognitiveSkill: 16 },
-  "2-L3": { curriculumLevelId: "2-L3", minCount: 1, maxCount: 999, randomLayout: false, quantity: 10, difficulty: "expert", interactionType: "SELECT", visualArrangement: "mass-vs-blocks", interactiveMechanic: "drag-positional", pdi: "Estructura tridigital avanzada", cognitiveSkill: 17 },
-  "2-L4": { curriculumLevelId: "2-L4", minCount: 100, maxCount: 500, randomLayout: false, quantity: 10, difficulty: "expert", interactionType: "SELECT", visualArrangement: "matrix-grid", interactiveMechanic: "matrix-select", pdi: "Razonamiento pre-multiplicativo", cognitiveSkill: 15 },
+  "1-L1": {
+    curriculumLevelId: "1-L1",
+    minCount: 1,
+    maxCount: 10,
+    randomLayout: false,
+    quantity: 10,
+    difficulty: "easy",
+    interactionType: "TOUCH",
+    visualArrangement: "scattered-large",
+    interactiveMechanic: "touch-audio",
+    pdi: "Correspondencia biunívoca",
+    cognitiveSkill: 9,
+  },
+  "1-L2": {
+    curriculumLevelId: "1-L2",
+    minCount: 1,
+    maxCount: 20,
+    randomLayout: false,
+    quantity: 10,
+    difficulty: "medium",
+    interactionType: "TOUCH",
+    visualArrangement: "double-row",
+    interactiveMechanic: "touch-audio",
+    pdi: "Conteo estructurado y valor posicional",
+    cognitiveSkill: 10,
+  },
+  "1-L3": {
+    curriculumLevelId: "1-L3",
+    minCount: 10,
+    maxCount: 50,
+    randomLayout: false,
+    quantity: 10,
+    difficulty: "hard",
+    interactionType: "GROUP",
+    visualArrangement: "semi-dispersed-tens",
+    interactiveMechanic: "drag-tens-containers",
+    pdi: "Seriación y formación de decenas",
+    cognitiveSkill: 11,
+  },
+  "1-L4": {
+    curriculumLevelId: "1-L4",
+    minCount: 10,
+    maxCount: 99,
+    randomLayout: false,
+    quantity: 10,
+    difficulty: "expert",
+    interactionType: "FILL_TABLE",
+    visualArrangement: "bundles-tens-units",
+    interactiveMechanic: "drag-positional",
+    pdi: "Abstracción de valor posicional",
+    cognitiveSkill: 12,
+  },
+  "2-L1": {
+    curriculumLevelId: "2-L1",
+    minCount: 100,
+    maxCount: 200,
+    randomLayout: false,
+    quantity: 10,
+    difficulty: "hard",
+    interactionType: "SELECT",
+    visualArrangement: "packages",
+    interactiveMechanic: "package-select",
+    pdi: "Seriación en rangos superiores",
+    cognitiveSkill: 14,
+  },
+  "2-L2": {
+    curriculumLevelId: "2-L2",
+    minCount: 100,
+    maxCount: 999,
+    randomLayout: false,
+    quantity: 10,
+    difficulty: "expert",
+    interactionType: "FILL_TABLE",
+    visualArrangement: "mass-vs-blocks",
+    interactiveMechanic: "drag-positional",
+    pdi: "Estimación y estructura tridigital",
+    cognitiveSkill: 16,
+  },
+  "2-L3": {
+    curriculumLevelId: "2-L3",
+    minCount: 1,
+    maxCount: 999,
+    randomLayout: false,
+    quantity: 10,
+    difficulty: "expert",
+    interactionType: "SELECT",
+    visualArrangement: "mass-vs-blocks",
+    interactiveMechanic: "drag-positional",
+    pdi: "Estructura tridigital avanzada",
+    cognitiveSkill: 17,
+  },
+  "2-L4": {
+    curriculumLevelId: "2-L4",
+    minCount: 100,
+    maxCount: 500,
+    randomLayout: false,
+    quantity: 10,
+    difficulty: "expert",
+    interactionType: "SELECT",
+    visualArrangement: "matrix-grid",
+    interactiveMechanic: "matrix-select",
+    pdi: "Razonamiento pre-multiplicativo",
+    cognitiveSkill: 15,
+  },
 };
 
 export function generateLevelConfig(levelId: CurriculumLevelId): CurriculumCountingConfig {
@@ -157,27 +349,32 @@ function generatePedagogicalDistractors(
     case "COUNT_TOTAL": {
       if (count < 10) {
         // Simple ±1 ±2 for single digits
-        add(correct - 1); add(correct + 1); add(correct - 2); add(correct + 2);
+        add(correct - 1);
+        add(correct + 1);
+        add(correct - 2);
+        add(correct + 2);
       } else if (count < 100) {
         // Two-digit: inversion D/U, ignore units, ±10
         const inverted = units * 10 + tens;
         add(inverted !== correct ? inverted : correct + 1);
-        add(tens * 10);           // ignore units
+        add(tens * 10); // ignore units
         add(correct + 10);
         add(correct - 10);
         add(correct + 1);
         add(correct - 1);
       } else {
         // Three-digit: hundreds swap, ±100, ±10
-        add(correct + 100); add(correct - 100);
-        add(correct + 10); add(correct - 10);
+        add(correct + 100);
+        add(correct - 100);
+        add(correct + 10);
+        add(correct - 10);
         add(hundreds * 100); // ignore D+U
       }
       break;
     }
     case "COUNT_TENS": {
       // Common: confuse tens with units, ±1
-      add(units);           // confusion with units digit
+      add(units); // confusion with units digit
       add(correct + 1);
       add(correct - 1);
       add(0);
@@ -185,7 +382,7 @@ function generatePedagogicalDistractors(
     }
     case "COUNT_UNITS": {
       // Common: confuse units with tens, ±1
-      add(tens);            // confusion with tens digit
+      add(tens); // confusion with tens digit
       add(correct + 1);
       add(correct - 1);
       add(0);
@@ -216,8 +413,10 @@ function generatePedagogicalDistractors(
       break;
     }
     case "ESTIMATE": {
-      add(correct + 10); add(correct - 10);
-      add(correct + 50); add(correct - 50);
+      add(correct + 10);
+      add(correct - 10);
+      add(correct + 50);
+      add(correct - 50);
       break;
     }
   }
@@ -421,13 +620,19 @@ function buildSteps(
 function gridCells(count: number, rng: () => number, jitter: number): ObjectPosition[] {
   const cols = count <= 4 ? count : Math.ceil(Math.sqrt(count * 1.4));
   const rows = Math.ceil(count / cols);
-  const paddingX = 12, paddingY = 10;
+  const paddingX = 12,
+    paddingY = 10;
   const cellW = (100 - paddingX * 2) / cols;
   const cellH = (100 - paddingY * 2) / rows;
   const cells: ObjectPosition[] = [];
   for (let r = 0; r < rows; r++)
     for (let c = 0; c < cols; c++)
-      cells.push({ x: paddingX + (c + 0.5) * cellW, y: paddingY + (r + 0.5) * cellH, rotation: 0, scale: 1 });
+      cells.push({
+        x: paddingX + (c + 0.5) * cellW,
+        y: paddingY + (r + 0.5) * cellH,
+        rotation: 0,
+        scale: 1,
+      });
   const chosen = shuffle(cells, rng).slice(0, count);
   return chosen.map((cell) => ({
     ...cell,
@@ -453,8 +658,14 @@ function placeAroundCenter(
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols && positions.length < count; c++) {
       positions.push({
-        x: Math.max(8, Math.min(92, cx - spread / 2 + (c + 0.5) * cellW + (rng() - 0.5) * cellW * 0.3)),
-        y: Math.max(8, Math.min(92, cy - spread / 2 + (r + 0.5) * cellH + (rng() - 0.5) * cellH * 0.3)),
+        x: Math.max(
+          8,
+          Math.min(92, cx - spread / 2 + (c + 0.5) * cellW + (rng() - 0.5) * cellW * 0.3),
+        ),
+        y: Math.max(
+          8,
+          Math.min(92, cy - spread / 2 + (r + 0.5) * cellH + (rng() - 0.5) * cellH * 0.3),
+        ),
         rotation: 0,
         scale: 0.85 + rng() * 0.2,
       });
@@ -474,7 +685,6 @@ function generatePositionsByArrangement(
   rng: () => number,
 ): PositionResult {
   switch (arrangement) {
-
     // -- 1-L1: scattered, large, shuffled (intentional disorder) ------------
     case "scattered-large": {
       const positions = gridCells(count, rng, 0.2).map((p) => ({
@@ -564,8 +774,8 @@ function generatePositionsByArrangement(
         const row = Math.floor(ti / tensCols);
 
         // Centro de la celda
-        const cx = tensAreaX + (col * tenCellW) + (tenCellW / 2);
-        const cy = 10 + (row * tenCellH) + (tenCellH / 2);
+        const cx = tensAreaX + col * tenCellW + tenCellW / 2;
+        const cy = 10 + row * tenCellH + tenCellH / 2;
 
         positions.push({
           x: cx,
@@ -573,7 +783,7 @@ function generatePositionsByArrangement(
           rotation: rng() * 10 - 5,
           scale: 1,
           zone: "tens",
-          value: 10
+          value: 10,
         });
         posIdx++;
       }
@@ -590,8 +800,14 @@ function generatePositionsByArrangement(
         const uc = ui % unitCols;
         const ur = Math.floor(ui / unitCols);
         positions.push({
-          x: Math.max(8, Math.min(92, unitsAreaX + (uc + 0.5) * unitCellW + (rng() - 0.5) * unitCellW * 0.2)),
-          y: Math.max(8, Math.min(92, 10 + (ur + 0.5) * unitCellH + (rng() - 0.5) * unitCellH * 0.2)),
+          x: Math.max(
+            8,
+            Math.min(92, unitsAreaX + (uc + 0.5) * unitCellW + (rng() - 0.5) * unitCellW * 0.2),
+          ),
+          y: Math.max(
+            8,
+            Math.min(92, 10 + (ur + 0.5) * unitCellH + (rng() - 0.5) * unitCellH * 0.2),
+          ),
           rotation: 0,
           scale: 0.8 + rng() * 0.2,
           zone: "units",
@@ -599,7 +815,12 @@ function generatePositionsByArrangement(
         unitIndices.push(posIdx++);
       }
       if (remainder > 0) {
-        groupFrames.push({ indices: unitIndices, size: remainder, isComplete: false, zone: "units" });
+        groupFrames.push({
+          indices: unitIndices,
+          size: remainder,
+          isComplete: false,
+          zone: "units",
+        });
       }
 
       return { positions, groupFrames };
@@ -609,10 +830,22 @@ function generatePositionsByArrangement(
     case "packages": {
       let remaining = count;
       const values: number[] = [];
-      while (remaining >= 50) { values.push(50); remaining -= 50; }
-      while (remaining >= 10) { values.push(10); remaining -= 10; }
-      while (remaining >= 5) { values.push(5); remaining -= 5; }
-      while (remaining >= 1) { values.push(1); remaining -= 1; }
+      while (remaining >= 50) {
+        values.push(50);
+        remaining -= 50;
+      }
+      while (remaining >= 10) {
+        values.push(10);
+        remaining -= 10;
+      }
+      while (remaining >= 5) {
+        values.push(5);
+        remaining -= 5;
+      }
+      while (remaining >= 1) {
+        values.push(1);
+        remaining -= 1;
+      }
 
       const numPackages = values.length;
       const gcols = Math.min(numPackages, 5);
@@ -694,26 +927,52 @@ function generatePositionsByArrangement(
       // Zone C (x: 5%–30%)
       const hundredsIndices: number[] = [];
       for (let i = 0; i < hundreds; i++) {
-        positions.push({ x: 10 + (i % 2) * 12, y: 30 + Math.floor(i / 2) * 25, rotation: 0, scale: 1.4, zone: "hundreds" });
+        positions.push({
+          x: 10 + (i % 2) * 12,
+          y: 30 + Math.floor(i / 2) * 25,
+          rotation: 0,
+          scale: 1.4,
+          zone: "hundreds",
+        });
         hundredsIndices.push(posIdx++);
       }
-      if (hundreds > 0) groupFrames.push({ indices: hundredsIndices, size: hundreds, isComplete: true, zone: "hundreds" });
+      if (hundreds > 0)
+        groupFrames.push({
+          indices: hundredsIndices,
+          size: hundreds,
+          isComplete: true,
+          zone: "hundreds",
+        });
 
       // Zone D (x: 38%–62%)
       const tensIndices: number[] = [];
       for (let i = 0; i < tens; i++) {
-        positions.push({ x: 42 + (i % 2) * 8, y: 25 + Math.floor(i / 2) * 22, rotation: 0, scale: 1.0, zone: "tens" });
+        positions.push({
+          x: 42 + (i % 2) * 8,
+          y: 25 + Math.floor(i / 2) * 22,
+          rotation: 0,
+          scale: 1.0,
+          zone: "tens",
+        });
         tensIndices.push(posIdx++);
       }
-      if (tens > 0) groupFrames.push({ indices: tensIndices, size: tens, isComplete: true, zone: "tens" });
+      if (tens > 0)
+        groupFrames.push({ indices: tensIndices, size: tens, isComplete: true, zone: "tens" });
 
       // Zone U (x: 70%–95%)
       const unitsIndices: number[] = [];
       for (let i = 0; i < units; i++) {
-        positions.push({ x: 75 + (i % 3) * 6, y: 25 + Math.floor(i / 3) * 22, rotation: 0, scale: 0.65, zone: "units" });
+        positions.push({
+          x: 75 + (i % 3) * 6,
+          y: 25 + Math.floor(i / 3) * 22,
+          rotation: 0,
+          scale: 0.65,
+          zone: "units",
+        });
         unitsIndices.push(posIdx++);
       }
-      if (units > 0) groupFrames.push({ indices: unitsIndices, size: units, isComplete: true, zone: "units" });
+      if (units > 0)
+        groupFrames.push({ indices: unitsIndices, size: units, isComplete: true, zone: "units" });
 
       return { positions, groupFrames };
     }
@@ -724,7 +983,11 @@ function generatePositionsByArrangement(
       const basePerContainer = Math.floor(count / containerCount);
       const remainder = count % containerCount;
       const centers = [
-        { cx: 15, cy: 50 }, { cx: 35, cy: 50 }, { cx: 55, cy: 50 }, { cx: 75, cy: 50 }, { cx: 45, cy: 80 },
+        { cx: 15, cy: 50 },
+        { cx: 35, cy: 50 },
+        { cx: 55, cy: 50 },
+        { cx: 75, cy: 50 },
+        { cx: 45, cy: 80 },
       ];
       const positions: ObjectPosition[] = [];
       const groupFrames: GroupFrame[] = [];
@@ -774,9 +1037,12 @@ function generateCountsForLevel(level: CurriculumLevel, rng: () => number): numb
     const base: number[] = [];
     for (let n = level.rangeMin; n <= level.rangeMax; n += 10) base.push(n);
     const shuffled = shuffle(base, rng).slice(0, level.quantity);
-    return shuffled.map(n => n + Math.floor(rng() * 10)); // add 0-9 units
+    return shuffled.map((n) => n + Math.floor(rng() * 10)); // add 0-9 units
   }
-  if (level.visualArrangement === "semi-dispersed-tens" || level.visualArrangement === "bundles-tens-units") {
+  if (
+    level.visualArrangement === "semi-dispersed-tens" ||
+    level.visualArrangement === "bundles-tens-units"
+  ) {
     // Ensure minCount is at least 10 and generate varied combinations
     const counts: number[] = [];
     for (let n = Math.max(10, level.rangeMin); n <= level.rangeMax; n++) counts.push(n);
@@ -795,14 +1061,20 @@ export function generateSessionForLevel(levelId: CurriculumLevelId, seed = 42): 
   const level = LEVELS[levelId];
   const cfg = CURRICULUM_LEVELS[levelId];
   const rng = makeRng(seed);
-  const categories: ImageCategory[] = IMAGE_CATEGORIES.length > 0 ? shuffle([...IMAGE_CATEGORIES], rng) : [];
+  const categories: ImageCategory[] =
+    IMAGE_CATEGORIES.length > 0 ? shuffle([...IMAGE_CATEGORIES], rng) : [];
   const counts = generateCountsForLevel(level, rng);
 
   return Array.from({ length: level.quantity }, (_, i) => {
     const count = counts[i % counts.length];
-    const cat = categories.length > 0 ? categories[i % categories.length] : { name: "objetos", images: [] };
+    const cat =
+      categories.length > 0 ? categories[i % categories.length] : { name: "objetos", images: [] };
     const imageUrl = cat.images.length > 0 ? pickImage(cat, rng) : "";
-    const { positions, groupFrames } = generatePositionsByArrangement(count, level.visualArrangement, rng);
+    const { positions, groupFrames } = generatePositionsByArrangement(
+      count,
+      level.visualArrangement,
+      rng,
+    );
     const steps = buildSteps(levelId, count, cat.name, rng);
 
     return {
@@ -840,14 +1112,16 @@ export function generatePositions(
 
 export function generateSession(config: CountingConfig, seed = 42): CountingExercise[] {
   const rng = makeRng(seed);
-  const categories: ImageCategory[] = IMAGE_CATEGORIES.length > 0 ? shuffle([...IMAGE_CATEGORIES], rng) : [];
+  const categories: ImageCategory[] =
+    IMAGE_CATEGORIES.length > 0 ? shuffle([...IMAGE_CATEGORIES], rng) : [];
   const range: number[] = [];
   for (let n = config.minCount; n <= config.maxCount; n++) range.push(n);
   const shuffledRange = shuffle(range, rng);
 
   return Array.from({ length: config.quantity }, (_, i) => {
     const count = shuffledRange[i % shuffledRange.length];
-    const cat = categories.length > 0 ? categories[i % categories.length] : { name: "objetos", images: [] };
+    const cat =
+      categories.length > 0 ? categories[i % categories.length] : { name: "objetos", images: [] };
     const imageUrl = cat.images.length > 0 ? pickImage(cat, rng) : "";
     const positions = generatePositions(count, config.randomLayout, rng, config.visualArrangement);
     const arrangement: VisualArrangement = config.visualArrangement ?? "scattered-large";
@@ -855,7 +1129,12 @@ export function generateSession(config: CountingConfig, seed = 42): CountingExer
     // Legacy: single-step exercise
     const correctAnswer = count;
     const distractors = generatePedagogicalDistractors(count, "COUNT_TOTAL", count, rng);
-    const options = shuffle([correctAnswer, ...distractors], rng) as [number, number, number, number];
+    const options = shuffle([correctAnswer, ...distractors], rng) as [
+      number,
+      number,
+      number,
+      number,
+    ];
 
     return {
       id: i,

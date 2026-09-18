@@ -11,27 +11,28 @@ export type ActivityId = string;
 export type EngineId = string;
 export type ActivityDifficulty = "easy" | "medium" | "hard" | "expert";
 
-export type CurriculumLevelId = "1-L1" | "1-L2" | "1-L3" | "1-L4" | "2-L1" | "2-L2" | "2-L3" | "2-L4";
+export type CurriculumLevelId =
+  "1-L1" | "1-L2" | "1-L3" | "1-L4" | "2-L1" | "2-L2" | "2-L3" | "2-L4";
 
 export type VisualArrangement =
-  | "scattered-large"        // Desordenada, elementos grandes
-  | "double-row"             // 2 filas × 10 columnas (rango 1-20)
-  | "semi-dispersed-tens"    // Grupos de 10 delimitados + resto parcial
-  | "bundles-tens-units"     // Zona decenas (izq) + zona unidades (der)
-  | "packages"               // Paquetes etiquetados de 5, 10 y 50
-  | "matrix-grid"            // Rejilla perfecta filas × columnas
-  | "mass-vs-blocks"         // Tres zonas C-D-U con bloques proporcionales
-  | "containers-gaps";       // Contenedores con huecos e incógnitas
+  | "scattered-large" // Desordenada, elementos grandes
+  | "double-row" // 2 filas × 10 columnas (rango 1-20)
+  | "semi-dispersed-tens" // Grupos de 10 delimitados + resto parcial
+  | "bundles-tens-units" // Zona decenas (izq) + zona unidades (der)
+  | "packages" // Paquetes etiquetados de 5, 10 y 50
+  | "matrix-grid" // Rejilla perfecta filas × columnas
+  | "mass-vs-blocks" // Tres zonas C-D-U con bloques proporcionales
+  | "containers-gaps"; // Contenedores con huecos e incógnitas
 
 export type InteractiveMechanic =
-  | "touch-audio"            // Toque individual con audio e iluminación
-  | "pair-ordinal"           // Selección por pares y posición ordinal
-  | "drag-tens-containers"   // Arrastre de grupos a contenedores decenales
-  | "drag-positional"        // Arrastre a tabla posicional D-U
-  | "package-select"         // Reconocimiento de paquetes + selección
-  | "matrix-select"          // Reconocimiento de estructura matricial + selección
-  | "slider-multibase"       // Control deslizante + Bloques multibase C-D-U
-  | "conditional-scale";     // Deducción condicional + selección explícita
+  | "touch-audio" // Toque individual con audio e iluminación
+  | "pair-ordinal" // Selección por pares y posición ordinal
+  | "drag-tens-containers" // Arrastre de grupos a contenedores decenales
+  | "drag-positional" // Arrastre a tabla posicional D-U
+  | "package-select" // Reconocimiento de paquetes + selección
+  | "matrix-select" // Reconocimiento de estructura matricial + selección
+  | "slider-multibase" // Control deslizante + Bloques multibase C-D-U
+  | "conditional-scale"; // Deducción condicional + selección explícita
 
 export interface CurriculumLevel {
   id: CurriculumLevelId;
@@ -56,26 +57,26 @@ export interface CurriculumLevel {
  * Un mismo visual puede generar pasos con distintos AnswerType.
  */
 export type AnswerType =
-  | "COUNT_TOTAL"       // ¿Cuántos objetos hay?
-  | "COUNT_TENS"        // ¿Cuántas decenas hay?
-  | "COUNT_UNITS"       // ¿Cuántas unidades hay?
-  | "COUNT_HUNDREDS"    // ¿Cuántas centenas hay?
-  | "COMPOSE_NUMBER"    // ¿Qué número forman D+U o C+D+U?
-  | "DECOMPOSE_NUMBER"  // ¿Cómo se descompone este número?
-  | "MISSING_QUANTITY"  // ¿Cuántos faltan?
-  | "ESTIMATE";         // Estimación de cantidad
+  | "COUNT_TOTAL" // ¿Cuántos objetos hay?
+  | "COUNT_TENS" // ¿Cuántas decenas hay?
+  | "COUNT_UNITS" // ¿Cuántas unidades hay?
+  | "COUNT_HUNDREDS" // ¿Cuántas centenas hay?
+  | "COMPOSE_NUMBER" // ¿Qué número forman D+U o C+D+U?
+  | "DECOMPOSE_NUMBER" // ¿Cómo se descompone este número?
+  | "MISSING_QUANTITY" // ¿Cuántos faltan?
+  | "ESTIMATE"; // Estimación de cantidad
 
 /**
  * Cómo interactúa físicamente el niño con el visual antes de responder.
  * La respuesta numérica siempre es una selección explícita (SELECT).
  */
 export type InteractionType =
-  | "TOUCH"       // Toca objetos uno a uno (iluminación + sonido) antes de responder
-  | "SELECT"      // Solo selección de respuesta; sin manipulación previa
-  | "GROUP"       // Arrastra GroupFrames completos a TenContainers
-  | "DRAG"        // Arrastra grupos/unidades a tabla posicional D-U
-  | "FILL_TABLE"  // El niño rellena celdas D-U manualmente con numpad o escritura
-  | "SLIDER";     // Ajusta slider multibase (apoyo visual) antes de responder
+  | "TOUCH" // Toca objetos uno a uno (iluminación + sonido) antes de responder
+  | "SELECT" // Solo selección de respuesta; sin manipulación previa
+  | "GROUP" // Arrastra GroupFrames completos a TenContainers
+  | "DRAG" // Arrastra grupos/unidades a tabla posicional D-U
+  | "FILL_TABLE" // El niño rellena celdas D-U manualmente con numpad o escritura
+  | "SLIDER"; // Ajusta slider multibase (apoyo visual) antes de responder
 
 /**
  * Un paso dentro de un ejercicio multi-paso.

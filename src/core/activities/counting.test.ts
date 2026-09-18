@@ -27,7 +27,16 @@ describe("counting/engine", () => {
   });
 
   describe("LEVELS", () => {
-    const levelIds: CurriculumLevelId[] = ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"];
+    const levelIds: CurriculumLevelId[] = [
+      "1-L1",
+      "1-L2",
+      "1-L3",
+      "1-L4",
+      "2-L1",
+      "2-L2",
+      "2-L3",
+      "2-L4",
+    ];
 
     it("define los 8 niveles curriculares", () => {
       levelIds.forEach((id) => {
@@ -48,7 +57,16 @@ describe("counting/engine", () => {
 
   describe("CURRICULUM_LEVELS", () => {
     it("tiene 8 configuraciones con campos completos", () => {
-      const ids: CurriculumLevelId[] = ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"];
+      const ids: CurriculumLevelId[] = [
+        "1-L1",
+        "1-L2",
+        "1-L3",
+        "1-L4",
+        "2-L1",
+        "2-L2",
+        "2-L3",
+        "2-L4",
+      ];
       ids.forEach((id) => {
         const cfg = CURRICULUM_LEVELS[id];
         expect(cfg.minCount).toBe(LEVELS[id].rangeMin);
@@ -60,7 +78,16 @@ describe("counting/engine", () => {
   });
 
   describe("LEVELS", () => {
-    const levelIds: CurriculumLevelId[] = ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"];
+    const levelIds: CurriculumLevelId[] = [
+      "1-L1",
+      "1-L2",
+      "1-L3",
+      "1-L4",
+      "2-L1",
+      "2-L2",
+      "2-L3",
+      "2-L4",
+    ];
 
     it("define los 8 niveles curriculares", () => {
       levelIds.forEach((id) => {
@@ -106,7 +133,16 @@ describe("counting/engine", () => {
 
   describe("CURRICULUM_LEVELS", () => {
     it("tiene 8 configuraciones con campos completos", () => {
-      const ids: CurriculumLevelId[] = ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"];
+      const ids: CurriculumLevelId[] = [
+        "1-L1",
+        "1-L2",
+        "1-L3",
+        "1-L4",
+        "2-L1",
+        "2-L2",
+        "2-L3",
+        "2-L4",
+      ];
       ids.forEach((id) => {
         const cfg = CURRICULUM_LEVELS[id];
         expect(cfg.minCount).toBe(LEVELS[id].rangeMin);
@@ -166,7 +202,16 @@ describe("counting/engine", () => {
   });
 
   describe("generateSessionForLevel", () => {
-    const levelIds: CurriculumLevelId[] = ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"];
+    const levelIds: CurriculumLevelId[] = [
+      "1-L1",
+      "1-L2",
+      "1-L3",
+      "1-L4",
+      "2-L1",
+      "2-L2",
+      "2-L3",
+      "2-L4",
+    ];
 
     it("produce 10 ejercicios por nivel", () => {
       levelIds.forEach((id) => {
@@ -177,7 +222,7 @@ describe("counting/engine", () => {
 
     it("1-L2 tiene 3 pasos (TENS, UNITS, TOTAL)", () => {
       const exercises = generateSessionForLevel("1-L2", 42);
-      exercises.forEach(ex => {
+      exercises.forEach((ex) => {
         expect(ex.steps).toHaveLength(3);
         expect(ex.steps[0].answerType).toBe("COUNT_TENS");
         expect(ex.steps[1].answerType).toBe("COUNT_UNITS");
@@ -187,7 +232,7 @@ describe("counting/engine", () => {
 
     it("2-L3 tiene 1 paso (COMPOSE_NUMBER) — nivel sin andamiaje", () => {
       const exercises = generateSessionForLevel("2-L3", 42);
-      exercises.forEach(ex => {
+      exercises.forEach((ex) => {
         expect(ex.steps).toHaveLength(1);
         expect(ex.steps[0].answerType).toBe("COMPOSE_NUMBER");
       });
@@ -195,7 +240,7 @@ describe("counting/engine", () => {
 
     it("2-L2 tiene 4 pasos (HUNDREDS, TENS, UNITS, COMPOSE)", () => {
       const exercises = generateSessionForLevel("2-L2", 42);
-      exercises.forEach(ex => {
+      exercises.forEach((ex) => {
         expect(ex.steps).toHaveLength(4);
         expect(ex.steps[0].answerType).toBe("COUNT_HUNDREDS");
         expect(ex.steps[1].answerType).toBe("COUNT_TENS");
@@ -208,16 +253,25 @@ describe("counting/engine", () => {
       const ex1L3 = generateSessionForLevel("1-L3", 42)[0];
       expect(ex1L3.groupFrames).toBeDefined();
       expect(ex1L3.groupFrames!.length).toBeGreaterThan(0);
-      
+
       // En 1-L3 si el número no es múltiplo de 10, hay un frame parcial
-      const hasPartial = ex1L3.groupFrames!.some(gf => !gf.isComplete);
+      const hasPartial = ex1L3.groupFrames!.some((gf) => !gf.isComplete);
       const isMultiple10 = ex1L3.count % 10 === 0;
       expect(hasPartial).toBe(!isMultiple10);
     });
   });
 
   describe("generateSessionForLevel", () => {
-    const levelIds: CurriculumLevelId[] = ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"];
+    const levelIds: CurriculumLevelId[] = [
+      "1-L1",
+      "1-L2",
+      "1-L3",
+      "1-L4",
+      "2-L1",
+      "2-L2",
+      "2-L3",
+      "2-L4",
+    ];
 
     it("produce 10 ejercicios por nivel", () => {
       levelIds.forEach((id) => {
@@ -282,13 +336,19 @@ describe("counting/engine", () => {
 
   describe("validateAnswer", () => {
     it("devuelve true para respuesta correcta", () => {
-      const exercises = generateSession({ minCount: 3, maxCount: 5, quantity: 1, randomLayout: false, difficulty: "easy" }, 42);
+      const exercises = generateSession(
+        { minCount: 3, maxCount: 5, quantity: 1, randomLayout: false, difficulty: "easy" },
+        42,
+      );
       const step = exercises[0].steps[0];
       expect(validateAnswer(step, step.correctAnswer)).toBe(true);
     });
 
     it("devuelve false para respuesta incorrecta", () => {
-      const exercises = generateSession({ minCount: 3, maxCount: 5, quantity: 1, randomLayout: false, difficulty: "easy" }, 42);
+      const exercises = generateSession(
+        { minCount: 3, maxCount: 5, quantity: 1, randomLayout: false, difficulty: "easy" },
+        42,
+      );
       const step = exercises[0].steps[0];
       const wrong = step.correctAnswer === 3 ? 5 : 3;
       expect(validateAnswer(step, wrong)).toBe(false);

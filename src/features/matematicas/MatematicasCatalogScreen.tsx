@@ -5,7 +5,12 @@ import {
   getGrades,
   getSubjects,
 } from "../../core/content/catalog";
-import type { ActivityDifficulty, CurriculumLevelId, ActivityManifest, GradeId } from "../../core/content/contracts";
+import type {
+  ActivityDifficulty,
+  CurriculumLevelId,
+  ActivityManifest,
+  GradeId,
+} from "../../core/content/contracts";
 import { canLaunchActivity } from "../../core/content/engine-registry";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
 import { EngineScreen } from "./engine-screens";
@@ -16,9 +21,21 @@ interface Props {
   onBack: () => void;
 }
 
-const levelOrder: CurriculumLevelId[] = ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"];
+const levelOrder: CurriculumLevelId[] = [
+  "1-L1",
+  "1-L2",
+  "1-L3",
+  "1-L4",
+  "2-L1",
+  "2-L2",
+  "2-L3",
+  "2-L4",
+];
 
-function getLevelsForActivity(activity: ActivityManifest, currentGradeId?: string): CurriculumLevelId[] {
+function getLevelsForActivity(
+  activity: ActivityManifest,
+  currentGradeId?: string,
+): CurriculumLevelId[] {
   // Si estamos viendo el catálogo desde 1º, mostramos los 4 primeros (1-L1 a 1-L4)
   if (currentGradeId === "grade-1") return levelOrder.slice(0, 4);
   // Si estamos en 2º, mostramos los 4 siguientes (2-L1 a 2-L4)
@@ -276,14 +293,21 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                     onClick={() => {
                       setLevelId(level);
                       setDifficulty(
-                        level === "1-L1" ? "easy" :
-                        level === "1-L2" ? "medium" :
-                        level === "1-L3" ? "hard" :
-                        level === "1-L4" ? "expert" :
-                        level === "2-L1" ? "hard" :
-                        level === "2-L2" ? "expert" :
-                        level === "2-L3" ? "expert" :
-                        "expert"
+                        level === "1-L1"
+                          ? "easy"
+                          : level === "1-L2"
+                            ? "medium"
+                            : level === "1-L3"
+                              ? "hard"
+                              : level === "1-L4"
+                                ? "expert"
+                                : level === "2-L1"
+                                  ? "hard"
+                                  : level === "2-L2"
+                                    ? "expert"
+                                    : level === "2-L3"
+                                      ? "expert"
+                                      : "expert",
                       );
                     }}
                   >

@@ -77,7 +77,7 @@ export function playPop(): void {
   try {
     const c = getCtx();
     if (!c) return;
-    tone(440, c.currentTime, 0.08, 0.1); 
+    tone(440, c.currentTime, 0.08, 0.1);
   } catch {
     /* sin dispositivo de audio */
   }
