@@ -55,7 +55,6 @@ function getStarsForLevel(levelId: CurriculumLevelId): string {
   return "⭐".repeat(stars);
 }
 
-
 function getLevelName(levelId: CurriculumLevelId): string {
   const levelMap: Record<CurriculumLevelId, string> = {
     "1-L1": "Conteo 1 a 1 y Subitización",
