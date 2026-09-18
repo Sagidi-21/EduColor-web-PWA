@@ -8,7 +8,6 @@ import {
   type CountingExercise,
   type SessionResult,
   type CurriculumLevelId,
-  type ExerciseStep,
 } from "../../../core/activities/counting";
 import type { EngineScreenProps } from "../engine-screens";
 import { playFeedback, playPop } from "../../shared/audioFeedback";
@@ -101,19 +100,16 @@ export function CountingScreen({
       .filter((s, i) => i === session.currentStepIndex || s.persistent);
   }, [current, session.currentStepIndex]);
 
-  const handleTouch = useCallback(
-    (index: number) => {
-      if (current.interactionType !== "TOUCH") return;
-      if (session.touchedIndices.includes(index)) return;
+  const handleTouch = (index: number) => {
+    if (current.interactionType !== "TOUCH") return;
+    if (session.touchedIndices.includes(index)) return;
 
-      playPop();
-      setSession((s) => ({
-        ...s,
-        touchedIndices: [...s.touchedIndices, index],
-      }));
-    },
-    [current?.interactionType, session.touchedIndices],
-  );
+    playPop();
+    setSession((s) => ({
+      ...s,
+      touchedIndices: [...s.touchedIndices, index],
+    }));
+  };
 
   const numCompleteGroups = useMemo(() => {
     return current?.groupFrames?.filter((gf) => gf.isComplete).length || 0;
@@ -194,7 +190,7 @@ export function CountingScreen({
       setCanvasKeys({ hundreds: 0, tens: 0, units: 0 });
       setActiveInputCell(isLevel2 ? "hundreds" : "tens");
     }
-  }, [session, current, total]);
+  }, [session, current.steps.length, total, isLevel2]);
 
   // Avance automático tras respuesta correcta (1.2s para que se vea bien la respuesta)
   useEffect(() => {
@@ -320,7 +316,7 @@ export function CountingScreen({
 
         setDragState(null);
       }}
-      onPointerCancel={(e) => {
+      onPointerCancel={() => {
         if (dragState) {
           setDragState(null);
         }

@@ -55,19 +55,6 @@ function getStarsForLevel(levelId: CurriculumLevelId): string {
   return "⭐".repeat(stars);
 }
 
-function getCognitiveSkill(levelId: CurriculumLevelId): number {
-  const levelMap: Record<CurriculumLevelId, number> = {
-    "1-L1": 9,
-    "1-L2": 10,
-    "1-L3": 11,
-    "1-L4": 12,
-    "2-L1": 14,
-    "2-L2": 15,
-    "2-L3": 16,
-    "2-L4": 5,
-  };
-  return levelMap[levelId] || 1;
-}
 
 function getLevelName(levelId: CurriculumLevelId): string {
   const levelMap: Record<CurriculumLevelId, string> = {
