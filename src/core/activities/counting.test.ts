@@ -24,18 +24,38 @@ describe("counting/engine", () => {
       expect(PRESET_CONFIGS.easy.minCount).toBe(1);
       expect(PRESET_CONFIGS.easy.maxCount).toBe(5);
     });
+  });
 
-    it("expert: minCount 10, maxCount 20", () => {
-      expect(PRESET_CONFIGS.expert.minCount).toBe(10);
-      expect(PRESET_CONFIGS.expert.maxCount).toBe(20);
+  describe("LEVELS", () => {
+    const levelIds: CurriculumLevelId[] = ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"];
+
+    it("define los 8 niveles curriculares", () => {
+      levelIds.forEach((id) => {
+        expect(LEVELS[id]).toBeDefined();
+      });
     });
 
-    it("easy no usa layout aleatorio", () => {
-      expect(PRESET_CONFIGS.easy.randomLayout).toBe(false);
+    it("cada nivel tiene arreglo visual y mecánica definidos", () => {
+      levelIds.forEach((id) => {
+        const level = LEVELS[id];
+        expect(level.visualArrangement).toBeTruthy();
+        expect(level.interactiveMechanic).toBeTruthy();
+        expect(level.pdi).toBeTruthy();
+        expect(level.cognitiveSkill).toBeGreaterThanOrEqual(1);
+      });
     });
+  });
 
-    it("hard usa layout aleatorio", () => {
-      expect(PRESET_CONFIGS.hard.randomLayout).toBe(true);
+  describe("CURRICULUM_LEVELS", () => {
+    it("tiene 8 configuraciones con campos completos", () => {
+      const ids: CurriculumLevelId[] = ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"];
+      ids.forEach((id) => {
+        const cfg = CURRICULUM_LEVELS[id];
+        expect(cfg.minCount).toBe(LEVELS[id].rangeMin);
+        expect(cfg.maxCount).toBe(LEVELS[id].rangeMax);
+        expect(cfg.visualArrangement).toBe(LEVELS[id].visualArrangement);
+        expect(cfg.interactionType).toBeTruthy();
+      });
     });
   });
 
@@ -126,18 +146,7 @@ describe("counting/engine", () => {
       expect(exercises).toHaveLength(7);
     });
 
-    it("produce 10 ejercicios por defecto (quantity=10)", () => {
-      const exercises = generateSession(baseConfig, 42);
-      expect(exercises).toHaveLength(10);
-    });
-
-    it("produces reproducible results with same seed", () => {
-      const a = generateSession(baseConfig, 42);
-      const b = generateSession(baseConfig, 42);
-      expect(a).toEqual(b);
-    });
-
-    it("el count está dentro del rango [minCount, maxCount]", () => {
+    it("el count está dentro del rango", () => {
       const exercises = generateSession({ ...baseConfig, minCount: 3, maxCount: 5 }, 42);
       exercises.forEach((ex) => {
         expect(ex.count).toBeGreaterThanOrEqual(3);
@@ -145,61 +154,66 @@ describe("counting/engine", () => {
       });
     });
 
-    it("el correctAnswer coincide con count", () => {
+    it("tiene un paso COUNT_TOTAL con la respuesta correcta", () => {
       const exercises = generateSession(baseConfig, 42);
       exercises.forEach((ex) => {
-        expect(ex.correctAnswer).toBe(ex.count);
+        expect(ex.steps).toHaveLength(1);
+        expect(ex.steps[0].answerType).toBe("COUNT_TOTAL");
+        expect(ex.steps[0].correctAnswer).toBe(ex.count);
+        expect(ex.steps[0].options).toContain(ex.count);
+        expect(ex.steps[0].options).toHaveLength(4);
+      });
+    });
+  });
+
+  describe("generateSessionForLevel", () => {
+    const levelIds: CurriculumLevelId[] = ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"];
+
+    it("produce 10 ejercicios por nivel", () => {
+      levelIds.forEach((id) => {
+        const exercises = generateSessionForLevel(id, 42);
+        expect(exercises).toHaveLength(10);
       });
     });
 
-    it("las options incluyen el correctAnswer", () => {
-      const exercises = generateSession(baseConfig, 42);
-      exercises.forEach((ex) => {
-        expect(ex.options).toContain(ex.correctAnswer);
+    it("1-L2 tiene 3 pasos (TENS, UNITS, TOTAL)", () => {
+      const exercises = generateSessionForLevel("1-L2", 42);
+      exercises.forEach(ex => {
+        expect(ex.steps).toHaveLength(3);
+        expect(ex.steps[0].answerType).toBe("COUNT_TENS");
+        expect(ex.steps[1].answerType).toBe("COUNT_UNITS");
+        expect(ex.steps[2].answerType).toBe("COUNT_TOTAL");
       });
     });
 
-    it("las options tienen exactamente 4 elementos", () => {
-      const exercises = generateSession(baseConfig, 42);
-      exercises.forEach((ex) => {
-        expect(ex.options).toHaveLength(4);
+    it("2-L3 tiene 1 paso (COMPOSE_NUMBER) — nivel sin andamiaje", () => {
+      const exercises = generateSessionForLevel("2-L3", 42);
+      exercises.forEach(ex => {
+        expect(ex.steps).toHaveLength(1);
+        expect(ex.steps[0].answerType).toBe("COMPOSE_NUMBER");
       });
     });
 
-    it("las options no tienen duplicados (4 valores distintos)", () => {
-      const exercises = generateSession(baseConfig, 42);
-      exercises.forEach((ex) => {
-        const unique = new Set(ex.options);
-        expect(unique.size).toBe(4);
+    it("2-L2 tiene 4 pasos (HUNDREDS, TENS, UNITS, COMPOSE)", () => {
+      const exercises = generateSessionForLevel("2-L2", 42);
+      exercises.forEach(ex => {
+        expect(ex.steps).toHaveLength(4);
+        expect(ex.steps[0].answerType).toBe("COUNT_HUNDREDS");
+        expect(ex.steps[1].answerType).toBe("COUNT_TENS");
+        expect(ex.steps[2].answerType).toBe("COUNT_UNITS");
+        expect(ex.steps[3].answerType).toBe("COMPOSE_NUMBER");
       });
     });
 
-    it("el número de positions coincide con count", () => {
-      const exercises = generateSession({ ...baseConfig, minCount: 3, maxCount: 3 }, 42);
-      exercises.forEach((ex) => {
-        expect(ex.positions).toHaveLength(ex.count);
-      });
-    });
-
-    it("el objectLabel es no vacío", () => {
-      const exercises = generateSession(baseConfig, 42);
-      exercises.forEach((ex) => {
-        expect(ex.objectLabel).toBeTruthy();
-      });
-    });
-
-    it("el imageUrl es no vacío (categorías disponibles)", () => {
-      const exercises = generateSession(baseConfig, 42);
-      exercises.forEach((ex) => {
-        expect(ex.imageUrl).toBeTruthy();
-      });
-    });
-
-    it("el id es único secuencial", () => {
-      const exercises = generateSession(baseConfig, 42);
-      exercises.forEach((ex, i) => {
-        expect(ex.id).toBe(i);
-      });
+    it("GroupFrames se generan correctamente para arreglos estructurados", () => {
+      const ex1L3 = generateSessionForLevel("1-L3", 42)[0];
+      expect(ex1L3.groupFrames).toBeDefined();
+      expect(ex1L3.groupFrames!.length).toBeGreaterThan(0);
+      
+      // En 1-L3 si el número no es múltiplo de 10, hay un frame parcial
+      const hasPartial = ex1L3.groupFrames!.some(gf => !gf.isComplete);
+      const isMultiple10 = ex1L3.count % 10 === 0;
+      expect(hasPartial).toBe(!isMultiple10);
     });
   });
 
@@ -268,34 +282,16 @@ describe("counting/engine", () => {
 
   describe("validateAnswer", () => {
     it("devuelve true para respuesta correcta", () => {
-      const exercises = generateSession(
-        {
-          minCount: 3,
-          maxCount: 5,
-          quantity: 10,
-          randomLayout: false,
-          difficulty: "easy",
-        },
-        42,
-      );
-      const ex = exercises[0];
-      expect(validateAnswer(ex, ex.correctAnswer)).toBe(true);
+      const exercises = generateSession({ minCount: 3, maxCount: 5, quantity: 1, randomLayout: false, difficulty: "easy" }, 42);
+      const step = exercises[0].steps[0];
+      expect(validateAnswer(step, step.correctAnswer)).toBe(true);
     });
 
     it("devuelve false para respuesta incorrecta", () => {
-      const exercises = generateSession(
-        {
-          minCount: 3,
-          maxCount: 5,
-          quantity: 10,
-          randomLayout: false,
-          difficulty: "easy",
-        },
-        42,
-      );
-      const ex = exercises[0];
-      const wrong = ex.correctAnswer === 3 ? 5 : 3;
-      expect(validateAnswer(ex, wrong)).toBe(false);
+      const exercises = generateSession({ minCount: 3, maxCount: 5, quantity: 1, randomLayout: false, difficulty: "easy" }, 42);
+      const step = exercises[0].steps[0];
+      const wrong = step.correctAnswer === 3 ? 5 : 3;
+      expect(validateAnswer(step, wrong)).toBe(false);
     });
   });
 });

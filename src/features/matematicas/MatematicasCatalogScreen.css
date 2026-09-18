@@ -268,11 +268,72 @@
   margin: 0;
 }
 
-/* -- Difficulty -- */
-.mat__difficulty {
+/* -- Level selector (curriculum) -- */
+.mat__level-selector {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 0;
+}
+
+.level-card {
+  flex: 1 1 calc(50% - 6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 20px 12px;
+  background: var(--color-surface);
+  border: 3px solid var(--color-border);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.level-card:hover {
+  border-color: #f59e0b;
+  transform: translateY(-2px);
+}
+
+.level-card--selected {
+  border-color: #f59e0b !important;
+  background: #fffbeb;
+}
+
+.level-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.level-stars {
+  font-size: 24px;
+  color: #f59e0b;
+}
+
+.level-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.level-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.level-range {
+  font-weight: 600;
+}
+
+.level-mechanic {
+  font-style: italic;
 }
 
 .diff-card {

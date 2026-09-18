@@ -9,9 +9,13 @@
  * conozcan los detalles de síntesis del reproductor (DT-003).
  */
 
-import { playCorrect, playWrong } from "../../platform/audio";
+import { playCorrect, playWrong, playPop as playPopImpl } from "../../platform/audio";
 
 export function playFeedback(correct: boolean): void {
   if (correct) playCorrect();
   else playWrong();
+}
+
+export function playPop(): void {
+  playPopImpl();
 }

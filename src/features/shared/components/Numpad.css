@@ -6,6 +6,12 @@
   margin: 0 auto;
 }
 
+.shared-numpad--horizontal {
+  max-width: none;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
 .shared-numpad__row {
   display: flex;
   gap: 8px;

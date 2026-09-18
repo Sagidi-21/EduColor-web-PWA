@@ -5,7 +5,7 @@ import {
   getGrades,
   getSubjects,
 } from "../../core/content/catalog";
-import type { ActivityDifficulty, ActivityManifest, GradeId } from "../../core/content/contracts";
+import type { ActivityDifficulty, CurriculumLevelId, ActivityManifest, GradeId } from "../../core/content/contracts";
 import { canLaunchActivity } from "../../core/content/engine-registry";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
 import { EngineScreen } from "./engine-screens";
@@ -16,16 +16,93 @@ interface Props {
   onBack: () => void;
 }
 
-const difficultyOptions: readonly {
-  id: ActivityDifficulty;
-  label: string;
-  stars: string;
-}[] = [
-  { id: "easy", label: "Fácil", stars: "⭐" },
-  { id: "medium", label: "Medio", stars: "⭐⭐" },
-  { id: "hard", label: "Difícil", stars: "⭐⭐⭐" },
-  { id: "expert", label: "Experto", stars: "⭐⭐⭐⭐" },
-];
+const levelOrder: CurriculumLevelId[] = ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"];
+
+function getLevelsForActivity(activity: ActivityManifest, currentGradeId?: string): CurriculumLevelId[] {
+  // Si estamos viendo el catálogo desde 1º, mostramos los 4 primeros (1-L1 a 1-L4)
+  if (currentGradeId === "grade-1") return levelOrder.slice(0, 4);
+  // Si estamos en 2º, mostramos los 4 siguientes (2-L1 a 2-L4)
+  if (currentGradeId === "grade-2") return levelOrder.slice(4, 8);
+
+  // Fallback si no hay grade (ej: búsqueda global futura)
+  const isGrade1 = activity.gradeIds.includes("grade-1");
+  const isGrade2 = activity.gradeIds.includes("grade-2");
+  if (isGrade1 && !isGrade2) return levelOrder.slice(0, 4);
+  if (isGrade2 && !isGrade1) return levelOrder.slice(4, 8);
+  return levelOrder;
+}
+
+function getStarsForLevel(levelId: CurriculumLevelId): string {
+  const match = levelId.match(/L(\d)/);
+  const stars = match ? parseInt(match[1], 10) : 1;
+  return "⭐".repeat(stars);
+}
+
+function getCognitiveSkill(levelId: CurriculumLevelId): number {
+  const levelMap: Record<CurriculumLevelId, number> = {
+    "1-L1": 9,
+    "1-L2": 10,
+    "1-L3": 11,
+    "1-L4": 12,
+    "2-L1": 14,
+    "2-L2": 15,
+    "2-L3": 16,
+    "2-L4": 5,
+  };
+  return levelMap[levelId] || 1;
+}
+
+function getLevelName(levelId: CurriculumLevelId): string {
+  const levelMap: Record<CurriculumLevelId, string> = {
+    "1-L1": "Conteo 1 a 1 y Subitización",
+    "1-L2": "Cuadrículas y Conteo por Pares",
+    "1-L3": "Agrupación en Decenas",
+    "1-L4": "Descomposición D+U",
+    "2-L1": "Saltos Numéricos Extendidos",
+    "2-L2": "Arreglos Matriciales",
+    "2-L3": "Descomposición C, D y U libre",
+    "2-L4": "Arreglos Matriciales",
+  };
+  return levelMap[levelId] || "";
+}
+
+function getLevelRange(levelId: CurriculumLevelId): string {
+  const rangeMap: Record<CurriculumLevelId, string> = {
+    "1-L1": "1-10",
+    "1-L2": "1-20",
+    "1-L3": "1-50",
+    "1-L4": "1-99",
+    "2-L1": "",
+    "2-L2": "",
+    "2-L3": "",
+    "2-L4": "",
+  };
+  return rangeMap[levelId] || "";
+}
+
+function getLevelMechanic(levelId: CurriculumLevelId): string {
+  const mechanicMap: Record<CurriculumLevelId, string> = {
+    "1-L1": "Toque individual",
+    "1-L2": "Selección por pares",
+    "1-L3": "Arrastre a contenedores",
+    "1-L4": "Escribe D y U",
+    "2-L1": "Selección de respuesta",
+    "2-L2": "Escribe C, D y U",
+    "2-L3": "Selección de respuesta",
+    "2-L4": "Selección de respuesta",
+  };
+  return mechanicMap[levelId] || "";
+}
+
+function getDifficultyStars(difficulty?: ActivityDifficulty): string {
+  const map: Record<ActivityDifficulty, string> = {
+    easy: "⭐",
+    medium: "⭐⭐",
+    hard: "⭐⭐⭐",
+    expert: "⭐⭐⭐⭐",
+  };
+  return difficulty ? map[difficulty] : "";
+}
 
 export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
   const { profile } = useClassProfile();
@@ -34,10 +111,12 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
   const [gradeId, setGradeId] = useState(initialGradeId);
   const [blockId, setBlockId] = useState<string>("");
   const [selected, setSelected] = useState<ActivityManifest | null>(null);
-  const [difficulty, setDifficulty] = useState<ActivityDifficulty>("easy");
+  const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard" | "expert">("easy");
+  const [levelId, setLevelId] = useState<CurriculumLevelId | null>(null);
   const [session, setSession] = useState<{
     activity: ActivityManifest;
-    difficulty: ActivityDifficulty;
+    difficulty?: "easy" | "medium" | "hard" | "expert";
+    levelId?: CurriculumLevelId;
     seed: number;
   } | null>(null);
   const grades = getGrades(subjectId);
@@ -49,17 +128,20 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
     activities: getActivities({ subjectId, gradeId, curriculumBlockId: block.id }),
   }));
   if (session) {
-    const diffStars = difficultyOptions.find((d) => d.id === session.difficulty)?.stars ?? "";
+    const diffStars = session.levelId
+      ? getStarsForLevel(session.levelId)
+      : getDifficultyStars(session.difficulty);
     return (
       <EngineScreen
         activity={session.activity}
-        difficulty={session.difficulty}
+        difficulty={session.difficulty ?? "easy"}
         seed={session.seed}
         onExit={() => setSession(null)}
         gradeTitle={gradeTitle}
         className={profile.className}
         mascotUrl={profile.mascotUrl}
         difficultyStars={diffStars}
+        levelId={session.levelId}
       />
     );
   }
@@ -144,6 +226,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                       if (!launchable) return;
                       setSelected(activity);
                       setDifficulty("easy");
+                      setLevelId(getLevelsForActivity(activity, gradeId)[0]);
                     }}
                   >
                     <span className="activity-card__icon">{activity.boardCard?.icon ?? "🔢"}</span>
@@ -179,25 +262,47 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                 {selected.title}
               </h2>
             </div>
-            <div className="mat__difficulty">
-              {difficultyOptions.map((option) => (
-                <button
-                  key={option.id}
-                  className={`diff-card ${difficulty === option.id ? "diff-card--selected" : ""}`}
-                  onClick={() => setDifficulty(option.id)}
-                >
-                  <span className="diff-card__stars">{option.stars}</span>
-                  <span className="diff-card__label">{option.label}</span>
-                  <span className="diff-card__desc">
-                    {selected.boardCard?.difficultyDescriptions[option.id]}
-                  </span>
-                </button>
-              ))}
+            <div className="mat__level-selector">
+              {getLevelsForActivity(selected, gradeId).map((level) => {
+                const levelName = getLevelName(level);
+                const levelRange = getLevelRange(level);
+                const levelMechanic = getLevelMechanic(level);
+                const stars = getStarsForLevel(level);
+                const isSelected = levelId === level;
+                return (
+                  <div
+                    key={level}
+                    className={`level-card ${isSelected ? "level-card--selected" : ""}`}
+                    onClick={() => {
+                      setLevelId(level);
+                      setDifficulty(
+                        level === "1-L1" ? "easy" :
+                        level === "1-L2" ? "medium" :
+                        level === "1-L3" ? "hard" :
+                        level === "1-L4" ? "expert" :
+                        level === "2-L1" ? "hard" :
+                        level === "2-L2" ? "expert" :
+                        level === "2-L3" ? "expert" :
+                        "expert"
+                      );
+                    }}
+                  >
+                    <div className="level-header">
+                      <span className="level-stars">{stars}</span>
+                      <span className="level-title">{levelName}</span>
+                    </div>
+                    <div className="level-info">
+                      {levelRange && <span className="level-range">Rango: {levelRange}</span>}
+                      <span className="level-mechanic">Mecánica: {levelMechanic}</span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             <button
               className="mat__start-btn"
               onClick={() => {
-                setSession({ activity: selected, difficulty, seed: Date.now() });
+                setSession({ activity: selected, difficulty, levelId: levelId!, seed: Date.now() });
                 setSelected(null);
               }}
             >
