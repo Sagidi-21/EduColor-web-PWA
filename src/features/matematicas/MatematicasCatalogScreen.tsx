@@ -60,8 +60,8 @@ function getLevelName(levelId: CurriculumLevelId): string {
     "1-L4": "Descomposición D+U",
     "2-L1": "Saltos Numéricos Extendidos",
     "2-L2": "Arreglos Matriciales",
-    "2-L3": "Estimación y Centenas",
-    "2-L4": "Conteo Condicional y Patrones",
+    "2-L3": "Descomposición C, D y U libre",
+    "2-L4": "Arreglos Matriciales",
   };
   return levelMap[levelId] || "";
 }
@@ -72,10 +72,10 @@ function getLevelRange(levelId: CurriculumLevelId): string {
     "1-L2": "1-20",
     "1-L3": "1-50",
     "1-L4": "1-99",
-    "2-L1": "100-200",
-    "2-L2": "100-500",
-    "2-L3": "100-999",
-    "2-L4": "1-999",
+    "2-L1": "",
+    "2-L2": "",
+    "2-L3": "",
+    "2-L4": "",
   };
   return rangeMap[levelId] || "";
 }
@@ -85,11 +85,11 @@ function getLevelMechanic(levelId: CurriculumLevelId): string {
     "1-L1": "Toque individual",
     "1-L2": "Selección por pares",
     "1-L3": "Arrastre a contenedores",
-    "1-L4": "Arrastre a tabla",
-    "2-L1": "Trazo de líneas",
-    "2-L2": "Corte y separación",
-    "2-L3": "Control deslizante",
-    "2-L4": "Arrastres condicionales",
+    "1-L4": "Escribe D y U",
+    "2-L1": "Selección de respuesta",
+    "2-L2": "Escribe C, D y U",
+    "2-L3": "Selección de respuesta",
+    "2-L4": "Selección de respuesta",
   };
   return mechanicMap[levelId] || "";
 }
@@ -292,7 +292,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                       <span className="level-title">{levelName}</span>
                     </div>
                     <div className="level-info">
-                      <span className="level-range">Rango: {levelRange}</span>
+                      {levelRange && <span className="level-range">Rango: {levelRange}</span>}
                       <span className="level-mechanic">Mecánica: {levelMechanic}</span>
                     </div>
                   </div>

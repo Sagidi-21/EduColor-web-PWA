@@ -70,11 +70,12 @@ export type AnswerType =
  * La respuesta numérica siempre es una selección explícita (SELECT).
  */
 export type InteractionType =
-  | "TOUCH"    // Toca objetos uno a uno (iluminación + sonido) antes de responder
-  | "SELECT"   // Solo selección de respuesta; sin manipulación previa
-  | "GROUP"    // Arrastra GroupFrames completos a TenContainers
-  | "DRAG"     // Arrastra grupos/unidades a tabla posicional D-U
-  | "SLIDER";  // Ajusta slider multibase (apoyo visual) antes de responder
+  | "TOUCH"       // Toca objetos uno a uno (iluminación + sonido) antes de responder
+  | "SELECT"      // Solo selección de respuesta; sin manipulación previa
+  | "GROUP"       // Arrastra GroupFrames completos a TenContainers
+  | "DRAG"        // Arrastra grupos/unidades a tabla posicional D-U
+  | "FILL_TABLE"  // El niño rellena celdas D-U manualmente con numpad o escritura
+  | "SLIDER";     // Ajusta slider multibase (apoyo visual) antes de responder
 
 /**
  * Un paso dentro de un ejercicio multi-paso.
