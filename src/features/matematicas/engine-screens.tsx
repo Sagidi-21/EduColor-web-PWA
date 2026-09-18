@@ -47,6 +47,13 @@ const RectaNumericaScreen = lazy(() =>
   })),
 );
 
+// Tres Sumandos engine screen
+const TresSumandosScreen = lazy(() =>
+  import("./tresSumandos/TresSumandosScreen").then((module) => ({
+    default: module.TresSumandosScreen,
+  })),
+);
+
 export interface EngineScreenProps {
   activity: ActivityManifest;
   difficulty: ActivityDifficulty;
@@ -143,6 +150,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <RectaNumericaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "tresSumandos") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <TresSumandosScreen {...props} />
       </Suspense>
     );
   }

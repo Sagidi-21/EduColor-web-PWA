@@ -86,19 +86,12 @@ Saber exactamente qué existe antes de mover o reescribir cualquier cosa.
 
 Inventariar:
 
-- motores;
-- generadores;
-- validators;
-- renderizadores;
-- registro de actividades;
-- actividades por curso;
-- componentes React;
-- pantallas;
-- servicios;
-- almacenamiento;
-- modelos;
-- assets;
-- reconocimiento;
+    - assets;
+    - reconocimiento;
+
+    <!-- Reuse guideline -->
+    **Nota:** Para todas las migraciones futuras (p.ej., `tresSumandos`), **NO** es necesario volver a describir el proceso de copiar/pegar código de la referencia Electron.  Se debe seguir la guía de reutilización documentada en `docs/GUIA_REUTILIZACION.md`, que lista los componentes, hooks, assets y patrones ya centralizados en la PWA.  Simplemente copie los archivos de la carpeta `electron‑reference` a los destinos indicados y ajuste los imports para usar los recursos compartidos.
+
 - exportadores;
 - tests;
 - configuración;
