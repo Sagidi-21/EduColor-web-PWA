@@ -3,6 +3,7 @@ import {
   generateSession,
   validateAnswer,
   showImageSupport,
+  type TresSumandosExercise,
 } from "../../../core/activities/tresSumandos";
 import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
@@ -22,6 +23,12 @@ function answerLen(n: number): number {
   return String(n).length;
 }
 
+// Helper to pad numbers for column layout
+function padLeft(n: number, cols: number): (string | null)[] {
+  const s = String(n);
+  return [...Array(cols - s.length).fill(null), ...s.split("")];
+}
+
 export function TresSumandosScreen({
   activity,
   difficulty,
@@ -31,9 +38,13 @@ export function TresSumandosScreen({
   className,
   mascotUrl,
   difficultyStars,
+  levelId,
 }: EngineScreenProps) {
+  const { mode, toggle } = useInputMode();
+  const [canvasKey, setCanvasKey] = useState(0);
+
   const [session, setSession] = useState(() => {
-    const exercises = generateSession(difficulty, seed);
+    const exercises = generateSession(difficulty, levelId, seed);
     const firstLen = answerLen(exercises[0].answer);
     return {
       exercises,
@@ -47,13 +58,22 @@ export function TresSumandosScreen({
     };
   });
   const [finished, setFinished] = useState<SessionResult | null>(null);
-  const { mode, toggle } = useInputMode();
-  const [canvasKey, setCanvasKey] = useState(0);
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
   const showImg = showImageSupport(difficulty);
-  const aLen = current ? answerLen(current.answer) : 1;
+  const aLen = answerLen(current.answer);
+
+  // Columns needed for the longest operand (including result)
+  const numCols = Math.max(
+    String(current.a).length,
+    String(current.b).length,
+    String(current.c).length,
+    aLen,
+  );
+  const aDigits = padLeft(current.a, numCols);
+  const bDigits = padLeft(current.b, numCols);
+  const cDigits = padLeft(current.c, numCols);
 
   const submitDigits = useCallback(
     (digits: string[]) => {
@@ -148,7 +168,7 @@ export function TresSumandosScreen({
 
   const handleRestart = () => {
     setFinished(null);
-    const exercises = generateSession(difficulty, Date.now() % 999983);
+    const exercises = generateSession(difficulty, levelId, Date.now() % 999983);
     const firstLen = answerLen(exercises[0].answer);
     setSession({
       exercises,
@@ -174,13 +194,23 @@ export function TresSumandosScreen({
   }
 
   if (!current) return null;
+
   const stageClass =
     session.answerState === "correct"
       ? "ops__stage--correct"
       : session.answerState === "wrong"
-        ? "ops__stage--wrong"
-        : "";
+      ? "ops__stage--wrong"
+      : "";
+
   const correctStr = String(current.answer);
+
+  // Render answer box value depending on state
+  const boxValue = (i: number): string => {
+    if (session.answerState === "correct") {
+      return correctStr.padStart(numCols, "0")[i];
+    }
+    return session.digits[i] ?? "";
+  };
 
   return (
     <div className="ops">
@@ -199,7 +229,6 @@ export function TresSumandosScreen({
 
       <div className={`ops__stage ${stageClass}`}>
         {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
-
         <div className="ops__exercise">
           {showImg && current.imageUrl && (
             <div className="ops__emoji-support tres__triple-imgs">
@@ -212,69 +241,89 @@ export function TresSumandosScreen({
               ))}
             </div>
           )}
-          <div className="ops__formula tres__formula">
-            <span className="ops__num">{current.a}</span>
-            <span className="ops__op">+</span>
-            <span className="ops__num">{current.b}</span>
-            <span className="ops__op">+</span>
-            <span className="ops__num">{current.c}</span>
-            <span className="ops__eq">=</span>
 
-            <div className="tres__answer-boxes">
-              {Array.from({ length: aLen }, (_, i) => {
-                const isActiveBox = session.answerState === "idle" && session.activeDigit === i;
-                if (mode === "canvas" && isActiveBox) {
-                  return (
-                    <LazyDigitCell
-                      key={`dab-${session.activeDigit}-${canvasKey}`}
-                      isActive={true}
-                      onActivate={() => {}}
-                      onConfirm={(d) => handleCanvasConfirm(i, d)}
-                      onClear={() => {
-                        const nd = [...session.digits];
-                        nd[i] = "";
-                        setSession((s) => ({ ...s, digits: nd }));
-                      }}
-                      state="idle"
-                      value=""
-                    />
-                  );
-                }
+          {/* Column layout for the three addends and result */}
+          <div className="ops__vertical" style={{ "--ncols": numCols } as React.CSSProperties}>
+            {/* First addend */}
+            <span className="ops__vcell ops__vcell--sym" />
+            {aDigits.map((d, i) => (
+              <span key={`a${i}`} className="ops__vcell">
+                {d ?? ""}
+              </span>
+            ))}
+            {/* Operator */}
+            <span className="ops__vcell ops__vcell--sym">+</span>
+            {/* Second addend */}
+            {bDigits.map((d, i) => (
+              <span key={`b${i}`} className="ops__vcell">
+                {d ?? ""}
+              </span>
+            ))}
+            {/* Operator */}
+            <span className="ops__vcell ops__vcell--sym">+</span>
+            {/* Third addend */}
+            {cDigits.map((d, i) => (
+              <span key={`c${i}`} className="ops__vcell">
+                {d ?? ""}
+              </span>
+            ))}
+            {/* Divider */}
+            <div className="ops__vdivider" />
+            {/* Result row */}
+            <span className="ops__vcell ops__vcell--sym" />
+            {Array.from({ length: numCols - aLen }, (_, i) => (
+              <span key={`pad${i}`} className="ops__vcell" />
+            ))}
+            {Array.from({ length: aLen }, (_, i) => {
+              const isActiveBox = session.answerState === "idle" && session.activeDigit === i;
+              if (mode === "canvas" && isActiveBox) {
                 return (
-                  <div
-                    key={i}
-                    className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : session.answerState === "wrong" ? "ops__answer-box--wrong" : ""} ${isActiveBox ? "ops__answer-box--active" : ""}`}
-                    onClick={() => {
-                      if (session.answerState !== "idle") return;
+                  <LazyDigitCell
+                    key={`res-${session.activeDigit}-${canvasKey}`}
+                    isActive={true}
+                    onActivate={() => {}}
+                    onConfirm={(d) => handleCanvasConfirm(i, d)}
+                    onClear={() => {
                       const nd = [...session.digits];
                       nd[i] = "";
-                      setSession((s) => ({ ...s, activeDigit: i, digits: nd }));
+                      setSession((s) => ({ ...s, digits: nd }));
                     }}
-                  >
-                    {session.answerState === "correct"
-                      ? correctStr[i]
-                      : session.digits[i] ||
-                        (isActiveBox ? <span className="ops__cursor">_</span> : "")}
-                  </div>
+                    state="idle"
+                    value=""
+                  />
                 );
-              })}
-            </div>
+              }
+              return (
+                <div
+                  key={i}
+                  className={[
+                    "ops__vbox",
+                    isActiveBox ? "ops__vbox--active" : "",
+                    session.answerState === "correct" ? "ops__vbox--correct" : "",
+                    session.answerState === "wrong" ? "ops__vbox--wrong" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  onClick={() => {
+                    if (session.answerState !== "idle") return;
+                    const nd = [...session.digits];
+                    nd[i] = "";
+                    setSession((s) => ({ ...s, activeDigit: i, digits: nd }));
+                  }}
+                >
+                  {boxValue(i) || (isActiveBox ? <span className="ops__cursor">_</span> : "")}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
 
       <footer className="ops__footer">
         {mode === "numpad" && (
-          <Numpad
-            onDigit={handleNumpadDigit}
-            onDelete={handleDelete}
-            onConfirm={handleConfirm}
-            disabled={session.answerState !== "idle"}
-          />
+          <Numpad onDigit={handleNumpadDigit} onDelete={handleDelete} onConfirm={handleConfirm} disabled={session.answerState !== "idle"} />
         )}
-        {session.answerState === "wrong" && (
-          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-        )}
+        {session.answerState === "wrong" && <ActionButtons onRetry={handleRetry} onNext={handleNext} />}
       </footer>
     </div>
   );

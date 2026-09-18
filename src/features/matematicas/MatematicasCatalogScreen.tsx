@@ -55,7 +55,20 @@ function getStarsForLevel(levelId: CurriculumLevelId): string {
   return "⭐".repeat(stars);
 }
 
-function getLevelName(levelId: CurriculumLevelId): string {
+function getLevelName(levelId: CurriculumLevelId, engineId: string): string {
+  if (engineId === "tresSumandos") {
+    const tresMap: Record<CurriculumLevelId, string> = {
+      "1-L1": "Descubro",
+      "1-L2": "Construyo",
+      "1-L3": "Sumo en columna",
+      "1-L4": "¡Me llevo una!",
+      "2-L1": "2 cifras, sin llevadas",
+      "2-L2": "2 cifras, con llevadas",
+      "2-L3": "3 cifras, sin llevadas",
+      "2-L4": "3 cifras, con llevadas",
+    };
+    return tresMap[levelId] || "";
+  }
   const levelMap: Record<CurriculumLevelId, string> = {
     "1-L1": "Conteo 1 a 1 y Subitización",
     "1-L2": "Cuadrículas y Conteo por Pares",
@@ -69,7 +82,10 @@ function getLevelName(levelId: CurriculumLevelId): string {
   return levelMap[levelId] || "";
 }
 
-function getLevelRange(levelId: CurriculumLevelId): string {
+function getLevelRange(levelId: CurriculumLevelId, engineId: string): string {
+  if (engineId === "tresSumandos") {
+    return ""; // Not specifically requested, covered by mechanic
+  }
   const rangeMap: Record<CurriculumLevelId, string> = {
     "1-L1": "1-10",
     "1-L2": "1-20",
@@ -83,7 +99,20 @@ function getLevelRange(levelId: CurriculumLevelId): string {
   return rangeMap[levelId] || "";
 }
 
-function getLevelMechanic(levelId: CurriculumLevelId): string {
+function getLevelMechanic(levelId: CurriculumLevelId, engineId: string): string {
+  if (engineId === "tresSumandos") {
+    const mechanicMap: Record<CurriculumLevelId, string> = {
+      "1-L1": "3 sumandos pequeños, sin llevadas",
+      "1-L2": "3 sumandos hasta 20, con llevadas",
+      "1-L3": "2 cifras, sin llevadas",
+      "1-L4": "2 cifras con una llevada",
+      "2-L1": "3 sumandos de 2 cifras, sin llevadas",
+      "2-L2": "3 sumandos de 2 cifras, con llevadas",
+      "2-L3": "3 sumandos de 3 cifras, sin llevadas",
+      "2-L4": "3 sumandos de 3 cifras, con llevadas",
+    };
+    return mechanicMap[levelId] || "";
+  }
   const mechanicMap: Record<CurriculumLevelId, string> = {
     "1-L1": "Toque individual",
     "1-L2": "Selección por pares",
@@ -229,7 +258,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                       if (!launchable) return;
                       setSelected(activity);
                       setDifficulty("easy");
-                      if (activity.engineId === "counting") {
+                      if (activity.engineId === "counting" || activity.engineId === "tresSumandos") {
                         setLevelId(getLevelsForActivity(activity, gradeId)[0]);
                       } else {
                         setLevelId(null);
@@ -270,12 +299,12 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
               </h2>
             </div>
             <div className="mat__level-selector">
-              {selected.engineId === "counting"
-                ? // Selector de niveles de currículo — solo para "counting"
+              {selected.engineId === "counting" || selected.engineId === "tresSumandos"
+                ? // Selector de niveles de currículo
                   getLevelsForActivity(selected, gradeId).map((level) => {
-                    const levelName = getLevelName(level);
-                    const levelRange = getLevelRange(level);
-                    const levelMechanic = getLevelMechanic(level);
+                    const levelName = getLevelName(level, selected.engineId);
+                    const levelRange = getLevelRange(level, selected.engineId);
+                    const levelMechanic = getLevelMechanic(level, selected.engineId);
                     const stars = getStarsForLevel(level);
                     const isSelected = levelId === level;
                     return (

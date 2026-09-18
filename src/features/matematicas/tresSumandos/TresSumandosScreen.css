@@ -3,6 +3,7 @@
   justify-content: center;
   gap: 8px;
 }
+
 .tres__triple-imgs {
   flex-direction: column;
   gap: 4px;
@@ -14,4 +15,9 @@
   flex-direction: row;
   gap: 0.5rem;
   align-items: center;
+}
+
+.tres__triple-imgs .ops__emoji-img {
+  width: 160px;
+  height: 160px;
 }
