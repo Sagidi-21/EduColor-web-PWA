@@ -18,19 +18,23 @@ interface Props {
 
 const levelOrder: CurriculumLevelId[] = ["1-L1", "1-L2", "1-L3", "1-L4", "2-L1", "2-L2", "2-L3", "2-L4"];
 
-function getLevelsForActivity(activity: ActivityManifest): CurriculumLevelId[] {
-  const block = activity.curriculumBlockIds[0] || "";
-  const isGrade1 = block.includes("grade-1");
-  const isGrade2 = block.includes("grade-2");
+function getLevelsForActivity(activity: ActivityManifest, currentGradeId?: string): CurriculumLevelId[] {
+  // Si estamos viendo el catálogo desde 1º, mostramos los 4 primeros (1-L1 a 1-L4)
+  if (currentGradeId === "grade-1") return levelOrder.slice(0, 4);
+  // Si estamos en 2º, mostramos los 4 siguientes (2-L1 a 2-L4)
+  if (currentGradeId === "grade-2") return levelOrder.slice(4, 8);
+
+  // Fallback si no hay grade (ej: búsqueda global futura)
+  const isGrade1 = activity.gradeIds.includes("grade-1");
+  const isGrade2 = activity.gradeIds.includes("grade-2");
   if (isGrade1 && !isGrade2) return levelOrder.slice(0, 4);
   if (isGrade2 && !isGrade1) return levelOrder.slice(4, 8);
   return levelOrder;
 }
 
 function getStarsForLevel(levelId: CurriculumLevelId): string {
-  const skill = getCognitiveSkill(levelId);
-  // Map skill 1-16 to 1-4 stars
-  const stars = Math.ceil(skill / 4);
+  const match = levelId.match(/L(\d)/);
+  const stars = match ? parseInt(match[1], 10) : 1;
   return "⭐".repeat(stars);
 }
 
@@ -222,7 +226,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                       if (!launchable) return;
                       setSelected(activity);
                       setDifficulty("easy");
-                      setLevelId(getLevelsForActivity(activity)[0]);
+                      setLevelId(getLevelsForActivity(activity, gradeId)[0]);
                     }}
                   >
                     <span className="activity-card__icon">{activity.boardCard?.icon ?? "🔢"}</span>
@@ -259,7 +263,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
               </h2>
             </div>
             <div className="mat__level-selector">
-              {getLevelsForActivity(selected).map((level) => {
+              {getLevelsForActivity(selected, gradeId).map((level) => {
                 const levelName = getLevelName(level);
                 const levelRange = getLevelRange(level);
                 const levelMechanic = getLevelMechanic(level);
