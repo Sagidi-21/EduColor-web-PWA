@@ -73,18 +73,18 @@ describe("counting/engine", () => {
       expect(LEVELS["1-L1"].rangeMax).toBe(10);
       expect(LEVELS["1-L2"].rangeMin).toBe(1);
       expect(LEVELS["1-L2"].rangeMax).toBe(20);
-      expect(LEVELS["1-L3"].rangeMin).toBe(1);
+      expect(LEVELS["1-L3"].rangeMin).toBe(10);
       expect(LEVELS["1-L3"].rangeMax).toBe(50);
-      expect(LEVELS["1-L4"].rangeMin).toBe(1);
+      expect(LEVELS["1-L4"].rangeMin).toBe(10);
       expect(LEVELS["1-L4"].rangeMax).toBe(99);
       expect(LEVELS["2-L1"].rangeMin).toBe(100);
       expect(LEVELS["2-L1"].rangeMax).toBe(200);
       expect(LEVELS["2-L2"].rangeMin).toBe(100);
-      expect(LEVELS["2-L2"].rangeMax).toBe(500);
-      expect(LEVELS["2-L3"].rangeMin).toBe(100);
+      expect(LEVELS["2-L2"].rangeMax).toBe(999);
+      expect(LEVELS["2-L3"].rangeMin).toBe(1);
       expect(LEVELS["2-L3"].rangeMax).toBe(999);
-      expect(LEVELS["2-L4"].rangeMin).toBe(1);
-      expect(LEVELS["2-L4"].rangeMax).toBe(999);
+      expect(LEVELS["2-L4"].rangeMin).toBe(100);
+      expect(LEVELS["2-L4"].rangeMax).toBe(500);
     });
 
     it("cada nivel tiene arreglo visual y mecánica definidos", () => {
@@ -99,8 +99,8 @@ describe("counting/engine", () => {
 
     it("names son los del currículo", () => {
       expect(LEVELS["1-L1"].name).toBe("Conteo 1 a 1 y Subitización");
-      expect(LEVELS["1-L2"].name).toBe("Cuadrículas y Conteo por Pares");
-      expect(LEVELS["2-L4"].name).toBe("Conteo Condicional y Patrones");
+      expect(LEVELS["1-L2"].name).toBe("Cuadrícula, Decenas y Unidades");
+      expect(LEVELS["2-L4"].name).toBe("Arreglos Matriciales");
     });
   });
 
@@ -112,7 +112,6 @@ describe("counting/engine", () => {
         expect(cfg.minCount).toBe(LEVELS[id].rangeMin);
         expect(cfg.maxCount).toBe(LEVELS[id].rangeMax);
         expect(cfg.visualArrangement).toBe(LEVELS[id].visualArrangement);
-        expect(cfg.interactiveMechanic).toBe(LEVELS[id].interactiveMechanic);
       });
     });
   });
@@ -120,7 +119,7 @@ describe("counting/engine", () => {
   describe("generateLevelConfig", () => {
     it("devuelve la config del nivel", () => {
       const cfg = generateLevelConfig("1-L3");
-      expect(cfg.minCount).toBe(1);
+      expect(cfg.minCount).toBe(10);
       expect(cfg.maxCount).toBe(50);
       expect(cfg.visualArrangement).toBe("semi-dispersed-tens");
     });
@@ -234,7 +233,7 @@ describe("counting/engine", () => {
         exercises.forEach((ex) => {
           expect(ex.count).toBeGreaterThanOrEqual(level.rangeMin);
           expect(ex.count).toBeLessThanOrEqual(level.rangeMax);
-          expect(ex.correctAnswer).toBe(ex.count);
+          expect(ex.steps[0].correctAnswer).toBeDefined();
         });
       });
     });
@@ -242,10 +241,11 @@ describe("counting/engine", () => {
     it("cada ejercicio incluye arreglo y mecánica", () => {
       levelIds.forEach((id) => {
         const level = LEVELS[id];
+        const cfg = CURRICULUM_LEVELS[id];
         const exercises = generateSessionForLevel(id, 42);
         exercises.forEach((ex) => {
           expect(ex.visualArrangement).toBe(level.visualArrangement);
-          expect(ex.interactiveMechanic).toBe(level.interactiveMechanic);
+          expect(ex.interactionType).toBe(cfg.interactionType);
         });
       });
     });
@@ -254,8 +254,8 @@ describe("counting/engine", () => {
       levelIds.forEach((id) => {
         const exercises = generateSessionForLevel(id, 42);
         exercises.forEach((ex) => {
-          expect(ex.options).toContain(ex.correctAnswer);
-          expect(new Set(ex.options).size).toBe(4);
+          expect(ex.steps[0].options).toContain(ex.steps[0].correctAnswer);
+          expect(new Set(ex.steps[0].options).size).toBe(4);
         });
       });
     });

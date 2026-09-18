@@ -15,23 +15,23 @@ export type CurriculumLevelId = "1-L1" | "1-L2" | "1-L3" | "1-L4" | "2-L1" | "2-
 
 export type VisualArrangement =
   | "scattered-large"        // Desordenada, elementos grandes
-  | "ten-frames"             // Marcos de 10
-  | "semi-dispersed-tens"    // Semidispersa + Cajas de 10
-  | "bundles-tens-units"     // Atados de 10 y unidades libres
-  | "packages"               // Paquetes de 5, 10 y 50
-  | "matrix-grid"            // Rejillas de filas y columnas
-  | "mass-vs-blocks"         // Masa fluida vs Bloques C-D-U
-  | "containers-gaps";       // Contenedores con vacíos e incógnitas
+  | "double-row"             // 2 filas × 10 columnas (rango 1-20)
+  | "semi-dispersed-tens"    // Grupos de 10 delimitados + resto parcial
+  | "bundles-tens-units"     // Zona decenas (izq) + zona unidades (der)
+  | "packages"               // Paquetes etiquetados de 5, 10 y 50
+  | "matrix-grid"            // Rejilla perfecta filas × columnas
+  | "mass-vs-blocks"         // Tres zonas C-D-U con bloques proporcionales
+  | "containers-gaps";       // Contenedores con huecos e incógnitas
 
 export type InteractiveMechanic =
   | "touch-audio"            // Toque individual con audio e iluminación
   | "pair-ordinal"           // Selección por pares y posición ordinal
-  | "drag-tens-containers"   // Arrastre a contenedores decenales
+  | "drag-tens-containers"   // Arrastre de grupos a contenedores decenales
   | "drag-positional"        // Arrastre a tabla posicional D-U
-  | "line-trace"             // Trazo de líneas continuas entre paquetes
-  | "cut-separate"           // Herramienta de corte y separación
-  | "slider-multibase"       // Control deslizante + Bloques multibase
-  | "conditional-scale";     // Arrastre condicional y balanza digital
+  | "package-select"         // Reconocimiento de paquetes + selección
+  | "matrix-select"          // Reconocimiento de estructura matricial + selección
+  | "slider-multibase"       // Control deslizante + Bloques multibase C-D-U
+  | "conditional-scale";     // Deducción condicional + selección explícita
 
 export interface CurriculumLevel {
   id: CurriculumLevelId;
@@ -40,10 +40,80 @@ export interface CurriculumLevel {
   name: string;
   rangeMin: number;
   rangeMax: number;
+  quantity: number;
   visualArrangement: VisualArrangement;
   interactiveMechanic: InteractiveMechanic;
   pdi: string;
   cognitiveSkill: number;
+}
+
+// ---------------------------------------------------------------------------
+// Tipos del sistema de ejercicios multi-paso (spec v2)
+// ---------------------------------------------------------------------------
+
+/**
+ * Habilidad cognitiva que se evalúa en cada paso de un ejercicio.
+ * Un mismo visual puede generar pasos con distintos AnswerType.
+ */
+export type AnswerType =
+  | "COUNT_TOTAL"       // ¿Cuántos objetos hay?
+  | "COUNT_TENS"        // ¿Cuántas decenas hay?
+  | "COUNT_UNITS"       // ¿Cuántas unidades hay?
+  | "COUNT_HUNDREDS"    // ¿Cuántas centenas hay?
+  | "COMPOSE_NUMBER"    // ¿Qué número forman D+U o C+D+U?
+  | "DECOMPOSE_NUMBER"  // ¿Cómo se descompone este número?
+  | "MISSING_QUANTITY"  // ¿Cuántos faltan?
+  | "ESTIMATE";         // Estimación de cantidad
+
+/**
+ * Cómo interactúa físicamente el niño con el visual antes de responder.
+ * La respuesta numérica siempre es una selección explícita (SELECT).
+ */
+export type InteractionType =
+  | "TOUCH"       // Toca objetos uno a uno (iluminación + sonido) antes de responder
+  | "SELECT"      // Solo selección de respuesta; sin manipulación previa
+  | "GROUP"       // Arrastra GroupFrames completos a TenContainers
+  | "DRAG"        // Arrastra grupos/unidades a tabla posicional D-U
+  | "FILL_TABLE"  // El niño rellena celdas D-U manualmente con numpad o escritura
+  | "SLIDER";     // Ajusta slider multibase (apoyo visual) antes de responder
+
+/**
+ * Un paso dentro de un ejercicio multi-paso.
+ * Cada paso tiene su propia pregunta, respuesta correcta y opciones.
+ */
+export interface ExerciseStep {
+  /** Qué habilidad se evalúa en este paso */
+  answerType: AnswerType;
+  /** Texto de la pregunta (ya interpolado, ej: "¿Cuántas manzanas hay?") */
+  prompt: string;
+  /** Respuesta numérica correcta */
+  correctAnswer: number;
+  /** Exactamente 4 opciones (correcto + 3 distractores pedagógicos), mezcladas */
+  options: [number, number, number, number];
+  /**
+   * Si true, el paso permanece visible en pantalla cuando se avanza al siguiente.
+   * Permite construir la relación «D + U = total» acumulativamente.
+   */
+  persistent: boolean;
+}
+
+/**
+ * Marco visual que delimita un grupo de objetos en pantalla.
+ * Es puramente presentacional: no tiene lógica interactiva.
+ * Se renderiza como <div> absolutamente posicionado sobre el área de objetos.
+ */
+export interface GroupFrame {
+  /** Índices (en el array positions[]) de los objetos que pertenecen a este grupo */
+  indices: number[];
+  /** Número de objetos en el grupo */
+  size: number;
+  /**
+   * true  → grupo completo (marco sólido, arrastrable en 1-L3)
+   * false → grupo parcial (marco discontinuo, NO arrastrable)
+   */
+  isComplete: boolean;
+  /** Zona semántica a la que pertenece (para bundles-tens-units y mass-vs-blocks) */
+  zone?: "tens" | "units" | "hundreds";
 }
 
 export interface Subject {
