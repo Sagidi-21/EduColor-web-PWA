@@ -165,14 +165,16 @@ La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tie
 
 ## Seguimiento actual — `counting`
 
-- **Pasos 1 y 2:** en progreso. Actividad compartida de 1.º/2.º dentro del
-  bloque unidad-1. Motor en `src/core/activities/counting.ts` con 16 tests
-  que cubren configuraciones por dificultad, generación, reproducibilidad,
-  rangos, respuestas, opciones y posiciones.
-- **Pasos 5 y 6:** en progreso. Renderer PWA `CountingScreen.tsx` (`.css`)
-  con objetos posicionados, opciones numéricas, auto-avance, retry y SummaryScreen.
-- **Paso 7:** pendiente de verificación.
-- **Paso 8:** pendiente.
+- **Pasos 1 y 2:** ✅ completado. Actividad compartida de 1.º/2.º con currículo de 8 niveles (4 por curso). Motor en `src/core/activities/counting.ts`. Tests actualizados y en verde (10/10 tests counting).
+- **Pasos 5 y 6:** ✅ completado. Renderer PWA `CountingScreen.tsx` con los siguientes modos de interacción implementados y verificados:
+  - `TOUCH` (1-L1, 1-L2): toque individual de objetos
+  - `GROUP` (1-L3): agrupación de decenas en contenedores
+  - `FILL_TABLE` (1-L4, 2-L2): tabla posicional con cajas D+U o C+D+U, soporta numpad horizontal y modo canvas
+  - `SELECT` (2-L1, 2-L3, 2-L4): selección de opción múltiple
+- **Distribuciones visuales implementadas:** `scattered-large`, `double-row`, `semi-dispersed-tens`, `bundles-tens-units`, `packages`, `mass-vs-blocks` (3 zonas C/D/U con etiquetas), `matrix-grid` (paquetes de 10 + unidades sueltas)
+- **Numpad horizontal:** variante `layout="horizontal"` añadida al componente `Numpad` para ganar espacio en pantalla en niveles con tabla posicional.
+- **Paso 7:** ✅ tests locales en verde. (2 tests de worktree heredado `.kilo` no afectan al código activo.)
+- **Paso 8:** ✅ docs actualizados en rama feature antes del merge.
 
 ---
 

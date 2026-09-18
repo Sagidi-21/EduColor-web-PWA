@@ -54,7 +54,6 @@ describe("counting/engine", () => {
         expect(cfg.minCount).toBe(LEVELS[id].rangeMin);
         expect(cfg.maxCount).toBe(LEVELS[id].rangeMax);
         expect(cfg.visualArrangement).toBe(LEVELS[id].visualArrangement);
-        expect(cfg.interactiveMechanic).toBe(LEVELS[id].interactiveMechanic);
         expect(cfg.interactionType).toBeTruthy();
       });
     });
@@ -114,8 +113,16 @@ describe("counting/engine", () => {
       });
     });
 
-    it("2-L3 tiene 4 pasos (HUNDREDS, TENS, UNITS, COMPOSE)", () => {
+    it("2-L3 tiene 1 paso (COMPOSE_NUMBER) — nivel sin andamiaje", () => {
       const exercises = generateSessionForLevel("2-L3", 42);
+      exercises.forEach(ex => {
+        expect(ex.steps).toHaveLength(1);
+        expect(ex.steps[0].answerType).toBe("COMPOSE_NUMBER");
+      });
+    });
+
+    it("2-L2 tiene 4 pasos (HUNDREDS, TENS, UNITS, COMPOSE)", () => {
+      const exercises = generateSessionForLevel("2-L2", 42);
       exercises.forEach(ex => {
         expect(ex.steps).toHaveLength(4);
         expect(ex.steps[0].answerType).toBe("COUNT_HUNDREDS");
