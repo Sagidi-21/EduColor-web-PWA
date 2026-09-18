@@ -11,7 +11,7 @@ import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { Numpad } from "../../shared/components/Numpad";
 import InputModeToggle from "../../shared/components/InputModeToggle";
 import { LazyDigitCell } from "../../shared/DigitCell";
-import { WrongFeedback } from "../components/WrongFeedback";
+import { ActionButtons } from "../components/ActivityActionButtons";
 import { useInputMode } from "../../shared/hooks/useInputMode";
 import "../operations/OperationsScreen.css";
 import "./TresSumandosScreen.css";
@@ -273,7 +273,7 @@ export function TresSumandosScreen({
           />
         )}
         {session.answerState === "wrong" && (
-          <WrongFeedback correctAnswer={correctStr} onNext={handleNext} onRetry={handleRetry} />
+          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
         )}
       </footer>
     </div>
