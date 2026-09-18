@@ -3,7 +3,6 @@ import {
   generateSession,
   validateAnswer,
   showImageSupport,
-  type TresSumandosExercise,
 } from "../../../core/activities/tresSumandos";
 import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
