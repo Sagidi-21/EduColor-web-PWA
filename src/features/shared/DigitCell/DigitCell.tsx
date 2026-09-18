@@ -1,19 +1,19 @@
 /**
  * DrawableAnswerBox
  * -----------------
- * Recuadro tÃ¡ctil donde el niÃ±o dibuja el dÃ­gito con el dedo o el lÃ¡piz
+ * Recuadro táctil donde el niño dibuja el dígito con el dedo o el lápiz
  * de la pizarra digital.
  *
  * Flujo de reconocimiento:
- *   1. NiÃ±o dibuja y pulsa âœ“
+ *   1. Niño dibuja y pulsa ✓
  *   2. Se lanza inferencia TF.js (digitModel)
- *   3. Si confianza â‰¥ 85% â†’ onConfirm(dÃ­gito) automÃ¡tico
- *   4. Si confianza < 85% â†’ TeacherConfirmPanel
- *      â€¢ Profesor identifica el dÃ­gito â†’ se guarda la muestra + onConfirm
- *      â€¢ Profesor pulsa "No se entiende" â†’ el niÃ±o borra y repite
+ *   3. Si confianza ≥ 85% → onConfirm(dígito) automático
+ *   4. Si confianza < 85% → TeacherConfirmPanel
+ *      • Profesor identifica el dígito → se guarda la muestra + onConfirm
+ *      • Profesor pulsa "No se entiende" → el niño borra y repite
  *
- * Al inicio de sesiÃ³n, digitModel hace fine-tuning automÃ¡tico si hay
- * â‰¥30 muestras nuevas confirmadas por el profesor (IndexedDB).
+ * Al inicio de sesión, digitModel hace fine-tuning automático si hay
+ * ≥30 muestras nuevas confirmadas por el profesor (IndexedDB).
  */
 
 import { useRef, useEffect, useCallback, useReducer, useState } from "react";
@@ -45,14 +45,14 @@ export function DigitCell({ isActive, onActivate, onConfirm, onClear, state, val
   const drawing = useRef(false);
   const hasStrokes = useRef(false);
 
-  // Reacciona a cambios en el estado del modelo (loading â†’ finetuning â†’ ready)
+  // Reacciona a cambios en el estado del modelo (loading → finetuning → ready)
   const [, rerender] = useReducer((x) => x + 1, 0);
   useEffect(() => subscribeStatus(rerender), []);
 
   const modelStatus = getStatus();
   const modelReady = modelStatus === "ready";
 
-  // Panel de confirmaciÃ³n del profesor
+  // Panel de confirmación del profesor
   const [confirmData, setConfirmData] = useState<{
     imageData: ImageData;
     predictedDigit: number;
@@ -82,8 +82,8 @@ export function DigitCell({ isActive, onActivate, onConfirm, onClear, state, val
   }, []);
 
   // Limpia el canvas visualmente cuando el padre resetea el valor.
-  // No llama a onClear() para evitar el bucle: onClear â†’ setSession â†’ re-render â†’ nueva
-  // referencia de onClear â†’ clearCanvas recreado â†’ efecto vuelve a dispararse â†’ loop.
+  // No llama a onClear() para evitar el bucle: onClear → setSession → re-render → nueva
+  // referencia de onClear → clearCanvas recreado → efecto vuelve a dispararse → loop.
   useEffect(() => {
     if (state !== "idle" || value) return;
     const c = canvasRef.current?.getContext("2d");
@@ -130,10 +130,10 @@ export function DigitCell({ isActive, onActivate, onConfirm, onClear, state, val
     const imageData = c.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
     const result = await predict(imageData);
-    if (!result) return; // modelo fallÃ³ â€” no hacer nada
+    if (!result) return; // modelo falló — no hacer nada
 
     if (result.confidence >= CONFIDENCE_THRESHOLD) {
-      // Guardar silenciosamente como muestra 'auto' â€” no interrumpe al profesor
+      // Guardar silenciosamente como muestra 'auto' — no interrumpe al profesor
       void saveSample(result.digit, imageData, "auto", result.confidence);
       onConfirm(String(result.digit));
     } else {
@@ -165,7 +165,7 @@ export function DigitCell({ isActive, onActivate, onConfirm, onClear, state, val
     .filter(Boolean)
     .join(" ");
 
-  // Mostrar dÃ­gito si: hay valor Y (respuesta enviada O la caja ya no estÃ¡ activa)
+  // Mostrar dígito si: hay valor Y (respuesta enviada O la caja ya no está activa)
   if (value && (state !== "idle" || !isActive)) {
     return (
       <div className={boxClass} onClick={onActivate}>
@@ -201,9 +201,9 @@ export function DigitCell({ isActive, onActivate, onConfirm, onClear, state, val
               disabled={!modelReady}
               title={
                 modelStatus === "loading"
-                  ? "Cargando modeloâ€¦"
+                  ? "Cargando modelo…"
                   : modelStatus === "finetuning"
-                    ? "Mejorando reconocimientoâ€¦"
+                    ? "Mejorando reconocimiento…"
                     : modelStatus === "unavailable"
                       ? "Modelo no disponible"
                       : ""
