@@ -208,7 +208,8 @@
 
 /* Flote suave hacia arriba con una ligerísima inclinación */
 @keyframes edu-icon-idle {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) rotate(0deg);
   }
   50% {
@@ -223,7 +224,8 @@
 }
 
 @keyframes edu-icon-hover {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) rotate(0deg) scale(1.05);
   }
   50% {
@@ -504,20 +506,13 @@
 
 /* Gradiente giratorio con blur, ligeramente más grande que la tarjeta */
 .edu-glow::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -4px;
   left: -4px;
   width: calc(100% + 8px);
   height: calc(100% + 8px);
-  background: linear-gradient(
-    120deg,
-    #2563eb,
-    #22c55e,
-    #f59e0b,
-    #ef4444,
-    #2563eb
-  );
+  background: linear-gradient(120deg, #2563eb, #22c55e, #f59e0b, #ef4444, #2563eb);
   background-size: 400%;
   z-index: -1;
   filter: blur(8px);
@@ -530,7 +525,7 @@
 
 /* Capa opaca del color de fondo que cubre el gradiente por dentro de la tarjeta */
 .edu-glow::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
