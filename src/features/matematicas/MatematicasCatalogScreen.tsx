@@ -182,11 +182,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
 
   return (
     <div className="mat">
-      <img
-        src={fondoImg}
-        alt=""
-        className="catalogo-fondo-img"
-      />
+      <img src={fondoImg} alt="" className="catalogo-fondo-img" />
       <header className="mat__header">
         <button className="mat__back-btn" onClick={onBack}>
           ← Inicio

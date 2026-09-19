@@ -1,5 +1,11 @@
 ﻿import { useState, useRef, useEffect, useCallback } from "react";
-import type { Subject, Grade, CurriculumBlock, SubjectId, GradeId } from "../../core/content/contracts";
+import type {
+  Subject,
+  Grade,
+  CurriculumBlock,
+  SubjectId,
+  GradeId,
+} from "../../core/content/contracts";
 import "./CatalogFilterBar.css";
 
 interface CatalogFilterBarProps {
@@ -53,7 +59,7 @@ export function CatalogFilterBar({
   const activeBlock = blocks.find((b) => b.id === blockId);
 
   const gradeIconText = activeGrade
-    ? activeGrade.title.match(/^(\\d+)/)?.[1] ?? activeGrade.title.charAt(0)
+    ? (activeGrade.title.match(/^(\\d+)/)?.[1] ?? activeGrade.title.charAt(0))
     : "1";
 
   return (
@@ -70,7 +76,10 @@ export function CatalogFilterBar({
           aria-haspopup="listbox"
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && toggleColumn(openColumn === "materia" ? null : "materia")}
+          onKeyDown={(e) =>
+            (e.key === "Enter" || e.key === " ") &&
+            toggleColumn(openColumn === "materia" ? null : "materia")
+          }
         >
           <div className="trigger-icon trigger-icon--materia">
             <div className="icon-circle icon-circle--yellow">
@@ -81,7 +90,9 @@ export function CatalogFilterBar({
             <span className="trigger-title">{activeSubject?.title ?? "Matemáticas"}</span>
           </div>
           <span className="trigger-chevron" aria-label="Abrir selector de materia">
-            <span className={"chevron" + (openColumn === "materia" ? " chevron--open" : "")}>&#9660;</span>
+            <span className={"chevron" + (openColumn === "materia" ? " chevron--open" : "")}>
+              &#9660;
+            </span>
           </span>
         </div>
         {openColumn === "materia" && (
@@ -136,7 +147,10 @@ export function CatalogFilterBar({
           aria-haspopup="listbox"
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && toggleColumn(openColumn === "curso" ? null : "curso")}
+          onKeyDown={(e) =>
+            (e.key === "Enter" || e.key === " ") &&
+            toggleColumn(openColumn === "curso" ? null : "curso")
+          }
         >
           <div className="trigger-icon trigger-icon--curso">
             <div className="icon-circle icon-circle--blue">
@@ -149,8 +163,13 @@ export function CatalogFilterBar({
               <span className="active-badge active-badge--cyan">ACTIVO</span>
             </span>
           </div>
-          <span className="trigger-chevron trigger-chevron--cyan" aria-label="Abrir selector de curso">
-            <span className={"chevron" + (openColumn === "curso" ? " chevron--open" : "")}>&#9660;</span>
+          <span
+            className="trigger-chevron trigger-chevron--cyan"
+            aria-label="Abrir selector de curso"
+          >
+            <span className={"chevron" + (openColumn === "curso" ? " chevron--open" : "")}>
+              &#9660;
+            </span>
           </span>
         </div>
         {openColumn === "curso" && (
@@ -181,9 +200,7 @@ export function CatalogFilterBar({
                         <span className="active-check">&#10003;</span>
                       </>
                     )}
-                    {!isActive && (
-                      <span className="enter-btn">Entrar &#8594;</span>
-                    )}
+                    {!isActive && <span className="enter-btn">Entrar &#8594;</span>}
                   </button>
                 );
               })}
@@ -206,7 +223,10 @@ export function CatalogFilterBar({
           aria-haspopup="listbox"
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && toggleColumn(openColumn === "bloque" ? null : "bloque")}
+          onKeyDown={(e) =>
+            (e.key === "Enter" || e.key === " ") &&
+            toggleColumn(openColumn === "bloque" ? null : "bloque")
+          }
         >
           <div className="trigger-icon trigger-icon--bloque">
             <div className="icon-circle icon-circle--mint">
@@ -214,10 +234,16 @@ export function CatalogFilterBar({
             </div>
           </div>
           <div className="trigger-text">
-            <span className="trigger-title">{activeBlock ? `${activeBlock.description} - ${activeBlock.title}` : "Todas las unidades"}</span>
+            <span className="trigger-title">
+              {activeBlock
+                ? `${activeBlock.description} - ${activeBlock.title}`
+                : "Todas las unidades"}
+            </span>
           </div>
           <span className="trigger-chevron" aria-label="Abrir selector de bloque">
-            <span className={"chevron" + (openColumn === "bloque" ? " chevron--open" : "")}>&#9660;</span>
+            <span className={"chevron" + (openColumn === "bloque" ? " chevron--open" : "")}>
+              &#9660;
+            </span>
           </span>
         </div>
         {openColumn === "bloque" && (
@@ -244,9 +270,7 @@ export function CatalogFilterBar({
                     <span className="active-check">&#10003;</span>
                   </>
                 )}
-                {blockId !== "" && (
-                  <span className="enter-btn">Entrar &#8594;</span>
-                )}
+                {blockId !== "" && <span className="enter-btn">Entrar &#8594;</span>}
               </button>
               {blocks.map((block) => {
                 const isActive = block.id === blockId;
@@ -261,7 +285,9 @@ export function CatalogFilterBar({
                     role="option"
                     aria-selected={isActive}
                   >
-                    <span className="dropdown-item-text">{block.description} - {block.title}</span>
+                    <span className="dropdown-item-text">
+                      {block.description} - {block.title}
+                    </span>
                     {isActive && (
                       <>
                         <span className="active-badge">ACTIVO</span>
@@ -269,9 +295,7 @@ export function CatalogFilterBar({
                         <span className="active-check">&#10003;</span>
                       </>
                     )}
-                    {!isActive && (
-                      <span className="enter-btn">Entrar &#8594;</span>
-                    )}
+                    {!isActive && <span className="enter-btn">Entrar &#8594;</span>}
                   </button>
                 );
               })}
@@ -285,5 +309,3 @@ export function CatalogFilterBar({
     </div>
   );
 }
-
-
