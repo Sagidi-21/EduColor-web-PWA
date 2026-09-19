@@ -11,6 +11,38 @@ import { LazyDigitCell } from "../../shared/DigitCell";
 
 type AnswerState = "idle" | "correct" | "wrong";
 
+interface SessionState {
+  exercises: ReturnType<typeof generateSession>;
+  currentIndex: number;
+  correctCount: number;
+  startTime: number;
+  answerState: AnswerState;
+  digits: string[];
+  activeDigit: number;
+  chosen: null | number;
+  alreadyFailed: boolean;
+}
+
+function answerLen(answer: number): number {
+  return String(answer).length;
+}
+
+function freshSession(seed: number, difficulty: EngineScreenProps["difficulty"]): SessionState {
+  const exercises = generateSession(difficulty, seed);
+  const firstLen = answerLen(exercises[0].answer);
+  return {
+    exercises,
+    currentIndex: 0,
+    correctCount: 0,
+    startTime: Date.now(),
+    answerState: "idle",
+    digits: Array(firstLen).fill(""),
+    activeDigit: firstLen - 1,
+    chosen: null,
+    alreadyFailed: false,
+  };
+}
+
 function TensBlock({ number }: { number: number }) {
   const decenas = Math.floor(number / 10);
   const units = number % 10;
@@ -46,16 +78,9 @@ export default function Numeracion4059Renderer({
 }: EngineScreenProps): JSX.Element {
   const isMultiChoice = difficulty === "easy";
 
-  const [session, setSession] = useState(() => ({
-    exercises: generateSession(difficulty, Date.now() % 999983),
-    currentIndex: 0,
-    correctCount: 0,
-    startTime: Date.now(),
-    answerState: "idle" as AnswerState,
-    input: "",
-    chosen: null as null | number,
-    alreadyFailed: false,
-  }));
+  const [session, setSession] = useState<SessionState>(() =>
+    freshSession(seed, difficulty)
+  );
   const [finished, setFinished] = useState<{
     total: number;
     correct: number;
@@ -66,10 +91,13 @@ export default function Numeracion4059Renderer({
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
+  const aLen = answerLen(current.answer);
 
   const confirm = useCallback(() => {
-    if (session.answerState !== "idle" || session.input === "") return;
-    const ok = validateAnswer(current, session.input);
+    if (session.answerState !== "idle") return;
+    if (session.digits.every((d) => d === "")) return;
+    const answerStr = session.digits.join("");
+    const ok = validateAnswer(current, answerStr);
     playFeedback(ok);
     setSession((s) => ({
       ...s,
@@ -80,15 +108,17 @@ export default function Numeracion4059Renderer({
   }, [session, current]);
 
   const handleRetry = useCallback(() => {
+    const curLen = answerLen(session.exercises[session.currentIndex].answer);
     setSession((s) => ({
       ...s,
       answerState: "idle",
+      digits: Array(curLen).fill(""),
+      activeDigit: curLen - 1,
       chosen: null,
-      input: "",
       alreadyFailed: true,
     }));
     setCanvasKey((k) => k + 1);
-  }, []);
+  }, [session]);
 
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
@@ -103,7 +133,8 @@ export default function Numeracion4059Renderer({
         ...s,
         currentIndex: next,
         answerState: "idle",
-        input: "",
+        digits: Array(answerLen(session.exercises[next].answer)).fill(""),
+        activeDigit: answerLen(session.exercises[next].answer) - 1,
         chosen: null,
         alreadyFailed: false,
       }));
@@ -118,9 +149,9 @@ export default function Numeracion4059Renderer({
   useEffect(() => {
     if (mode !== "canvas") return;
     if (session.answerState !== "idle") return;
-    if (session.input.length < 2) return;
-    confirm();
-  }, [session.input.length, mode, session.answerState, confirm]);
+    if (session.activeDigit > 0) return;
+    if (session.digits.every((d) => d !== "")) confirm();
+  }, [session.digits, mode, session.answerState, session.activeDigit, confirm]);
 
   const handleChoice = useCallback(
     (opt: number) => {
@@ -137,6 +168,65 @@ export default function Numeracion4059Renderer({
     },
     [session, current]
   );
+
+  const handleDigit = useCallback(
+    (d: string) => {
+      if (session.answerState !== "idle") return;
+      const { digits, activeDigit } = session;
+      if (activeDigit < 0) return;
+      const newDigits = [...digits];
+      newDigits[activeDigit] = d;
+      if (activeDigit > 0) {
+        setSession((s) => ({ ...s, digits: newDigits, activeDigit: activeDigit - 1 }));
+      } else {
+        confirm();
+      }
+    },
+    [session, confirm],
+  );
+
+  const handleDelete = useCallback(() => {
+    if (session.answerState !== "idle") return;
+    const { digits, activeDigit } = session;
+    const nd = [...digits];
+    if (nd[activeDigit]) {
+      nd[activeDigit] = "";
+      setSession((s) => ({ ...s, digits: nd }));
+    } else if (activeDigit > 0) {
+      nd[activeDigit - 1] = "";
+      setSession((s) => ({ ...s, digits: nd, activeDigit: activeDigit - 1 }));
+    }
+  }, [session]);
+
+  const handleCanvasConfirm = useCallback(
+    (i: number, digit: string) => {
+      const newDigits = [...session.digits];
+      newDigits[i] = digit;
+      if (i > 0) {
+        setSession((s) => ({ ...s, digits: newDigits, activeDigit: i - 1 }));
+      } else {
+        const answerStr = newDigits.join("");
+        const ok = validateAnswer(current, answerStr);
+        playFeedback(ok);
+        setSession((s) => ({
+          ...s,
+          digits: newDigits,
+          answerState: ok ? "correct" : "wrong",
+          correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+          alreadyFailed: !ok ? true : s.alreadyFailed,
+        }));
+      }
+      setCanvasKey((k) => k + 1);
+    },
+    [session, current],
+  );
+
+  const boxValue = (i: number): string => {
+    if (session.answerState === "correct") {
+      return String(current.answer).padStart(aLen, "0")[i];
+    }
+    return session.digits[i] ?? "";
+  };
 
   if (finished) {
     const pct = Math.round((finished.correct / finished.total) * 100);
@@ -181,8 +271,10 @@ export default function Numeracion4059Renderer({
                   correctCount: 0,
                   startTime: Date.now(),
                   answerState: "idle",
-                  input: "",
+                  digits: [],
+                  activeDigit: 0,
                   chosen: null,
+                  alreadyFailed: false,
                 });
               }}
             >
@@ -233,30 +325,27 @@ export default function Numeracion4059Renderer({
               >
                 {session.answerState === "correct"
                   ? current.answer
-                  : session.input || <span className="ops__cursor">_</span>}
+                  : session.digits.join("") || <span className="ops__cursor">_</span>}
               </div>
             ) : session.answerState === "idle" ? (
               <LazyDigitCell
                 key={canvasKey}
                 isActive={true}
                 onActivate={() => {}}
-                onConfirm={(digit) => {
-                  if (session.answerState !== "idle") return;
-                  setSession((s) => ({
-                    ...s,
-                    input: s.input.length < 2 ? s.input + digit : s.input,
-                  }));
-                  setCanvasKey((k) => k + 1);
-                }}
-                onClear={() => setSession((s) => ({ ...s, input: "" }))}
+                onConfirm={handleDigit}
+                onClear={() => setSession((s) => {
+                  const nd = [...s.digits];
+                  nd[s.activeDigit] = "";
+                  return { ...s, digits: nd };
+                })}
                 state={session.answerState}
-                value={session.input}
+                value={session.digits.join("")}
               />
             ) : (
               <div
                 className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : "ops__answer-box--wrong"}`}
               >
-                {session.answerState === "correct" ? current.answer : session.input || "?"}
+                {session.answerState === "correct" ? current.answer : session.digits.join("") || "?"}
               </div>
             )}
           </div>
@@ -290,14 +379,8 @@ export default function Numeracion4059Renderer({
             <>
               {mode === "numpad" && (
                 <Numpad
-                  onDigit={(d) => {
-                    if (session.answerState !== "idle") return;
-                    setSession((s) => ({ ...s, input: s.input.length < 2 ? s.input + d : s.input }));
-                  }}
-                  onDelete={() => {
-                    if (session.answerState !== "idle") return;
-                    setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
-                  }}
+                  onDigit={handleDigit}
+                  onDelete={handleDelete}
                   onConfirm={confirm}
                   disabled={session.answerState !== "idle"}
                 />
