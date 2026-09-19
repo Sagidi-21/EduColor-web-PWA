@@ -252,7 +252,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                 return (
                   <button
                     key={activity.id}
-                    className={`activity-card ${launchable ? "" : "activity-card--soon"}`}
+                    className={`activity-card edu-glow ${launchable ? "" : "activity-card--soon edu-glow--soon"}`}
                     disabled={!launchable}
                     onClick={() => {
                       if (!launchable) return;
@@ -313,7 +313,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                     return (
                       <div
                         key={level}
-                        className={`level-card ${isSelected ? "level-card--selected" : ""}`}
+                        className={`level-card edu-glow ${isSelected ? "level-card--selected" : ""}`}
                         onClick={() => {
                           setLevelId(level);
                           setDifficulty(
@@ -354,7 +354,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                     return (
                       <div
                         key={diff}
-                        className={`level-card ${isSelected ? "level-card--selected" : ""}`}
+                        className={`level-card edu-glow ${isSelected ? "level-card--selected" : ""}`}
                         onClick={() => {
                           setDifficulty(diff);
                           setLevelId(null);
