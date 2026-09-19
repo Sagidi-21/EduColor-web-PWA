@@ -15,6 +15,7 @@ import { canLaunchActivity } from "../../core/content/engine-registry";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
 import { EngineScreen } from "./engine-screens";
 import "./MatematicasCatalogScreen.css";
+import fondoImg from "../../assets/catalogo-fondo.png";
 
 interface Props {
   initialGradeId: GradeId;
@@ -180,6 +181,11 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
 
   return (
     <div className="mat">
+      <img
+        src={fondoImg}
+        alt=""
+        className="catalogo-fondo-img"
+      />
       <header className="mat__header">
         <button className="mat__back-btn" onClick={onBack}>
           ← Inicio

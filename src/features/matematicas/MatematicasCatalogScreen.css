@@ -1,9 +1,31 @@
 .mat {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--color-bg);
   overflow: hidden;
+}
+
+/* Imagen de fondo: cubre la pantalla y permanece fija al hacer scroll */
+.catalogo-fondo-img {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Capa oscura semi-transparente para que el contenido sea legible */
+.mat::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(15, 23, 42, 0.45);
+  pointer-events: none;
 }
 
 /* -- Header -- */
