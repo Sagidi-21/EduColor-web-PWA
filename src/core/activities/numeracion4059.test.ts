@@ -56,17 +56,35 @@ describe("numeracion4059", () => {
   });
 
   it("validateAnswer acepta respuesta correcta", () => {
-    const ex: Num4059Exercise = { type: "identify", number: 42, question: "", options: [], answer: 42 };
+    const ex: Num4059Exercise = {
+      type: "identify",
+      number: 42,
+      question: "",
+      options: [],
+      answer: 42,
+    };
     expect(validateAnswer(ex, "42")).toBe(true);
   });
 
   it("validateAnswer rechaza respuesta incorrecta", () => {
-    const ex: Num4059Exercise = { type: "identify", number: 42, question: "", options: [], answer: 42 };
+    const ex: Num4059Exercise = {
+      type: "identify",
+      number: 42,
+      question: "",
+      options: [],
+      answer: 42,
+    };
     expect(validateAnswer(ex, "41")).toBe(false);
   });
 
   it("validateAnswer rechaza string vacío", () => {
-    const ex: Num4059Exercise = { type: "identify", number: 42, question: "", options: [], answer: 42 };
+    const ex: Num4059Exercise = {
+      type: "identify",
+      number: 42,
+      question: "",
+      options: [],
+      answer: 42,
+    };
     expect(validateAnswer(ex, "")).toBe(false);
   });
 });

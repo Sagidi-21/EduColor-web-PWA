@@ -78,9 +78,7 @@ export default function Numeracion4059Renderer({
 }: EngineScreenProps): JSX.Element {
   const isMultiChoice = difficulty === "easy";
 
-  const [session, setSession] = useState<SessionState>(() =>
-    freshSession(seed, difficulty)
-  );
+  const [session, setSession] = useState<SessionState>(() => freshSession(seed, difficulty));
   const [finished, setFinished] = useState<{
     total: number;
     correct: number;
@@ -166,7 +164,7 @@ export default function Numeracion4059Renderer({
         alreadyFailed: !ok ? true : s.alreadyFailed,
       }));
     },
-    [session, current]
+    [session, current],
   );
 
   const handleDigit = useCallback(
@@ -333,11 +331,13 @@ export default function Numeracion4059Renderer({
                 isActive={true}
                 onActivate={() => {}}
                 onConfirm={handleDigit}
-                onClear={() => setSession((s) => {
-                  const nd = [...s.digits];
-                  nd[s.activeDigit] = "";
-                  return { ...s, digits: nd };
-                })}
+                onClear={() =>
+                  setSession((s) => {
+                    const nd = [...s.digits];
+                    nd[s.activeDigit] = "";
+                    return { ...s, digits: nd };
+                  })
+                }
                 state={session.answerState}
                 value={session.digits.join("")}
               />
@@ -345,7 +345,9 @@ export default function Numeracion4059Renderer({
               <div
                 className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : "ops__answer-box--wrong"}`}
               >
-                {session.answerState === "correct" ? current.answer : session.digits.join("") || "?"}
+                {session.answerState === "correct"
+                  ? current.answer
+                  : session.digits.join("") || "?"}
               </div>
             )}
           </div>

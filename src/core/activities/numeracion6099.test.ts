@@ -68,18 +68,36 @@ describe("numeracion6099", () => {
   });
 
   it("validateAnswer acepta respuesta correcta (case-insensitive)", () => {
-    const ex: Num6099Exercise = { type: "identify", number: 42, question: "", options: [], answer: "42" };
+    const ex: Num6099Exercise = {
+      type: "identify",
+      number: 42,
+      question: "",
+      options: [],
+      answer: "42",
+    };
     expect(validateAnswer(ex, "42")).toBe(true);
     expect(validateAnswer(ex, "42")).toBe(true);
   });
 
   it("validateAnswer rechaza respuesta incorrecta", () => {
-    const ex: Num6099Exercise = { type: "identify", number: 42, question: "", options: [], answer: "42" };
+    const ex: Num6099Exercise = {
+      type: "identify",
+      number: 42,
+      question: "",
+      options: [],
+      answer: "42",
+    };
     expect(validateAnswer(ex, "41")).toBe(false);
   });
 
   it("validateAnswer es case-insensitive", () => {
-    const ex: Num6099Exercise = { type: "word", number: 65, question: "", options: [], answer: "sesenta y cinco" };
+    const ex: Num6099Exercise = {
+      type: "word",
+      number: 65,
+      question: "",
+      options: [],
+      answer: "sesenta y cinco",
+    };
     expect(validateAnswer(ex, "SESENTA Y CINCO")).toBe(true);
   });
 });

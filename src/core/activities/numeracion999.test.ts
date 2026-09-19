@@ -27,7 +27,12 @@ describe("numeracion999", () => {
 
   it("hard y expert pueden producir todos los tipos", () => {
     for (const diff of ["hard", "expert"] as const) {
-      const foundTypes: Record<string, boolean> = { "cifra-to-cdu": false, "cdu-to-cifra": false, "valor-posicional": false, "anterior-posterior": false };
+      const foundTypes: Record<string, boolean> = {
+        "cifra-to-cdu": false,
+        "cdu-to-cifra": false,
+        "valor-posicional": false,
+        "anterior-posterior": false,
+      };
       let attempts = 0;
       while (attempts < 100 && !Object.values(foundTypes).every(Boolean)) {
         attempts++;

@@ -74,7 +74,7 @@ export default function Numeracion999Renderer({
         correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
       }));
     },
-    [session.answerState, current]
+    [session.answerState, current],
   );
 
   if (finished) {

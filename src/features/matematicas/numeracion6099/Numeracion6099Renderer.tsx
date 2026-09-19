@@ -158,7 +158,7 @@ export default function Numeracion6099Renderer({
         correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
       }));
     },
-    [session, current]
+    [session, current],
   );
 
   const confirm = useCallback(() => {

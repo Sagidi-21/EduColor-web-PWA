@@ -9,10 +9,10 @@
 
 ## Aprobaciones
 
-| Ámbito           | Responsable                        | Cuándo interviene                                                       |
-| ---------------- | ---------------------------------- | ------------------------------------------------------------------------ |
-| Pedagógico      | Director del colegio               | Cambios de alcance, currículo, metodología y salida de piloto.         |
-| Técnico         | Salvador                           | Arquitectura, implementación, calidad, despliegue y seguridad técnica. |
+| Ámbito          | Responsable                      | Cuándo interviene                                                      |
+| --------------- | -------------------------------- | ---------------------------------------------------------------------- |
+| Pedagógico      | Director del colegio             | Cambios de alcance, currículo, metodología y salida de piloto.         |
+| Técnico         | Salvador                         | Arquitectura, implementación, calidad, despliegue y seguridad técnica. |
 | Feedback de 1.º | Profesor/a de Matemáticas de 1.º | Validación de actividades y experiencia de aula de 1.º.                |
 | Feedback de 2.º | Profesor/a de Matemáticas de 2.º | Validación de actividades y experiencia de aula de 2.º.                |
 
@@ -43,14 +43,14 @@ La deuda técnica y las reservas de recursos se controlan en
 registro y el ámbito del cambio; la auditoría completa se reserva para el
 cierre de fase o una release.
 
-| Fecha      | Decisión                                                                                                                   | Motivo                                                                        |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Fecha      | Decisión                                                                                                                    | Motivo                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | 2026-09-07 | Seguimiento mediante documentos en `docs`, sin tablero externo.                                                             | Reducir gestión adicional y consumo de contexto.                             |
-| 2026-09-07 | Director como aprobación pedagógica; Salvador como aprobación técnica.                                                  | Separar decisión educativa y responsabilidad de implementación.             |
-| 2026-09-07 | Feedback de profesorado de Matemáticas de 1.º y 2.º en las implementaciones.                                             | Validar el producto en los dos cursos objetivo de V1.                         |
-| 2026-09-07 | Alcance V1 confirmado: Matemáticas 1.º/2.º, profesorado, pizarra, fichas, sesiones offline y reconocimiento de dígitos. | Concentrar la primera versión en el uso real de aula.                        |
-| 2026-09-07 | Revisión técnica de la Fase 0 aprobada.                                                                                   | CI verde y estructura, documentación y controles de calidad verificados.     |
-| 2026-09-07 | Electron queda como referencia canónica de paridad visual y funcional de la PWA.                                           | Evitar rediseñar o perder pantallas y funciones que ya operan en el colegio. |
-| 2026-09-18 | Curriculo de `counting` disenado con 8 niveles (1-L1 a 2-L4) con mecanicas progresivas TOUCH > GROUP > FILL_TABLE > SELECT. | Alineamiento pedagogico con la progresion de 1.o y 2.o de Primaria.           |
-| 2026-09-18 | En 2-L3 se eliminan preguntas guiadas CDU dejando solo la pregunta final de composicion.                                    | El nino que ha superado 2-L2 debe llegar al numero sin andamiaje intermedio.  |
-| 2026-09-18 | Numpad en layout horizontal para niveles con tabla posicional FILL_TABLE.                                                   | Ganar espacio vertical para objetos visuales en pantalla de pizarra.          |
+| 2026-09-07 | Director como aprobación pedagógica; Salvador como aprobación técnica.                                                      | Separar decisión educativa y responsabilidad de implementación.              |
+| 2026-09-07 | Feedback de profesorado de Matemáticas de 1.º y 2.º en las implementaciones.                                                | Validar el producto en los dos cursos objetivo de V1.                        |
+| 2026-09-07 | Alcance V1 confirmado: Matemáticas 1.º/2.º, profesorado, pizarra, fichas, sesiones offline y reconocimiento de dígitos.     | Concentrar la primera versión en el uso real de aula.                        |
+| 2026-09-07 | Revisión técnica de la Fase 0 aprobada.                                                                                     | CI verde y estructura, documentación y controles de calidad verificados.     |
+| 2026-09-07 | Electron queda como referencia canónica de paridad visual y funcional de la PWA.                                            | Evitar rediseñar o perder pantallas y funciones que ya operan en el colegio. |
+| 2026-09-18 | Curriculo de `counting` disenado con 8 niveles (1-L1 a 2-L4) con mecanicas progresivas TOUCH > GROUP > FILL_TABLE > SELECT. | Alineamiento pedagogico con la progresion de 1.o y 2.o de Primaria.          |
+| 2026-09-18 | En 2-L3 se eliminan preguntas guiadas CDU dejando solo la pregunta final de composicion.                                    | El nino que ha superado 2-L2 debe llegar al numero sin andamiaje intermedio. |
+| 2026-09-18 | Numpad en layout horizontal para niveles con tabla posicional FILL_TABLE.                                                   | Ganar espacio vertical para objetos visuales en pantalla de pizarra.         |
