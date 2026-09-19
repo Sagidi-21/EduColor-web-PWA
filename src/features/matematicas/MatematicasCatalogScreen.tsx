@@ -14,6 +14,7 @@ import type {
 import { canLaunchActivity } from "../../core/content/engine-registry";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
 import { EngineScreen } from "./engine-screens";
+import { CatalogFilterBar } from "./CatalogFilterBar";
 import "./MatematicasCatalogScreen.css";
 import fondoImg from "../../assets/catalogo-fondo.png";
 
@@ -205,45 +206,20 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
       </header>
 
       <div className="mat__body">
-        <section className="mat__filters" aria-label="Filtros del catálogo">
-          <label>
-            Materia
-            <select value={subjectId} onChange={(event) => setSubjectId(event.target.value)}>
-              {subjects.map((subject) => (
-                <option key={subject.id} value={subject.id}>
-                  {subject.title}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Curso
-            <select
-              value={gradeId}
-              onChange={(event) => {
-                setGradeId(event.target.value);
-                setBlockId("");
-              }}
-            >
-              {grades.map((grade) => (
-                <option key={grade.id} value={grade.id}>
-                  {grade.title}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Bloque
-            <select value={blockId} onChange={(event) => setBlockId(event.target.value)}>
-              <option value="">Todas las unidades</option>
-              {blocks.map((block) => (
-                <option key={block.id} value={block.id}>
-                  {block.description} — {block.title}
-                </option>
-              ))}
-            </select>
-          </label>
-        </section>
+        <CatalogFilterBar
+          subjects={subjects}
+          grades={grades}
+          blocks={blocks}
+          subjectId={subjectId}
+          gradeId={gradeId}
+          blockId={blockId}
+          onSubjectChange={(id) => setSubjectId(id)}
+          onGradeChange={(id) => {
+            setGradeId(id);
+            setBlockId("");
+          }}
+          onBlockChange={setBlockId}
+        />
 
         <p className="mat__migration-note">
           El catálogo procede de los manifiestos. Solo se inician los motores ya migrados a la PWA.
