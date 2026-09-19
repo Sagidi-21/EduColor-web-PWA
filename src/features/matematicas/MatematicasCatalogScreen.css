@@ -66,13 +66,25 @@
   flex-direction: column;
 }
 .mat__subject {
-  font-size: 18px;
-  font-weight: 800;
+  font-family: "Fredoka", sans-serif;
+  font-size: 28px;
+  font-weight: 700;
   color: #ffffff;
 }
 .mat__grade {
-  font-size: 13px;
+  font-size: 16px;
   color: rgba(255, 255, 255, 0.85);
+}
+.mat__grade-title {
+  font-family: "Fredoka", sans-serif;
+}
+.mat__grade-separator {
+  font-family: "Fredoka", sans-serif;
+}
+.mat__class-name {
+  font-family: "Fredoka", sans-serif;
+  font-weight: 700;
+  color: #facc15;
 }
 
 .mat__mode-badge {

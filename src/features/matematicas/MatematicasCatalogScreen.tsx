@@ -195,7 +195,9 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
             {subjects.find((subject) => subject.id === subjectId)?.title}
           </span>
           <span className="mat__grade">
-            {gradeTitle} — {profile.className}
+            <span className="mat__grade-title">{gradeTitle}</span>
+            <span className="mat__grade-separator"> — </span>
+            <span className="mat__class-name">{profile.className}</span>
           </span>
         </div>
         <span className="mat__mode-badge">🖥️ Pizarra Digital</span>
