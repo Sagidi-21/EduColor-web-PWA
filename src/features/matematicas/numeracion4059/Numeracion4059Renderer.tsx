@@ -1,0 +1,314 @@
+import { useState, useEffect, useCallback } from "react";
+import { generateSession, validateAnswer } from "../../../core/activities/numeracion4059";
+import { playFeedback } from "../../shared/audioFeedback";
+import type { EngineScreenProps } from "../engine-screens";
+import { useInputMode } from "../../shared/hooks/useInputMode";
+import InputModeToggle from "../../shared/components/InputModeToggle";
+import { ActivityHeader } from "../components/ActivityHeader";
+import { WrongFeedback } from "../components/WrongFeedback";
+import { Numpad } from "../../shared/components/Numpad";
+import { LazyDigitCell } from "../../shared/DigitCell";
+
+type AnswerState = "idle" | "correct" | "wrong";
+
+function TensBlock({ number }: { number: number }) {
+  const decenas = Math.floor(number / 10);
+  const units = number % 10;
+  return (
+    <div className="n4059__blocks">
+      <div className="n4059__tens-row">
+        {Array.from({ length: decenas }, (_, i) => (
+          <div key={i} className="n4059__decena">
+            10
+          </div>
+        ))}
+      </div>
+      {units > 0 && (
+        <div className="n4059__units-row">
+          {Array.from({ length: units }, (_, i) => (
+            <div key={i} className="n4059__unit-dot" />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function Numeracion4059Renderer({
+  activity,
+  difficulty,
+  seed,
+  onExit,
+  gradeTitle,
+  className,
+  mascotUrl,
+  difficultyStars,
+}: EngineScreenProps): JSX.Element {
+  const isMultiChoice = difficulty === "easy";
+
+  const [session, setSession] = useState(() => ({
+    exercises: generateSession(difficulty, Date.now() % 999983),
+    currentIndex: 0,
+    correctCount: 0,
+    startTime: Date.now(),
+    answerState: "idle" as AnswerState,
+    input: "",
+    chosen: null as null | number,
+    alreadyFailed: false,
+  }));
+  const [finished, setFinished] = useState<{
+    total: number;
+    correct: number;
+    duration: number;
+  } | null>(null);
+  const { mode, toggle } = useInputMode();
+  const [canvasKey, setCanvasKey] = useState(0);
+
+  const current = session.exercises[session.currentIndex];
+  const total = session.exercises.length;
+
+  const confirm = useCallback(() => {
+    if (session.answerState !== "idle" || session.input === "") return;
+    const ok = validateAnswer(current, session.input);
+    playFeedback(ok);
+    setSession((s) => ({
+      ...s,
+      answerState: ok ? "correct" : "wrong",
+      correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+      alreadyFailed: !ok ? true : s.alreadyFailed,
+    }));
+  }, [session, current]);
+
+  const handleRetry = useCallback(() => {
+    setSession((s) => ({
+      ...s,
+      answerState: "idle",
+      chosen: null,
+      input: "",
+      alreadyFailed: true,
+    }));
+    setCanvasKey((k) => k + 1);
+  }, []);
+
+  const handleNext = useCallback(() => {
+    const next = session.currentIndex + 1;
+    if (next >= total)
+      setFinished({
+        total,
+        correct: session.correctCount,
+        duration: Date.now() - session.startTime,
+      });
+    else
+      setSession((s) => ({
+        ...s,
+        currentIndex: next,
+        answerState: "idle",
+        input: "",
+        chosen: null,
+        alreadyFailed: false,
+      }));
+  }, [session, total]);
+
+  useEffect(() => {
+    if (session.answerState !== "correct") return;
+    const t = setTimeout(handleNext, 900);
+    return () => clearTimeout(t);
+  }, [session.answerState, handleNext]);
+
+  useEffect(() => {
+    if (mode !== "canvas") return;
+    if (session.answerState !== "idle") return;
+    if (session.input.length < 2) return;
+    confirm();
+  }, [session.input.length, mode, session.answerState, confirm]);
+
+  const handleChoice = useCallback(
+    (opt: number) => {
+      if (session.answerState !== "idle") return;
+      const ok = validateAnswer(current, String(opt));
+      playFeedback(ok);
+      setSession((s) => ({
+        ...s,
+        answerState: ok ? "correct" : "wrong",
+        chosen: opt,
+        correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+        alreadyFailed: !ok ? true : s.alreadyFailed,
+      }));
+    },
+    [session, current]
+  );
+
+  if (finished) {
+    const pct = Math.round((finished.correct / finished.total) * 100);
+    const stars = pct >= 90 ? 3 : pct >= 70 ? 2 : 1;
+    const mins = Math.floor(finished.duration / 60000);
+    const secs = Math.floor((finished.duration % 60000) / 1000);
+    return (
+      <div className="ops ops--summary">
+        <div className="summary">
+          <div className="summary__stars">{"?".repeat(stars)}</div>
+          <h2 className="summary__title">
+            {pct >= 90 ? "¡Excelente!" : pct >= 70 ? "¡Bien hecho!" : "¡Sigue practicando!"}
+          </h2>
+          <p className="summary__grade">{gradeTitle}</p>
+          <div className="summary__stats">
+            <div className="summary__stat">
+              <span className="summary__stat-value">
+                {finished.correct}/{finished.total}
+              </span>
+              <span className="summary__stat-label">correctas</span>
+            </div>
+            <div className="summary__stat">
+              <span className="summary__stat-value">{pct}%</span>
+              <span className="summary__stat-label">aciertos</span>
+            </div>
+            <div className="summary__stat">
+              <span className="summary__stat-value">
+                {mins > 0 ? `${mins}m ` : ""}
+                {secs}s
+              </span>
+              <span className="summary__stat-label">tiempo</span>
+            </div>
+          </div>
+          <div className="summary__actions">
+            <button
+              className="summary__btn summary__btn--primary"
+              onClick={() => {
+                setFinished(null);
+                setSession({
+                  exercises: generateSession(difficulty, Date.now() % 999983),
+                  currentIndex: 0,
+                  correctCount: 0,
+                  startTime: Date.now(),
+                  answerState: "idle",
+                  input: "",
+                  chosen: null,
+                });
+              }}
+            >
+              ↻ Repetir
+            </button>
+            <button className="summary__btn summary__btn--secondary" onClick={onExit}>
+              ← Volver
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!current) return null as unknown as JSX.Element;
+  const stageClass =
+    session.answerState === "correct"
+      ? "ops__stage--correct"
+      : session.answerState === "wrong"
+        ? "ops__stage--wrong"
+        : "";
+
+  return (
+    <div className="ops">
+      <ActivityHeader
+        onExit={onExit}
+        gradeTitle={gradeTitle}
+        className={className}
+        unitTitle={activity.title}
+        difficultyStars={difficultyStars}
+        mascotUrl={mascotUrl}
+        progress={`${session.currentIndex + 1}/${total}`}
+      >
+        <InputModeToggle mode={mode} onToggle={toggle} />
+      </ActivityHeader>
+
+      <div className={`ops__stage ${stageClass}`}>
+        {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! 🎉</div>}
+
+        <TensBlock number={current.number} />
+        <div className="n4059__question">{current.question}</div>
+
+        {!isMultiChoice && (
+          <div className="ops__formula">
+            {mode === "numpad" ? (
+              <div
+                className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : session.answerState === "wrong" ? "ops__answer-box--wrong" : ""}`}
+              >
+                {session.answerState === "correct"
+                  ? current.answer
+                  : session.input || <span className="ops__cursor">_</span>}
+              </div>
+            ) : session.answerState === "idle" ? (
+              <LazyDigitCell
+                key={canvasKey}
+                isActive={true}
+                onActivate={() => {}}
+                onConfirm={(digit) => {
+                  if (session.answerState !== "idle") return;
+                  setSession((s) => ({
+                    ...s,
+                    input: s.input.length < 2 ? s.input + digit : s.input,
+                  }));
+                  setCanvasKey((k) => k + 1);
+                }}
+                onClear={() => setSession((s) => ({ ...s, input: "" }))}
+                state={session.answerState}
+                value={session.input}
+              />
+            ) : (
+              <div
+                className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : "ops__answer-box--wrong"}`}
+              >
+                {session.answerState === "correct" ? current.answer : session.input || "?"}
+              </div>
+            )}
+          </div>
+        )}
+
+        <footer className="ops__footer">
+          {isMultiChoice ? (
+            <div className="n4059__options">
+              {(current.options ?? []).map((opt, i) => {
+                let cls = "n4059__option";
+                if (session.answerState === "correct" && opt === current.answer)
+                  cls += " n4059__option--correct";
+                else if (session.answerState === "wrong" && opt === session.chosen)
+                  cls += " n4059__option--wrong";
+                return (
+                  <button
+                    key={i}
+                    className={cls}
+                    onClick={() => handleChoice(opt)}
+                    disabled={session.answerState !== "idle"}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
+              {session.answerState === "wrong" && (
+                <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+              )}
+            </div>
+          ) : (
+            <>
+              {mode === "numpad" && (
+                <Numpad
+                  onDigit={(d) => {
+                    if (session.answerState !== "idle") return;
+                    setSession((s) => ({ ...s, input: s.input.length < 2 ? s.input + d : s.input }));
+                  }}
+                  onDelete={() => {
+                    if (session.answerState !== "idle") return;
+                    setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
+                  }}
+                  onConfirm={confirm}
+                  disabled={session.answerState !== "idle"}
+                />
+              )}
+              {session.answerState === "wrong" && (
+                <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+              )}
+            </>
+          )}
+        </footer>
+      </div>
+    </div>
+  );
+}
