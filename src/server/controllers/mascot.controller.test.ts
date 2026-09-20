@@ -15,7 +15,10 @@ import {
   getMascotStatus,
   regeneratePreview,
 } from "./mascot.controller";
-import { generateMascotWithGrok, generateMascotAssetsWithGrok } from "../services/huggingface.service";
+import {
+  generateMascotWithGrok,
+  generateMascotAssetsWithGrok,
+} from "../services/huggingface.service";
 
 const mockPreviewResult = {
   id: "test-uuid-1234",

@@ -2,14 +2,11 @@ import axios, { AxiosInstance } from "axios";
 import { MascotConfig, MascotAssetsResult, MascotPreviewResult } from "../types";
 import { ApiError } from "../middleware/error.middleware";
 
-// Modelo de imagen comprobado en hf-inference
+const HF_API_URL = "https://router.huggingface.co/hf-inference";
 const IMAGE_MODEL = "stabilityai/stable-diffusion-3-medium-diffusers";
-
-/**
- * Modelo de texto. Asegurarse de que este modelo sea compatible con el proveedor hf-inference.
- * NOTA: se recomienda usar un modelo de texto confirmado como compatible.
- */
 const TEXT_MODEL = "google/gemma-2-2b-it";
+
+let hfClient: AxiosInstance | undefined;
 
 function getHfClient(): AxiosInstance {
   if (!hfClient) {
@@ -319,7 +316,7 @@ export async function checkHfConnection(): Promise<{
     });
     const models = Array.isArray(res.data)
       ? res.data.map((m: any) => m.id)
-      : res.data?.data?.map((m: any) => m.id) ?? [];
+      : (res.data?.data?.map((m: any) => m.id) ?? []);
     return { ok: true, models: models.slice(0, 20) };
   } catch (err: any) {
     return { ok: false, error: `Error de conexión: ${err.message}` };

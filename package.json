@@ -14,8 +14,10 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "format:docs:check": "prettier --check docs",
     "test": "vitest run",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "prepare": "husky"
   },
   "dependencies": {
     "@tensorflow/tfjs": "^4.22.0",
@@ -42,11 +44,18 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.9.6",
     "tsx": "^4.19.1",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.69.0",
     "vite": "^7.1.7",
     "vitest": "^5.0.1"
+  },
+  "lint-staged": {
+    "docs/**/*.md": [
+      "prettier --write"
+    ]
   }
 }

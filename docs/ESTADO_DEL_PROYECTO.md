@@ -53,17 +53,17 @@ cierre de fase o una release.
 | 2026-09-07 | Electron queda como referencia canónica de paridad visual y funcional de la PWA.                                            | Evitar rediseñar o perder pantallas y funciones que ya operan en el colegio. |
 | 2026-09-18 | Curriculo de `counting` disenado con 8 niveles (1-L1 a 2-L4) con mecanicas progresivas TOUCH > GROUP > FILL_TABLE > SELECT. | Alineamiento pedagogico con la progresion de 1.o y 2.o de Primaria.          |
 | 2026-09-18 | En 2-L3 se eliminan preguntas guiadas CDU dejando solo la pregunta final de composicion.                                    | El nino que ha superado 2-L2 debe llegar al numero sin andamiaje intermedio. |
-  | 2026-09-18 | Numpad en layout horizontal para niveles con tabla posicional FILL_TABLE.                                                   | Ganar espacio vertical para objetos visuales en pantalla de pizarra.                                                       |
+| 2026-09-18 | Numpad en layout horizontal para niveles con tabla posicional FILL_TABLE.                                                   | Ganar espacio vertical para objetos visuales en pantalla de pizarra.         |
 
 ### Feature adelantada: Compañero IA personalizado 🚀
 
 El profesorado ha solicitado adelantar el desarrollo del **Compañero IA** — un asistente visual
 personalizado para cada clase, generado mediante la API de Hugging Face Inference.
 
-- **Rama activa:** `Implementación_IA`
+- **Rama activa:** `main`; la feature se desarrolló en `Implementación_IA` y quedó integrada en `main`.
 - **Backend:** Servidor Express (`src/server/`) con proxy Vite (`/api → localhost:3001`), validación, rate limiting y manejo seguro de errores. El token de Hugging Face se carga desde `HF_TOKEN` en el servidor y nunca se expone al frontend.
-- **Frontend:** `MascotaScreen` en `src/features/mascota/` con cuestionario de 6 pasos. El primer paso muestra 11 tarjetas con imágenes de tema, los nombres fuera de cada tarjeta y avance automático al elegir un tema; «Otro tema» requiere confirmar el texto con **OK**.
-- **Estado:** Backend, frontend, assets de temas, tests y build implementados. Suite completa verde (473 tests), junto con lint, typecheck y build. Pendiente configurar `HF_TOKEN` en el `.env` del servidor, reiniciar el backend y realizar la validación pedagógica del profesorado.
+- **Frontend:** `MascotaScreen` en `src/features/mascota/` con cuestionario de 6 pasos. El primer paso muestra 11 tarjetas con imágenes y etiquetas de tema, con avance automático al elegir un tema; «Otro tema» requiere confirmar el texto con **OK**. Los pasos de tipo de personaje y personalidad usan tarjetas con imágenes, transición de portal y tarjetas de selecciones previas para volver atrás.
+- **Estado:** Backend, frontend, assets de temas, tipos y personalidad, tests y build implementados. Suite completa verde (473 tests), junto con lint, typecheck, build y formato Prettier. Pendiente configurar `HF_TOKEN` en el `.env` del servidor, reiniciar el backend y realizar la validación pedagógica del profesorado.
 - **Comprobación de conexión:** `GET /api/mascot/health-hf` valida el token y el modelo sin generar imágenes.
 
-Ver planos detallados en `.kilo/plans/cuestionario_mascota_clase.md` y `.kilo/plans/plan_implementacion_mascota_IA.md`.
+La implementación actual queda recogida en este registro y en los archivos de `src/features/mascota/`, `src/server/` y `src/assets/mascota/`.

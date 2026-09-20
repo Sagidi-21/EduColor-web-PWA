@@ -89,6 +89,50 @@
   margin-bottom: 32px;
 }
 
+.previous-selection {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.previous-selection__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0 0 12px;
+  text-align: center;
+}
+
+.previous-selection__cards {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.previous-selection__card {
+  display: flex;
+  justify-content: center;
+}
+
+.previous-selection__card .theme-card {
+  width: 220px;
+  max-width: 100%;
+}
+
+.previous-selection__btn {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.previous-selection__btn:hover .theme-card {
+  border-color: var(--color-primary);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+  transform: translateY(-3px);
+}
+
 .character-type-grid,
 .personality-grid,
 .name-mode-grid,
@@ -162,9 +206,9 @@
 .theme-card-image {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: auto;
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
   border-radius: 16px 16px 0 0;
 }
 
@@ -175,7 +219,7 @@
 }
 
 .theme-option.active .theme-card {
-  border-color: #e2e8f0;
+  border-color: var(--color-primary);
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
 }
 
@@ -327,6 +371,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -407,9 +452,11 @@
   100% {
     transform: translateY(0);
   }
+
   40% {
     transform: translateY(-20px);
   }
+
   60% {
     transform: translateY(-10px);
   }
@@ -477,6 +524,7 @@
   0% {
     background-position: 0% 0%;
   }
+
   100% {
     background-position: 400% 0%;
   }
@@ -513,7 +561,7 @@
   object-fit: cover;
   transform: scale(0.35);
   opacity: 0;
-  animation: portal-image-enlarge 3s ease-out forwards;
+  animation: portal-image-enlarge 2s ease-out forwards;
 }
 
 /* canvas con el pixelado que se desintegra poco a poco */
@@ -551,9 +599,11 @@
     transform: scale(0.35);
     opacity: 0;
   }
+
   12% {
     opacity: 1;
   }
+
   100% {
     transform: scale(1);
     opacity: 1;

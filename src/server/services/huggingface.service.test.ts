@@ -1,24 +1,28 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("axios", () => {
-  const mockPost = vi.fn();
+const axiosMocks = vi.hoisted(() => {
+  const post = vi.fn();
   return {
-    default: {
-      create: vi.fn(() => ({
-        post: mockPost,
-        interceptors: { response: { use: vi.fn() } },
-      })),
-    },
+    create: vi.fn(() => ({
+      post,
+      interceptors: { response: { use: vi.fn() } },
+    })),
+    get: vi.fn(),
+    post,
   };
 });
 
-import axios from "axios";
+vi.mock("axios", () => ({
+  default: {
+    create: axiosMocks.create,
+    get: axiosMocks.get,
+  },
+}));
+
 import { generateMascotWithGrok, generateMascotAssetsWithGrok } from "./huggingface.service";
 
-const mockPost = (axios.create as any).mock.results[0].value.post as any;
-const IMAGE_MODEL = "black-forest-labs/FLUX.1-dev";
-const TEXT_MODEL = "google/gemma-2-2b-it";
-const imageResponse = () => ({ data: new ArrayBuffer(100) });
+const mockPost = axiosMocks.post;
+const IMAGE_MODEL = "stabilityai/stable-diffusion-3-medium-diffusers";
 
 const VALID_CONFIG = {
   theme: "space",
@@ -136,7 +140,7 @@ describe("hf.service", () => {
         c[1].inputs.includes("blackboard"),
       );
       expect(blackboardCall).toBeDefined();
-      expect(blackboardCall[1].inputs).toContain("completely empty");
+      expect(blackboardCall?.[1].inputs).toContain("completely empty");
     });
 
     it("propaga el error cuando la API falla", async () => {

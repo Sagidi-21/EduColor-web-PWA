@@ -11,13 +11,27 @@ import technologyImage from "../../assets/mascota/temas/mascota.tema-technology.
 import medievalImage from "../../assets/mascota/temas/mascota-tema-medieval.png";
 import racingImage from "../../assets/mascota/temas/mascota-tema-racing.png";
 import otherImage from "../../assets/mascota/temas/mascota-tema-other.png";
+import aiChoiceImage from "../../assets/mascota/tipos/mascota-tipo-ai_choice.png";
+import personImage from "../../assets/mascota/tipos/mascota-tipo-person.png";
+import animalImage from "../../assets/mascota/tipos/mascota-tipo-animal.png";
+import fantasyImage from "../../assets/mascota/tipos/mascota-tipo-fantasy.png";
+import robotImage from "../../assets/mascota/tipos/mascota-tipo-robot.png";
+import magicCharacterImage from "../../assets/mascota/tipos/mascota-tipo-magic.png";
+import funnyImage from "../../assets/mascota/personalidad/mascota-personalidad-funny.png";
+import curiousImage from "../../assets/mascota/personalidad/mascota-personalidad-curious.png";
+import adventurousImage from "../../assets/mascota/personalidad/mascota-personalidad-adventurous.png";
+import braveImage from "../../assets/mascota/personalidad/mascota-personalidad-brave.png";
+import playfulImage from "../../assets/mascota/personalidad/mascota-personalidad-playful.png";
+import intelligentImage from "../../assets/mascota/personalidad/mascota-personalidad-intelligent.png";
+import kindImage from "../../assets/mascota/personalidad/mascota-personalidad-kind.png";
+import enthusiasticImage from "../../assets/mascota/personalidad/mascota-personalidad-enthusiastic.png";
+import calmImage from "../../assets/mascota/personalidad/mascota-personalidad-calm.png";
 import "./MascotaScreen.css";
 
 interface MascotaConfig {
   theme: string;
   customTheme: string;
-  characterType: "ai_choice" | "person" | "animal" | "fantasy" | "robot" | "magic" | "other";
-  customCharacterType: string;
+  characterType: "ai_choice" | "person" | "animal" | "fantasy" | "robot" | "magic";
   personality: string[];
   nameMode: "ai" | "teacher";
   teacherName: string;
@@ -40,25 +54,24 @@ const THEMAS = [
 ];
 
 const CHARACTER_TYPES = [
-  { value: "ai_choice", label: "✨ Que lo decida la IA", icon: "🎨" },
-  { value: "person", label: "🧑 Persona", icon: "👤" },
-  { value: "animal", label: "🐾 Animal", icon: "🦁" },
-  { value: "fantasy", label: "👽 Criatura fantástica", icon: "🛸" },
-  { value: "robot", label: "🤖 Robot", icon: "🤖" },
-  { value: "magic", label: "🧙 Personaje mágico", icon: "🔮" },
-  { value: "other", label: "✏️ Otro", icon: "🎭" },
+  { value: "ai_choice", label: "Que lo decida la IA", image: aiChoiceImage },
+  { value: "person", label: "Persona", image: personImage },
+  { value: "animal", label: "Animal", image: animalImage },
+  { value: "fantasy", label: "Criatura fantástica", image: fantasyImage },
+  { value: "robot", label: "Robot", image: robotImage },
+  { value: "magic", label: "Personaje mágico", image: magicCharacterImage },
 ];
 
 const PERSONALITY_OPTIONS = [
-  { value: "funny", label: "😄 Divertido", icon: "😄" },
-  { value: "curious", label: "🔎 Curioso", icon: "🔍" },
-  { value: "adventurous", label: "🚀 Aventurero", icon: "🚀" },
-  { value: "brave", label: "💪 Valiente", icon: "🛡️" },
-  { value: "playful", label: "🤪 Travieso", icon: "🎭" },
-  { value: "intelligent", label: "🧠 Inteligente", icon: "🧠" },
-  { value: "kind", label: "❤️ Amable", icon: "💖" },
-  { value: "enthusiastic", label: "🎉 Entusiasta", icon: "🎉" },
-  { value: "calm", label: "🧘 Tranquilo", icon: "🧘" },
+  { value: "funny", label: "Divertido", image: funnyImage },
+  { value: "curious", label: "Curioso", image: curiousImage },
+  { value: "adventurous", label: "Aventurero", image: adventurousImage },
+  { value: "brave", label: "Valiente", image: braveImage },
+  { value: "playful", label: "Travieso", image: playfulImage },
+  { value: "intelligent", label: "Inteligente", image: intelligentImage },
+  { value: "kind", label: "Amable", image: kindImage },
+  { value: "enthusiastic", label: "Entusiasta", image: enthusiasticImage },
+  { value: "calm", label: "Tranquilo", image: calmImage },
 ];
 
 const VISUAL_STYLES = [
@@ -72,8 +85,7 @@ const DEFAULT_CONFIG: MascotaConfig = {
   theme: "",
   customTheme: "",
   characterType: "ai_choice",
-  customCharacterType: "",
-  personality: ["funny", "curious"],
+  personality: [],
   nameMode: "ai",
   teacherName: "",
   visualStyle: "cartoon_3d",
@@ -107,6 +119,7 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
     label: string;
     image: string;
     dissolving: boolean;
+    type: "theme" | "character";
   } | null>(null);
   const dissolveCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -194,16 +207,27 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
   const startPortalTransition = (value: string, label: string, image: string) => {
     setError(null);
     updateConfig({ theme: value });
-    setPortalTransition({ label, image, dissolving: false });
+    setPortalTransition({ label, image, dissolving: false, type: "theme" });
     setTimeout(() => {
-      setPortalTransition((prev) =>
-        prev ? { ...prev, dissolving: true } : prev
-      );
+      setPortalTransition((prev) => (prev ? { ...prev, dissolving: true } : prev));
       setCurrentStep(2);
       setTimeout(() => {
         setPortalTransition(null);
       }, 1000);
-    }, 5000);
+    }, 3000);
+  };
+
+  const startCharacterPortalTransition = (value: string, label: string, image: string) => {
+    setError(null);
+    updateConfig({ characterType: value as MascotaConfig["characterType"] });
+    setPortalTransition({ label, image, dissolving: false, type: "character" });
+    setTimeout(() => {
+      setPortalTransition((prev) => (prev ? { ...prev, dissolving: true } : prev));
+      setCurrentStep(3);
+      setTimeout(() => {
+        setPortalTransition(null);
+      }, 1000);
+    }, 3000);
   };
 
   const updateCustomTheme = (value: string) => {
@@ -232,10 +256,6 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
         }
         return true;
       case 2:
-        if (config.characterType === "other" && !config.customCharacterType.trim()) {
-          setError("Por favor, describe tu tipo de personaje personalizado");
-          return false;
-        }
         return true;
       case 3:
         if (config.personality.length < 2 || config.personality.length > 3) {
@@ -429,30 +449,52 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
           <div className="mascot-step">
             <h2>🎨 ¿Quién será nuestro compañero?</h2>
             <p>¿Qué tipo de personaje quieres?</p>
-            <div className="character-type-grid">
-              {CHARACTER_TYPES.map((tipo) => (
-                <button
-                  key={tipo.value}
-                  className={`character-type-card ${config.characterType === tipo.value ? "active" : ""}`}
-                  onClick={() =>
-                    updateConfig({ characterType: tipo.value as MascotaConfig["characterType"] })
-                  }
-                >
-                  <span className="character-type-icon">{tipo.icon}</span>
-                  <span className="character-type-label">{tipo.label}</span>
-                </button>
-              ))}
+            <div className="theme-grid">
+              {CHARACTER_TYPES.map((tipo) => {
+                const isSelected = config.characterType === tipo.value;
+                return (
+                  <button
+                    key={tipo.value}
+                    type="button"
+                    className={`theme-option ${isSelected ? "active" : ""}`}
+                    aria-pressed={isSelected}
+                    aria-label={`Seleccionar ${tipo.label}`}
+                    onClick={() =>
+                      startCharacterPortalTransition(tipo.value, tipo.label, tipo.image)
+                    }
+                  >
+                    <span className="theme-card edu-glow">
+                      <img className="theme-card-image" src={tipo.image} alt="" />
+                      <span className="theme-label">{tipo.label}</span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-            {config.characterType === "other" && (
-              <div className="custom-input">
-                <label>Describe tu tipo de personaje personalizado:</label>
-                <input
-                  type="text"
-                  value={config.customCharacterType}
-                  onChange={(e) => updateConfig({ customCharacterType: e.target.value })}
-                  placeholder="Ej: Robot astronauta"
-                  maxLength={100}
-                />
+            {config.theme && (
+              <div className="previous-selection">
+                <p className="previous-selection__label">
+                  Mundo seleccionado: Pulsa para volver atrás
+                </p>
+                <div className="previous-selection__cards">
+                  <div className="previous-selection__card">
+                    {(() => {
+                      const selectedTheme = THEMAS.find((t) => t.value === config.theme);
+                      if (!selectedTheme) return null;
+                      return (
+                        <button
+                          type="button"
+                          className="theme-card edu-glow previous-selection__btn"
+                          onClick={() => setCurrentStep(1)}
+                          aria-label={`Cambiar mundo: ${selectedTheme.label}`}
+                        >
+                          <img className="theme-card-image" src={selectedTheme.image} alt="" />
+                          <span className="theme-label">{selectedTheme.label}</span>
+                        </button>
+                      );
+                    })()}
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -462,23 +504,82 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
           <div className="mascot-step">
             <h2>💫 Su personalidad</h2>
             <p>¿Cómo será vuestro compañero? (Selecciona entre 2 y 3)</p>
-            <div className="personality-grid">
-              {PERSONALITY_OPTIONS.map((persona) => (
-                <button
-                  key={persona.value}
-                  className={`personality-card ${config.personality.includes(persona.value) ? "active" : ""}`}
-                  onClick={() => {
-                    const newPersonality = config.personality.includes(persona.value)
-                      ? config.personality.filter((p) => p !== persona.value)
-                      : [...config.personality, persona.value];
-                    updateConfig({ personality: newPersonality });
-                  }}
-                >
-                  <span className="personality-icon">{persona.icon}</span>
-                  <span className="personality-label">{persona.label}</span>
-                </button>
-              ))}
+            <div className="theme-grid">
+              {PERSONALITY_OPTIONS.map((persona) => {
+                const isSelected = config.personality.includes(persona.value);
+                const isDisabled = !isSelected && config.personality.length >= 3;
+                return (
+                  <button
+                    key={persona.value}
+                    type="button"
+                    className={`theme-option ${isSelected ? "active" : ""} ${isDisabled ? "disabled" : ""}`}
+                    aria-pressed={isSelected}
+                    aria-label={`Seleccionar ${persona.label}`}
+                    disabled={isDisabled}
+                    onClick={() => {
+                      const newPersonality = config.personality.includes(persona.value)
+                        ? config.personality.filter((p) => p !== persona.value)
+                        : [...config.personality, persona.value];
+                      updateConfig({ personality: newPersonality });
+                    }}
+                  >
+                    <span className="theme-card edu-glow">
+                      <img className="theme-card-image" src={persona.image} alt="" />
+                      <span className="theme-label">{persona.label}</span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
+            {(config.theme || config.characterType) && (
+              <div className="previous-selection">
+                <p className="previous-selection__label">
+                  Selecciones previas: Pulsa para volver atrás
+                </p>
+                <div className="previous-selection__cards">
+                  {config.theme && (
+                    <div className="previous-selection__card">
+                      {(() => {
+                        const selectedTheme = THEMAS.find((t) => t.value === config.theme);
+                        if (!selectedTheme) return null;
+                        return (
+                          <button
+                            type="button"
+                            className="theme-card edu-glow previous-selection__btn"
+                            onClick={() => setCurrentStep(1)}
+                            aria-label={`Cambiar mundo: ${selectedTheme.label}`}
+                          >
+                            <img className="theme-card-image" src={selectedTheme.image} alt="" />
+                            <span className="theme-label">{selectedTheme.label}</span>
+                          </button>
+                        );
+                      })()}
+                    </div>
+                  )}
+                  {config.characterType && (
+                    <div className="previous-selection__card">
+                      {(() => {
+                        const selectedChar = CHARACTER_TYPES.find(
+                          (t) => t.value === config.characterType,
+                        );
+                        if (!selectedChar) return null;
+                        return (
+                          <button
+                            type="button"
+                            className="theme-card edu-glow previous-selection__btn"
+                            onClick={() => setCurrentStep(2)}
+                            aria-label={`Cambiar personaje: ${selectedChar.label}`}
+                          >
+                            <img className="theme-card-image" src={selectedChar.image} alt="" />
+                            <span className="theme-label">{selectedChar.label}</span>
+                          </button>
+                        );
+                      })()}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         );
       case 4:
@@ -590,12 +691,12 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
             {error && <div className="mascot-screen__error">{error}</div>}
             {renderStep()}
             <div className="mascot-screen__navigation">
-              {currentStep > 1 && (
+              {currentStep > 1 && currentStep !== 2 && currentStep !== 3 && (
                 <button className="mascot-screen__btn-secondary" onClick={prevStep}>
                   Anterior
                 </button>
               )}
-              {currentStep > 1 && currentStep < 6 ? (
+              {currentStep > 1 && currentStep !== 2 && currentStep !== 3 && currentStep < 6 ? (
                 <button className="mascot-screen__btn-primary" onClick={nextStep}>
                   Siguiente
                 </button>
@@ -683,8 +784,17 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
             <canvas className="portal-dissolve__canvas" ref={dissolveCanvasRef} />
           )}
           <div className="portal-transition__banner">
-            Has seleccionado el portal de{" "}
-            <span className="portal-transition__name">{portalTransition.label}</span>
+            {portalTransition.type === "theme" ? (
+              <>
+                Has seleccionado el portal de{" "}
+                <span className="portal-transition__name">{portalTransition.label}</span>
+              </>
+            ) : (
+              <>
+                Tu compañero será{" "}
+                <span className="portal-transition__name">{portalTransition.label}</span>
+              </>
+            )}
           </div>
         </div>
       )}
