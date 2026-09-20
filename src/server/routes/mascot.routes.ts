@@ -4,12 +4,13 @@ import {
   generateMascotAssets,
   getMascotStatus,
   regeneratePreview,
-} from "../controllers/mascot.controller";
+  checkHfHealth,
+} from "../controllers/mascot.controller.ts";
 import {
   validateMascotConfig,
   validateMascotGeneration,
-} from "../middleware/validation.middleware";
-import { rateLimit } from "../middleware/rateLimit.middleware";
+} from "../middleware/validation.middleware.ts";
+import { rateLimit } from "../middleware/rateLimit.middleware.ts";
 
 const router = express.Router();
 
@@ -32,5 +33,7 @@ router.post("/regenerate-preview", previewRateLimit, regeneratePreview);
 router.post("/generate-assets", assetsRateLimit, validateMascotGeneration, generateMascotAssets);
 
 router.get("/status/:id", getMascotStatus);
+
+router.get("/health-hf", checkHfHealth);
 
 export default router;

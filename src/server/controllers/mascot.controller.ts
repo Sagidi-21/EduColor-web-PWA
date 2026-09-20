@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
-import { generateMascotWithGrok, generateMascotAssetsWithGrok } from "../services/grok.service";
+import {
+  generateMascotWithGrok,
+  generateMascotAssetsWithGrok,
+  checkHfConnection,
+} from "../services/huggingface.service.ts";
 import { v4 as uuidv4 } from "uuid";
-import { MascotConfig, MascotPreviewResult, MascotAssetsResult } from "../types";
-import { asyncHandler } from "../middleware/error.middleware";
+import { MascotConfig, MascotPreviewResult, MascotAssetsResult } from "../types.ts";
+import { asyncHandler } from "../middleware/error.middleware.ts";
 
 interface GenerationEntry {
   id: string;
@@ -47,10 +51,10 @@ export const generateMascotPreview = asyncHandler(async (req: Request, res: Resp
 });
 
 export const generateMascotAssets = asyncHandler(async (req: Request, res: Response) => {
-  const { id, referenceImage } = req.body as {
+  const { id, referenceImage, ...config } = req.body as {
     id: string;
     referenceImage: string;
-  };
+  } & MascotConfig;
 
   const status = generationStore.get(id);
   if (!status) {
@@ -65,7 +69,7 @@ export const generateMascotAssets = asyncHandler(async (req: Request, res: Respo
 
   status.status = "generating";
 
-  const result: MascotAssetsResult = await generateMascotAssetsWithGrok(referenceImage);
+  const result: MascotAssetsResult = await generateMascotAssetsWithGrok(referenceImage, config);
 
   status.status = "completed";
   generationStore.set(id, status);
@@ -120,4 +124,13 @@ export const regeneratePreview = asyncHandler(async (req: Request, res: Response
     name: result.name,
     description: result.description,
   });
+});
+
+export const checkHfHealth = asyncHandler(async (req: Request, res: Response) => {
+  const result = await checkHfConnection();
+  if (result.ok) {
+    res.json({ ok: true, message: "Conexión a Hugging Face OK", models: result.models });
+  } else {
+    res.status(502).json({ ok: false, error: result.error });
+  }
 });

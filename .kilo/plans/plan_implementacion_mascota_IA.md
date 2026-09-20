@@ -13,9 +13,9 @@ El profesor selecciona un tema y unas preferencias sencillas. El sistema genera 
 5. Header.
 6. Sujetando una pizarra de madera.
 
-La generación de imágenes se realizará mediante la API de Grok/xAI disponible para el proyecto.
+La generación de imágenes se realizará mediante la API de Hugging Face Inference disponible para el proyecto.
 
-**Principio fundamental de seguridad:** la API key de xAI/Grok NUNCA debe llegar al navegador ni estar incluida en el código frontend.
+**Principio fundamental de seguridad:** el token `HF_TOKEN` de Hugging Face NUNCA debe llegar al navegador ni estar incluido en el código frontend.
 
 ---
 
@@ -41,14 +41,14 @@ La generación de imágenes se realizará mediante la API de Grok/xAI disponible
 │ Construcción de prompts      │
 │ Gestión de referencias       │
 │ Rate limiting                │
-│ Llamada a xAI                 │
+│ Llamada a Hugging Face                 │
 │ Almacenamiento               │
 └──────────────┬───────────────┘
                │ HTTPS
                │ API key privada
                ▼
 ┌──────────────────────────────┐
-│          xAI / Grok          │
+│          Hugging Face          │
 │                              │
 │ Generación de imágenes       │
 └──────────────┬───────────────┘
@@ -76,13 +76,13 @@ La generación de imágenes se realizará mediante la API de Grok/xAI disponible
 PROHIBIDO:
 
 ```typescript
-const XAI_API_KEY = "...";
+const HF_TOKEN = "...";
 ```
 
 PROHIBIDO:
 
 ```typescript
-fetch("https://api.x.ai/...", {
+fetch("https://api-inference.huggingface.co/...", {
     headers: {
         Authorization: "Bearer ..."
     }
@@ -105,7 +105,7 @@ La API key debe existir únicamente en el entorno seguro del backend.
 Por ejemplo:
 
 ```text
-XAI_API_KEY
+HF_TOKEN
 ```
 
 como variable de entorno del servidor.
@@ -118,7 +118,7 @@ POST /api/mascot/generate-assets
 GET  /api/mascot/status/:id
 ```
 
-Nunca conoce la credencial de xAI.
+Nunca conoce la credencial de Hugging Face.
 
 ---
 
@@ -127,7 +127,7 @@ Nunca conoce la credencial de xAI.
 En producción:
 
 ```env
-XAI_API_KEY=********
+HF_TOKEN=********
 ```
 
 La variable debe configurarse en el sistema de despliegue/servidor.
@@ -135,7 +135,7 @@ La variable debe configurarse en el sistema de despliegue/servidor.
 En desarrollo:
 
 ```env
-XAI_API_KEY=********
+HF_TOKEN=********
 ```
 
 en un `.env` que esté incluido en `.gitignore`.
@@ -159,7 +159,7 @@ Añadir al repositorio:
 con:
 
 ```env
-XAI_API_KEY=
+HF_TOKEN=
 ```
 
 ---
@@ -195,7 +195,7 @@ Envía únicamente datos estructurados al backend.
 
 # 6. Backend: validación
 
-Antes de llamar a xAI:
+Antes de llamar a Hugging Face:
 
 - validar todos los campos;
 - limitar longitudes;
@@ -639,7 +639,7 @@ provider response status
 Nunca registrar:
 
 ```text
-XAI_API_KEY
+HF_TOKEN
 Authorization header
 tokens secretos
 ```
@@ -680,7 +680,7 @@ Este es vuestro compañero.
 
 # 22. Errores
 
-Si falla Grok:
+Si falla Hugging Face:
 
 ```text
 No hemos podido crear el personaje esta vez.
@@ -691,7 +691,7 @@ No hemos podido crear el personaje esta vez.
 No mostrar:
 
 - stack trace;
-- respuesta interna de xAI;
+- respuesta interna de Hugging Face;
 - API key;
 - información del servidor;
 - mensajes técnicos.
@@ -878,7 +878,7 @@ Responsable de:
 - autorización;
 - validación definitiva;
 - construcción de prompts;
-- llamada a xAI;
+- llamada a Hugging Face;
 - API key;
 - rate limiting;
 - almacenamiento;
@@ -886,7 +886,7 @@ Responsable de:
 - errores;
 - auditoría.
 
-## xAI/Grok
+## Hugging Face
 
 Responsable únicamente de:
 
@@ -905,8 +905,8 @@ Responsable únicamente de:
 ## Fase 2 — Backend seguro
 
 - Crear endpoints.
-- Configurar secreto `XAI_API_KEY`.
-- Implementar cliente xAI.
+- Configurar secreto `HF_TOKEN`.
+- Implementar cliente Hugging Face.
 - Implementar validación.
 - Implementar rate limiting.
 
@@ -973,9 +973,9 @@ La feature se considera terminada cuando:
 
 ---
 
-# 32. Nota sobre la API de xAI
+# 32. Nota sobre la API de Hugging Face
 
-Antes de implementar el cliente definitivo, comprobar en la documentación oficial vigente de xAI:
+Antes de implementar el cliente definitivo, comprobar en la documentación oficial vigente de Hugging Face:
 
 - endpoint exacto;
 - modelo de generación de imágenes disponible;
@@ -995,7 +995,7 @@ La arquitectura debe aislar el proveedor detrás de un servicio propio, por ejem
 ```text
 ImageGenerationService
         │
-        └── XAIImageGenerationService
+        └── HuggingFaceImageGenerationService
 ```
 
-Así, si mañana cambia Grok o se quiere utilizar otro proveedor, el resto de la aplicación no necesita reescribirse.
+Así, si mañana cambia Hugging Face o se quiere utilizar otro proveedor, el resto de la aplicación no necesita reescribirse.

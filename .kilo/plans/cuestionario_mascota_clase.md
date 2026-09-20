@@ -10,29 +10,36 @@ El cuestionario debe ser breve, visual y no requerir conocimientos sobre IA ni s
 
 ## Paso 1 — El mundo de nuestra clase
 
-### ¿Qué tema tendrá vuestra clase?
+El profesor elige el tema visual de la clase.
 
-**Una sola opción**
+Opciones:
 
-- 🚀 El espacio
-- 🦖 Dinosaurios
-- 🏴‍☠️ Piratas
-- 🧙 Mundo mágico
-- 🌊 Mundo submarino
-- 🦁 Animales
-- 🌳 Aventura en la naturaleza
-- 🤖 Robots y tecnología
-- 🏰 Aventuras medievales
-- 🏎️ Carreras
-- ✏️ Otro tema
+1. **El espacio** — imagen `mascota-tema-space.png`.
+2. **Dinosaurios** — imagen `mascota-tema-dinosaurs.png`.
+3. **Piratas** — imagen `mascota-tema-pirates.png`.
+4. **Mundo mágico** — imagen `mascota.team.magic.png`.
+5. **Mundo submarino** — imagen `mascota-tema-underwater.png`.
+6. **Animales** — imagen `mascota-tema-animals.png`.
+7. **Aventura en la naturaleza** — imagen `mascota-tema-nature.png`.
+8. **Robots y tecnología** — imagen `mascota.tema-technology.png`.
+9. **Aventuras medievales** — imagen `mascota-tema-medieval.png`.
+10. **Carreras** — imagen `mascota-tema-racing.png`.
+11. **Otro tema** — imagen `mascota-tema-other.png`.
 
-### Si selecciona "Otro tema"
+Cada opción se muestra como una tarjeta con la imagen a proporción 16:9 y el nombre fuera de la tarjeta. Las tarjetas ocupan el ancho disponible y son responsivas. Al seleccionar un tema estándar, el cuestionario avanza automáticamente al paso 2; no se muestra el botón «Siguiente» en el paso 1.
 
-Mostrar:
+Para **Otro tema**, mostrar un campo de texto corto después de seleccionar la tarjeta. El cuestionario no avanza hasta pulsar **OK**.
 
-> **¿Qué tema tienes en mente?**
+Texto de ayuda:
 
-Campo de texto corto.
+> Puedes escribir algo como "coches de juguete" o "el océano". El tema personalizado debe describir el ambiente de la clase en máximo 100 caracteres.
+
+Recomendación técnica:
+
+- máximo 100 caracteres;
+- validar también en backend cuando `theme` es `other`;
+- el texto nunca se enviará directamente como prompt sin pasar por el backend;
+- el backend debe tratarlo como una preferencia del profesor, no como instrucciones del sistema.
 
 ---
 

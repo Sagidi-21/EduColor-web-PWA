@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Request, Response, NextFunction } from "express";
 
-vi.mock("../services/grok.service", () => ({
+vi.mock("../services/huggingface.service", () => ({
   generateMascotWithGrok: vi.fn(),
   generateMascotAssetsWithGrok: vi.fn(),
 }));
@@ -15,7 +15,7 @@ import {
   getMascotStatus,
   regeneratePreview,
 } from "./mascot.controller";
-import { generateMascotWithGrok, generateMascotAssetsWithGrok } from "../services/grok.service";
+import { generateMascotWithGrok, generateMascotAssetsWithGrok } from "../services/huggingface.service";
 
 const mockPreviewResult = {
   id: "test-uuid-1234",
@@ -133,7 +133,10 @@ describe("mascot controller", () => {
       const assetsRes = makeMockRes();
       await generateMascotAssets(assetsReq, assetsRes, vi.fn() as NextFunction);
 
-      expect(generateMascotAssetsWithGrok).toHaveBeenCalledWith("https://example.com/mascot.png");
+      expect(generateMascotAssetsWithGrok).toHaveBeenCalledWith(
+        "https://example.com/mascot.png",
+        VALID_CONFIG,
+      );
       expect(assetsRes.json).toHaveBeenCalledWith({
         id: "test-uuid-1234",
         referenceImage: mockAssetsResult.referenceImage,

@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
-import mascotRoutes from "./routes/mascot.routes";
-import { errorHandler } from "./middleware/error.middleware";
+import mascotRoutes from "./routes/mascot.routes.ts";
+import { errorHandler } from "./middleware/error.middleware.ts";
 
 config();
 
@@ -26,10 +26,20 @@ app.use("/api/mascot", mascotRoutes);
 
 app.use(errorHandler);
 
-const isMainModule = process.argv[1] && process.argv[1].endsWith("index.ts");
+process.on("unhandledRejection", (reason) => {
+  console.error("[mascot-api] Unhandled rejection:", reason);
+});
+process.on("uncaughtException", (err) => {
+  console.error("[mascot-api] Uncaught exception:", err);
+});
+
+const isMainModule = process.argv[1]?.includes("index.ts") ?? false;
 if (isMainModule) {
-  app.listen(PORT, () => {
+  const server = app.listen(Number(PORT), "0.0.0.0", () => {
     console.log(`[mascot-api] Server running on port ${PORT}`);
+  });
+  server.on("error", (err) => {
+    console.error("[mascot-api] Server error:", err);
   });
 }
 

@@ -6,18 +6,19 @@ vi.mock("axios", () => {
     default: {
       create: vi.fn(() => ({
         post: mockPost,
-        interceptors: {
-          response: { use: vi.fn() },
-        },
+        interceptors: { response: { use: vi.fn() } },
       })),
     },
   };
 });
 
 import axios from "axios";
-import { generateMascotWithGrok, generateMascotAssetsWithGrok } from "./grok.service";
+import { generateMascotWithGrok, generateMascotAssetsWithGrok } from "./huggingface.service";
 
 const mockPost = (axios.create as any).mock.results[0].value.post as any;
+const IMAGE_MODEL = "black-forest-labs/FLUX.1-dev";
+const TEXT_MODEL = "google/gemma-2-2b-it";
+const imageResponse = () => ({ data: new ArrayBuffer(100) });
 
 const VALID_CONFIG = {
   theme: "space",
@@ -31,36 +32,31 @@ const VALID_CONFIG = {
   specialDetails: "",
 };
 
-describe("grok.service", () => {
+describe("hf.service", () => {
   beforeEach(() => {
     mockPost.mockReset();
   });
 
   describe("generateMascotWithGrok", () => {
     it("genera prompt con el tema y personalidad del config", async () => {
+      mockPost.mockResolvedValueOnce({ data: new ArrayBuffer(100) });
       mockPost.mockResolvedValueOnce({
-        data: { data: [{ url: "https://example.com/ref.png" }] },
-      });
-      mockPost.mockResolvedValueOnce({
-        data: { choices: [{ message: { content: "Astro" } }] },
+        data: [{ generated_text: "Astro" }],
       });
 
       await generateMascotWithGrok(VALID_CONFIG);
 
       const imageCall = mockPost.mock.calls[0];
-      expect(imageCall[0]).toBe("/images/generations");
-      expect(imageCall[1].prompt).toContain("space");
-      expect(imageCall[1].prompt).toContain("funny");
-      expect(imageCall[1].prompt).toContain("curious");
-      expect(imageCall[1].prompt).toContain("AI choice");
-      expect(imageCall[1].model).toBe("grok-2-image-1212");
+      expect(imageCall[0]).toBe(`/models/${IMAGE_MODEL}`);
+      expect(imageCall[1].inputs).toContain("space");
+      expect(imageCall[1].inputs).toContain("funny");
+      expect(imageCall[1].inputs).toContain("curious");
+      expect(imageCall[1].inputs).toContain("AI choice");
     });
 
     it("usa teacherName cuando nameMode es 'teacher'", async () => {
       const config = { ...VALID_CONFIG, nameMode: "teacher", teacherName: "Max" };
-      mockPost.mockResolvedValueOnce({
-        data: { data: [{ url: "https://example.com/ref.png" }] },
-      });
+      mockPost.mockResolvedValueOnce({ data: new ArrayBuffer(100) });
 
       const result = await generateMascotWithGrok(config);
 
@@ -69,11 +65,9 @@ describe("grok.service", () => {
     });
 
     it("solicita un nombre por IA cuando nameMode es 'ai'", async () => {
+      mockPost.mockResolvedValueOnce({ data: new ArrayBuffer(100) });
       mockPost.mockResolvedValueOnce({
-        data: { data: [{ url: "https://example.com/ref.png" }] },
-      });
-      mockPost.mockResolvedValueOnce({
-        data: { choices: [{ message: { content: "  Nova  " } }] },
+        data: [{ generated_text: "  Nova  " }],
       });
 
       const result = await generateMascotWithGrok(VALID_CONFIG);
@@ -81,30 +75,28 @@ describe("grok.service", () => {
       expect(mockPost).toHaveBeenCalledTimes(2);
     });
 
-    it("lanza ApiError con mensaje genérico cuando xAI devuelve 429", async () => {
+    it("lanza ApiError con mensaje genérico cuando HF devuelve 401", async () => {
       const error = {
         response: {
-          status: 429,
-          data: { error: "Rate limit exceeded" },
+          status: 401,
+          data: { error: "Invalid token" },
         },
       };
       mockPost.mockRejectedValue(error);
 
       const thrown = await generateMascotWithGrok(VALID_CONFIG).catch((e) => e);
       expect(thrown).toBeDefined();
-    }, 10000);
+    });
 
     it("usa el prompt del sistema (security) en la llamada", async () => {
+      mockPost.mockResolvedValueOnce({ data: new ArrayBuffer(100) });
       mockPost.mockResolvedValueOnce({
-        data: { data: [{ url: "https://example.com/ref.png" }] },
-      });
-      mockPost.mockResolvedValueOnce({
-        data: { choices: [{ message: { content: "Astro" } }] },
+        data: [{ generated_text: "Astro" }],
       });
 
       await generateMascotWithGrok(VALID_CONFIG);
 
-      const prompt = mockPost.mock.calls[0][1].prompt;
+      const prompt = mockPost.mock.calls[0][1].inputs;
       expect(prompt).toContain("children's educational mathematics application");
       expect(prompt).toContain("non-violent");
       expect(prompt).toContain("free of weapons");
@@ -112,12 +104,13 @@ describe("grok.service", () => {
   });
 
   describe("generateMascotAssetsWithGrok", () => {
-    it("genera 6 assets usando image editing endpoint", async () => {
-      mockPost.mockResolvedValue({
-        data: { url: "https://example.com/asset.png" },
-      });
+    it("genera 6 assets usando text-to-image endpoint", async () => {
+      mockPost.mockResolvedValue({ data: new ArrayBuffer(100) });
 
-      const result = await generateMascotAssetsWithGrok("https://example.com/ref.png");
+      const result = await generateMascotAssetsWithGrok(
+        "https://example.com/ref.png",
+        VALID_CONFIG,
+      );
 
       expect(mockPost).toHaveBeenCalledTimes(6);
       expect(result.assets).toHaveProperty("explain");
@@ -128,26 +121,22 @@ describe("grok.service", () => {
       expect(result.assets).toHaveProperty("blackboard");
 
       const calls = mockPost.mock.calls;
-      expect(calls[0][0]).toBe("/images/edits");
-      expect(calls[0][1].image.url).toBe("https://example.com/ref.png");
-      expect(calls[0][1].image.type).toBe("image_url");
+      expect(calls[0][0]).toBe(`/models/${IMAGE_MODEL}`);
+      expect(calls[0][1].inputs).toContain("explanatory teaching pose");
     });
 
     it("incluye instrucciones de pose en cada prompt de asset", async () => {
-      mockPost.mockResolvedValue({
-        data: { url: "https://example.com/asset.png" },
-      });
+      mockPost.mockResolvedValue({ data: new ArrayBuffer(100) });
 
-      await generateMascotAssetsWithGrok("https://example.com/ref.png");
+      await generateMascotAssetsWithGrok("https://example.com/ref.png", VALID_CONFIG);
 
-      const firstCallPrompt = mockPost.mock.calls[0][1].prompt;
+      const firstCallPrompt = mockPost.mock.calls[0][1].inputs;
       expect(firstCallPrompt).toContain("explanatory teaching pose");
-      // Blackboard asset should mention empty writing surface
       const blackboardCall = mockPost.mock.calls.find((c: any[]) =>
-        c[1].prompt.includes("blackboard"),
+        c[1].inputs.includes("blackboard"),
       );
       expect(blackboardCall).toBeDefined();
-      expect(blackboardCall[1].prompt).toContain("completely empty");
+      expect(blackboardCall[1].inputs).toContain("completely empty");
     });
 
     it("propaga el error cuando la API falla", async () => {
@@ -158,7 +147,9 @@ describe("grok.service", () => {
         },
       });
 
-      await expect(generateMascotAssetsWithGrok("https://example.com/ref.png")).rejects.toThrow();
+      await expect(
+        generateMascotAssetsWithGrok("https://example.com/ref.png", VALID_CONFIG),
+      ).rejects.toThrow();
     });
   });
 });

@@ -58,11 +58,12 @@ cierre de fase o una release.
 ### Feature adelantada: Compañero IA personalizado 🚀
 
 El profesorado ha solicitado adelantar el desarrollo del **Compañero IA** — un asistente visual
-personalizado para cada clase, generado mediante la API de xAI (Grok).
+personalizado para cada clase, generado mediante la API de Hugging Face Inference.
 
 - **Rama activa:** `Implementación_IA`
-- **Backend:** Servidor Express (`src/server/`) con proxy Vite (`/api → localhost:3001`), rate limiting, validación y manejo de errores. API key de xAI cargada via `.env` (nunca expuesta al frontend).
-- **Frontend:** `MascotaScreen` en `src/features/mascota/` con cuestionario de 6 pasos (tema, tipo de personaje, personalidad, nombre, estilo visual, detalles especiales). La pantalla de configuración (`ConfiguracionScreen`) enlaza al cuestionario vía el botón "🎨 Configurar mascota".
-- **Estado:** Backend y frontend implementados, tests unitarios completos (45 tests), lint/typecheck/build/verde. Pendiente conexión a xAI con key válida y validación pedagógica del profesorado.
+- **Backend:** Servidor Express (`src/server/`) con proxy Vite (`/api → localhost:3001`), validación, rate limiting y manejo seguro de errores. El token de Hugging Face se carga desde `HF_TOKEN` en el servidor y nunca se expone al frontend.
+- **Frontend:** `MascotaScreen` en `src/features/mascota/` con cuestionario de 6 pasos. El primer paso muestra 11 tarjetas con imágenes de tema, los nombres fuera de cada tarjeta y avance automático al elegir un tema; «Otro tema» requiere confirmar el texto con **OK**.
+- **Estado:** Backend, frontend, assets de temas, tests y build implementados. Suite completa verde (473 tests), junto con lint, typecheck y build. Pendiente configurar `HF_TOKEN` en el `.env` del servidor, reiniciar el backend y realizar la validación pedagógica del profesorado.
+- **Comprobación de conexión:** `GET /api/mascot/health-hf` valida el token y el modelo sin generar imágenes.
 
 Ver planos detallados en `.kilo/plans/cuestionario_mascota_clase.md` y `.kilo/plans/plan_implementacion_mascota_IA.md`.
