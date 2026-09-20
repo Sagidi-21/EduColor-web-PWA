@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
 import spaceImage from "../../assets/mascota/temas/mascota-tema-space.png";
 import dinosaursImage from "../../assets/mascota/temas/mascota-tema-dinosaurs.png";
@@ -103,10 +103,81 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
   const [mascotName, setMascotName] = useState<string>("");
   const [mascotDescription, setMascotDescription] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [portalTransition, setPortalTransition] = useState<{
+    label: string;
+    image: string;
+    dissolving: boolean;
+  } | null>(null);
+  const dissolveCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     localStorage.setItem("mascota-config", JSON.stringify(config));
   }, [config]);
+
+  useEffect(() => {
+    if (!portalTransition?.dissolving) return;
+    const canvas = dissolveCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvas.width = w;
+    canvas.height = h;
+
+    const cell = 16;
+    const cols = Math.ceil(w / cell);
+    const rows = Math.ceil(h / cell);
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = portalTransition.image;
+    let raf = 0;
+    img.onload = () => {
+      ctx.imageSmoothingEnabled = false;
+      const tmp = document.createElement("canvas");
+      const tctx = tmp.getContext("2d");
+      if (!tctx) return;
+      tctx.imageSmoothingEnabled = false;
+      tmp.width = cols;
+      tmp.height = rows;
+      tctx.drawImage(img, 0, 0, cols, rows);
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(tmp, 0, 0, w, h);
+
+      const cells: { x: number; y: number }[] = [];
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          cells.push({ x: c, y: r });
+        }
+      }
+      for (let i = cells.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cells[i], cells[j]] = [cells[j], cells[i]];
+      }
+
+      const duration = 900;
+      let done = 0;
+      const start = performance.now();
+      const step = (now: number) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const target = Math.floor(progress * cells.length);
+        while (done < target) {
+          ctx.clearRect(cells[done].x * cell, cells[done].y * cell, cell, cell);
+          done++;
+        }
+        if (progress < 1) {
+          raf = requestAnimationFrame(step);
+        }
+      };
+      raf = requestAnimationFrame(step);
+    };
+
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [portalTransition?.dissolving, portalTransition?.image]);
 
   const updateConfig = (updates: Partial<MascotaConfig>) => {
     setConfig((prev) => ({ ...prev, ...updates }));
@@ -118,6 +189,21 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
     if (value !== "other") {
       setCurrentStep(2);
     }
+  };
+
+  const startPortalTransition = (value: string, label: string, image: string) => {
+    setError(null);
+    updateConfig({ theme: value });
+    setPortalTransition({ label, image, dissolving: false });
+    setTimeout(() => {
+      setPortalTransition((prev) =>
+        prev ? { ...prev, dissolving: true } : prev
+      );
+      setCurrentStep(2);
+      setTimeout(() => {
+        setPortalTransition(null);
+      }, 1000);
+    }, 5000);
   };
 
   const updateCustomTheme = (value: string) => {
@@ -300,12 +386,19 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
                     className={`theme-option ${isSelected ? "active" : ""}`}
                     aria-pressed={isSelected}
                     aria-label={`Seleccionar ${tema.label}`}
-                    onClick={() => selectTheme(tema.value)}
+                    onClick={() => {
+                      if (portalTransition) return;
+                      if (tema.value === "other") {
+                        selectTheme(tema.value);
+                      } else {
+                        startPortalTransition(tema.value, tema.label, tema.image);
+                      }
+                    }}
                   >
                     <span className="theme-card edu-glow">
                       <img className="theme-card-image" src={tema.image} alt="" />
+                      <span className="theme-label">{tema.label}</span>
                     </span>
-                    <span className="theme-label">{tema.label}</span>
                   </button>
                 );
               })}
@@ -575,6 +668,26 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
           </div>
         )}
       </div>
+
+      {portalTransition && (
+        <div
+          className={`portal-transition ${portalTransition.dissolving ? "portal-transition--dissolving" : ""}`}
+        >
+          <img
+            className="portal-transition__image"
+            src={portalTransition.image}
+            alt=""
+            style={{ display: portalTransition.dissolving ? "none" : undefined }}
+          />
+          {portalTransition.dissolving && (
+            <canvas className="portal-dissolve__canvas" ref={dissolveCanvasRef} />
+          )}
+          <div className="portal-transition__banner">
+            Has seleccionado el portal de{" "}
+            <span className="portal-transition__name">{portalTransition.label}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

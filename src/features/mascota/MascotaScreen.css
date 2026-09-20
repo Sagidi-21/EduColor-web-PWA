@@ -145,9 +145,9 @@
 }
 
 .theme-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  aspect-ratio: 16 / 9;
   overflow: visible;
   border: 2px solid #e2e8f0;
   border-radius: 16px;
@@ -162,10 +162,10 @@
 .theme-card-image {
   display: block;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   object-position: center;
-  border-radius: inherit;
+  border-radius: 16px 16px 0 0;
 }
 
 .theme-option:hover .theme-card {
@@ -204,10 +204,17 @@
 }
 
 .theme-label {
-  margin-top: 10px;
   font-size: clamp(14px, 1.25vw, 17px);
   font-weight: 700;
   line-height: 1.3;
+}
+
+/* Título dentro de la tarjeta, debajo de la imagen (no overlay) */
+.edu-glow .theme-label {
+  width: 100%;
+  padding: 10px 12px;
+  color: #1e293b;
+  text-align: center;
 }
 
 .custom-input {
@@ -472,5 +479,83 @@
   }
   100% {
     background-position: 400% 0%;
+  }
+}
+
+/* -- Transición portal: al pulsar una tarjeta (excepto "Otro tema") -- */
+.portal-transition {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 1s ease-in;
+  pointer-events: none;
+}
+
+.portal-transition--dissolving {
+  opacity: 0;
+}
+
+.portal-transition__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(0.35);
+  opacity: 0;
+  animation: portal-image-enlarge 3s ease-out forwards;
+}
+
+/* canvas con el pixelado que se desintegra poco a poco */
+.portal-dissolve__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.portal-transition__banner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 32px 16px;
+  font-size: clamp(18px, 2.5vw, 24px);
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.portal-transition__name {
+  font-family: var(--font-fredoka, "Fredoka", sans-serif);
+  font-size: clamp(24px, 3.2vw, 34px);
+  font-weight: 700;
+  color: #facc15;
+}
+
+@keyframes portal-image-enlarge {
+  0% {
+    transform: scale(0.35);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
