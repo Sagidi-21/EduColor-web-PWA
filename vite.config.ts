@@ -8,4 +8,13 @@ export default defineConfig({
     environment: "node",
     exclude: [...configDefaults.exclude, "electron-reference/**"],
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 });

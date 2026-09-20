@@ -53,4 +53,16 @@ cierre de fase o una release.
 | 2026-09-07 | Electron queda como referencia canónica de paridad visual y funcional de la PWA.                                            | Evitar rediseñar o perder pantallas y funciones que ya operan en el colegio. |
 | 2026-09-18 | Curriculo de `counting` disenado con 8 niveles (1-L1 a 2-L4) con mecanicas progresivas TOUCH > GROUP > FILL_TABLE > SELECT. | Alineamiento pedagogico con la progresion de 1.o y 2.o de Primaria.          |
 | 2026-09-18 | En 2-L3 se eliminan preguntas guiadas CDU dejando solo la pregunta final de composicion.                                    | El nino que ha superado 2-L2 debe llegar al numero sin andamiaje intermedio. |
-| 2026-09-18 | Numpad en layout horizontal para niveles con tabla posicional FILL_TABLE.                                                   | Ganar espacio vertical para objetos visuales en pantalla de pizarra.         |
+  | 2026-09-18 | Numpad en layout horizontal para niveles con tabla posicional FILL_TABLE.                                                   | Ganar espacio vertical para objetos visuales en pantalla de pizarra.                                                       |
+
+### Feature adelantada: Compañero IA personalizado 🚀
+
+El profesorado ha solicitado adelantar el desarrollo del **Compañero IA** — un asistente visual
+personalizado para cada clase, generado mediante la API de xAI (Grok).
+
+- **Rama activa:** `Implementación_IA`
+- **Backend:** Servidor Express (`src/server/`) con proxy Vite (`/api → localhost:3001`), rate limiting, validación y manejo de errores. API key de xAI cargada via `.env` (nunca expuesta al frontend).
+- **Frontend:** `MascotaScreen` en `src/features/mascota/` con cuestionario de 6 pasos (tema, tipo de personaje, personalidad, nombre, estilo visual, detalles especiales). La pantalla de configuración (`ConfiguracionScreen`) enlaza al cuestionario vía el botón "🎨 Configurar mascota".
+- **Estado:** Backend y frontend implementados, tests unitarios completos (45 tests), lint/typecheck/build/verde. Pendiente conexión a xAI con key válida y validación pedagógica del profesorado.
+
+Ver planos detallados en `.kilo/plans/cuestionario_mascota_clase.md` y `.kilo/plans/plan_implementacion_mascota_IA.md`.

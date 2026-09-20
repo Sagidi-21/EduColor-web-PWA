@@ -3,7 +3,7 @@ import logoUrl from "../../assets/splash-logo.png";
 import { getAulaLabel, useClassProfile } from "../../core/context/ClassProfileContext";
 import "./HomeScreen.css";
 
-export type AppView = "home" | "configuration" | "mathematics" | "generator";
+export type AppView = "home" | "configuration" | "mathematics" | "generator" | "mascota";
 const modes: readonly {
   id: AppView;
   label: string;

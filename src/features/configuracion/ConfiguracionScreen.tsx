@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getAulaLabel, useClassProfile } from "../../core/context/ClassProfileContext";
+import type { AppView } from "../home/HomeScreen";
 import "./ConfiguracionScreen.css";
 
 const colors = [
@@ -18,7 +19,13 @@ const zoomLevels = [
 const zoomKey = "educolor_zoom";
 const storedZoom = () => Number.parseFloat(localStorage.getItem(zoomKey) ?? "1.5") || 1.5;
 
-export function ConfiguracionScreen({ onBack }: { onBack: () => void }) {
+export function ConfiguracionScreen({
+  onBack,
+  onNavigate,
+}: {
+  onBack: () => void;
+  onNavigate?: (view: AppView) => void;
+}) {
   const { aulas, activeAulaId, profile, setActiveAula, save, getProfile, addAula, removeAula } =
     useClassProfile();
   const [name, setName] = useState(profile.className);
@@ -98,6 +105,12 @@ export function ConfiguracionScreen({ onBack }: { onBack: () => void }) {
                 </button>
               ))}
             </div>
+            <button
+              className="cfg__mascota-btn"
+              onClick={() => onNavigate && onNavigate("mascota")}
+            >
+              🎨 Configurar mascota
+            </button>
           </div>
           <div className="cfg__profile-layout">
             <div className="cfg__mascot-col">

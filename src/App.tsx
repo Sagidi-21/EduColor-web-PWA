@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ClassProfileProvider } from "./core/context/ClassProfileContext";
 import { useClassProfile } from "./core/context/ClassProfileContext";
 import { ConfiguracionScreen } from "./features/configuracion/ConfiguracionScreen";
+import { MascotaScreen } from "./features/mascota/MascotaScreen";
 import { HomeScreen, type AppView } from "./features/home/HomeScreen";
 import { MatematicasCatalogScreen } from "./features/matematicas/MatematicasCatalogScreen";
 import { SplashScreen } from "./features/splash/SplashScreen";
@@ -13,6 +14,11 @@ function AppShell() {
   const [showVideo, setShowVideo] = useState(false);
   const [splashDone, setSplashDone] = useState(false);
   const [view, setView] = useState<AppView>("home");
+
+  // Expose setView for navigation from child components
+  React.useEffect(() => {
+    (window as unknown as { setView: typeof setView }).setView = setView;
+  }, [setView]);
 
   // Aplicar zoom por defecto al inicio
   React.useEffect(() => {
@@ -44,7 +50,9 @@ function AppShell() {
   }
 
   // Fase 3: app
-  if (view === "configuration") return <ConfiguracionScreen onBack={() => setView("home")} />;
+  if (view === "configuration")
+    return <ConfiguracionScreen onBack={() => setView("home")} onNavigate={setView} />;
+  if (view === "mascota") return <MascotaScreen onBack={() => setView("configuration")} />;
   if (view === "mathematics") {
     const activeAula = aulas.find((aula) => aula.id === activeAulaId) ?? aulas[0];
     return (
