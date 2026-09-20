@@ -19,6 +19,10 @@ export default function Numeracion999Renderer({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps): JSX.Element {
+  void seed;
+  void className;
+  void mascotUrl;
+  void difficultyStars;
   const [session, setSession] = useState(() => ({
     exercises: generateSession(difficulty, Date.now() % 999983),
     currentIndex: 0,
@@ -27,7 +31,11 @@ export default function Numeracion999Renderer({
     answerState: "idle" as AnswerState,
     selected: null as string | null,
   }));
-  const [finished, setFinished] = useState<{ total: number; correct: number } | null>(null);
+  const [finished, setFinished] = useState<{
+    total: number;
+    correct: number;
+    duration: number;
+  } | null>(null);
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
@@ -37,21 +45,23 @@ export default function Numeracion999Renderer({
       ...s,
       answerState: "idle",
       selected: null,
-      alreadyFailed: true,
     }));
   }, []);
 
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
     if (next >= total) {
-      setFinished({ total, correct: session.correctCount });
+      setFinished({
+        total,
+        correct: session.correctCount,
+        duration: Date.now() - session.startTime,
+      });
     } else {
       setSession((s) => ({
         ...s,
         currentIndex: next,
         answerState: "idle",
         selected: null,
-        alreadyFailed: false,
       }));
     }
   }, [session, total]);
@@ -71,18 +81,18 @@ export default function Numeracion999Renderer({
         ...s,
         answerState: ok ? "correct" : "wrong",
         selected: val,
-        correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+        correctCount: ok ? s.correctCount + 1 : s.correctCount,
       }));
     },
     [session.answerState, current],
   );
 
   if (finished) {
-    const duration = Date.now() - session.startTime;
+    const duration = finished.duration;
     return (
       <SummaryScreen
         result={{ correct: finished.correct, total: finished.total, duration }}
-        gradeLabel={gradeTitle}
+        gradeLabel={gradeTitle ?? ""}
         onRestart={() => {
           setFinished(null);
           setSession({
@@ -114,11 +124,10 @@ export default function Numeracion999Renderer({
   return (
     <div className="n999">
       <ActivityHeader
-        title={activity.title}
-        gradeLabel={gradeTitle}
-        current={session.currentIndex + 1}
-        total={total}
         onExit={onExit}
+        gradeTitle={gradeTitle}
+        unitTitle={activity.title}
+        progress={`${session.currentIndex + 1}/${total}`}
       ></ActivityHeader>
 
       <div className={`n999__stage ${stageClass}`}>

@@ -6,7 +6,6 @@ import { useInputMode } from "../../shared/hooks/useInputMode";
 import InputModeToggle from "../../shared/components/InputModeToggle";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { WrongFeedback } from "../components/WrongFeedback";
-import { Numpad } from "../../shared/components/Numpad";
 import { LazyDigitCell } from "../../shared/DigitCell";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -82,6 +81,7 @@ export default function Numeracion6099Renderer({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps): JSX.Element {
+  void seed;
   const [session, setSession] = useState(() => ({
     exercises: generateSession(difficulty, Date.now() % 999983),
     currentIndex: 0,
@@ -133,6 +133,17 @@ export default function Numeracion6099Renderer({
       }));
   }, [session, total]);
 
+  const confirm = useCallback(() => {
+    if (session.answerState !== "idle" || session.input === "") return;
+    const ok = validateAnswer(current, session.input);
+    playFeedback(ok);
+    setSession((s) => ({
+      ...s,
+      answerState: ok ? "correct" : "wrong",
+      correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+    }));
+  }, [session, current]);
+
   useEffect(() => {
     if (session.answerState !== "correct") return;
     const t = setTimeout(handleNext, 900);
@@ -143,7 +154,8 @@ export default function Numeracion6099Renderer({
     if (mode !== "canvas") return;
     if (session.answerState !== "idle") return;
     if (session.input.length < 2) return;
-    confirm();
+    const t = setTimeout(confirm, 0);
+    return () => clearTimeout(t);
   }, [session.input.length, mode, session.answerState, current?.answer, confirm]);
 
   const handleChoice = useCallback(
@@ -160,17 +172,6 @@ export default function Numeracion6099Renderer({
     },
     [session, current],
   );
-
-  const confirm = useCallback(() => {
-    if (session.answerState !== "idle" || session.input === "") return;
-    const ok = validateAnswer(current, session.input);
-    playFeedback(ok);
-    setSession((s) => ({
-      ...s,
-      answerState: ok ? "correct" : "wrong",
-      correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
-    }));
-  }, [session, current]);
 
   if (finished) {
     const pct = Math.round((finished.correct / finished.total) * 100);
@@ -217,6 +218,7 @@ export default function Numeracion6099Renderer({
                   answerState: "idle",
                   input: "",
                   chosen: null,
+                  alreadyFailed: false,
                 });
               }}
             >

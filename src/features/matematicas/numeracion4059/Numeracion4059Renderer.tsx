@@ -89,7 +89,6 @@ export default function Numeracion4059Renderer({
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
-  const aLen = answerLen(current.answer);
 
   const confirm = useCallback(() => {
     if (session.answerState !== "idle") return;
@@ -148,7 +147,10 @@ export default function Numeracion4059Renderer({
     if (mode !== "canvas") return;
     if (session.answerState !== "idle") return;
     if (session.activeDigit > 0) return;
-    if (session.digits.every((d) => d !== "")) confirm();
+    if (session.digits.every((d) => d !== "")) {
+      const t = setTimeout(() => confirm(), 0);
+      return () => clearTimeout(t);
+    }
   }, [session.digits, mode, session.answerState, session.activeDigit, confirm]);
 
   const handleChoice = useCallback(
@@ -195,36 +197,6 @@ export default function Numeracion4059Renderer({
       setSession((s) => ({ ...s, digits: nd, activeDigit: activeDigit - 1 }));
     }
   }, [session]);
-
-  const handleCanvasConfirm = useCallback(
-    (i: number, digit: string) => {
-      const newDigits = [...session.digits];
-      newDigits[i] = digit;
-      if (i > 0) {
-        setSession((s) => ({ ...s, digits: newDigits, activeDigit: i - 1 }));
-      } else {
-        const answerStr = newDigits.join("");
-        const ok = validateAnswer(current, answerStr);
-        playFeedback(ok);
-        setSession((s) => ({
-          ...s,
-          digits: newDigits,
-          answerState: ok ? "correct" : "wrong",
-          correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
-          alreadyFailed: !ok ? true : s.alreadyFailed,
-        }));
-      }
-      setCanvasKey((k) => k + 1);
-    },
-    [session, current],
-  );
-
-  const boxValue = (i: number): string => {
-    if (session.answerState === "correct") {
-      return String(current.answer).padStart(aLen, "0")[i];
-    }
-    return session.digits[i] ?? "";
-  };
 
   if (finished) {
     const pct = Math.round((finished.correct / finished.total) * 100);
