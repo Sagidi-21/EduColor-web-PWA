@@ -2,11 +2,14 @@ import axios, { AxiosInstance } from "axios";
 import { MascotConfig, MascotAssetsResult, MascotPreviewResult } from "../types";
 import { ApiError } from "../middleware/error.middleware";
 
-const HF_API_URL = "https://router.huggingface.co/hf-inference";
-const IMAGE_MODEL = "black-forest-labs/FLUX.1-dev";
-const TEXT_MODEL = "google/gemma-2-2b-it";
+// Modelo de imagen comprobado en hf-inference
+const IMAGE_MODEL = "stabilityai/stable-diffusion-3-medium-diffusers";
 
-let hfClient: AxiosInstance | undefined;
+/**
+ * Modelo de texto. Asegurarse de que este modelo sea compatible con el proveedor hf-inference.
+ * NOTA: se recomienda usar un modelo de texto confirmado como compatible.
+ */
+const TEXT_MODEL = "google/gemma-2-2b-it";
 
 function getHfClient(): AxiosInstance {
   if (!hfClient) {
