@@ -1,5 +1,16 @@
 import { useState, useEffect } from "react";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
+import spaceImage from "../../assets/mascota/temas/mascota-tema-space.png";
+import dinosaursImage from "../../assets/mascota/temas/mascota-tema-dinosaurs.png";
+import piratesImage from "../../assets/mascota/temas/mascota-tema-pirates.png";
+import magicImage from "../../assets/mascota/temas/mascota.team.magic.png";
+import underwaterImage from "../../assets/mascota/temas/mascota-tema-underwater.png";
+import animalsImage from "../../assets/mascota/temas/mascota-tema-animals.png";
+import natureImage from "../../assets/mascota/temas/mascota-tema-nature.png";
+import technologyImage from "../../assets/mascota/temas/mascota.tema-technology.png";
+import medievalImage from "../../assets/mascota/temas/mascota-tema-medieval.png";
+import racingImage from "../../assets/mascota/temas/mascota-tema-racing.png";
+import otherImage from "../../assets/mascota/temas/mascota-tema-other.png";
 import "./MascotaScreen.css";
 
 interface MascotaConfig {
@@ -15,17 +26,17 @@ interface MascotaConfig {
 }
 
 const THEMAS = [
-  { value: "space", label: "🚀 El espacio", icon: "🌌" },
-  { value: "dinosaurs", label: "🦖 Dinosaurios", icon: "🦕" },
-  { value: "pirates", label: "🏴‍☠️ Piratas", icon: "⚓" },
-  { value: "magic", label: "🧙 Mundo mágico", icon: "✨" },
-  { value: "underwater", label: "🌊 Mundo submarino", icon: "🐠" },
-  { value: "animals", label: "🦁 Animales", icon: "🦒" },
-  { value: "nature", label: "🌳 Aventura en la naturaleza", icon: "🌲" },
-  { value: "technology", label: "🤖 Robots y tecnología", icon: "💻" },
-  { value: "medieval", label: "🏰 Aventuras medievales", icon: "🏰" },
-  { value: "racing", label: "🏎️ Carreras", icon: "🏁" },
-  { value: "other", label: "✏️ Otro tema", icon: "🎨" },
+  { value: "space", label: "El espacio", image: spaceImage },
+  { value: "dinosaurs", label: "Dinosaurios", image: dinosaursImage },
+  { value: "pirates", label: "Piratas", image: piratesImage },
+  { value: "magic", label: "Mundo mágico", image: magicImage },
+  { value: "underwater", label: "Mundo submarino", image: underwaterImage },
+  { value: "animals", label: "Animales", image: animalsImage },
+  { value: "nature", label: "Aventura en la naturaleza", image: natureImage },
+  { value: "technology", label: "Robots y tecnología", image: technologyImage },
+  { value: "medieval", label: "Aventuras medievales", image: medievalImage },
+  { value: "racing", label: "Carreras", image: racingImage },
+  { value: "other", label: "Otro tema", image: otherImage },
 ];
 
 const CHARACTER_TYPES = [
@@ -58,7 +69,7 @@ const VISUAL_STYLES = [
 ];
 
 const DEFAULT_CONFIG: MascotaConfig = {
-  theme: "space",
+  theme: "",
   customTheme: "",
   characterType: "ai_choice",
   customCharacterType: "",
@@ -101,9 +112,34 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
     setConfig((prev) => ({ ...prev, ...updates }));
   };
 
+  const selectTheme = (value: string) => {
+    setError(null);
+    updateConfig({ theme: value });
+    if (value !== "other") {
+      setCurrentStep(2);
+    }
+  };
+
+  const updateCustomTheme = (value: string) => {
+    updateConfig({ customTheme: value });
+  };
+
+  const confirmCustomTheme = () => {
+    if (!config.customTheme.trim()) {
+      setError("Describe tu tema personalizado para continuar");
+      return;
+    }
+    setError(null);
+    setCurrentStep(2);
+  };
+
   const validateStep = (step: number): boolean => {
     switch (step) {
       case 1:
+        if (!config.theme) {
+          setError("Selecciona un tema para continuar");
+          return false;
+        }
         if (config.theme === "other" && !config.customTheme.trim()) {
           setError("Por favor, describe tu tema personalizado");
           return false;
@@ -159,7 +195,9 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
   };
 
   const generateMascot = async () => {
-    if (!validateStep(4)) return;
+    if (!validateStep(1) || !validateStep(2) || !validateStep(3) || !validateStep(4)) {
+      return;
+    }
 
     setState("generating_preview");
     setError(null);
@@ -250,19 +288,27 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
       case 1:
         return (
           <div className="mascot-step">
-            <h2>🌌 El mundo de nuestra clase</h2>
-            <p>¿Qué tema tendrá vuestra clase?</p>
+            <h2>El mundo de nuestra clase</h2>
+            <p>Toca el portal dimensional que acompañará a toda tu clase durante este curso.</p>
             <div className="theme-grid">
-              {THEMAS.map((tema) => (
-                <button
-                  key={tema.value}
-                  className={`theme-card ${config.theme === tema.value ? "active" : ""}`}
-                  onClick={() => updateConfig({ theme: tema.value })}
-                >
-                  <span className="theme-icon">{tema.icon}</span>
-                  <span className="theme-label">{tema.label}</span>
-                </button>
-              ))}
+              {THEMAS.map((tema) => {
+                const isSelected = config.theme === tema.value;
+                return (
+                  <button
+                    key={tema.value}
+                    type="button"
+                    className={`theme-option ${isSelected ? "active" : ""}`}
+                    aria-pressed={isSelected}
+                    aria-label={`Seleccionar ${tema.label}`}
+                    onClick={() => selectTheme(tema.value)}
+                  >
+                    <span className="theme-card edu-glow">
+                      <img className="theme-card-image" src={tema.image} alt="" />
+                    </span>
+                    <span className="theme-label">{tema.label}</span>
+                  </button>
+                );
+              })}
             </div>
             {config.theme === "other" && (
               <div className="custom-input">
@@ -270,10 +316,17 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
                 <input
                   type="text"
                   value={config.customTheme}
-                  onChange={(e) => updateConfig({ customTheme: e.target.value })}
+                  onChange={(e) => updateCustomTheme(e.target.value)}
                   placeholder="Ej: Coches de juguete"
                   maxLength={100}
                 />
+                <button
+                  type="button"
+                  className="mascot-screen__btn-primary custom-input__ok-btn"
+                  onClick={confirmCustomTheme}
+                >
+                  OK
+                </button>
               </div>
             )}
           </div>
@@ -449,11 +502,11 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
                   Anterior
                 </button>
               )}
-              {currentStep < 6 ? (
+              {currentStep > 1 && currentStep < 6 ? (
                 <button className="mascot-screen__btn-primary" onClick={nextStep}>
                   Siguiente
                 </button>
-              ) : (
+              ) : currentStep === 6 ? (
                 <button
                   className="mascot-screen__btn-primary"
                   onClick={generateMascot}
@@ -461,7 +514,7 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
                 >
                   {isGenerating ? "Generando..." : "✨ Crear compañero"}
                 </button>
-              )}
+              ) : null}
             </div>
           </>
         )}
