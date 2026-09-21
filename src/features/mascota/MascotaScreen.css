@@ -287,29 +287,29 @@
 }
 
 .custom-input input:focus,
-  .custom-input textarea:focus {
-    outline: none;
-    border-color: var(--color-primary);
-  }
+.custom-input textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
 
-  .custom-input__with-btn {
-    display: flex;
-    gap: 12px;
-    align-items: flex-end;
-  }
+.custom-input__with-btn {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
 
-  .custom-input__with-btn input {
-    flex: 1;
-    width: auto;
-  }
+.custom-input__with-btn input {
+  flex: 1;
+  width: auto;
+}
 
-  .custom-input__with-btn .custom-input__ok-btn {
-    margin-top: 0;
-    white-space: nowrap;
-    padding: 12px 24px;
-  }
+.custom-input__with-btn .custom-input__ok-btn {
+  margin-top: 0;
+  white-space: nowrap;
+  padding: 12px 24px;
+}
 
-  .custom-input small {
+.custom-input small {
   display: block;
   margin-top: 4px;
   color: #6b7280;

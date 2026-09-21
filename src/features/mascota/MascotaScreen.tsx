@@ -649,7 +649,9 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
             <p>¿Quién elegirá su nombre?</p>
             <div className="theme-grid">
               {NAME_MODES.map((modo) => {
-                const isSelected = config.nameMode === modo.value || (showTeacherNameInput && modo.value === "teacher");
+                const isSelected =
+                  config.nameMode === modo.value ||
+                  (showTeacherNameInput && modo.value === "teacher");
                 return (
                   <button
                     key={modo.value}
@@ -675,19 +677,19 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
               <div className="custom-input">
                 <label>¿Cómo se llamará?</label>
                 <div className="custom-input__with-btn">
-                   <input
-                     type="text"
-                     value={config.teacherName}
-                     onChange={(e) => updateConfig({ teacherName: e.target.value })}
-                     onKeyDown={(e) => {
-                       if (e.key === "Enter") {
-                         e.preventDefault();
-                         confirmTeacherName();
-                       }
-                     }}
-                     placeholder="Ej: Astro"
-                     maxLength={20}
-                   />
+                  <input
+                    type="text"
+                    value={config.teacherName}
+                    onChange={(e) => updateConfig({ teacherName: e.target.value })}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        confirmTeacherName();
+                      }
+                    }}
+                    placeholder="Ej: Astro"
+                    maxLength={20}
+                  />
                   <button
                     type="button"
                     className="mascot-screen__btn-primary custom-input__ok-btn"
@@ -699,76 +701,81 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
                 <small>2-20 caracteres</small>
               </div>
             )}
-            {!showTeacherNameInput && (config.theme || config.characterType || config.personality) && (
-              <div className="previous-selection">
-                <p className="previous-selection__label">
-                  Selecciones previas: Pulsa para volver atrás
-                </p>
-                <div className="previous-selection__cards">
-                  {config.theme && (
-                    <div className="previous-selection__card">
-                      {(() => {
-                        const selectedTheme = THEMAS.find((t) => t.value === config.theme);
-                        if (!selectedTheme) return null;
-                        return (
-                          <button
-                            type="button"
-                            className="theme-card edu-glow previous-selection__btn"
-                            onClick={() => setCurrentStep(1)}
-                            aria-label={`Cambiar mundo: ${selectedTheme.label}`}
-                          >
-                            <img className="theme-card-image" src={selectedTheme.image} alt="" />
-                            <span className="theme-label">{selectedTheme.label}</span>
-                          </button>
-                        );
-                      })()}
-                    </div>
-                  )}
-                  {config.characterType && (
-                    <div className="previous-selection__card">
-                      {(() => {
-                        const selectedChar = CHARACTER_TYPES.find(
-                          (t) => t.value === config.characterType,
-                        );
-                        if (!selectedChar) return null;
-                        return (
-                          <button
-                            type="button"
-                            className="theme-card edu-glow previous-selection__btn"
-                            onClick={() => setCurrentStep(2)}
-                            aria-label={`Cambiar personaje: ${selectedChar.label}`}
-                          >
-                            <img className="theme-card-image" src={selectedChar.image} alt="" />
-                            <span className="theme-label">{selectedChar.label}</span>
-                          </button>
-                        );
-                      })()}
-                    </div>
-                  )}
-                  {config.personality && (
-                    <div className="previous-selection__card">
-                      {(() => {
-                        const selectedPersona = PERSONALITY_OPTIONS.find(
-                          (p) => p.value === config.personality,
-                        );
-                        if (!selectedPersona) return null;
-                        return (
-                          <button
-                            type="button"
-                            className="theme-card edu-glow previous-selection__btn"
-                            onClick={() => setCurrentStep(3)}
-                            aria-label={`Cambiar personalidad: ${selectedPersona.label}`}
-                          >
-                            <img className="theme-card-image" src={selectedPersona.image} alt="" />
-                            <span className="theme-label">{selectedPersona.label}</span>
-                          </button>
-                        );
-                      })()}
-                    </div>
-                  )}
+            {!showTeacherNameInput &&
+              (config.theme || config.characterType || config.personality) && (
+                <div className="previous-selection">
+                  <p className="previous-selection__label">
+                    Selecciones previas: Pulsa para volver atrás
+                  </p>
+                  <div className="previous-selection__cards">
+                    {config.theme && (
+                      <div className="previous-selection__card">
+                        {(() => {
+                          const selectedTheme = THEMAS.find((t) => t.value === config.theme);
+                          if (!selectedTheme) return null;
+                          return (
+                            <button
+                              type="button"
+                              className="theme-card edu-glow previous-selection__btn"
+                              onClick={() => setCurrentStep(1)}
+                              aria-label={`Cambiar mundo: ${selectedTheme.label}`}
+                            >
+                              <img className="theme-card-image" src={selectedTheme.image} alt="" />
+                              <span className="theme-label">{selectedTheme.label}</span>
+                            </button>
+                          );
+                        })()}
+                      </div>
+                    )}
+                    {config.characterType && (
+                      <div className="previous-selection__card">
+                        {(() => {
+                          const selectedChar = CHARACTER_TYPES.find(
+                            (t) => t.value === config.characterType,
+                          );
+                          if (!selectedChar) return null;
+                          return (
+                            <button
+                              type="button"
+                              className="theme-card edu-glow previous-selection__btn"
+                              onClick={() => setCurrentStep(2)}
+                              aria-label={`Cambiar personaje: ${selectedChar.label}`}
+                            >
+                              <img className="theme-card-image" src={selectedChar.image} alt="" />
+                              <span className="theme-label">{selectedChar.label}</span>
+                            </button>
+                          );
+                        })()}
+                      </div>
+                    )}
+                    {config.personality && (
+                      <div className="previous-selection__card">
+                        {(() => {
+                          const selectedPersona = PERSONALITY_OPTIONS.find(
+                            (p) => p.value === config.personality,
+                          );
+                          if (!selectedPersona) return null;
+                          return (
+                            <button
+                              type="button"
+                              className="theme-card edu-glow previous-selection__btn"
+                              onClick={() => setCurrentStep(3)}
+                              aria-label={`Cambiar personalidad: ${selectedPersona.label}`}
+                            >
+                              <img
+                                className="theme-card-image"
+                                src={selectedPersona.image}
+                                alt=""
+                              />
+                              <span className="theme-label">{selectedPersona.label}</span>
+                            </button>
+                          );
+                        })()}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         );
       case 5:
