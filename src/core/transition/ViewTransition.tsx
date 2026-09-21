@@ -2,7 +2,6 @@ import {
   createContext,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
   type ReactNode,
@@ -83,7 +82,7 @@ export function ViewTransition({
   const activeView = isAnimating ? transition.outgoing : transition.current;
   const nextView = isAnimating ? transition.incoming : null;
 
-  const api = useMemo<ViewTransitionApi>(() => ({ navigate }), [navigate]);
+  const api: ViewTransitionApi = { navigate };
 
   const sceneClass = [
     "vt-scene",
