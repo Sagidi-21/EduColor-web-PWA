@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { ClassProfileProvider } from "./core/context/ClassProfileContext";
 import { useClassProfile } from "./core/context/ClassProfileContext";
+import { ViewTransition } from "./core/transition/ViewTransition";
 import { ConfiguracionScreen } from "./features/configuracion/ConfiguracionScreen";
 import { MascotaScreen } from "./features/mascota/MascotaScreen";
-import { HomeScreen, type AppView } from "./features/home/HomeScreen";
+import { HomeScreen } from "./features/home/HomeScreen";
 import { MatematicasCatalogScreen } from "./features/matematicas/MatematicasCatalogScreen";
 import { SplashScreen } from "./features/splash/SplashScreen";
 import { WelcomeScreen } from "./features/splash/WelcomeScreen";
@@ -13,12 +14,6 @@ function AppShell() {
   const [welcomeDone, setWelcomeDone] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [splashDone, setSplashDone] = useState(false);
-  const [view, setView] = useState<AppView>("home");
-
-  // Expose setView for navigation from child components
-  React.useEffect(() => {
-    (window as unknown as { setView: typeof setView }).setView = setView;
-  }, [setView]);
 
   // Aplicar zoom por defecto al inicio
   React.useEffect(() => {
@@ -49,20 +44,33 @@ function AppShell() {
     return <SplashScreen onDone={() => setSplashDone(true)} />;
   }
 
-  // Fase 3: app
-  if (view === "configuration")
-    return <ConfiguracionScreen onBack={() => setView("home")} onNavigate={setView} />;
-  if (view === "mascota") return <MascotaScreen onBack={() => setView("configuration")} />;
-  if (view === "mathematics") {
-    const activeAula = aulas.find((aula) => aula.id === activeAulaId) ?? aulas[0];
-    return (
-      <MatematicasCatalogScreen
-        initialGradeId={activeAula.grade === 1 ? "grade-1" : "grade-2"}
-        onBack={() => setView("home")}
-      />
-    );
-  }
-  return <HomeScreen onNavigate={setView} />;
+  // Fase 3: app con transiciones globales
+  const activeAula = aulas.find((aula) => aula.id === activeAulaId) ?? aulas[0];
+  const initialGradeId = activeAula.grade === 1 ? "grade-1" : "grade-2";
+
+  return (
+    <ViewTransition
+      initialView="home"
+      views={{
+        home: ({ navigate }) => <HomeScreen onNavigate={navigate} />,
+        configuration: ({ navigate }) => (
+          <ConfiguracionScreen
+            onBack={() => navigate("home", "left")}
+            onNavigate={(view) => navigate(view)}
+          />
+        ),
+        mascota: ({ navigate }) => (
+          <MascotaScreen onBack={() => navigate("configuration", "left")} />
+        ),
+        mathematics: ({ navigate }) => (
+          <MatematicasCatalogScreen
+            initialGradeId={initialGradeId}
+            onBack={() => navigate("home", "left")}
+          />
+        ),
+      }}
+    />
+  );
 }
 
 export default function App() {

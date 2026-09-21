@@ -28,6 +28,10 @@ import enthusiasticImage from "../../assets/mascota/personalidad/mascota-persona
 import calmImage from "../../assets/mascota/personalidad/mascota-personalidad-calm.png";
 import aiNameImage from "../../assets/mascota/nombre/mascota-nombre-ai_choice.png";
 import teacherNameImage from "../../assets/mascota/nombre/mascota-nombre-user_choice.png";
+import cartoon3dImage from "../../assets/mascota/estilo/mascota-estilo-cartoon_3d.png";
+import illustrationImage from "../../assets/mascota/estilo/mascota-estilo-illustration.png";
+import animeImage from "../../assets/mascota/estilo/mascota-estilo-anime.png";
+import softFantasyImage from "../../assets/mascota/estilo/mascota-estilo-soft_fantasy.png";
 import "./MascotaScreen.css";
 
 interface MascotaConfig {
@@ -82,10 +86,10 @@ const NAME_MODES = [
 ];
 
 const VISUAL_STYLES = [
-  { value: "cartoon_3d", label: "🧸 Cartoon 3D", icon: "🎲" },
-  { value: "illustration", label: "✏️ Ilustración infantil", icon: "✏️" },
-  { value: "anime", label: "🎨 Dibujo animado", icon: "🎨" },
-  { value: "soft_fantasy", label: "✨ Fantasía suave", icon: "✨" },
+  { value: "cartoon_3d", label: "🧸 Cartoon 3D", image: cartoon3dImage },
+  { value: "illustration", label: "✏️ Ilustración infantil", image: illustrationImage },
+  { value: "anime", label: "🎨 Dibujo animado", image: animeImage },
+  { value: "soft_fantasy", label: "✨ Fantasía suave", image: softFantasyImage },
 ];
 
 const DEFAULT_CONFIG: MascotaConfig = {
@@ -126,9 +130,18 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
     label: string;
     image: string;
     dissolving: boolean;
-    type: "theme" | "character";
+    type: "theme" | "character" | "personalidad" | "nombre";
   } | null>(null);
   const [showTeacherNameInput, setShowTeacherNameInput] = useState(false);
+  const EXPANDED_SCREEN_WIDTH = 1024;
+  const [isExpanded, setIsExpanded] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth >= EXPANDED_SCREEN_WIDTH : false,
+  );
+  useEffect(() => {
+    const updateIsExpanded = () => setIsExpanded(window.innerWidth >= EXPANDED_SCREEN_WIDTH);
+    window.addEventListener("resize", updateIsExpanded);
+    return () => window.removeEventListener("resize", updateIsExpanded);
+  }, []);
   const dissolveCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -241,10 +254,23 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
   const startPersonalityPortalTransition = (value: string, label: string, image: string) => {
     setError(null);
     updateConfig({ personality: value });
-    setPortalTransition({ label, image, dissolving: false, type: "character" });
+    setPortalTransition({ label, image, dissolving: false, type: "personalidad" });
     setTimeout(() => {
       setPortalTransition((prev) => (prev ? { ...prev, dissolving: true } : prev));
       setCurrentStep(4);
+      setTimeout(() => {
+        setPortalTransition(null);
+      }, 1000);
+    }, 2000);
+  };
+
+  const startVisualStylePortalTransition = (value: string, label: string, image: string) => {
+    setError(null);
+    updateConfig({ visualStyle: value as MascotaConfig["visualStyle"] });
+    setPortalTransition({ label, image, dissolving: false, type: "character" });
+    setTimeout(() => {
+      setPortalTransition((prev) => (prev ? { ...prev, dissolving: true } : prev));
+      setCurrentStep(6);
       setTimeout(() => {
         setPortalTransition(null);
       }, 1000);
@@ -258,7 +284,7 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
       setShowTeacherNameInput(true);
       return;
     }
-    setPortalTransition({ label, image, dissolving: false, type: "character" });
+    setPortalTransition({ label, image, dissolving: false, type: "nombre" });
     setTimeout(() => {
       setPortalTransition((prev) => (prev ? { ...prev, dissolving: true } : prev));
       setCurrentStep(5);
@@ -282,10 +308,10 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
     const teacherMode = NAME_MODES.find((m) => m.value === "teacher");
     if (teacherMode) {
       setPortalTransition({
-        label: teacherMode.label,
+        label: config.teacherName,
         image: teacherMode.image,
         dissolving: false,
-        type: "character",
+        type: "nombre",
       });
       setTimeout(() => {
         setPortalTransition((prev) => (prev ? { ...prev, dissolving: true } : prev));
@@ -344,13 +370,6 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
         return true;
       default:
         return true;
-    }
-  };
-
-  const nextStep = () => {
-    if (validateStep(currentStep)) {
-      setError(null);
-      setCurrentStep((prev) => Math.min(prev + 1, 6));
     }
   };
 
@@ -783,21 +802,98 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
           <div className="mascot-step">
             <h2>🎨 Estilo visual</h2>
             <p>¿Qué estilo te gustaría?</p>
-            <div className="visual-style-grid">
-              {VISUAL_STYLES.map((estilo) => (
-                <button
-                  key={estilo.value}
-                  className={`visual-style-card ${config.visualStyle === estilo.value ? "active" : ""}`}
-                  onClick={() => {
-                    updateConfig({ visualStyle: estilo.value as MascotaConfig["visualStyle"] });
-                    nextStep();
-                  }}
-                >
-                  <span className="visual-style-icon">{estilo.icon}</span>
-                  <span className="visual-style-label">{estilo.label}</span>
-                </button>
-              ))}
+            <div className="theme-grid">
+              {VISUAL_STYLES.map((estilo) => {
+                const isSelected = config.visualStyle === estilo.value;
+                return (
+                  <button
+                    key={estilo.value}
+                    type="button"
+                    className={`theme-option ${isSelected ? "active" : ""}`}
+                    aria-pressed={isSelected}
+                    aria-label={`Seleccionar ${estilo.label}`}
+                    onClick={() =>
+                      startVisualStylePortalTransition(estilo.value, estilo.label, estilo.image)
+                    }
+                  >
+                    <span className="theme-card edu-glow">
+                      <img className="theme-card-image" src={estilo.image} alt="" />
+                      <span className="theme-label">{estilo.label}</span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
+            {(config.theme || config.characterType || config.personality) && (
+              <div className="previous-selection">
+                <p className="previous-selection__label">
+                  Selecciones previas: Pulsa para volver atrás
+                </p>
+                <div className="previous-selection__cards">
+                  {config.theme && (
+                    <div className="previous-selection__card">
+                      {(() => {
+                        const selectedTheme = THEMAS.find((t) => t.value === config.theme);
+                        if (!selectedTheme) return null;
+                        return (
+                          <button
+                            type="button"
+                            className="theme-card edu-glow previous-selection__btn"
+                            onClick={() => setCurrentStep(1)}
+                            aria-label={`Cambiar mundo: ${selectedTheme.label}`}
+                          >
+                            <img className="theme-card-image" src={selectedTheme.image} alt="" />
+                            <span className="theme-label">{selectedTheme.label}</span>
+                          </button>
+                        );
+                      })()}
+                    </div>
+                  )}
+                  {config.characterType && (
+                    <div className="previous-selection__card">
+                      {(() => {
+                        const selectedChar = CHARACTER_TYPES.find(
+                          (t) => t.value === config.characterType,
+                        );
+                        if (!selectedChar) return null;
+                        return (
+                          <button
+                            type="button"
+                            className="theme-card edu-glow previous-selection__btn"
+                            onClick={() => setCurrentStep(2)}
+                            aria-label={`Cambiar personaje: ${selectedChar.label}`}
+                          >
+                            <img className="theme-card-image" src={selectedChar.image} alt="" />
+                            <span className="theme-label">{selectedChar.label}</span>
+                          </button>
+                        );
+                      })()}
+                    </div>
+                  )}
+                  {config.personality && (
+                    <div className="previous-selection__card">
+                      {(() => {
+                        const selectedPersona = PERSONALITY_OPTIONS.find(
+                          (p) => p.value === config.personality,
+                        );
+                        if (!selectedPersona) return null;
+                        return (
+                          <button
+                            type="button"
+                            className="theme-card edu-glow previous-selection__btn"
+                            onClick={() => setCurrentStep(3)}
+                            aria-label={`Cambiar personalidad: ${selectedPersona.label}`}
+                          >
+                            <img className="theme-card-image" src={selectedPersona.image} alt="" />
+                            <span className="theme-label">{selectedPersona.label}</span>
+                          </button>
+                        );
+                      })()}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         );
       case 6:
@@ -816,6 +912,97 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
               />
               <small>Máximo 250 caracteres</small>
             </div>
+            {(config.theme || config.characterType || config.personality || config.visualStyle) && (
+              <div className="previous-selection">
+                <p className="previous-selection__label">
+                  Selecciones previas: Pulsa para volver atrás
+                </p>
+                <div className="previous-selection__cards">
+                  {config.theme && (
+                    <div className="previous-selection__card">
+                      {(() => {
+                        const selectedTheme = THEMAS.find((t) => t.value === config.theme);
+                        if (!selectedTheme) return null;
+                        return (
+                          <button
+                            type="button"
+                            className="theme-card edu-glow previous-selection__btn"
+                            onClick={() => setCurrentStep(1)}
+                            aria-label={`Cambiar mundo: ${selectedTheme.label}`}
+                          >
+                            <img className="theme-card-image" src={selectedTheme.image} alt="" />
+                            <span className="theme-label">{selectedTheme.label}</span>
+                          </button>
+                        );
+                      })()}
+                    </div>
+                  )}
+                  {config.characterType && (
+                    <div className="previous-selection__card">
+                      {(() => {
+                        const selectedChar = CHARACTER_TYPES.find(
+                          (t) => t.value === config.characterType,
+                        );
+                        if (!selectedChar) return null;
+                        return (
+                          <button
+                            type="button"
+                            className="theme-card edu-glow previous-selection__btn"
+                            onClick={() => setCurrentStep(2)}
+                            aria-label={`Cambiar personaje: ${selectedChar.label}`}
+                          >
+                            <img className="theme-card-image" src={selectedChar.image} alt="" />
+                            <span className="theme-label">{selectedChar.label}</span>
+                          </button>
+                        );
+                      })()}
+                    </div>
+                  )}
+                  {config.personality && (
+                    <div className="previous-selection__card">
+                      {(() => {
+                        const selectedPersona = PERSONALITY_OPTIONS.find(
+                          (p) => p.value === config.personality,
+                        );
+                        if (!selectedPersona) return null;
+                        return (
+                          <button
+                            type="button"
+                            className="theme-card edu-glow previous-selection__btn"
+                            onClick={() => setCurrentStep(3)}
+                            aria-label={`Cambiar personalidad: ${selectedPersona.label}`}
+                          >
+                            <img className="theme-card-image" src={selectedPersona.image} alt="" />
+                            <span className="theme-label">{selectedPersona.label}</span>
+                          </button>
+                        );
+                      })()}
+                    </div>
+                  )}
+                  {config.visualStyle && (
+                    <div className="previous-selection__card">
+                      {(() => {
+                        const selectedStyle = VISUAL_STYLES.find(
+                          (style) => style.value === config.visualStyle,
+                        );
+                        if (!selectedStyle) return null;
+                        return (
+                          <button
+                            type="button"
+                            className="theme-card edu-glow previous-selection__btn"
+                            onClick={() => setCurrentStep(5)}
+                            aria-label={`Cambiar estilo visual: ${selectedStyle.label}`}
+                          >
+                            <img className="theme-card-image" src={selectedStyle.image} alt="" />
+                            <span className="theme-label">{selectedStyle.label}</span>
+                          </button>
+                        );
+                      })()}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         );
       default:
@@ -941,6 +1128,23 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
                 Has seleccionado el portal de{" "}
                 <span className="portal-transition__name">{portalTransition.label}</span>
               </>
+            ) : portalTransition.type === "personalidad" && isExpanded ? (
+              <>
+                Su personalidad será{" "}
+                <span className="portal-transition__name">{portalTransition.label}</span>
+              </>
+            ) : portalTransition.type === "nombre" && isExpanded ? (
+              config.nameMode === "ai" ? (
+                <>
+                  El nombre será{" "}
+                  <span className="portal-transition__name">inventado por la IA</span>
+                </>
+              ) : (
+                <>
+                  El nombre elegido es{" "}
+                  <span className="portal-transition__name">{portalTransition.label}</span>
+                </>
+              )
             ) : (
               <>
                 Tu compañero será{" "}

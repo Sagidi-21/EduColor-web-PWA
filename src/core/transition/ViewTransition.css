@@ -1,0 +1,57 @@
+.vt-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  perspective: 1600px;
+  overflow: hidden;
+}
+
+.vt-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vt-scene--animating.vt-scene--right {
+  transform: rotateY(-90deg);
+}
+
+.vt-scene--animating.vt-scene--left {
+  transform: rotateY(90deg);
+}
+
+.vt-panel {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.vt-panel--from {
+  transform: rotateY(0deg);
+}
+
+.vt-panel--to {
+  transform: rotateY(90deg);
+}
+
+.vt-scene--left .vt-panel--to {
+  transform: rotateY(-90deg);
+}
+
+.vt-wrapper--animating .vt-panel--from {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vt-scene {
+    transition: none;
+  }
+}

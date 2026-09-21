@@ -135,8 +135,7 @@
 
 .character-type-grid,
 .personality-grid,
-.name-mode-grid,
-.visual-style-grid {
+.name-mode-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 16px;
@@ -145,8 +144,7 @@
 
 .character-type-card,
 .personality-card,
-.name-mode-card,
-.visual-style-card {
+.name-mode-card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -161,16 +159,14 @@
 
 .character-type-card:hover,
 .personality-card:hover,
-.name-mode-card:hover,
-.visual-style-card:hover {
+.name-mode-card:hover {
   border-color: var(--color-primary);
   transform: translateY(-2px);
 }
 
 .character-type-card.active,
 .personality-card.active,
-.name-mode-card.active,
-.visual-style-card.active {
+.name-mode-card.active {
   border-color: var(--color-primary);
   background: rgba(99, 102, 241, 0.05);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
@@ -232,16 +228,14 @@
 
 .character-type-icon,
 .personality-icon,
-.name-mode-icon,
-.visual-style-icon {
+.name-mode-icon {
   font-size: 32px;
 }
 
 .theme-label,
 .character-type-label,
 .personality-label,
-.name-mode-label,
-.visual-style-label {
+.name-mode-label {
   font-size: 14px;
   font-weight: 600;
   color: #1e293b;
