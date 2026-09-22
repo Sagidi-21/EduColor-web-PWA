@@ -38,8 +38,9 @@ describe("PortalTransitionImageOnly - Fixed positioning test", () => {
     expect(style.position).toBe("fixed");
     expect(style.top).toBe("0px");
     expect(style.left).toBe("0px");
-    expect(style.width).toBe("100vw");
-    expect(style.height).toBe("100vh");
+    // El componente usa píxeles calculados: window.innerWidth / bodyZoom
+    expect(style.width).toBe("800px");
+    expect(style.height).toBe("600px");
   });
 
   it("should have proper fixed positioning in large size (1200×900)", () => {
@@ -57,8 +58,8 @@ describe("PortalTransitionImageOnly - Fixed positioning test", () => {
     expect(overlay).toBeTruthy();
     const style = getComputedStyle(overlay);
     expect(style.position).toBe("fixed");
-    expect(style.width).toBe("100vw");
-    expect(style.height).toBe("100vh");
+    expect(style.width).toBe("1200px");
+    expect(style.height).toBe("900px");
   });
 
   it("should have proper fixed positioning in extra-large size (1920×1080)", () => {
@@ -76,8 +77,8 @@ describe("PortalTransitionImageOnly - Fixed positioning test", () => {
     expect(overlay).toBeTruthy();
     const style = getComputedStyle(overlay);
     expect(style.position).toBe("fixed");
-    expect(style.width).toBe("100vw");
-    expect(style.height).toBe("100vh");
+    expect(style.width).toBe("1920px");
+    expect(style.height).toBe("1080px");
   });
 
   it("should maintain fixed positioning after viewport resize", () => {
@@ -106,7 +107,7 @@ describe("PortalTransitionImageOnly - Fixed positioning test", () => {
     );
     const style = getComputedStyle(overlay);
     expect(style.position).toBe("fixed");
-    expect(style.width).toBe("100vw");
-    expect(style.height).toBe("100vh");
+    expect(style.width).toBe("1920px");
+    expect(style.height).toBe("1080px");
   });
 });

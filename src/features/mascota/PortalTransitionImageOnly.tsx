@@ -2,6 +2,21 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { getViewportSize } from "./portalImageFit";
 
+/** Lee el zoom efectivo del `body` (1 si no está definido). */
+function getBodyZoom(): number {
+  if (typeof document === "undefined") return 1;
+  return parseFloat(getComputedStyle(document.body).zoom) || 1;
+}
+
+/** Devuelve las dimensiones en píxeles CSS que debe tener el overlay para
+ * ocupar el viewport visible, compensando el zoom del `body`. */
+function getZoomCorrectedViewport(): { width: string; height: string } {
+  const z = getBodyZoom();
+  const w = window.innerWidth / z;
+  const h = window.innerHeight / z;
+  return { width: `${w}px`, height: `${h}px` };
+}
+
 export interface PortalTransitionImageOnlyProps {
   label: string;
   image: string;
@@ -102,6 +117,7 @@ export function PortalTransitionImageOnly({
   }, []);
 
   const isExpanded = viewport.width >= expandedWidth;
+  const viewportSize = getZoomCorrectedViewport();
 
   return (
         <div
@@ -111,8 +127,7 @@ export function PortalTransitionImageOnly({
             position: "fixed",
             top: 0,
             left: 0,
-            width: "calc(100vw / var(--zoom, 1))",
-            height: "calc(100vh / var(--zoom, 1))",
+            ...viewportSize,
             background: "#000",
             zIndex: 9998,
         display: "flex",
