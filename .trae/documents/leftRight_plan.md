@@ -5,6 +5,7 @@
 ### Fuente de verdad: electron-reference/
 
 **Motor:** `electron-reference/Colegio/src/renderer/src/core/engines/leftRight/engine.ts`
+
 - Tipos: `Side = "izquierda" | "derecha"`, `LeftRightExercise` (regular, sin `kind`), `LeftRightCharExercise` (kind: `"char-click" | "char-drag-one" | "char-drag-both"`), `AnyLRExercise`, `DragObject`, `SessionResult`
 - `generateSession(difficulty, seed)` → 10 ejercicios con semilla LCG determinista
   - **easy**: pares de objetos, pregunta "¿Dónde está el X?" → opciones [izquierda, derecha]
@@ -18,6 +19,7 @@
 - Depende de: `IMAGE_CATEGORIES`, `pickImage` (objectImages), `CHARACTER_IMAGES` (characterImages)
 
 **Renderer:** `electron-reference/Colegio/src/renderer/src/core/engines/leftRight/LeftRightRenderer.tsx`
+
 - Layout: `<div className="lr">` → `ExerciseHeader` + `.lr__stage` + `.lr__footer`
 - Estado interno: `session { exercises, currentIndex, correctCount, startTime, answerState, chosen, alreadyFailed }`, `finished`, `boxContent`, `dragRef` (imperativo, listeners nativos window)
 - Callbacks clave:
@@ -31,6 +33,7 @@
 - Footer en non-char mode: `lr__options` (botones de respuesta) + `WrongFeedback`
 
 **CSS:** `LeftRightRenderer.css` (306 líneas)
+
 - Variables de color: verde `#16a34a`, rojo `#dc2626`
 - `.lr__stage--correct` / `.lr__stage--wrong` → cambia background
 - `.lr__char-box` dashed vs solid correct/wrong
@@ -38,30 +41,33 @@
 - Área de arrastre: `.lr__drag-area` relative, flex: 1, min-height 220px
 
 **Generador fichas:** `leftRight.generator.ts` + `leftRight.generator.test.ts`
+
 - Filtra ejercicios char (expert): solo toma `LeftRightExercise` (tipo regular con `leftObj/rightObj`)
 - 1 test existente en Electron
 
 ### Recursos ya en PWA:
+
 - ✅ `src/assets/izquierda-derecha/frente/*.png` — 5 personajes (monstruo azul/morado/naranja/verde, oso)
 - ✅ `src/assets/izquierda-derecha/espaldas/*.png` — mismos 5 personajes de espaldas
 - ✅ `src/assets/objects/*` — 7 categorías de objetos (coches, flores, globos, manzanas, minions, monstruos, pájaros)
 
 ### Convenciones PWA ya establecidas (AGENT_RULES Paso 2 mapeo):
 
-| Electron | PWA Equivalente |
-|---|---|
-| `playCorrect()` / sounds | `playFeedback(ok: boolean)` en `src/features/shared/audioFeedback.ts` |
-| `ExerciseHeader` | `ActivityHeader` en `src/features/matematicas/components/ActivityHeader.tsx` |
-| `SummaryScreen` shared | `SummaryScreen` en `src/features/matematicas/components/SummaryScreen.tsx` |
-| `WrongFeedback` shared | `WrongFeedback` en `src/features/matematicas/components/WrongFeedback.tsx` |
-| `IMAGE_CATEGORIES`, `pickImage` | `src/platform/objectImages.ts` |
+| Electron                                      | PWA Equivalente                                                                                             |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `playCorrect()` / sounds                      | `playFeedback(ok: boolean)` en `src/features/shared/audioFeedback.ts`                                       |
+| `ExerciseHeader`                              | `ActivityHeader` en `src/features/matematicas/components/ActivityHeader.tsx`                                |
+| `SummaryScreen` shared                        | `SummaryScreen` en `src/features/matematicas/components/SummaryScreen.tsx`                                  |
+| `WrongFeedback` shared                        | `WrongFeedback` en `src/features/matematicas/components/WrongFeedback.tsx`                                  |
+| `IMAGE_CATEGORIES`, `pickImage`               | `src/platform/objectImages.ts`                                                                              |
 | `CHARACTER_IMAGES` — NO existe en PWA todavía | **Crear** `src/platform/characterImages.ts` (mismo patrón que objectImages.ts, glob a `izquierda-derecha/`) |
-| `Date.now() % 999983` inline | Prop `seed` de `EngineScreenProps` |
-| `props.title`, `props.gradeLabel` | `activity.title` + `gradeTitle` de `EngineScreenProps` |
-| Registro renderer | Lazy en `engine-screens.tsx` |
-| `engine-registry` | Añadir `"leftRight"` al `migratedEngines` Set |
+| `Date.now() % 999983` inline                  | Prop `seed` de `EngineScreenProps`                                                                          |
+| `props.title`, `props.gradeLabel`             | `activity.title` + `gradeTitle` de `EngineScreenProps`                                                      |
+| Registro renderer                             | Lazy en `engine-screens.tsx`                                                                                |
+| `engine-registry`                             | Añadir `"leftRight"` al `migratedEngines` Set                                                               |
 
 ### Familia similar en PWA:
+
 - `RectaNumericaScreen.tsx` — drag & drop con Pointer Events + SVG (referencia para drag)
 - `RelacionarScreen.tsx` — sesión de 10 rondas, layout header+main+footer (referencia para estructura)
 - `IgualdadScreen.tsx` / `OrdenarScreen.tsx` — opciones de respuesta en footer + WrongFeedback
@@ -69,6 +75,7 @@
 ## Files and Modules
 
 ### A. Nuevos archivos
+
 1. **`src/platform/characterImages.ts`** — módulo `CHARACTER_IMAGES` tipo `CharImage[]`, glob a `../assets/izquierda-derecha/**/*.png`
 2. **`src/core/activities/leftRight.ts`** — core puro (sin React): tipos `Side`, `LeftRightExercise`, `LeftRightCharExercise`, `DragObject`, `AnyLRExercise`, `generateSession(difficulty, seed)`, `validateAnswer(ex, choice)`
 3. **`src/core/activities/leftRight.test.ts`** — tests Vitest:
@@ -83,6 +90,7 @@
 5. **`src/features/matematicas/leftRight/LeftRightScreen.css`** — CSS migrado/adaptado
 
 ### B. Archivos modificados
+
 6. **`src/core/content/engine-registry.ts`** — añadir `"leftRight"` al `migratedEngines`
 7. **`src/features/matematicas/engine-screens.tsx`** — lazy import y `if (activity.engineId === "leftRight")`
 8. **`docs/INVENTARIO_MIGRACION_ACTIVIDADES.md`** — actualizar fila `leftRight` a "✅ P2 migrada"
@@ -91,6 +99,7 @@
 ## Implementation Steps (orden de dependencias)
 
 ### Paso 1 — Crear `src/platform/characterImages.ts`
+
 - Usar mismo patrón que `objectImages.ts`: `import.meta.glob("../assets/izquierda-derecha/**/*.png", { eager: true })`
 - Interface `CharImage { name: string; url: string; perspective: "frente" | "espaldas" }`
 - Función `build()`: extrae `perspective` del nombre de carpeta (`frente`/`espaldas`), `name` del filename sin extensión
@@ -98,6 +107,7 @@
 - **NOTA**: Esta es la única pieza que no existía en PWA y es necesaria para el core. Se justifica porque `electron-reference/` también la tiene y ningún otro componente compartido la cubría.
 
 ### Paso 2 — Core: `src/core/activities/leftRight.ts` + tests
+
 - Copiar lógica EXACTA de `electron-reference engine.ts` **sin alterar**
 - Cambiar imports:
   - `IMAGE_CATEGORIES`, `pickImage` → desde `../../platform/objectImages`
@@ -118,6 +128,7 @@
   - `validateAnswer` correcto e incorrecto
 
 ### Paso 3 — Renderer: `LeftRightScreen.tsx`
+
 - **Named export** `export function LeftRightScreen(props: EngineScreenProps)`
 - Importar todos los props de `EngineScreenProps`: `{ activity, difficulty, seed, onExit, gradeTitle, className, mascotUrl, difficultyStars }`
 - **NO hacer default export**. Todas las props se pasan a `ActivityHeader` cuando aplican (incluir `className`, `mascotUrl`, `difficultyStars`)
@@ -156,6 +167,7 @@
 - Importar `import "./LeftRightScreen.css"`
 
 ### Paso 4 — CSS: `LeftRightScreen.css`
+
 - Migrar el CSS original **casi al pie de la letra**
 - Prefijo de clase: mantener `.lr` (no hay conflicto, único motor)
 - Asegurar `touch-action: none` en `.lr__drag-obj`
@@ -164,6 +176,7 @@
 - Background #f0fdf4. Mantener.
 
 ### Paso 5 — Registro
+
 - `engine-registry.ts`: `"leftRight"` al Set
 - `engine-screens.tsx`:
   ```ts
@@ -181,10 +194,12 @@
   ```
 
 ### Paso 6 — Documentación
+
 - Actualizar fila `leftRight` en inventario: ✅ P2 migrada — motor, tests, renderer, drag&drop, personajes, SummaryScreen, WrongFeedback, audio, engine-registry, lazy routing; validación manual pendiente
 - Añadir bloque en EJECUCION_PASO_A_PASO con los 8 pasos del checklist standard + resultados tests
 
 ### Paso 7 — Verificación CI
+
 - `npm run format:check`
 - `npm run lint`
 - `npm run typecheck`
@@ -192,6 +207,7 @@
 - `npm run build` — chunks separados esperados
 
 ## Dependencies and Considerations
+
 - **AGENT_RULES 17 (protocolo doble规)**: estrictamente cumplido — Paso 1 (leer electron-reference) y Paso 2 (mapear shared PWA) realizados antes de escribir código
 - **No inventar nada en core**: LCG, preguntas, dificultades, cantidades, estructura tipos = 1:1 con engine.ts original
 - **`CHARACTER_IMAGES` es la única dependencia nueva en platform**: justificada por existir en electron-reference y no tener equivalente PWA
@@ -200,6 +216,7 @@
 - **React Pointer Events sintéticos** solo para `onPointerDown` inicial; el resto listeners nativos como en original (performance durante arrastre sin re-renders)
 
 ## Validation
+
 1. **Tests core**: `npm test -- leftRight` — todos los 10+ tests pasan
 2. **Lint/typecheck/build**: suite completa verde
 3. **Prueba manual navegador** (Chrome):
@@ -214,6 +231,7 @@
 4. **Prettier 0 warnings en archivos tocados**
 
 ## Risks
+
 - **Riesgo: Drag en pizarra táctil con listeners nativos** → Mitigación: mismo patrón del renderer original que funcionaba en Electron; touch-action: none y pointer events unificados. Después validar en hardware real.
 - **Riesgo: Rutas de URLs de CHARACTER_IMAGES y objectImages con import.meta.glob** → Mitigación: mismo patrón que objectImages.ts y counting.ts ya usan glob con éxito, solo cambiar carpeta.
 - **Riesgo: Layout con altura fija en stage vs layout flex compartido de ActivityHeader** → Mitigación: ajustar `height: 100%` y `overflow: hidden` como hacen RectaNumericaScreen y RelacionarScreen.
