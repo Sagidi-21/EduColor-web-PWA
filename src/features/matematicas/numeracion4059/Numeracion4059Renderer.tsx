@@ -5,9 +5,12 @@ import type { EngineScreenProps } from "../engine-screens";
 import { useInputMode } from "../../shared/hooks/useInputMode";
 import InputModeToggle from "../../shared/components/InputModeToggle";
 import { ActivityHeader } from "../components/ActivityHeader";
+import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { WrongFeedback } from "../components/WrongFeedback";
 import { Numpad } from "../../shared/components/Numpad";
 import { LazyDigitCell } from "../../shared/DigitCell";
+
+import "./Numeracion4059Renderer.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
 
@@ -66,7 +69,7 @@ function TensBlock({ number }: { number: number }) {
   );
 }
 
-export default function Numeracion4059Renderer({
+export function Numeracion4059Screen({
   activity,
   difficulty,
   seed,
@@ -79,11 +82,7 @@ export default function Numeracion4059Renderer({
   const isMultiChoice = difficulty === "easy";
 
   const [session, setSession] = useState<SessionState>(() => freshSession(seed, difficulty));
-  const [finished, setFinished] = useState<{
-    total: number;
-    correct: number;
-    duration: number;
-  } | null>(null);
+  const [finished, setFinished] = useState<SessionResult | null>(null);
   const { mode, toggle } = useInputMode();
   const [canvasKey, setCanvasKey] = useState(0);
 
@@ -199,63 +198,16 @@ export default function Numeracion4059Renderer({
   }, [session]);
 
   if (finished) {
-    const pct = Math.round((finished.correct / finished.total) * 100);
-    const stars = pct >= 90 ? 3 : pct >= 70 ? 2 : 1;
-    const mins = Math.floor(finished.duration / 60000);
-    const secs = Math.floor((finished.duration % 60000) / 1000);
     return (
-      <div className="ops ops--summary">
-        <div className="summary">
-          <div className="summary__stars">{"?".repeat(stars)}</div>
-          <h2 className="summary__title">
-            {pct >= 90 ? "¡Excelente!" : pct >= 70 ? "¡Bien hecho!" : "¡Sigue practicando!"}
-          </h2>
-          <p className="summary__grade">{gradeTitle}</p>
-          <div className="summary__stats">
-            <div className="summary__stat">
-              <span className="summary__stat-value">
-                {finished.correct}/{finished.total}
-              </span>
-              <span className="summary__stat-label">correctas</span>
-            </div>
-            <div className="summary__stat">
-              <span className="summary__stat-value">{pct}%</span>
-              <span className="summary__stat-label">aciertos</span>
-            </div>
-            <div className="summary__stat">
-              <span className="summary__stat-value">
-                {mins > 0 ? `${mins}m ` : ""}
-                {secs}s
-              </span>
-              <span className="summary__stat-label">tiempo</span>
-            </div>
-          </div>
-          <div className="summary__actions">
-            <button
-              className="summary__btn summary__btn--primary"
-              onClick={() => {
-                setFinished(null);
-                setSession({
-                  exercises: generateSession(difficulty, Date.now() % 999983),
-                  currentIndex: 0,
-                  correctCount: 0,
-                  startTime: Date.now(),
-                  answerState: "idle",
-                  digits: [],
-                  activeDigit: 0,
-                  chosen: null,
-                  alreadyFailed: false,
-                });
-              }}
-            >
-              ↻ Repetir
-            </button>
-            <button className="summary__btn summary__btn--secondary" onClick={onExit}>
-              ← Volver
-            </button>
-          </div>
-        </div>
-      </div>
+      <SummaryScreen
+        result={finished}
+        gradeLabel={gradeTitle || activity.title}
+        onRestart={() => {
+          setFinished(null);
+          setSession(freshSession(Date.now() % 999983, difficulty));
+        }}
+        onExit={onExit}
+      />
     );
   }
 
@@ -278,7 +230,7 @@ export default function Numeracion4059Renderer({
         mascotUrl={mascotUrl}
         progress={`${session.currentIndex + 1}/${total}`}
       >
-        <InputModeToggle mode={mode} onToggle={toggle} />
+        {!isMultiChoice && <InputModeToggle mode={mode} onToggle={toggle} />}
       </ActivityHeader>
 
       <div className={`ops__stage ${stageClass}`}>
@@ -324,48 +276,48 @@ export default function Numeracion4059Renderer({
             )}
           </div>
         )}
-
-        <footer className="ops__footer">
-          {isMultiChoice ? (
-            <div className="n4059__options">
-              {(current.options ?? []).map((opt, i) => {
-                let cls = "n4059__option";
-                if (session.answerState === "correct" && opt === current.answer)
-                  cls += " n4059__option--correct";
-                else if (session.answerState === "wrong" && opt === session.chosen)
-                  cls += " n4059__option--wrong";
-                return (
-                  <button
-                    key={i}
-                    className={cls}
-                    onClick={() => handleChoice(opt)}
-                    disabled={session.answerState !== "idle"}
-                  >
-                    {opt}
-                  </button>
-                );
-              })}
-              {session.answerState === "wrong" && (
-                <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
-              )}
-            </div>
-          ) : (
-            <>
-              {mode === "numpad" && (
-                <Numpad
-                  onDigit={handleDigit}
-                  onDelete={handleDelete}
-                  onConfirm={confirm}
-                  disabled={session.answerState !== "idle"}
-                />
-              )}
-              {session.answerState === "wrong" && (
-                <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
-              )}
-            </>
-          )}
-        </footer>
       </div>
+
+      <footer className="ops__footer">
+        {isMultiChoice ? (
+          <div className="n4059__options">
+            {(current.options ?? []).map((opt, i) => {
+              let cls = "n4059__option";
+              if (session.answerState === "correct" && opt === current.answer)
+                cls += " n4059__option--correct";
+              else if (session.answerState === "wrong" && opt === session.chosen)
+                cls += " n4059__option--wrong";
+              return (
+                <button
+                  key={i}
+                  className={cls}
+                  onClick={() => handleChoice(opt)}
+                  disabled={session.answerState !== "idle"}
+                >
+                  {opt}
+                </button>
+              );
+            })}
+            {session.answerState === "wrong" && (
+              <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+            )}
+          </div>
+        ) : (
+          <>
+            {mode === "numpad" && (
+              <Numpad
+                onDigit={handleDigit}
+                onDelete={handleDelete}
+                onConfirm={confirm}
+                disabled={session.answerState !== "idle"}
+              />
+            )}
+            {session.answerState === "wrong" && (
+              <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+            )}
+          </>
+        )}
+      </footer>
     </div>
   );
 }

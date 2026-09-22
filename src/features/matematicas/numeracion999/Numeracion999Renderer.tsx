@@ -5,11 +5,33 @@ import { playFeedback } from "../../shared/audioFeedback";
 import "./Numeracion999Renderer.css";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { WrongFeedback } from "../components/WrongFeedback";
-import { SummaryScreen } from "../components/SummaryScreen";
+import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 
 type AnswerState = "idle" | "correct" | "wrong";
 
-export default function Numeracion999Renderer({
+interface SessionState {
+  exercises: ReturnType<typeof generateSession>;
+  currentIndex: number;
+  correctCount: number;
+  startTime: number;
+  answerState: AnswerState;
+  selected: null | string;
+  alreadyFailed: boolean;
+}
+
+function freshSession(seed: number, difficulty: EngineScreenProps["difficulty"]): SessionState {
+  return {
+    exercises: generateSession(difficulty, seed),
+    currentIndex: 0,
+    correctCount: 0,
+    startTime: Date.now(),
+    answerState: "idle",
+    selected: null,
+    alreadyFailed: false,
+  };
+}
+
+export function Numeracion999Screen({
   activity,
   difficulty,
   seed,
@@ -19,23 +41,8 @@ export default function Numeracion999Renderer({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps): JSX.Element {
-  void seed;
-  void className;
-  void mascotUrl;
-  void difficultyStars;
-  const [session, setSession] = useState(() => ({
-    exercises: generateSession(difficulty, Date.now() % 999983),
-    currentIndex: 0,
-    correctCount: 0,
-    startTime: Date.now(),
-    answerState: "idle" as AnswerState,
-    selected: null as string | null,
-  }));
-  const [finished, setFinished] = useState<{
-    total: number;
-    correct: number;
-    duration: number;
-  } | null>(null);
+  const [session, setSession] = useState<SessionState>(() => freshSession(seed, difficulty));
+  const [finished, setFinished] = useState<SessionResult | null>(null);
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
@@ -45,6 +52,7 @@ export default function Numeracion999Renderer({
       ...s,
       answerState: "idle",
       selected: null,
+      alreadyFailed: true,
     }));
   }, []);
 
@@ -62,6 +70,7 @@ export default function Numeracion999Renderer({
         currentIndex: next,
         answerState: "idle",
         selected: null,
+        alreadyFailed: false,
       }));
     }
   }, [session, total]);
@@ -81,28 +90,21 @@ export default function Numeracion999Renderer({
         ...s,
         answerState: ok ? "correct" : "wrong",
         selected: val,
-        correctCount: ok ? s.correctCount + 1 : s.correctCount,
+        correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+        alreadyFailed: !ok ? true : s.alreadyFailed,
       }));
     },
     [session.answerState, current],
   );
 
   if (finished) {
-    const duration = finished.duration;
     return (
       <SummaryScreen
-        result={{ correct: finished.correct, total: finished.total, duration }}
-        gradeLabel={gradeTitle ?? ""}
+        result={finished}
+        gradeLabel={gradeTitle ?? activity.title}
         onRestart={() => {
           setFinished(null);
-          setSession({
-            exercises: generateSession(difficulty, Date.now() % 999983),
-            currentIndex: 0,
-            correctCount: 0,
-            startTime: Date.now(),
-            answerState: "idle",
-            selected: null,
-          });
+          setSession(freshSession(Date.now() % 999983, difficulty));
         }}
         onExit={onExit}
       />
@@ -126,7 +128,10 @@ export default function Numeracion999Renderer({
       <ActivityHeader
         onExit={onExit}
         gradeTitle={gradeTitle}
+        className={className}
         unitTitle={activity.title}
+        difficultyStars={difficultyStars}
+        mascotUrl={mascotUrl}
         progress={`${session.currentIndex + 1}/${total}`}
       ></ActivityHeader>
 
@@ -135,14 +140,12 @@ export default function Numeracion999Renderer({
 
         <p className="n999__question">{current.question}</p>
 
-        {/* Show the number when asking for CDU decomposition or valor posicional */}
         {(isCifraToC ||
           current.type === "valor-posicional" ||
           current.type === "anterior-posterior") && (
           <div className="n999__number-display">{current.number}</div>
         )}
 
-        {/* Show CDU card when asking for the number */}
         {isCduToC && (
           <div className="n999__cdu-card">
             <div className="n999__cdu-col">

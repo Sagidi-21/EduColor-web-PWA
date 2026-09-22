@@ -53,6 +53,21 @@ const TresSumandosScreen = lazy(() =>
     default: module.TresSumandosScreen,
   })),
 );
+const Numeracion4059Screen = lazy(() =>
+  import("./numeracion4059/Numeracion4059Renderer").then((module) => ({
+    default: module.Numeracion4059Screen,
+  })),
+);
+const Numeracion6099Screen = lazy(() =>
+  import("./numeracion6099/Numeracion6099Renderer").then((module) => ({
+    default: module.Numeracion6099Screen,
+  })),
+);
+const Numeracion999Screen = lazy(() =>
+  import("./numeracion999/Numeracion999Renderer").then((module) => ({
+    default: module.Numeracion999Screen,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -157,6 +172,27 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <TresSumandosScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "numeracion4059") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <Numeracion4059Screen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "numeracion6099") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <Numeracion6099Screen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "numeracion999") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <Numeracion999Screen {...props} />
       </Suspense>
     );
   }

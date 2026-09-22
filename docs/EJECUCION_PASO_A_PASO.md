@@ -178,6 +178,54 @@ La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tie
 
 ---
 
+## Seguimiento actual — `numeracion4059` / `numeracion6099` / `numeracion999`
+
+- **Pasos 1 y 2:** completados. `numeracion4059` y `numeracion6099` son actividades
+  compartidas de 1.º/2.º (bloque de numeración 40-59 y 60-99); `numeracion999`
+  es específica de 2.º (descomposición CDU hasta 999). Los 3 núcleos ya estaban
+  migrados con tests en `src/core/activities/{numeracion4059,numeracion6099,numeracion999}.ts`
+  y sus CSS de renderer existían; faltaba cerrar la integración de pantalla y
+  registro en el engine central.
+- **Pasos 3 y 4:** ya completados en iteración anterior. 11/12/13 tests
+  respectivamente cubren semilla, rangos, tipos de ejercicio, validador y
+  respuesta correcta; CI verde.
+- **Pasos 5 y 6:** completados. Refactor de los 3 renderers:
+  - `Numeracion4059Renderer.tsx` → `Numeracion4059Screen` (named export),
+    sustitución de summary inline por `SummaryScreen`, reordenación del
+    `footer` fuera del `stage`, import de su CSS, `WrongFeedback` compartido,
+    reutilización de `Numpad` y `LazyDigitCell` del shared, toggle `InputModeToggle`
+    condicional (solo dificultades no-multichoice), uso de la prop `seed` en
+    `freshSession`.
+  - `Numeracion6099Renderer.tsx` → `Numeracion6099Screen`, misma pauta que 4059:
+    eliminación del `Numpad` local duplicado, uso del componente `Numpad` de
+    `shared/components`, `SummaryScreen` centralizado, prop `seed` propagada,
+    import de CSS, `WrongFeedback` unificado.
+  - `Numeracion999Renderer.tsx` → `Numeracion999Screen` (named export), todas las
+    props de `EngineScreenProps` (`className`, `mascotUrl`, `difficultyStars`)
+    pasadas al `ActivityHeader`, uso de `seed`, `alreadyFailed` para control
+    de reintentos, `SummaryScreen` y `WrongFeedback` compartidos, import de CSS.
+  - Registro lazy en `src/features/matematicas/engine-screens.tsx` para los 3
+    engine IDs (`numeracion4059`, `numeracion6099`, `numeracion999`) con
+    `Suspense` y fallback estándar de carga, siguiendo el mismo patrón que
+    `numeracion1119Screen` y el resto del catálogo. El `engine-registry` ya
+    los tenía marcados como `available` por lo que el routing funciona
+    sin tocar navegación ni manifiestos.
+- **Paso 7:** completado. CI local en verde: tests de los 3 cores (72/72),
+  `npm run typecheck` OK, `npm run build` OK (los 3 CSS y los 3 JS chunks se
+  empaquetan como chunks separados: `Numeracion4059Renderer-Bw09cmtU.css`,
+  `Numeracion6099Renderer-DFub4OKZ.css`, `Numeracion999Renderer-CWo1QZIB.css`
+  y sus bundles JS homólogos). Los 4 archivos tocados (`engine-screens.tsx` + 3
+  renderers) pasan `prettier --check` sin cambios. Pendiente validación manual
+  en pizarra/tableta y cierre pedagógico.
+  _(Nota: 2 errores de lint preexistentes en `features/mascota/PortalTransition*.tsx`
+  y 9 warnings de prettier preexistentes en archivos de portal/test son ajenos
+  a este hito y no afectan a Matemáticas.)_
+- **Paso 8:** trazabilidad actualizada en `INVENTARIO_MIGRACION_ACTIVIDADES.md`
+  (líneas 39-41 y 64): las 3 filas pasan de "renderer pendiente" a
+  "✅ P2 migrada" con detalle de componentes, tests y validación manual pendiente.
+
+---
+
 ## Comprobación de salida
 
 La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tiene test de núcleo y comprobación visual.

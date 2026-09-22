@@ -5,10 +5,38 @@ import type { EngineScreenProps } from "../engine-screens";
 import { useInputMode } from "../../shared/hooks/useInputMode";
 import InputModeToggle from "../../shared/components/InputModeToggle";
 import { ActivityHeader } from "../components/ActivityHeader";
+import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { WrongFeedback } from "../components/WrongFeedback";
+import { Numpad } from "../../shared/components/Numpad";
 import { LazyDigitCell } from "../../shared/DigitCell";
 
+import "./Numeracion6099Renderer.css";
+
 type AnswerState = "idle" | "correct" | "wrong";
+
+interface SessionState {
+  exercises: ReturnType<typeof generateSession>;
+  currentIndex: number;
+  correctCount: number;
+  startTime: number;
+  answerState: AnswerState;
+  input: string;
+  chosen: null | string;
+  alreadyFailed: boolean;
+}
+
+function freshSession(seed: number, difficulty: EngineScreenProps["difficulty"]): SessionState {
+  return {
+    exercises: generateSession(difficulty, seed),
+    currentIndex: 0,
+    correctCount: 0,
+    startTime: Date.now(),
+    answerState: "idle",
+    input: "",
+    chosen: null,
+    alreadyFailed: false,
+  };
+}
 
 function TensBlock({ number }: { number: number }) {
   const decenas = Math.floor(number / 10);
@@ -33,45 +61,7 @@ function TensBlock({ number }: { number: number }) {
   );
 }
 
-function Numpad({
-  onDigit,
-  onDelete,
-  onConfirm,
-  disabled,
-}: {
-  onDigit: (d: string) => void;
-  onDelete: () => void;
-  onConfirm: () => void;
-  disabled: boolean;
-}) {
-  return (
-    <div className="ops__numpad">
-      {NUMPAD.map((row, r) => (
-        <div key={r} className="ops__numpad-row">
-          {row.map((k) => (
-            <button
-              key={k}
-              className={`ops__key ${k === "✓" ? "ops__key--confirm" : ""} ${k === "←" ? "ops__key--del" : ""}`}
-              onClick={() => (k === "←" ? onDelete() : k === "✓" ? onConfirm() : onDigit(k))}
-              disabled={disabled}
-            >
-              {k}
-            </button>
-          ))}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-const NUMPAD = [
-  ["7", "8", "9"],
-  ["4", "5", "6"],
-  ["1", "2", "3"],
-  ["←", "0", "✓"],
-];
-
-export default function Numeracion6099Renderer({
+export function Numeracion6099Screen({
   activity,
   difficulty,
   seed,
@@ -81,22 +71,8 @@ export default function Numeracion6099Renderer({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps): JSX.Element {
-  void seed;
-  const [session, setSession] = useState(() => ({
-    exercises: generateSession(difficulty, Date.now() % 999983),
-    currentIndex: 0,
-    correctCount: 0,
-    startTime: Date.now(),
-    answerState: "idle" as AnswerState,
-    input: "",
-    chosen: null as null | string,
-    alreadyFailed: false,
-  }));
-  const [finished, setFinished] = useState<{
-    total: number;
-    correct: number;
-    duration: number;
-  } | null>(null);
+  const [session, setSession] = useState<SessionState>(() => freshSession(seed, difficulty));
+  const [finished, setFinished] = useState<SessionResult | null>(null);
   const { mode, toggle } = useInputMode();
   const [canvasKey, setCanvasKey] = useState(0);
 
@@ -110,8 +86,10 @@ export default function Numeracion6099Renderer({
       ...s,
       answerState: "idle",
       chosen: null,
+      input: "",
       alreadyFailed: true,
     }));
+    setCanvasKey((k) => k + 1);
   }, []);
 
   const handleNext = useCallback(() => {
@@ -141,6 +119,7 @@ export default function Numeracion6099Renderer({
       ...s,
       answerState: ok ? "correct" : "wrong",
       correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+      alreadyFailed: !ok ? true : s.alreadyFailed,
     }));
   }, [session, current]);
 
@@ -168,68 +147,23 @@ export default function Numeracion6099Renderer({
         answerState: ok ? "correct" : "wrong",
         chosen: opt,
         correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+        alreadyFailed: !ok ? true : s.alreadyFailed,
       }));
     },
     [session, current],
   );
 
   if (finished) {
-    const pct = Math.round((finished.correct / finished.total) * 100);
-    const stars = pct >= 90 ? 3 : pct >= 70 ? 2 : 1;
-    const mins = Math.floor(finished.duration / 60000);
-    const secs = Math.floor((finished.duration % 60000) / 1000);
     return (
-      <div className="ops ops--summary">
-        <div className="summary">
-          <div className="summary__stars">{"⭐".repeat(stars)}</div>
-          <h2 className="summary__title">
-            {pct >= 90 ? "¡Excelente!" : pct >= 70 ? "¡Bien hecho!" : "¡Sigue practicando!"}
-          </h2>
-          <p className="summary__grade">{gradeTitle}</p>
-          <div className="summary__stats">
-            <div className="summary__stat">
-              <span className="summary__stat-value">
-                {finished.correct}/{finished.total}
-              </span>
-              <span className="summary__stat-label">correctas</span>
-            </div>
-            <div className="summary__stat">
-              <span className="summary__stat-value">{pct}%</span>
-              <span className="summary__stat-label">aciertos</span>
-            </div>
-            <div className="summary__stat">
-              <span className="summary__stat-value">
-                {mins > 0 ? `${mins}m ` : ""}
-                {secs}s
-              </span>
-              <span className="summary__stat-label">tiempo</span>
-            </div>
-          </div>
-          <div className="summary__actions">
-            <button
-              className="summary__btn summary__btn--primary"
-              onClick={() => {
-                setFinished(null);
-                setSession({
-                  exercises: generateSession(difficulty, Date.now() % 999983),
-                  currentIndex: 0,
-                  correctCount: 0,
-                  startTime: Date.now(),
-                  answerState: "idle",
-                  input: "",
-                  chosen: null,
-                  alreadyFailed: false,
-                });
-              }}
-            >
-              🔄 Repetir
-            </button>
-            <button className="summary__btn summary__btn--secondary" onClick={onExit}>
-              ← Volver
-            </button>
-          </div>
-        </div>
-      </div>
+      <SummaryScreen
+        result={finished}
+        gradeLabel={gradeTitle || activity.title}
+        onRestart={() => {
+          setFinished(null);
+          setSession(freshSession(Date.now() % 999983, difficulty));
+        }}
+        onExit={onExit}
+      />
     );
   }
 
@@ -252,7 +186,7 @@ export default function Numeracion6099Renderer({
         mascotUrl={mascotUrl}
         progress={`${session.currentIndex + 1}/${total}`}
       >
-        <InputModeToggle mode={mode} onToggle={toggle} />
+        {!isMultiChoice && <InputModeToggle mode={mode} onToggle={toggle} />}
       </ActivityHeader>
 
       <div className={`ops__stage ${stageClass}`}>
