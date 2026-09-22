@@ -547,8 +547,8 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: calc(100vw / var(--zoom, 1));
+  height: calc(100vh / var(--zoom, 1));
   zoom: 1;
   background: #000;
   z-index: 9998;

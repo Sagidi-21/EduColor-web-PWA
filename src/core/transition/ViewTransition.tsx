@@ -49,7 +49,7 @@ export interface ViewTransitionProps {
   defaultTheme?: TransitionTheme;
 }
 
-export function ViewTransition({ views, initialView, defaultTheme = "cube" }: ViewTransitionProps) {
+export function ViewTransition({ views, initialView, defaultTheme = "pageTurn" }: ViewTransitionProps) {
   const [current, setCurrent] = useState(initialView);
   const [exiting, setExiting] = useState<string | null>(null);
   const [exitDirection, setExitDirection] = useState<TransitionDirection>("right");
@@ -108,32 +108,62 @@ export function ViewTransition({ views, initialView, defaultTheme = "cube" }: Vi
   const api: ViewTransitionApi = { navigate };
   const themeApi: TransitionThemeApi = { theme, setTheme };
 
-  const handleExitComplete = () => {
+const handleExitComplete = () => {
     setExiting(null);
     setExitDirection("right");
   };
 
   const hasTransition = exiting !== null;
+  const isPageTurn = theme === "pageTurn";
+
+  // For pageTurn theme, we need to know what content goes on front/back
+  // Front = exiting view (current page turning away) or current view (idle)
+  // Back = current view (new page being revealed) - only during transition
+  const frontViewKey = exiting ?? current;
+  const backViewKey = hasTransition ? current : null;
+  const backViewRender = hasTransition ? views[backViewKey!] : null;
 
   return (
     <ViewTransitionContext.Provider value={api}>
       <TransitionThemeContext.Provider value={themeApi}>
-        <div className="vt-wrapper">
-          <div className="vt-panel vt-panel--active">{views[current]?.(api)}</div>
-          {hasTransition && (
-            <div
-              className={`vt-panel vt-panel--exiting vt-panel--exiting-${theme}-${exitDirection}`}
-              onAnimationEnd={handleExitComplete}
-            >
-              {views[exiting]?.(api)}
-            </div>
-          )}
-          {hasTransition && (
-            <div
-              className={`vt-panel vt-panel--entering vt-panel--entering-${theme}-${exitDirection}`}
-            >
-              {views[current]?.(api)}
-            </div>
+        <div className="vt-wrapper" data-theme={theme}>
+          {isPageTurn ? (
+            <>
+              {/* Back page (destination) - only during transition */}
+              {hasTransition && backViewRender && (
+                <div className="vt-page vt-page--back" key={`back-${backViewKey}`}>
+                  {backViewRender(api)}
+                </div>
+              )}
+              {/* Front page (current/exiting) - always rendered */}
+              <div
+                className={`vt-page vt-page--front${hasTransition ? ` vt-page--turn-${exitDirection}` : ""}`}
+                onAnimationEnd={hasTransition ? handleExitComplete : undefined}
+                key={`front-${frontViewKey}`}
+              >
+                <div className="vt-page__content">
+                  {views[frontViewKey]?.(api)}
+                </div>
+                {hasTransition && <div className="vt-page__shadow" />}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="vt-panel vt-panel--active">{views[current]?.(api)}</div>
+              {hasTransition && (
+                <div
+                  className={`vt-panel vt-panel--exiting vt-panel--exiting-${theme}-${exitDirection}`}
+                  onAnimationEnd={handleExitComplete}
+                >
+                  {views[exiting]?.(api)}
+                </div>
+              )}
+              {hasTransition && (
+                <div className={`vt-panel vt-panel--entering vt-panel--entering-${theme}-${exitDirection}`}>
+                  {views[current]?.(api)}
+                </div>
+              )}
+            </>
           )}
         </div>
       </TransitionThemeContext.Provider>

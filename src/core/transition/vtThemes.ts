@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 
 export type TransitionDirection = "right" | "left";
 
-export type TransitionTheme = "cube" | "flip" | "carousel" | "fall" | "newspaper";
+export type TransitionTheme = "cube" | "flip" | "carousel" | "fall" | "newspaper" | "pageTurn";
 
 export const THEMES: ReadonlyArray<{ value: TransitionTheme; label: string }> = [
   { value: "cube", label: "Cubo" },
@@ -10,6 +10,7 @@ export const THEMES: ReadonlyArray<{ value: TransitionTheme; label: string }> = 
   { value: "carousel", label: "Carrusel" },
   { value: "fall", label: "Caída" },
   { value: "newspaper", label: "Newspaper" },
+  { value: "pageTurn", label: "Volteo página" },
 ] as const;
 
 export interface ViewTransitionApi {

@@ -1,0 +1,41 @@
+{
+  "timestamp": "2026-09-22T18:00:27.408Z",
+  "zoom": 1,
+  "windowInnerWidth": 1280,
+  "windowInnerHeight": 720,
+  "visualViewport": {
+    "width": 1280,
+    "height": 720,
+    "scale": 1
+  },
+  "devicePixelRatio": 1,
+  "overlayRect": {
+    "x": 0,
+    "y": 0,
+    "width": 1280,
+    "height": 720,
+    "right": 1280,
+    "bottom": 720
+  },
+  "imageRect": {
+    "x": 0,
+    "y": 0,
+    "width": 1280,
+    "height": 720,
+    "right": 1280,
+    "bottom": 720
+  },
+  "portalComputedStyle": {
+    "position": "fixed",
+    "width": "1280px",
+    "height": "720px",
+    "zoom": "1",
+    "display": "flex"
+  },
+  "imgComputedStyle": {
+    "width": "1280px",
+    "height": "720px",
+    "objectFit": "contain",
+    "objectPosition": "50% 50%"
+  }
+}

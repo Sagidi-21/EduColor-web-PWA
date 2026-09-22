@@ -560,3 +560,160 @@
     transform: translateZ(-3000px) rotateZ(360deg) scale(0.001);
   }
 }
+
+/* ============================================================= */
+/* THEME: pageTurn                                               */
+/* Book page turn 3D hinge effect                                */
+/* Forward (right): hinge left edge, rotateY(0 -> -90deg)        */
+/* Backward (left): hinge right edge, rotateY(0 -> +90deg)       */
+/* ============================================================= */
+
+/* Wrapper updates for pageTurn - preserve-3d for proper 3D stacking */
+.vt-wrapper[data-theme="pageTurn"] {
+  transform-style: preserve-3d;
+  perspective: 1500px;
+}
+
+/* Base page styles */
+.vt-page {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  overflow: hidden;
+}
+
+.vt-page--back {
+  z-index: 1;
+  /* Small translateZ as 3D aid to keep back strictly behind front */
+  transform: translateZ(-2px);
+}
+
+.vt-page--front {
+  z-index: 2;
+  /* Front page turns around its hinge */
+  transform-origin: 0% 50%; /* default: left hinge for forward */
+}
+
+/* Direction-specific transform-origin on the front page */
+.vt-page--front.vt-page--turn-right {
+  transform-origin: 0% 50%; /* left hinge */
+  -webkit-animation: vt-pageTurn-right 600ms both cubic-bezier(0.55, 0.08, 0.25, 0.99);
+  animation: vt-pageTurn-right 600ms both cubic-bezier(0.55, 0.08, 0.25, 0.99);
+}
+
+.vt-page--front.vt-page--turn-left {
+  transform-origin: 100% 50%; /* right hinge */
+  -webkit-animation: vt-pageTurn-left 600ms both cubic-bezier(0.55, 0.08, 0.25, 0.99);
+  animation: vt-pageTurn-left 600ms both cubic-bezier(0.55, 0.08, 0.25, 0.99);
+}
+
+/* Internal layers of the front page */
+.vt-page__content {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.vt-page__shadow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 60%);
+  opacity: 0;
+  -webkit-animation: vt-pageShadow 600ms both cubic-bezier(0.55, 0.08, 0.25, 0.99);
+  animation: vt-pageShadow 600ms both cubic-bezier(0.55, 0.08, 0.25, 0.99);
+}
+
+/* Page turn keyframes */
+/* Forward: turn right (page curls from right to left, hinge on left) */
+@-webkit-keyframes vt-pageTurn-right {
+  0% {
+    -webkit-transform: rotateY(0deg);
+  }
+  100% {
+    -webkit-transform: rotateY(-90deg);
+  }
+}
+@keyframes vt-pageTurn-right {
+  0% {
+    -webkit-transform: rotateY(0deg);
+    transform: rotateY(0deg);
+  }
+  100% {
+    -webkit-transform: rotateY(-90deg);
+    transform: rotateY(-90deg);
+  }
+}
+
+/* Backward: turn left (page curls from left to right, hinge on right) */
+@-webkit-keyframes vt-pageTurn-left {
+  0% {
+    -webkit-transform: rotateY(0deg);
+  }
+  100% {
+    -webkit-transform: rotateY(90deg);
+  }
+}
+@keyframes vt-pageTurn-left {
+  0% {
+    -webkit-transform: rotateY(0deg);
+    transform: rotateY(0deg);
+  }
+  100% {
+    -webkit-transform: rotateY(90deg);
+    transform: rotateY(90deg);
+  }
+}
+
+/* Shadow keyframe - appears at ~25%, peaks at ~50%, fades by ~75% */
+@-webkit-keyframes vt-pageShadow {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  75% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes vt-pageShadow {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  75% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Reduced motion for pageTurn */
+@media (prefers-reduced-motion: reduce) {
+  .vt-page--front.vt-page--turn-right,
+  .vt-page--front.vt-page--turn-left,
+  .vt-page__shadow {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+}

@@ -1,5 +1,28 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from "react";
 import { getViewportSize } from "./portalImageFit";
+
+/** Lee el zoom efectivo del `body` (1 si no está definido). */
+function getBodyZoom(): number {
+  if (typeof document === "undefined") return 1;
+  return parseFloat(getComputedStyle(document.body).zoom) || 1;
+}
+
+/**
+ * Devuelve las dimensiones en píxeles CSS que debe tener el overlay para
+ * ocupar el viewport visible, compensando el zoom del `body`.
+ *
+ * Cuando `document.body` tiene `zoom: z > 1`, un elemento con
+ * `width: 100vw` se renderiza a `100vw × z` device-pixels, lo que
+ * provoca que se salga del viewport. Dividir entre `z` corrige esto:
+ * el CSS calcula `100vw / z` y luego el zoom del body lo multiplica
+ * por `z`, dando el tamaño visual correcto.
+ */
+function getZoomCorrectedViewport(): { width: string; height: string } {
+  const z = getBodyZoom();
+  const w = window.innerWidth / z;
+  const h = window.innerHeight / z;
+  return { width: `${w}px`, height: `${h}px` };
+}
 
 export interface PortalTransitionProps {
   label: string;
@@ -114,19 +137,18 @@ export function PortalTransition({
   }, [dissolving, image, viewport, onDissolved]);
 
   const isExpanded = viewport.width >= expandedWidth;
+  const viewportSize = getZoomCorrectedViewport();
 
   return (
-    <div
-      className="portal-transition"
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        zoom: 1,
-      }}
-    >
+      <div
+        className="portal-transition"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          ...viewportSize,
+        }}
+      >
       <img className="portal-transition__image" src={image} alt="" />
       {dissolving && <canvas className="portal-dissolve__canvas" ref={dissolveCanvasRef} />}
       <div className="portal-transition__banner">
