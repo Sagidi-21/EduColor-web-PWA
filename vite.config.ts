@@ -8,7 +8,7 @@ export default defineConfig({
     environment: "happy-dom",
     setupFiles: ["./src/test-setup.ts"],
     globals: true,
-    exclude: [...configDefaults.exclude, "electron-reference/**"],
+    exclude: [...configDefaults.exclude, "electron-reference/**", "tests/**"],
   },
   server: {
     proxy: {
