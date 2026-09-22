@@ -8,7 +8,17 @@ export default defineConfig({
     environment: "happy-dom",
     setupFiles: ["./src/test-setup.ts"],
     globals: true,
-    exclude: [...configDefaults.exclude, "electron-reference/**", "tests/**"],
+    exclude: [
+      ...configDefaults.exclude,
+      "electron-reference/**",
+      // La carpeta tests/ contiene specs E2E de Playwright (*.spec.ts) que
+      // requieren un navegador real y su propio runner (@playwright/test).
+      // Vitest + happy-dom no puede ejecutarlos (provocan "test.describe() not
+      // expected") y además algunos specs usan fixtures HTML mock que no
+      // protegen de regresiones en el código React.
+      // Decisión: docs/DECISIONES.md → D-015. Deuda técnica: docs/DEUDA_TECNICA.md → DT-009.
+      "tests/**",
+    ],
   },
   server: {
     proxy: {
