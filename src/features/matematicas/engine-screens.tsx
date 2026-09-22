@@ -68,6 +68,9 @@ const Numeracion999Screen = lazy(() =>
     default: module.Numeracion999Screen,
   })),
 );
+const LeftRightScreen = lazy(() =>
+  import("./leftRight/LeftRightScreen").then((module) => ({ default: module.LeftRightScreen })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -193,6 +196,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <Numeracion999Screen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "leftRight") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <LeftRightScreen {...props} />
       </Suspense>
     );
   }

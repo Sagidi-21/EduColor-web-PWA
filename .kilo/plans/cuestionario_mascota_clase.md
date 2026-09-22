@@ -139,10 +139,10 @@ Los ejemplos son orientativos; la IA no debe limitarse a ellos.
 
 **Una sola opción**
 
-- 🧸 Cartoon 3D
-- ✏️ Ilustración infantil
-- 🎨 Dibujo animado
-- ✨ Fantasía suave
+- Cartoon 3D
+- Ilustración infantil
+- Dibujo animado
+- Fantasía suave
 
 **Valor recomendado por defecto:** Cartoon 3D.
 

@@ -10,6 +10,7 @@ import { WrongFeedback } from "../components/WrongFeedback";
 import { Numpad } from "../../shared/components/Numpad";
 import { LazyDigitCell } from "../../shared/DigitCell";
 
+import "../operations/OperationsScreen.css";
 import "./Numeracion6099Renderer.css";
 
 type AnswerState = "idle" | "correct" | "wrong";

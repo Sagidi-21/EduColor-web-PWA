@@ -226,6 +226,52 @@ La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tie
 
 ---
 
+## Seguimiento actual — `leftRight`
+
+- **Pasos 1 y 2:** completados. `leftRight` es una actividad compartida de 1.º/2.º
+  (bloque lateralidad, primera actividad del bloque 5 del roadmap Fase 2). Se
+  auditó el motor Electron completo: `engine.ts` con 350 líneas, `LeftRightRenderer.tsx`
+  con 470 líneas, `LeftRightRenderer.css` con 306 líneas, `leftRight.generator.ts` y
+  `leftRight.generator.test.ts`. Dependencias: `IMAGE_CATEGORIES`/`pickImage` (compartido)
+  y `CHARACTER_IMAGES` (nuevo en PWA, pero existente en Electron). Motor NO usa APIs
+  de Electron. Recursos de personaje ya presentes en `src/assets/izquierda-derecha/`.
+- **Pasos 3 y 4:** completados. Core puro en `src/core/activities/leftRight.ts`,
+  1:1 con la referencia. Nueva dependencia platform: `src/platform/characterImages.ts`
+  (mismo patrón `import.meta.glob` que objectImages.ts, glob a `izquierda-derecha/`).
+  22 tests Vitest en `leftRight.test.ts` cubren: 10 ejercicios por dificultad,
+  semilla determinista, easy (tipo regular + answer posición), medium
+  (askLeft alterno por i%2 + answer objeto), hard (3 subtipos i%3=0/1/2),
+  expert (char-click 1-4, char-drag-one 5-7, char-drag-both 8-10 con
+  targetBox "both"), espejo perspectiva frente/espaldas, validateAnswer.
+  Todos 22/22 tests verdes.
+- **Pasos 5 y 6:** completados. Renderer `LeftRightScreen` (named export, NO default)
+  con todas las props `EngineScreenProps` pasadas a `ActivityHeader`
+  (`className`, `mascotUrl`, `difficultyStars`, `gradeTitle`, `unitTitle`, `progress`).
+  Sustituciones del mapeo AGENT_RULES Paso 2:
+  `ExerciseHeader → ActivityHeader`, `playCorrect → playFeedback(true)`,
+  `playWrong → playFeedback(false)`, `SummaryScreen inline → shared SummaryScreen`,
+  `WrongFeedback inline → shared WrongFeedback`, `Date.now inline en freshSession → seed prop`.
+  Drag imperativo idéntico a Electron: listeners nativos window `pointermove`/`pointerup`
+  (no `setPointerCapture`, igual que referencia), división por `devicePixelRatio`,
+  cleanup en `useEffect` de `currentIndex` y unmount. Auto-avance 900 ms
+  en `correct`, `alreadyFailed` evita doble cuenta, footer options + `WrongFeedback`
+  en non-char, solo `WrongFeedback` en expert (char-mode).
+  CSS `LeftRightScreen.css` casi al pie de la letra: colores verde #16a34a,
+  rojo #dc2626, background #f0fdf4, animación `lr-pop`, clases `lr__char-box`
+  dashed/solid correct/wrong, `lr__drag-obj` absolute con `touch-action: none`.
+  Añadido `@media` responsive móvil.
+- **Paso 7:** CI local a medio ejecutar (pendiente del Paso 7 completo).
+  Prettier, lint, typecheck, tests 22/22, build y chunks lazy separados.
+  Pendiente validación manual en pizarra/tableta y cierre pedagógico.
+- **Paso 8:** trazabilidad actualizada en `INVENTARIO_MIGRACION_ACTIVIDADES.md`
+  (fila `leftRight`): pasa de "P2 pendiente" a "✅ P2 migrada".
+  Registro en `engine-registry.ts` (añadido `leftRight` al Set `migratedEngines`)
+  y `engine-screens.tsx` (lazy + Suspense con fallback estándar). El manifiesto
+  JSON `leftRight.json` ya estaba importado en el catálogo desde la Fase 1 por
+  lo que el routing funciona sin tocar navegación.
+
+---
+
 ## Comprobación de salida
 
 La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tiene test de núcleo y comprobación visual.

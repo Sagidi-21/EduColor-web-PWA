@@ -21,9 +21,48 @@ interface GenerationEntry {
 
 const generationStore = new Map<string, GenerationEntry>();
 
+const MAX_SPECIAL_DETAILS_LENGTH = 100;
+const MAX_TEACHER_NAME_LENGTH = 20;
+const MAX_CUSTOM_THEME_LENGTH = 100;
+
+function sanitizePlainText(value: string, maxLength: number): string {
+  if (typeof value !== "string") return "";
+  let sanitized = value
+    .replace(/<[^>]*>/g, "")
+    .replace(/javascript:/gi, "")
+    .replace(/on\w+=/gi, "")
+    .replace(/vbscript:/gi, "")
+    .replace(/data:text\/html/gi, "")
+    .replace(/\0/g, "");
+  if (sanitized.length > maxLength) {
+    sanitized = sanitized.slice(0, maxLength);
+  }
+  return sanitized;
+}
+
+function sanitizeMascotConfig(config: Partial<MascotConfig>): MascotConfig {
+  return {
+    theme: typeof config.theme === "string" ? config.theme : "",
+    customTheme: sanitizePlainText(config.customTheme ?? "", MAX_CUSTOM_THEME_LENGTH),
+    characterType: typeof config.characterType === "string" ? config.characterType : "",
+    customCharacterType: sanitizePlainText(
+      config.customCharacterType ?? "",
+      MAX_CUSTOM_THEME_LENGTH,
+    ),
+    personality: Array.isArray(config.personality)
+      ? config.personality.filter((p) => typeof p === "string")
+      : [],
+    nameMode: typeof config.nameMode === "string" ? config.nameMode : "ai",
+    teacherName: sanitizePlainText(config.teacherName ?? "", MAX_TEACHER_NAME_LENGTH),
+    visualStyle: typeof config.visualStyle === "string" ? config.visualStyle : "",
+    specialDetails: sanitizePlainText(config.specialDetails ?? "", MAX_SPECIAL_DETAILS_LENGTH),
+  };
+}
+
 export const generateMascotPreview = asyncHandler(async (req: Request, res: Response) => {
   const generationId = uuidv4();
-  const config = req.body as MascotConfig;
+  const rawConfig = req.body as Partial<MascotConfig>;
+  const config = sanitizeMascotConfig(rawConfig);
 
   generationStore.set(generationId, {
     id: generationId,
@@ -51,10 +90,11 @@ export const generateMascotPreview = asyncHandler(async (req: Request, res: Resp
 });
 
 export const generateMascotAssets = asyncHandler(async (req: Request, res: Response) => {
-  const { id, referenceImage, ...config } = req.body as {
+  const { id, referenceImage, ...rawConfig } = req.body as {
     id: string;
     referenceImage: string;
-  } & MascotConfig;
+  } & Partial<MascotConfig>;
+  const config = sanitizeMascotConfig(rawConfig);
 
   const status = generationStore.get(id);
   if (!status) {

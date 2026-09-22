@@ -28,7 +28,7 @@ export interface PortalTransitionProps {
   label: string;
   image: string;
   dissolving: boolean;
-  type: "theme" | "character" | "personalidad" | "nombre";
+  type: "theme" | "character" | "personalidad" | "nombre" | "visual_style";
   /** Ancho de la pantalla "expandida". Se usa para cambiar el texto del banner. */
   expandedWidth?: number;
   /** Nombre del niño cuando type === "nombre" y nameMode === "teacher" */
@@ -155,6 +155,10 @@ export function PortalTransition({
         {type === "theme" ? (
           <>
             Has seleccionado el portal de <span className="portal-transition__name">{label}</span>
+          </>
+        ) : type === "visual_style" ? (
+          <>
+            El estilo de tu compañero será <span className="portal-transition__name">{label}</span>
           </>
         ) : type === "personalidad" && isExpanded ? (
           <>

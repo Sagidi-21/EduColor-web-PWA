@@ -1,0 +1,255 @@
+.lr {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #f0fdf4;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
+}
+
+.lr__stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+  padding: 24px;
+  transition: background 0.3s;
+  overflow-y: auto;
+  min-height: 0;
+}
+.lr__stage--correct {
+  background: #dcfce7;
+}
+.lr__stage--wrong {
+  background: #fff1f2;
+}
+.lr__celebration {
+  position: absolute;
+  top: 20px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #16a34a;
+  animation: lr-pop 0.3s ease;
+}
+@keyframes lr-pop {
+  0% {
+    transform: scale(0.5);
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.lr__scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.lr__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+}
+.lr__objects {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px 36px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+.lr__obj {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 110px;
+  height: 110px;
+}
+.lr__obj-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.lr__obj-emoji {
+  font-size: 72px;
+  line-height: 1;
+}
+.lr__question {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+  max-width: 360px;
+}
+
+.lr__footer {
+  padding: 16px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.lr__options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.lr__option {
+  min-width: 130px;
+  padding: 18px 24px;
+  border-radius: 14px;
+  border: 3px solid #e2e8f0;
+  background: #fff;
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: capitalize;
+}
+.lr__option:hover:not(:disabled) {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  transform: translateY(-2px);
+}
+.lr__option:disabled {
+  cursor: not-allowed;
+}
+.lr__option--correct {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  color: #15803d;
+}
+.lr__option--wrong {
+  border-color: #dc2626;
+  background: #fff1f2;
+  color: #dc2626;
+}
+
+.lr__char-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.lr__char-img {
+  height: 220px;
+  max-width: 220px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.lr__char-box {
+  width: 130px;
+  height: 150px;
+  border: 3px dashed #94a3b8;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.lr__char-box--correct {
+  border-color: #16a34a;
+  border-style: solid;
+  background: #dcfce7;
+}
+.lr__char-box--wrong {
+  border-color: #dc2626;
+  border-style: solid;
+  background: #fff1f2;
+}
+
+.lr__char-box-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  text-align: center;
+  padding: 4px 8px;
+}
+.lr__char-box--correct .lr__char-box-label {
+  color: #15803d;
+}
+.lr__char-box--wrong .lr__char-box-label {
+  color: #dc2626;
+}
+
+.lr__drag-area {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 220px;
+  max-width: 900px;
+}
+
+.lr__char-box-obj {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.lr__drag-obj {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+.lr__drag-obj img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+.lr__drag-obj--active {
+  cursor: grabbing;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+}
+
+@media (max-width: 768px) {
+  .lr__char-row {
+    flex-direction: column;
+  }
+  .lr__obj {
+    width: 80px;
+    height: 80px;
+  }
+  .lr__objects {
+    gap: 20px;
+    padding: 16px 20px;
+  }
+  .lr__char-img {
+    height: 160px;
+    max-width: 160px;
+  }
+  .lr__char-box {
+    width: 100px;
+    height: 120px;
+  }
+}

@@ -1,4 +1,4 @@
-﻿import type { ActivityManifest, EngineId } from "./contracts";
+import type { ActivityManifest, EngineId } from "./contracts";
 
 export type EngineMigrationStatus = "available" | "pending";
 
@@ -28,6 +28,7 @@ const migratedEngines: ReadonlySet<EngineId> = new Set([
   "numeracion4059",
   "numeracion6099",
   "numeracion999",
+  "leftRight",
 ]);
 
 export function getEngineRegistration(engineId: EngineId): EngineRegistration {
