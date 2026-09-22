@@ -5,7 +5,8 @@ import { configDefaults } from "vitest/config";
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: "node",
+    environment: "happy-dom",
+    setupFiles: ["./src/test-setup.ts"],
     exclude: [...configDefaults.exclude, "electron-reference/**"],
   },
   server: {

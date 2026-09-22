@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { PortalTransition } from "./PortalTransition";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
 import spaceImage from "../../assets/mascota/temas/mascota-tema-space.png";
 import dinosaursImage from "../../assets/mascota/temas/mascota-tema-dinosaurs.png";
@@ -134,84 +135,10 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
   } | null>(null);
   const [showTeacherNameInput, setShowTeacherNameInput] = useState(false);
   const EXPANDED_SCREEN_WIDTH = 1024;
-  const [isExpanded, setIsExpanded] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth >= EXPANDED_SCREEN_WIDTH : false,
-  );
-  useEffect(() => {
-    const updateIsExpanded = () => setIsExpanded(window.innerWidth >= EXPANDED_SCREEN_WIDTH);
-    window.addEventListener("resize", updateIsExpanded);
-    return () => window.removeEventListener("resize", updateIsExpanded);
-  }, []);
-  const dissolveCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     localStorage.setItem("mascota-config", JSON.stringify(config));
   }, [config]);
-
-  useEffect(() => {
-    if (!portalTransition?.dissolving) return;
-    const canvas = dissolveCanvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    canvas.width = w;
-    canvas.height = h;
-
-    const cell = 16;
-    const cols = Math.ceil(w / cell);
-    const rows = Math.ceil(h / cell);
-
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = portalTransition.image;
-    let raf = 0;
-    img.onload = () => {
-      ctx.imageSmoothingEnabled = false;
-      const tmp = document.createElement("canvas");
-      const tctx = tmp.getContext("2d");
-      if (!tctx) return;
-      tctx.imageSmoothingEnabled = false;
-      tmp.width = cols;
-      tmp.height = rows;
-      tctx.drawImage(img, 0, 0, cols, rows);
-      ctx.clearRect(0, 0, w, h);
-      ctx.drawImage(tmp, 0, 0, w, h);
-
-      const cells: { x: number; y: number }[] = [];
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          cells.push({ x: c, y: r });
-        }
-      }
-      for (let i = cells.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [cells[i], cells[j]] = [cells[j], cells[i]];
-      }
-
-      const duration = 900;
-      let done = 0;
-      const start = performance.now();
-      const step = (now: number) => {
-        const progress = Math.min((now - start) / duration, 1);
-        const target = Math.floor(progress * cells.length);
-        while (done < target) {
-          ctx.clearRect(cells[done].x * cell, cells[done].y * cell, cell, cell);
-          done++;
-        }
-        if (progress < 1) {
-          raf = requestAnimationFrame(step);
-        }
-      };
-      raf = requestAnimationFrame(step);
-    };
-
-    return () => {
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [portalTransition?.dissolving, portalTransition?.image]);
 
   const updateConfig = (updates: Partial<MascotaConfig>) => {
     setConfig((prev) => ({ ...prev, ...updates }));
@@ -1110,49 +1037,16 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
       </div>
 
       {portalTransition && (
-        <div
-          className={`portal-transition ${portalTransition.dissolving ? "portal-transition--dissolving" : ""}`}
-        >
-          <img
-            className="portal-transition__image"
-            src={portalTransition.image}
-            alt=""
-            style={{ display: portalTransition.dissolving ? "none" : undefined }}
-          />
-          {portalTransition.dissolving && (
-            <canvas className="portal-dissolve__canvas" ref={dissolveCanvasRef} />
-          )}
-          <div className="portal-transition__banner">
-            {portalTransition.type === "theme" ? (
-              <>
-                Has seleccionado el portal de{" "}
-                <span className="portal-transition__name">{portalTransition.label}</span>
-              </>
-            ) : portalTransition.type === "personalidad" && isExpanded ? (
-              <>
-                Su personalidad será{" "}
-                <span className="portal-transition__name">{portalTransition.label}</span>
-              </>
-            ) : portalTransition.type === "nombre" && isExpanded ? (
-              config.nameMode === "ai" ? (
-                <>
-                  El nombre será{" "}
-                  <span className="portal-transition__name">inventado por la IA</span>
-                </>
-              ) : (
-                <>
-                  El nombre elegido es{" "}
-                  <span className="portal-transition__name">{portalTransition.label}</span>
-                </>
-              )
-            ) : (
-              <>
-                Tu compañero será{" "}
-                <span className="portal-transition__name">{portalTransition.label}</span>
-              </>
-            )}
-          </div>
-        </div>
+        <PortalTransition
+          label={portalTransition.label}
+          image={portalTransition.image}
+          dissolving={portalTransition.dissolving}
+          type={portalTransition.type}
+          expandedWidth={EXPANDED_SCREEN_WIDTH}
+          teacherName={config.teacherName}
+          nameMode={config.nameMode}
+          onDissolved={() => setPortalTransition(null)}
+        />
       )}
     </div>
   );

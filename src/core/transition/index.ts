@@ -1,9 +1,4 @@
 export { ViewTransition, useViewTransition } from "./ViewTransition";
-export { useTransitionTheme, THEMES } from "./ViewTransition";
-export type {
-  TransitionDirection,
-  TransitionTheme,
-  ViewTransitionApi,
-  ViewTransitionProps,
-  ViewRender,
-} from "./ViewTransition";
+export { useTransitionTheme } from "./ViewTransition";
+export { THEMES, type TransitionDirection, type TransitionTheme } from "./vtThemes";
+export type { ViewTransitionApi, ViewTransitionProps, ViewRender } from "./vtThemes";

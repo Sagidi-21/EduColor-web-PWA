@@ -242,7 +242,7 @@ export function ConfiguracionScreen({
               </button>
             ))}
           </div>
-         </section>
+        </section>
         <section className="cfg__section">
           <h2 className="cfg__section-title">Tema de transición</h2>
           <p className="cfg__section-desc">

@@ -45,6 +45,20 @@ export default tseslint.config(
     },
   },
   {
+    files: ["src/core/transition/ViewTransition.tsx"],
+    rules: {
+      // Este archivo exporta tanto el componente `ViewTransition` como hooks
+      // (`useTransitionTheme`, `useViewTransition`) que son necesarios para
+      // consumir la misma lógica desde otras pantallas. El plugin de fast
+      // refresh no puede distinguirlos sin romper el patrón de hooks.
+      "react-refresh/only-export-components": "off",
+      // `views[current]?.(api)` renderiza una función de vista con un API object,
+      // patrón estándar y seguro. El plugin react-hooks/refs (v7) genera falsos
+      // positivos aquí porque interpreta `views` como un ref.
+      "react-hooks/refs": "off",
+    },
+  },
+  {
     files: ["public/sw.js"],
     languageOptions: {
       globals: {

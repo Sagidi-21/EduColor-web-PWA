@@ -1,24 +1,12 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import "./ViewTransition.css";
-
-export type TransitionDirection = "right" | "left";
-
-export type TransitionTheme = "cube" | "flip" | "carousel" | "fall" | "newspaper";
-
-export const THEMES: ReadonlyArray<{ value: TransitionTheme; label: string }> = [
-  { value: "cube", label: "Cubo" },
-  { value: "flip", label: "Volteo" },
-  { value: "carousel", label: "Carrusel" },
-  { value: "fall", label: "Caída" },
-  { value: "newspaper", label: "Newspaper" },
-] as const;
+import {
+  THEMES,
+  type TransitionDirection,
+  type TransitionTheme,
+  type ViewTransitionApi,
+  type ViewRender,
+} from "./vtThemes";
 
 const THEME_STORAGE_KEY = "vt_theme";
 
@@ -45,10 +33,6 @@ export function useTransitionTheme(): TransitionThemeApi {
 /* View transition context (navigation API)                         */
 /* ---------------------------------------------------------------- */
 
-export interface ViewTransitionApi {
-  navigate: (view: string, direction?: TransitionDirection) => void;
-}
-
 const ViewTransitionContext = createContext<ViewTransitionApi | null>(null);
 
 export function useViewTransition(): ViewTransitionApi {
@@ -58,8 +42,6 @@ export function useViewTransition(): ViewTransitionApi {
   }
   return ctx;
 }
-
-export type ViewRender = (api: ViewTransitionApi) => ReactNode;
 
 export interface ViewTransitionProps {
   views: Record<string, ViewRender>;
@@ -81,18 +63,34 @@ export function ViewTransition({ views, initialView, defaultTheme = "cube" }: Vi
     return defaultTheme;
   });
 
-  const navigateRef = useRef<(view: string, direction?: TransitionDirection) => void>(() => {});
+  // Usamos refs para que el callback `navigate` pueda leer los valores
+  // más recientes sin cambiar de referencia en cada render.
+  const viewsRef = useRef(views);
+  const currentRef = useRef(current);
+  const exitingRef = useRef(exiting);
+
+  useEffect(() => {
+    viewsRef.current = views;
+    currentRef.current = current;
+    exitingRef.current = exiting;
+  });
 
   const navigate = (nextView: string, dir: TransitionDirection = "right") => {
-    if (exiting !== null || nextView === current || !views[nextView]) return;
-    setExiting(current);
+    const currentView = currentRef.current;
+    const exitingView = exitingRef.current;
+    const currentViews = viewsRef.current;
+    if (exitingView !== null || nextView === currentView || !currentViews[nextView]) return;
+    setExiting(currentView);
     setCurrent(nextView);
     setExitDirection(dir);
   };
 
+  // Mantener una ref con la última función navigate para usarla desde
+  // el effect que expone window(view) (sin depender de `navigate`).
+  const navigateRef = useRef(navigate);
   useEffect(() => {
     navigateRef.current = navigate;
-  }, [navigate]);
+  });
 
   useEffect(() => {
     (window as unknown as { setView: (view: string) => void }).setView = (view: string) => {
@@ -131,7 +129,9 @@ export function ViewTransition({ views, initialView, defaultTheme = "cube" }: Vi
             </div>
           )}
           {hasTransition && (
-            <div className={`vt-panel vt-panel--entering vt-panel--entering-${theme}-${exitDirection}`}>
+            <div
+              className={`vt-panel vt-panel--entering vt-panel--entering-${theme}-${exitDirection}`}
+            >
               {views[current]?.(api)}
             </div>
           )}
