@@ -38,7 +38,6 @@ export function PortalTransitionImageOnly({
   expandedWidth = 1024,
   teacherName,
   nameMode = "ai",
-  bannerExtra,
 }: PortalTransitionImageOnlyProps) {
   const [viewport, setViewport] = useState(getViewportSize);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -120,16 +119,16 @@ export function PortalTransitionImageOnly({
   const viewportSize = getZoomCorrectedViewport();
 
   return (
-        <div
-          ref={overlayRef}
-          className="portal-transition"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            ...viewportSize,
-            background: "#000",
-            zIndex: 9998,
+    <div
+      ref={overlayRef}
+      className="portal-transition"
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        ...viewportSize,
+        background: "#000",
+        zIndex: 9998,
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-end",
@@ -167,17 +166,77 @@ export function PortalTransitionImageOnly({
         }}
       >
         {type === "theme" ? (
-          <>Has seleccionado el portal de <span style={{ fontFamily: "var(--font-fredoka, 'Fredoka', sans-serif)", fontSize: "clamp(24px, 3.2vw, 34px)", fontWeight: 700, color: "#facc15"}}>{label}</span></>
+          <>
+            Has seleccionado el portal de{" "}
+            <span
+              style={{
+                fontFamily: "var(--font-fredoka, 'Fredoka', sans-serif)",
+                fontSize: "clamp(24px, 3.2vw, 34px)",
+                fontWeight: 700,
+                color: "#facc15",
+              }}
+            >
+              {label}
+            </span>
+          </>
         ) : type === "personalidad" && isExpanded ? (
-          <>Su personalidad será <span style={{ fontFamily: "var(--font-fredoka, 'Fredoka', sans-serif)", fontSize: "clamp(24px, 3.2vw, 34px)", fontWeight: 700, color: "#facc15"}}>{label}</span></>
+          <>
+            Su personalidad será{" "}
+            <span
+              style={{
+                fontFamily: "var(--font-fredoka, 'Fredoka', sans-serif)",
+                fontSize: "clamp(24px, 3.2vw, 34px)",
+                fontWeight: 700,
+                color: "#facc15",
+              }}
+            >
+              {label}
+            </span>
+          </>
         ) : type === "nombre" && isExpanded ? (
           nameMode === "ai" ? (
-            <>El nombre será <span style={{ fontFamily: "var(--font-fredoka, 'Fredoka', sans-serif)", fontSize: "clamp(24px, 3.2vw, 34px)", fontWeight: 700, color: "#facc15"}}>inventado por la IA</span></>
+            <>
+              El nombre será{" "}
+              <span
+                style={{
+                  fontFamily: "var(--font-fredoka, 'Fredoka', sans-serif)",
+                  fontSize: "clamp(24px, 3.2vw, 34px)",
+                  fontWeight: 700,
+                  color: "#facc15",
+                }}
+              >
+                inventado por la IA
+              </span>
+            </>
           ) : (
-            <>El nombre elegido es <span style={{ fontFamily: "var(--font-fredoka, 'Fredoka', sans-serif)", fontSize: "clamp(24px, 3.2vw, 34px)", fontWeight: 700, color: "#facc15"}}>{teacherName ?? label}</span></>
+            <>
+              El nombre elegido es{" "}
+              <span
+                style={{
+                  fontFamily: "var(--font-fredoka, 'Fredoka', sans-serif)",
+                  fontSize: "clamp(24px, 3.2vw, 34px)",
+                  fontWeight: 700,
+                  color: "#facc15",
+                }}
+              >
+                {teacherName ?? label}
+              </span>
+            </>
           )
         ) : (
-          <>Tu compañero será <span style={{ fontFamily: "var(--font-fredoka, 'Fredoka', sans-serif)", fontSize: "clamp(24px, 3.2vw, 34px)", fontWeight: 700, color: "#facc15"}}>{label}</span></>
+          <>
+            Tu compañero será{" "}
+            <span
+              style={{
+                fontFamily: "var(--font-fredoka, 'Fredoka', sans-serif)",
+                fontSize: "clamp(24px, 3.2vw, 34px)",
+                fontWeight: 700,
+                color: "#facc15",
+              }}
+            >
+              {label}
+            </span>
+          </>
         )}
       </div>
     </div>

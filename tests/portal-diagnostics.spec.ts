@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/test';
-import fs from 'fs';
-import path from 'path';
+import { test, expect } from "@playwright/test";
+import fs from "fs";
+import path from "path";
 
-const DIAGNOSTIC_FILE = path.resolve('diagnostic-portal.html');
-const OUTPUT_DIR = path.resolve('test-results/playwright-diagnostics');
+const DIAGNOSTIC_FILE = path.resolve("diagnostic-portal.html");
+const OUTPUT_DIR = path.resolve("test-results/playwright-diagnostics");
 
-test.describe('Portal Transition Diagnostics at different zoom levels', () => {
+test.describe("Portal Transition Diagnostics at different zoom levels", () => {
   test.beforeAll(() => {
     if (!fs.existsSync(OUTPUT_DIR)) {
       fs.mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -19,7 +19,7 @@ test.describe('Portal Transition Diagnostics at different zoom levels', () => {
       await page.goto(`file://${DIAGNOSTIC_FILE}`);
 
       // Wait for page to load and initial diagnostics
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState("networkidle");
 
       // Set body zoom
       await page.evaluate((z) => {
@@ -28,8 +28,8 @@ test.describe('Portal Transition Diagnostics at different zoom levels', () => {
 
       // Show portal
       await page.evaluate(() => {
-        const portal = document.getElementById('portal');
-        portal.style.display = 'flex';
+        const portal = document.getElementById("portal");
+        portal.style.display = "flex";
       });
 
       // Wait for layout
@@ -39,9 +39,9 @@ test.describe('Portal Transition Diagnostics at different zoom levels', () => {
       const diagnostics = await page.evaluate(() => {
         const bodyStyle = getComputedStyle(document.body);
         const bodyZoom = parseFloat(bodyStyle.zoom) || 1;
-        const portal = document.getElementById('portal');
+        const portal = document.getElementById("portal");
         const overlayRect = portal.getBoundingClientRect();
-        const img = document.getElementById('portalImg');
+        const img = document.getElementById("portalImg");
         const imageRect = img.getBoundingClientRect();
 
         return {
@@ -49,11 +49,13 @@ test.describe('Portal Transition Diagnostics at different zoom levels', () => {
           zoom: bodyZoom,
           windowInnerWidth: window.innerWidth,
           windowInnerHeight: window.innerHeight,
-          visualViewport: window.visualViewport ? {
-            width: window.visualViewport.width,
-            height: window.visualViewport.height,
-            scale: window.visualViewport.scale,
-          } : null,
+          visualViewport: window.visualViewport
+            ? {
+                width: window.visualViewport.width,
+                height: window.visualViewport.height,
+                scale: window.visualViewport.scale,
+              }
+            : null,
           devicePixelRatio: window.devicePixelRatio,
           overlayRect: {
             x: overlayRect.left,
@@ -99,7 +101,7 @@ test.describe('Portal Transition Diagnostics at different zoom levels', () => {
       expect(diagnostics.zoom).toBeCloseTo(zoom, 2);
       expect(diagnostics.overlayRect.width).toBeGreaterThan(0);
       expect(diagnostics.overlayRect.height).toBeGreaterThan(0);
-      expect(diagnostics.portalComputedStyle.position).toBe('fixed');
+      expect(diagnostics.portalComputedStyle.position).toBe("fixed");
 
       // Check if overlay covers full viewport (accounting for zoom)
       const expectedWidth = diagnostics.windowInnerWidth;
@@ -109,7 +111,7 @@ test.describe('Portal Transition Diagnostics at different zoom levels', () => {
       expect(Math.abs(diagnostics.overlayRect.height - expectedHeight)).toBeLessThan(2);
 
       // Check image is contained (object-fit: contain)
-      expect(diagnostics.imgComputedStyle.objectFit).toBe('contain');
+      expect(diagnostics.imgComputedStyle.objectFit).toBe("contain");
     });
   }
 });

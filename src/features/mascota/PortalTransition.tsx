@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { getViewportSize } from "./portalImageFit";
 
 /** Lee el zoom efectivo del `body` (1 si no está definido). */
@@ -140,15 +140,15 @@ export function PortalTransition({
   const viewportSize = getZoomCorrectedViewport();
 
   return (
-      <div
-        className="portal-transition"
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          ...viewportSize,
-        }}
-      >
+    <div
+      className="portal-transition"
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        ...viewportSize,
+      }}
+    >
       <img className="portal-transition__image" src={image} alt="" />
       {dissolving && <canvas className="portal-dissolve__canvas" ref={dissolveCanvasRef} />}
       <div className="portal-transition__banner">

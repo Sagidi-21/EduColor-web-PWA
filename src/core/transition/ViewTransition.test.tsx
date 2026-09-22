@@ -18,14 +18,12 @@ describe("ViewTransition pageTurn", () => {
   const views = {
     a: ({ navigate }: { navigate: (view: string, direction?: "right" | "left") => void }) => (
       <div data-testid="view-a">
-        View A
-        <button onClick={() => navigate("b", "right")}>Go B</button>
+        View A<button onClick={() => navigate("b", "right")}>Go B</button>
       </div>
     ),
     b: ({ navigate }: { navigate: (view: string, direction?: "right" | "left") => void }) => (
       <div data-testid="view-b">
-        View B
-        <button onClick={() => navigate("a", "left")}>Back A</button>
+        View B<button onClick={() => navigate("a", "left")}>Back A</button>
       </div>
     ),
   };
@@ -36,7 +34,8 @@ describe("ViewTransition pageTurn", () => {
 
   const findFrontPage = (container: HTMLElement) => container.querySelector(".vt-page--front");
   const findBackPage = (container: HTMLElement) => container.querySelector(".vt-page--back");
-  const findFrontContent = (container: HTMLElement) => container.querySelector(".vt-page--front .vt-page__content");
+  const findFrontContent = (container: HTMLElement) =>
+    container.querySelector(".vt-page--front .vt-page__content");
   const findShadow = (container: HTMLElement) => container.querySelector(".vt-page__shadow");
 
   it("idle state: renders only front page with current view", () => {
@@ -157,7 +156,7 @@ describe("ViewTransition pageTurn", () => {
     // With reduced motion, animation should be near-instant (0.01ms)
     // The front should still get the turn class but finish immediately
     expect(front).toHaveClass("vt-page--turn-right");
-    
+
     // Clean up mock
     vi.restoreAllMocks();
   });

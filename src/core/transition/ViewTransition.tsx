@@ -49,7 +49,11 @@ export interface ViewTransitionProps {
   defaultTheme?: TransitionTheme;
 }
 
-export function ViewTransition({ views, initialView, defaultTheme = "pageTurn" }: ViewTransitionProps) {
+export function ViewTransition({
+  views,
+  initialView,
+  defaultTheme = "pageTurn",
+}: ViewTransitionProps) {
   const [current, setCurrent] = useState(initialView);
   const [exiting, setExiting] = useState<string | null>(null);
   const [exitDirection, setExitDirection] = useState<TransitionDirection>("right");
@@ -108,7 +112,7 @@ export function ViewTransition({ views, initialView, defaultTheme = "pageTurn" }
   const api: ViewTransitionApi = { navigate };
   const themeApi: TransitionThemeApi = { theme, setTheme };
 
-const handleExitComplete = () => {
+  const handleExitComplete = () => {
     setExiting(null);
     setExitDirection("right");
   };
@@ -141,9 +145,7 @@ const handleExitComplete = () => {
                 onAnimationEnd={hasTransition ? handleExitComplete : undefined}
                 key={`front-${frontViewKey}`}
               >
-                <div className="vt-page__content">
-                  {views[frontViewKey]?.(api)}
-                </div>
+                <div className="vt-page__content">{views[frontViewKey]?.(api)}</div>
                 {hasTransition && <div className="vt-page__shadow" />}
               </div>
             </>
@@ -159,7 +161,9 @@ const handleExitComplete = () => {
                 </div>
               )}
               {hasTransition && (
-                <div className={`vt-panel vt-panel--entering vt-panel--entering-${theme}-${exitDirection}`}>
+                <div
+                  className={`vt-panel vt-panel--entering vt-panel--entering-${theme}-${exitDirection}`}
+                >
                   {views[current]?.(api)}
                 </div>
               )}

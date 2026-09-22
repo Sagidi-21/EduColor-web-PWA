@@ -25,11 +25,7 @@ describe("PortalTransitionImageOnly - Fixed positioning test", () => {
     setViewport(800, 600);
     const { container } = render(
       <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
-        <PortalTransitionImageOnly
-          label="Espacio"
-          image="test.png"
-          type="theme"
-        />
+        <PortalTransitionImageOnly label="Espacio" image="test.png" type="theme" />
       </div>,
     );
     const overlay = container.querySelector(".portal-transition") as HTMLDivElement;
@@ -47,11 +43,7 @@ describe("PortalTransitionImageOnly - Fixed positioning test", () => {
     setViewport(1200, 900);
     const { container } = render(
       <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
-        <PortalTransitionImageOnly
-          label="Espacio"
-          image="test.png"
-          type="theme"
-        />
+        <PortalTransitionImageOnly label="Espacio" image="test.png" type="theme" />
       </div>,
     );
     const overlay = container.querySelector(".portal-transition") as HTMLDivElement;
@@ -66,11 +58,7 @@ describe("PortalTransitionImageOnly - Fixed positioning test", () => {
     setViewport(1920, 1080);
     const { container } = render(
       <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
-        <PortalTransitionImageOnly
-          label="Espacio"
-          image="test.png"
-          type="theme"
-        />
+        <PortalTransitionImageOnly label="Espacio" image="test.png" type="theme" />
       </div>,
     );
     const overlay = container.querySelector(".portal-transition") as HTMLDivElement;
@@ -85,11 +73,7 @@ describe("PortalTransitionImageOnly - Fixed positioning test", () => {
     setViewport(800, 600);
     const { container, rerender } = render(
       <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
-        <PortalTransitionImageOnly
-          label="Espacio"
-          image="test.png"
-          type="theme"
-        />
+        <PortalTransitionImageOnly label="Espacio" image="test.png" type="theme" />
       </div>,
     );
     const overlay = container.querySelector(".portal-transition") as HTMLDivElement;
@@ -98,11 +82,7 @@ describe("PortalTransitionImageOnly - Fixed positioning test", () => {
     setViewport(1920, 1080);
     rerender(
       <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
-        <PortalTransitionImageOnly
-          label="Espacio"
-          image="test.png"
-          type="theme"
-        />
+        <PortalTransitionImageOnly label="Espacio" image="test.png" type="theme" />
       </div>,
     );
     const style = getComputedStyle(overlay);

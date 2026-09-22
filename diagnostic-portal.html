@@ -1,177 +1,188 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diagnóstico Portal Transition</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    background: #1e293b;
-    font-family: sans-serif;
-  }
-  .portal-transition {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: calc(100vw / var(--zoom, 1));
-    height: calc(100vh / var(--zoom, 1));
-    zoom: 1;
-    background: #000;
-    z-index: 9998;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    overflow: hidden;
-    pointer-events: none;
-  }
-  .portal-transition__image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: center;
-    transform: scale(1);
-    opacity: 1;
-  }
-  .portal-transition__banner {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    padding: 32px 16px;
-    font-size: clamp(18px, 2.5vw, 24px);
-    font-weight: 700;
-    color: #fff;
-    text-align: center;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-  }
-  .controls {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 9999;
-    display: flex;
-    gap: 8px;
-  }
-  button {
-    padding: 8px 16px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  #diagnostics {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.9);
-    color: #0f0;
-    font-family: monospace;
-    font-size: 12px;
-    padding: 12px;
-    border-radius: 4px;
-    max-height: 40vh;
-    overflow: auto;
-    z-index: 9999;
-    white-space: pre-wrap;
-  }
-</style>
-</head>
-<body>
-  <div class="controls">
-    <button onclick="setZoom(1)">Zoom 1</button>
-    <button onclick="setZoom(1.25)">Zoom 1.25</button>
-    <button onclick="setZoom(1.5)">Zoom 1.5</button>
-    <button onclick="togglePortal()">Toggle Portal</button>
-    <button onclick="captureDiagnostics()">Capture</button>
-  </div>
-  <div id="diagnostics"></div>
-
-  <div class="portal-transition" id="portal" style="display: none; --zoom: 1;">
-    <img class="portal-transition__image" id="portalImg" src="https://via.placeholder.com/1024x768/4f46e5/ffffff?text=Portal+Image" alt="" />
-    <div class="portal-transition__banner">
-      Has seleccionado el portal de <span style="color:#facc15">Espacio</span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diagnóstico Portal Transition</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background: #1e293b;
+        font-family: sans-serif;
+      }
+      .portal-transition {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: calc(100vw / var(--zoom, 1));
+        height: calc(100vh / var(--zoom, 1));
+        zoom: 1;
+        background: #000;
+        z-index: 9998;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .portal-transition__image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        transform: scale(1);
+        opacity: 1;
+      }
+      .portal-transition__banner {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        padding: 32px 16px;
+        font-size: clamp(18px, 2.5vw, 24px);
+        font-weight: 700;
+        color: #fff;
+        text-align: center;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+      }
+      .controls {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 9999;
+        display: flex;
+        gap: 8px;
+      }
+      button {
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      #diagnostics {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.9);
+        color: #0f0;
+        font-family: monospace;
+        font-size: 12px;
+        padding: 12px;
+        border-radius: 4px;
+        max-height: 40vh;
+        overflow: auto;
+        z-index: 9999;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="controls">
+      <button onclick="setZoom(1)">Zoom 1</button>
+      <button onclick="setZoom(1.25)">Zoom 1.25</button>
+      <button onclick="setZoom(1.5)">Zoom 1.5</button>
+      <button onclick="togglePortal()">Toggle Portal</button>
+      <button onclick="captureDiagnostics()">Capture</button>
     </div>
-  </div>
+    <div id="diagnostics"></div>
 
-<script>
-  function setZoom(z) {
-    document.body.style.zoom = z;
-    document.body.style.setProperty('--zoom', String(z));
-    const portal = document.getElementById('portal');
-    portal.style.setProperty('--zoom', String(z));
-    captureDiagnostics();
-  }
+    <div class="portal-transition" id="portal" style="display: none; --zoom: 1">
+      <img
+        class="portal-transition__image"
+        id="portalImg"
+        src="https://via.placeholder.com/1024x768/4f46e5/ffffff?text=Portal+Image"
+        alt=""
+      />
+      <div class="portal-transition__banner">
+        Has seleccionado el portal de <span style="color: #facc15">Espacio</span>
+      </div>
+    </div>
 
-  function togglePortal() {
-    const portal = document.getElementById('portal');
-    portal.style.display = portal.style.display === 'none' ? 'flex' : 'none';
-    captureDiagnostics();
-  }
+    <script>
+      function setZoom(z) {
+        document.body.style.zoom = z;
+        document.body.style.setProperty("--zoom", String(z));
+        const portal = document.getElementById("portal");
+        portal.style.setProperty("--zoom", String(z));
+        captureDiagnostics();
+      }
 
-  function captureDiagnostics() {
-    const bodyStyle = getComputedStyle(document.body);
-    const bodyZoom = parseFloat(bodyStyle.zoom) || 1;
-    const portal = document.getElementById('portal');
-    const overlayRect = portal.getBoundingClientRect();
-    const img = document.getElementById('portalImg');
-    const imageRect = img.getBoundingClientRect();
+      function togglePortal() {
+        const portal = document.getElementById("portal");
+        portal.style.display = portal.style.display === "none" ? "flex" : "none";
+        captureDiagnostics();
+      }
 
-    const diag = {
-      timestamp: new Date().toISOString(),
-      zoom: bodyZoom,
-      windowInnerWidth: window.innerWidth,
-      windowInnerHeight: window.innerHeight,
-      visualViewport: window.visualViewport ? {
-        width: window.visualViewport.width,
-        height: window.visualViewport.height,
-        scale: window.visualViewport.scale,
-      } : null,
-      devicePixelRatio: window.devicePixelRatio,
-      overlayRect: {
-        x: overlayRect.left,
-        y: overlayRect.top,
-        width: overlayRect.width,
-        height: overlayRect.height,
-        right: overlayRect.right,
-        bottom: overlayRect.bottom,
-      },
-      imageRect: {
-        x: imageRect.left,
-        y: imageRect.top,
-        width: imageRect.width,
-        height: imageRect.height,
-        right: imageRect.right,
-        bottom: imageRect.bottom,
-      },
-      portalComputedZoom: getComputedStyle(portal).getPropertyValue('--zoom'),
-      portalStyle: {
-        display: portal.style.display,
-        position: getComputedStyle(portal).position,
-        width: getComputedStyle(portal).width,
-        height: getComputedStyle(portal).height,
-        zoom: getComputedStyle(portal).zoom,
-      },
-      imgStyle: {
-        width: getComputedStyle(img).width,
-        height: getComputedStyle(img).height,
-        objectFit: getComputedStyle(img).objectFit,
-      },
-    };
+      function captureDiagnostics() {
+        const bodyStyle = getComputedStyle(document.body);
+        const bodyZoom = parseFloat(bodyStyle.zoom) || 1;
+        const portal = document.getElementById("portal");
+        const overlayRect = portal.getBoundingClientRect();
+        const img = document.getElementById("portalImg");
+        const imageRect = img.getBoundingClientRect();
 
-    const out = document.getElementById('diagnostics');
-    out.textContent = JSON.stringify(diag, null, 2) + '\n\n';
-    console.log('=== DIAGNÓSTICO ===', JSON.stringify(diag, null, 2));
-  }
+        const diag = {
+          timestamp: new Date().toISOString(),
+          zoom: bodyZoom,
+          windowInnerWidth: window.innerWidth,
+          windowInnerHeight: window.innerHeight,
+          visualViewport: window.visualViewport
+            ? {
+                width: window.visualViewport.width,
+                height: window.visualViewport.height,
+                scale: window.visualViewport.scale,
+              }
+            : null,
+          devicePixelRatio: window.devicePixelRatio,
+          overlayRect: {
+            x: overlayRect.left,
+            y: overlayRect.top,
+            width: overlayRect.width,
+            height: overlayRect.height,
+            right: overlayRect.right,
+            bottom: overlayRect.bottom,
+          },
+          imageRect: {
+            x: imageRect.left,
+            y: imageRect.top,
+            width: imageRect.width,
+            height: imageRect.height,
+            right: imageRect.right,
+            bottom: imageRect.bottom,
+          },
+          portalComputedZoom: getComputedStyle(portal).getPropertyValue("--zoom"),
+          portalStyle: {
+            display: portal.style.display,
+            position: getComputedStyle(portal).position,
+            width: getComputedStyle(portal).width,
+            height: getComputedStyle(portal).height,
+            zoom: getComputedStyle(portal).zoom,
+          },
+          imgStyle: {
+            width: getComputedStyle(img).width,
+            height: getComputedStyle(img).height,
+            objectFit: getComputedStyle(img).objectFit,
+          },
+        };
 
-  // Capture on load
-  window.addEventListener('load', () => {
-    captureDiagnostics();
-  });
-</script>
-</body>
+        const out = document.getElementById("diagnostics");
+        out.textContent = JSON.stringify(diag, null, 2) + "\n\n";
+        console.log("=== DIAGNÓSTICO ===", JSON.stringify(diag, null, 2));
+      }
+
+      // Capture on load
+      window.addEventListener("load", () => {
+        captureDiagnostics();
+      });
+    </script>
+  </body>
 </html>
