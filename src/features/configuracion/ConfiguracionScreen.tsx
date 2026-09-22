@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getAulaLabel, useClassProfile } from "../../core/context/ClassProfileContext";
+import { THEMES, useTransitionTheme } from "../../core/transition";
 import type { AppView } from "../home/HomeScreen";
 import "./ConfiguracionScreen.css";
 
@@ -28,6 +29,7 @@ export function ConfiguracionScreen({
 }) {
   const { aulas, activeAulaId, profile, setActiveAula, save, getProfile, addAula, removeAula } =
     useClassProfile();
+  const { theme, setTheme } = useTransitionTheme();
   const [name, setName] = useState(profile.className);
   const [color, setColor] = useState(profile.accentColor);
   const [zoom, setZoom] = useState(storedZoom);
@@ -237,6 +239,24 @@ export function ConfiguracionScreen({
                 <span className="cfg__zoom-label">{level.label}</span>
                 <span className="cfg__zoom-desc">{level.desc}</span>
                 {zoom === level.value && <span className="cfg__zoom-check">✓ Activo</span>}
+              </button>
+            ))}
+          </div>
+         </section>
+        <section className="cfg__section">
+          <h2 className="cfg__section-title">Tema de transición</h2>
+          <p className="cfg__section-desc">
+            Elige el efecto de animación al navegar entre pantallas.
+          </p>
+          <div className="cfg__theme-grid">
+            {THEMES.map((item) => (
+              <button
+                key={item.value}
+                className={`cfg__theme-card ${theme === item.value ? "cfg__theme-card--active" : ""}`}
+                onClick={() => setTheme(item.value)}
+              >
+                <span className="cfg__theme-label">{item.label}</span>
+                {theme === item.value && <span className="cfg__theme-check">✓ Activo</span>}
               </button>
             ))}
           </div>

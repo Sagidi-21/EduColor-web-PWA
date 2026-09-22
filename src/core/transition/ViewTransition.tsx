@@ -10,6 +10,41 @@ import "./ViewTransition.css";
 
 export type TransitionDirection = "right" | "left";
 
+export type TransitionTheme = "cube" | "flip" | "carousel" | "fall" | "newspaper";
+
+export const THEMES: ReadonlyArray<{ value: TransitionTheme; label: string }> = [
+  { value: "cube", label: "Cubo" },
+  { value: "flip", label: "Volteo" },
+  { value: "carousel", label: "Carrusel" },
+  { value: "fall", label: "Caída" },
+  { value: "newspaper", label: "Newspaper" },
+] as const;
+
+const THEME_STORAGE_KEY = "vt_theme";
+
+/* ---------------------------------------------------------------- */
+/* Transition theme context (for runtime theme switching)           */
+/* ---------------------------------------------------------------- */
+
+interface TransitionThemeApi {
+  theme: TransitionTheme;
+  setTheme: (theme: TransitionTheme) => void;
+}
+
+const TransitionThemeContext = createContext<TransitionThemeApi | null>(null);
+
+export function useTransitionTheme(): TransitionThemeApi {
+  const ctx = useContext(TransitionThemeContext);
+  if (!ctx) {
+    throw new Error("useTransitionTheme must be used within ViewTransition");
+  }
+  return ctx;
+}
+
+/* ---------------------------------------------------------------- */
+/* View transition context (navigation API)                         */
+/* ---------------------------------------------------------------- */
+
 export interface ViewTransitionApi {
   navigate: (view: string, direction?: TransitionDirection) => void;
 }
@@ -29,35 +64,30 @@ export type ViewRender = (api: ViewTransitionApi) => ReactNode;
 export interface ViewTransitionProps {
   views: Record<string, ViewRender>;
   initialView: string;
-  duration?: number;
+  defaultTheme?: TransitionTheme;
 }
 
-const DEFAULT_DURATION = 550;
-
-type TransitionState =
-  | { phase: "idle"; current: string }
-  | { phase: "animating"; outgoing: string; incoming: string; direction: TransitionDirection };
-
-export function ViewTransition({
-  views,
-  initialView,
-  duration = DEFAULT_DURATION,
-}: ViewTransitionProps) {
-  const [transition, setTransition] = useState<TransitionState>({
-    phase: "idle",
-    current: initialView,
+export function ViewTransition({ views, initialView, defaultTheme = "cube" }: ViewTransitionProps) {
+  const [current, setCurrent] = useState(initialView);
+  const [exiting, setExiting] = useState<string | null>(null);
+  const [exitDirection, setExitDirection] = useState<TransitionDirection>("right");
+  const [theme, setThemeState] = useState<TransitionTheme>(() => {
+    if (typeof window !== "undefined") {
+      const saved = window.localStorage.getItem(THEME_STORAGE_KEY);
+      if (saved && THEMES.some((t) => t.value === saved)) {
+        return saved as TransitionTheme;
+      }
+    }
+    return defaultTheme;
   });
 
   const navigateRef = useRef<(view: string, direction?: TransitionDirection) => void>(() => {});
 
   const navigate = (nextView: string, dir: TransitionDirection = "right") => {
-    if (transition.phase === "animating" || nextView === transition.current || !views[nextView]) return;
-    setTransition({
-      phase: "animating",
-      outgoing: transition.current,
-      incoming: nextView,
-      direction: dir,
-    });
+    if (exiting !== null || nextView === current || !views[nextView]) return;
+    setExiting(current);
+    setCurrent(nextView);
+    setExitDirection(dir);
   };
 
   useEffect(() => {
@@ -70,45 +100,43 @@ export function ViewTransition({
     };
   }, []);
 
-  useEffect(() => {
-    if (transition.phase !== "animating") return;
-    const timer = window.setTimeout(() => {
-      setTransition({ phase: "idle", current: transition.incoming });
-    }, duration);
-    return () => window.clearTimeout(timer);
-  }, [transition, duration]);
-
-  const isAnimating = transition.phase === "animating";
-  const activeView = isAnimating ? transition.outgoing : transition.current;
-  const nextView = isAnimating ? transition.incoming : null;
+  const setTheme = (newTheme: TransitionTheme) => {
+    setThemeState(newTheme);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+    }
+  };
 
   const api: ViewTransitionApi = { navigate };
+  const themeApi: TransitionThemeApi = { theme, setTheme };
 
-  const sceneClass = [
-    "vt-scene",
-    isAnimating ? "vt-scene--animating" : "",
-    isAnimating ? `vt-scene--${transition.direction}` : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const handleExitComplete = () => {
+    setExiting(null);
+    setExitDirection("right");
+  };
 
-  const wrapperClass = [
-    "vt-wrapper",
-    isAnimating ? "vt-wrapper--animating" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const hasTransition = exiting !== null;
 
   return (
     <ViewTransitionContext.Provider value={api}>
-      <div className={wrapperClass}>
-        <div className={sceneClass}>
-          <div className="vt-panel vt-panel--from">{views[activeView]?.(api)}</div>
-          {nextView && (
-            <div className="vt-panel vt-panel--to">{views[nextView]?.(api)}</div>
+      <TransitionThemeContext.Provider value={themeApi}>
+        <div className="vt-wrapper">
+          <div className="vt-panel vt-panel--active">{views[current]?.(api)}</div>
+          {hasTransition && (
+            <div
+              className={`vt-panel vt-panel--exiting vt-panel--exiting-${theme}-${exitDirection}`}
+              onAnimationEnd={handleExitComplete}
+            >
+              {views[exiting]?.(api)}
+            </div>
+          )}
+          {hasTransition && (
+            <div className={`vt-panel vt-panel--entering vt-panel--entering-${theme}-${exitDirection}`}>
+              {views[current]?.(api)}
+            </div>
           )}
         </div>
-      </div>
+      </TransitionThemeContext.Provider>
     </ViewTransitionContext.Provider>
   );
 }

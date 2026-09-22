@@ -1,57 +1,546 @@
+/* ============================================================= */
+/* ViewTransition — Theme-based page transition system           */
+/* Themes: cube, flip, carousel, fall, newspaper                 */
+/* Master reference: docs/animations_master.css                  */
+/* ============================================================= */
+
+/* --- Base panel styles (shared by all themes) --- */
+
 .vt-wrapper {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  perspective: 1600px;
+  perspective: 1200px;
   overflow: hidden;
-}
-
-.vt-scene {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transform: rotateY(0deg);
-  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.vt-scene--animating.vt-scene--right {
-  transform: rotateY(-90deg);
-}
-
-.vt-scene--animating.vt-scene--left {
-  transform: rotateY(90deg);
 }
 
 .vt-panel {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  visibility: hidden;
   backface-visibility: hidden;
   overflow: hidden;
 }
 
-.vt-panel--from {
-  transform: rotateY(0deg);
+.vt-panel--active {
+  visibility: visible;
+  z-index: 1;
 }
 
-.vt-panel--to {
-  transform: rotateY(90deg);
+.vt-panel--exiting {
+  z-index: 2;
 }
 
-.vt-scene--left .vt-panel--to {
-  transform: rotateY(-90deg);
+.vt-panel--entering {
+  visibility: visible;
+  z-index: 3;
+  background-color: var(--color-bg, #f1f5f9);
 }
 
-.vt-wrapper--animating .vt-panel--from {
-  pointer-events: none;
+/* Exiting and entering panels must be visible during animation */
+
+/* ============================================================= */
+/* THEME: cube                                                   */
+/* Rotación tipo cubo 3D                                         */
+/* Avanzar: rotateCubeRightOut / rotateCubeRightIn              */
+/* Retroceder: rotateCubeLeftOut / rotateCubeLeftIn             */
+/* ============================================================= */
+
+/* Cube — exiting (folding out) */
+.vt-panel--exiting-cube-right {
+  -webkit-transform-origin: 100% 50%;
+  transform-origin: 100% 50%;
+  -webkit-animation: vt-rotateCubeRightOut 0.6s both ease-in;
+  animation: vt-rotateCubeRightOut 0.6s both ease-in;
 }
+
+.vt-panel--exiting-cube-left {
+  -webkit-transform-origin: 0% 50%;
+  transform-origin: 0% 50%;
+  -webkit-animation: vt-rotateCubeLeftOut 0.6s both ease-in;
+  animation: vt-rotateCubeLeftOut 0.6s both ease-in;
+}
+
+/* Cube — entering (folding in) */
+.vt-panel--entering-cube-right {
+  -webkit-transform-origin: 0% 50%;
+  transform-origin: 0% 50%;
+  -webkit-animation: vt-rotateCubeRightIn 0.6s both ease-in;
+  animation: vt-rotateCubeRightIn 0.6s both ease-in;
+}
+
+.vt-panel--entering-cube-left {
+  -webkit-transform-origin: 100% 50%;
+  transform-origin: 100% 50%;
+  -webkit-animation: vt-rotateCubeLeftIn 0.6s both ease-in;
+  animation: vt-rotateCubeLeftIn 0.6s both ease-in;
+}
+
+@-webkit-keyframes vt-rotateCubeLeftOut {
+  0% {}
+  50% {
+    -webkit-animation-timing-function: ease-out;
+    -webkit-transform: translateX(-50%) translateZ(-200px) rotateY(-45deg);
+  }
+  100% {
+    opacity: 0.3;
+    -webkit-transform: translateX(-100%) rotateY(-90deg);
+  }
+}
+@keyframes vt-rotateCubeLeftOut {
+  0% {}
+  50% {
+    animation-timing-function: ease-out;
+    -webkit-transform: translateX(-50%) translateZ(-200px) rotateY(-45deg);
+    transform: translateX(-50%) translateZ(-200px) rotateY(-45deg);
+  }
+  100% {
+    opacity: 0.3;
+    -webkit-transform: translateX(-100%) rotateY(-90deg);
+    transform: translateX(-100%) rotateY(-90deg);
+  }
+}
+
+@-webkit-keyframes vt-rotateCubeLeftIn {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateX(100%) rotateY(90deg);
+  }
+  50% {
+    -webkit-animation-timing-function: ease-out;
+    -webkit-transform: translateX(50%) translateZ(-200px) rotateY(45deg);
+  }
+}
+@keyframes vt-rotateCubeLeftIn {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateX(100%) rotateY(90deg);
+    transform: translateX(100%) rotateY(90deg);
+  }
+  50% {
+    animation-timing-function: ease-out;
+    -webkit-transform: translateX(50%) translateZ(-200px) rotateY(45deg);
+    transform: translateX(50%) translateZ(-200px) rotateY(45deg);
+  }
+}
+
+@-webkit-keyframes vt-rotateCubeRightOut {
+  0% {}
+  50% {
+    -webkit-animation-timing-function: ease-out;
+    -webkit-transform: translateX(50%) translateZ(-200px) rotateY(45deg);
+  }
+  100% {
+    opacity: 0.3;
+    -webkit-transform: translateX(100%) rotateY(90deg);
+  }
+}
+@keyframes vt-rotateCubeRightOut {
+  0% {}
+  50% {
+    animation-timing-function: ease-out;
+    -webkit-transform: translateX(50%) translateZ(-200px) rotateY(45deg);
+    transform: translateX(50%) translateZ(-200px) rotateY(45deg);
+  }
+  100% {
+    opacity: 0.3;
+    -webkit-transform: translateX(100%) rotateY(90deg);
+    transform: translateX(100%) rotateY(90deg);
+  }
+}
+
+@-webkit-keyframes vt-rotateCubeRightIn {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateX(-100%) rotateY(-90deg);
+  }
+  50% {
+    -webkit-animation-timing-function: ease-out;
+    -webkit-transform: translateX(-50%) translateZ(-200px) rotateY(-45deg);
+  }
+}
+@keyframes vt-rotateCubeRightIn {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateX(-100%) rotateY(-90deg);
+    transform: translateX(-100%) rotateY(-90deg);
+  }
+  50% {
+    animation-timing-function: ease-out;
+    -webkit-transform: translateX(-50%) translateZ(-200px) rotateY(-45deg);
+    transform: translateX(-50%) translateZ(-200px) rotateY(-45deg);
+  }
+}
+
+/* ============================================================= */
+/* THEME: flip                                                   */
+/* Volteo 3D con translateZ(-1000px)                             */
+/* Avanzar: flipOutRight / flipInLeft                            */
+/* Retroceder: flipOutLeft / flipInRight                          */
+/* ============================================================= */
+
+.vt-panel--exiting-flip-right {
+  -webkit-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-animation: vt-flipOutRight 0.5s both ease-in;
+  animation: vt-flipOutRight 0.5s both ease-in;
+}
+
+.vt-panel--entering-flip-right {
+  -webkit-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-animation: vt-flipInLeft 0.5s both ease-out;
+  animation: vt-flipInLeft 0.5s both ease-out;
+}
+
+.vt-panel--exiting-flip-left {
+  -webkit-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-animation: vt-flipOutLeft 0.5s both ease-in;
+  animation: vt-flipOutLeft 0.5s both ease-in;
+}
+
+.vt-panel--entering-flip-left {
+  -webkit-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-animation: vt-flipInRight 0.5s both ease-out;
+  animation: vt-flipInRight 0.5s both ease-out;
+}
+
+@-webkit-keyframes vt-flipOutRight {
+  from {}
+  to {
+    -webkit-transform: translateZ(-1000px) rotateY(90deg);
+    opacity: 0.2;
+  }
+}
+@keyframes vt-flipOutRight {
+  from {}
+  to {
+    -webkit-transform: translateZ(-1000px) rotateY(90deg);
+    transform: translateZ(-1000px) rotateY(90deg);
+    opacity: 0.2;
+  }
+}
+
+@-webkit-keyframes vt-flipInLeft {
+  from {
+    -webkit-transform: translateZ(-1000px) rotateY(-90deg);
+    opacity: 1;
+  }
+}
+@keyframes vt-flipInLeft {
+  from {
+    -webkit-transform: translateZ(-1000px) rotateY(-90deg);
+    transform: translateZ(-1000px) rotateY(-90deg);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes vt-flipOutLeft {
+  from {}
+  to {
+    -webkit-transform: translateZ(-1000px) rotateY(-90deg);
+    opacity: 0.2;
+  }
+}
+@keyframes vt-flipOutLeft {
+  from {}
+  to {
+    -webkit-transform: translateZ(-1000px) rotateY(-90deg);
+    transform: translateZ(-1000px) rotateY(-90deg);
+    opacity: 0.2;
+  }
+}
+
+@-webkit-keyframes vt-flipInRight {
+  from {
+    -webkit-transform: translateZ(-1000px) rotateY(90deg);
+    opacity: 1;
+  }
+}
+@keyframes vt-flipInRight {
+  from {
+    -webkit-transform: translateZ(-1000px) rotateY(90deg);
+    transform: translateZ(-1000px) rotateY(90deg);
+    opacity: 1;
+  }
+}
+
+/* ============================================================= */
+/* THEME: carousel                                               */
+/* Carrusel 3D con scale(0.4)                                    */
+/* Avanzar: carouselRightOut / carouselRightIn                   */
+/* Retroceder: carouselLeftOut / carouselLeftIn                  */
+/* ============================================================= */
+
+.vt-panel--exiting-carousel-right {
+  -webkit-transform-origin: 0% 50%;
+  transform-origin: 0% 50%;
+  -webkit-animation: vt-rotateCarouselRightOut 0.8s both ease;
+  animation: vt-rotateCarouselRightOut 0.8s both ease;
+}
+
+.vt-panel--entering-carousel-right {
+  -webkit-transform-origin: 0% 50%;
+  transform-origin: 0% 50%;
+  -webkit-animation: vt-rotateCarouselRightIn 0.8s both ease;
+  animation: vt-rotateCarouselRightIn 0.8s both ease;
+}
+
+.vt-panel--exiting-carousel-left {
+  -webkit-transform-origin: 100% 50%;
+  transform-origin: 100% 50%;
+  -webkit-animation: vt-rotateCarouselLeftOut 0.8s both ease;
+  animation: vt-rotateCarouselLeftOut 0.8s both ease;
+}
+
+.vt-panel--entering-carousel-left {
+  -webkit-transform-origin: 100% 50%;
+  transform-origin: 100% 50%;
+  -webkit-animation: vt-rotateCarouselLeftIn 0.8s both ease;
+  animation: vt-rotateCarouselLeftIn 0.8s both ease;
+}
+
+@-webkit-keyframes vt-rotateCarouselLeftOut {
+  from {}
+  to {
+    opacity: 0.3;
+    -webkit-transform: translateX(-150%) scale(0.4) rotateY(-65deg);
+  }
+}
+@keyframes vt-rotateCarouselLeftOut {
+  from {}
+  to {
+    opacity: 0.3;
+    -webkit-transform: translateX(-150%) scale(0.4) rotateY(-65deg);
+    transform: translateX(-150%) scale(0.4) rotateY(-65deg);
+  }
+}
+
+@-webkit-keyframes vt-rotateCarouselLeftIn {
+  from {
+    opacity: 1;
+    -webkit-transform: translateX(200%) scale(0.4) rotateY(65deg);
+  }
+}
+@keyframes vt-rotateCarouselLeftIn {
+  from {
+    opacity: 1;
+    -webkit-transform: translateX(200%) scale(0.4) rotateY(65deg);
+    transform: translateX(200%) scale(0.4) rotateY(65deg);
+  }
+}
+
+@-webkit-keyframes vt-rotateCarouselRightOut {
+  from {}
+  to {
+    opacity: 0.3;
+    -webkit-transform: translateX(200%) scale(0.4) rotateY(65deg);
+  }
+}
+@keyframes vt-rotateCarouselRightOut {
+  from {}
+  to {
+    opacity: 0.3;
+    -webkit-transform: translateX(200%) scale(0.4) rotateY(65deg);
+    transform: translateX(200%) scale(0.4) rotateY(65deg);
+  }
+}
+
+@-webkit-keyframes vt-rotateCarouselRightIn {
+  from {
+    opacity: 1;
+    -webkit-transform: translateX(-200%) scale(0.4) rotateY(-65deg);
+  }
+}
+@keyframes vt-rotateCarouselRightIn {
+  from {
+    opacity: 1;
+    -webkit-transform: translateX(-200%) scale(0.4) rotateY(-65deg);
+    transform: translateX(-200%) scale(0.4) rotateY(-65deg);
+  }
+}
+
+/* ============================================================= */
+/* Responsive: respects reduced motion                         */
+/* ============================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-  .vt-scene {
-    transition: none;
+  .vt-panel--exiting,
+  .vt-panel--entering {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+
+/* ============================================================= */
+/* THEME: fall                                                   */
+/* Caída con rotateZ + translateY                                  */
+/* Avanzar/Retroceder: rotateFall (misma animación)              */
+/* ============================================================= */
+
+.vt-panel--exiting-fall-right,
+.vt-panel--exiting-fall-left {
+  -webkit-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-animation: vt-rotateFall 1s both ease-in;
+  animation: vt-rotateFall 1s both ease-in;
+}
+
+.vt-panel--entering-fall-right,
+.vt-panel--entering-fall-left {
+  -webkit-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-animation: vt-rotateFallIn 0.6s both ease-out;
+  animation: vt-rotateFallIn 0.6s both ease-out;
+}
+
+@-webkit-keyframes vt-rotateFall {
+  0% {
+    -webkit-transform: rotateZ(0deg);
+  }
+  20% {
+    -webkit-animation-timing-function: ease-out;
+    -webkit-transform: rotateZ(10deg);
+  }
+  40% {
+    -webkit-transform: rotateZ(17deg);
+  }
+  60% {
+    -webkit-transform: rotateZ(16deg);
+  }
+  100% {
+    -webkit-transform: translateY(100%) rotateZ(17deg);
+  }
+}
+@keyframes vt-rotateFall {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  20% {
+    animation-timing-function: ease-out;
+    transform: rotateZ(10deg);
+  }
+  40% {
+    transform: rotateZ(17deg);
+  }
+  60% {
+    transform: rotateZ(16deg);
+  }
+  100% {
+    transform: translateY(100%) rotateZ(17deg);
+  }
+}
+
+@-webkit-keyframes vt-rotateFallIn {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateY(100%) rotateZ(-17deg);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: rotateZ(0deg);
+  }
+}
+@keyframes vt-rotateFallIn {
+  0% {
+    opacity: 1;
+    transform: translateY(100%) rotateZ(-17deg);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateZ(0deg);
+  }
+}
+
+/* ============================================================= */
+/* THEME: newspaper                                              */
+/* Rotación 360° con translateZ(-3000px)                           */
+/* Avanzar: OutNewspaper + InNewspaper                           */
+/* Retroceder: OutNewspaperReverse + InNewspaperReverse           */
+/* ============================================================= */
+
+.vt-panel--exiting-newspaper-right {
+  -webkit-animation: vt-rotateOutNewspaper 0.7s both ease-in;
+  animation: vt-rotateOutNewspaper 0.7s both ease-in;
+}
+
+.vt-panel--entering-newspaper-right {
+  -webkit-animation: vt-rotateInNewspaper 0.7s both ease-out;
+  animation: vt-rotateInNewspaper 0.7s both ease-out;
+}
+
+.vt-panel--exiting-newspaper-left {
+  -webkit-animation: vt-rotateOutNewspaperReverse 0.7s both ease-in;
+  animation: vt-rotateOutNewspaperReverse 0.7s both ease-in;
+}
+
+.vt-panel--entering-newspaper-left {
+  -webkit-animation: vt-rotateInNewspaperReverse 0.7s both ease-out;
+  animation: vt-rotateInNewspaperReverse 0.7s both ease-out;
+}
+
+@-webkit-keyframes vt-rotateOutNewspaper {
+  from {}
+  to {
+    opacity: 0;
+    -webkit-transform: translateZ(-3000px) rotateZ(360deg);
+  }
+}
+@keyframes vt-rotateOutNewspaper {
+  from {}
+  to {
+    opacity: 0;
+    -webkit-transform: translateZ(-3000px) rotateZ(360deg);
+    transform: translateZ(-3000px) rotateZ(360deg);
+  }
+}
+
+@-webkit-keyframes vt-rotateInNewspaper {
+  from {
+    opacity: 1;
+    -webkit-transform: translateZ(-3000px) rotateZ(-360deg) scale(0.001);
+  }
+}
+@keyframes vt-rotateInNewspaper {
+  from {
+    opacity: 1;
+    -webkit-transform: translateZ(-3000px) rotateZ(-360deg) scale(0.001);
+    transform: translateZ(-3000px) rotateZ(-360deg) scale(0.001);
+  }
+}
+
+@-webkit-keyframes vt-rotateOutNewspaperReverse {
+  from {}
+  to {
+    opacity: 0;
+    -webkit-transform: translateZ(-3000px) rotateZ(-360deg);
+  }
+}
+@keyframes vt-rotateOutNewspaperReverse {
+  from {}
+  to {
+    opacity: 0;
+    -webkit-transform: translateZ(-3000px) rotateZ(-360deg);
+    transform: translateZ(-3000px) rotateZ(-360deg);
+  }
+}
+
+@-webkit-keyframes vt-rotateInNewspaperReverse {
+  from {
+    opacity: 1;
+    -webkit-transform: translateZ(-3000px) rotateZ(360deg) scale(0.001);
+  }
+}
+@keyframes vt-rotateInNewspaperReverse {
+  from {
+    opacity: 1;
+    -webkit-transform: translateZ(-3000px) rotateZ(360deg) scale(0.001);
+    transform: translateZ(-3000px) rotateZ(360deg) scale(0.001);
   }
 }

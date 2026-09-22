@@ -502,3 +502,51 @@
   background: #ede9fe;
   transform: translateY(-1px);
 }
+
+/* ── Tema de transición ─────────────────────────── */
+.cfg__theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.cfg__theme-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  background: transparent;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    transform 0.1s;
+}
+
+.cfg__theme-card:hover {
+  border-color: #6366f1;
+  background: #e0e7ff;
+  transform: translateY(-2px);
+}
+
+.cfg__theme-card--active {
+  border-color: #6366f1;
+  background: #ede9fe;
+}
+
+.cfg__theme-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.cfg__theme-check {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6366f1;
+  margin-top: 2px;
+}
