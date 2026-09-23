@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useMemo, useState } from "react";
 import { generateSession } from "../../../core/activities/problemas";
 import type { ProblemaExercise, SessionResult, Theme } from "../../../core/activities/problemas";
 import type { EngineScreenProps } from "../engine-screens";
@@ -27,12 +27,24 @@ interface SessionState {
   alreadyFailed: boolean;
 }
 
-const THEMES: { id: Theme; label: string; emoji: string }[] = [
-  { id: "deportes", label: "Deportes", emoji: "⚽" },
-  { id: "animales", label: "Animales", emoji: "🐾" },
-  { id: "clase", label: "Clase", emoji: "✏️" },
-  { id: "naturaleza", label: "Naturaleza", emoji: "🌿" },
+const THEMES: { id: Theme; label: string; emoji: string; color: string }[] = [
+  { id: "deportes", label: "Deportes", emoji: "⚽", color: "var(--color-primary)" },
+  { id: "animales", label: "Animales", emoji: "🐾", color: "#22c55e" },
+  { id: "clase", label: "Clase", emoji: "✏️", color: "#f59e0b" },
+  { id: "naturaleza", label: "Naturaleza", emoji: "🌿", color: "#10b981" },
 ];
+
+function sanitizeText(value: string): string {
+  return value
+    .replace(/<[^>]*>/g, "")
+    .replace(/javascript:/gi, "")
+    .replace(/on\w+=/gi, "")
+    .trimStart();
+}
+
+function slotCount(answer: number): number {
+  return answer >= 10 ? 2 : 1;
+}
 
 export function ProblemaScreen({
   activity,
@@ -48,29 +60,39 @@ export function ProblemaScreen({
 
   const [canvasKey, setCanvasKey] = useState(0);
 
-  const [session, setSession] = useState<SessionState>(() => {
-    const exs = generateSession(difficulty, seed, "deportes");
-    const firstLen = exs.length > 0 ? String(exs[0].answer).length : 1;
-    return {
-      exercises: exs,
-      currentIndex: 0,
-      correctCount: 0,
-      startTime: Date.now(),
-      answerState: "idle",
-      digits: Array(firstLen).fill(""),
-      activeDigit: Math.max(firstLen - 1, 0),
-      theme: null,
-      alreadyFailed: false,
-    };
-  });
+  const [session, setSession] = useState<SessionState>(() => ({
+    exercises: [],
+    currentIndex: 0,
+    correctCount: 0,
+    startTime: Date.now(),
+    answerState: "idle",
+    digits: [""],
+    activeDigit: 0,
+    theme: null,
+    alreadyFailed: false,
+  }));
   const [finished, setFinished] = useState<SessionResult | null>(null);
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
 
+  const safeStory = useMemo(() => (current ? sanitizeText(current.story) : ""), [current]);
+  const safeQuestion = useMemo(() => (current ? sanitizeText(current.question) : ""), [current]);
+  const solutionText = useMemo(() => {
+    if (!current) return "";
+    const stageOk = session.answerState === "correct";
+    return sanitizeText(
+      stageOk
+        ? current.solutionTemplate.replace("___", String(current.answer))
+        : current.solutionTemplate,
+    );
+  }, [current, session.answerState]);
+
   const submitDigits = useCallback(
     (newDigits: string[]) => {
-      const answer = parseInt(newDigits.join(""), 10);
+      if (!current) return;
+      const combined = newDigits.join("");
+      const answer = parseInt(combined, 10);
       const isCorrect = !isNaN(answer) && answer === current.answer;
       playFeedback(isCorrect);
       setSession((s) => ({
@@ -133,7 +155,8 @@ export function ProblemaScreen({
   }, [session, submitDigits]);
 
   const handleRetry = useCallback(() => {
-    const curLen = String(session.exercises[session.currentIndex].answer).length;
+    if (!current) return;
+    const curLen = slotCount(current.answer);
     setSession((s) => ({
       ...s,
       answerState: "idle",
@@ -141,7 +164,7 @@ export function ProblemaScreen({
       activeDigit: curLen - 1,
       alreadyFailed: true,
     }));
-  }, [session]);
+  }, [current]);
 
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
@@ -151,8 +174,8 @@ export function ProblemaScreen({
         correct: session.correctCount,
         duration: Date.now() - session.startTime,
       });
-    } else {
-      const nextLen = String(session.exercises[next].answer).length;
+    } else if (session.exercises[next]) {
+      const nextLen = slotCount(session.exercises[next].answer);
       setSession((s) => ({
         ...s,
         currentIndex: next,
@@ -171,9 +194,10 @@ export function ProblemaScreen({
   }, [session.answerState, handleNext]);
 
   const handleRestart = useCallback(() => {
+    if (!session.theme) return;
+    const exs = generateSession(difficulty, Date.now() % 999983, session.theme);
+    const firstLen = exs.length > 0 ? slotCount(exs[0].answer) : 1;
     setFinished(null);
-    const exs = generateSession(difficulty, Date.now() % 999983, session.theme ?? "deportes");
-    const firstLen = exs.length > 0 ? String(exs[0].answer).length : 1;
     setSession({
       exercises: exs,
       currentIndex: 0,
@@ -181,7 +205,7 @@ export function ProblemaScreen({
       startTime: Date.now(),
       answerState: "idle",
       digits: Array(firstLen).fill(""),
-      activeDigit: Math.max(firstLen - 1, 0),
+      activeDigit: firstLen - 1,
       theme: session.theme,
       alreadyFailed: false,
     });
@@ -190,7 +214,7 @@ export function ProblemaScreen({
   const startSession = useCallback(
     (t: Theme) => {
       const exs = generateSession(difficulty, seed, t);
-      const firstLen = exs.length > 0 ? String(exs[0].answer).length : 1;
+      const firstLen = exs.length > 0 ? slotCount(exs[0].answer) : 1;
       setSession({
         exercises: exs,
         currentIndex: 0,
@@ -198,7 +222,7 @@ export function ProblemaScreen({
         startTime: Date.now(),
         answerState: "idle",
         digits: Array(firstLen).fill(""),
-        activeDigit: Math.max(firstLen - 1, 0),
+        activeDigit: firstLen - 1,
         theme: t,
         alreadyFailed: false,
       });
@@ -234,7 +258,12 @@ export function ProblemaScreen({
           <p className="prob__theme-title">¿De qué trata el problema?</p>
           <div className="prob__theme-grid">
             {THEMES.map((t) => (
-              <button key={t.id} className="prob__theme-card" onClick={() => startSession(t.id)}>
+              <button
+                key={t.id}
+                className="prob__theme-card"
+                style={{ ["--theme-color" as never]: t.color }}
+                onClick={() => startSession(t.id)}
+              >
                 <span className="prob__theme-emoji">{t.emoji}</span>
                 <span className="prob__theme-label">{t.label}</span>
               </button>
@@ -247,23 +276,15 @@ export function ProblemaScreen({
 
   if (!current) return null;
 
-  const aLen = String(current.a).length;
-  const bLen = String(current.b).length;
-  const answerLen = String(current.answer).length;
-  const numCols = Math.max(aLen, bLen, answerLen);
+  // NOTE: story, question y solutionTemplate hoy se generan con literales internos
+  // del core (generateSession), así que sanitizeText es una capa preventiva. Si
+  // en el futuro estos textos aceptan parámetros externos (backend/plantillas),
+  // esta sanitización ya evita XSS por HTML, `javascript:` o atributos on*= .
+
+  const isTwoDigits = slotCount(current.answer) === 2;
   const opSym = current.op === "suma" ? "+" : "−";
   const stageOk = session.answerState === "correct";
   const stageBad = session.answerState === "wrong";
-  const solutionText = stageOk
-    ? current.solutionTemplate.replace("___", String(current.answer))
-    : current.solutionTemplate;
-
-  const aDigits = [...Array(numCols - aLen).fill(null), ...String(current.a).split("")];
-  const bDigits = [...Array(numCols - bLen).fill(null), ...String(current.b).split("")];
-  const answerDigits = [
-    ...Array(numCols - answerLen).fill(null),
-    ...String(current.answer).split(""),
-  ];
 
   return (
     <div className="prob">
@@ -287,73 +308,75 @@ export function ProblemaScreen({
         <div className="prob__card">
           <span className="prob__emoji">{current.emoji}</span>
           <div className="prob__card-texts">
-            <p className="prob__story">{current.story}</p>
-            <p className="prob__question">{current.question}</p>
+            <p className="prob__story">{safeStory}</p>
+            <p className="prob__question">{safeQuestion}</p>
           </div>
         </div>
 
         <div className="prob__section-block">
           <span className="prob__section-label">OPERACIÓN</span>
-          <div className="prob__vertical" style={{ "--ncols": numCols } as React.CSSProperties}>
-            <span className="prob__vcell prob__vcell--sym" />
-            {aDigits.map((d, i) => (
-              <span key={`a${i}`} className="prob__vcell">
-                {d ?? ""}
-              </span>
-            ))}
+          <div className="prob__op-row">
+            <div className="prob__operand">
+              <div className="prob__num-box">{current.a}</div>
+            </div>
 
-            <span className="prob__vcell prob__vcell--sym">{opSym}</span>
-            {bDigits.map((d, i) => (
-              <span key={`b${i}`} className="prob__vcell">
-                {d ?? ""}
-              </span>
-            ))}
+            <span className="prob__op-sym">{opSym}</span>
 
-            <div className="prob__vdivider" />
+            <div className="prob__operand">
+              <div className="prob__num-box">{current.b}</div>
+            </div>
 
-            <span className="prob__vcell prob__vcell--sym" />
-            {answerDigits.map((d, i) => {
-              const isActiveBox = session.answerState === "idle" && session.activeDigit === i;
-              if (mode === "canvas" && isActiveBox) {
+            <span className="prob__op-sym">=</span>
+
+            <div className="prob__answer-slots">
+              {session.digits.map((val, slot) => {
+                const isActiveBox = session.answerState === "idle" && session.activeDigit === slot;
+                const showCanvas = mode === "canvas" && isActiveBox;
                 return (
-                  <LazyDigitCell
-                    key={`dab-${i}-${canvasKey}`}
-                    isActive={true}
-                    onActivate={() => {}}
-                    onConfirm={(dig) => handleCanvasConfirm(i, dig)}
-                    onClear={() => {
-                      const nd = [...session.digits];
-                      nd[i] = "";
-                      setSession((s) => ({ ...s, digits: nd }));
-                    }}
-                    state="idle"
-                    value=""
-                  />
+                  <div key={slot} className="prob__dab-slot">
+                    {isTwoDigits && (
+                      <span className="prob__du-label">{slot === 0 ? "D" : "U"}</span>
+                    )}
+                    {showCanvas ? (
+                      <LazyDigitCell
+                        key={`dab-${slot}-${canvasKey}`}
+                        isActive={true}
+                        onActivate={() => {}}
+                        onConfirm={(dig) => handleCanvasConfirm(slot, dig)}
+                        onClear={() => {
+                          const nd = [...session.digits];
+                          nd[slot] = "";
+                          setSession((s) => ({ ...s, digits: nd }));
+                        }}
+                        state={session.answerState !== "idle" ? session.answerState : "idle"}
+                        value={val}
+                      />
+                    ) : (
+                      <div
+                        className={[
+                          "prob__answer-box",
+                          isActiveBox ? "prob__answer-box--active" : "",
+                          session.answerState === "correct" ? "prob__answer-box--correct" : "",
+                          session.answerState === "wrong" ? "prob__answer-box--wrong" : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        onClick={() => {
+                          if (session.answerState !== "idle") return;
+                          const nd = [...session.digits];
+                          nd[slot] = "";
+                          setSession((s) => ({ ...s, activeDigit: slot, digits: nd }));
+                        }}
+                      >
+                        {stageOk
+                          ? String(current.answer).padStart(slotCount(current.answer), "0")[slot]
+                          : val}
+                      </div>
+                    )}
+                  </div>
                 );
-              }
-              return (
-                <div
-                  key={i}
-                  className={[
-                    "prob__vbox",
-                    isActiveBox ? "prob__vbox--active" : "",
-                    session.answerState === "correct" ? "prob__vbox--correct" : "",
-                    session.answerState === "wrong" ? "prob__vbox--wrong" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  onClick={() => {
-                    if (session.answerState !== "idle") return;
-                    const nd = [...session.digits];
-                    nd[i] = "";
-                    setSession((s) => ({ ...s, activeDigit: i, digits: nd }));
-                  }}
-                >
-                  {session.digits[i] ||
-                    (isActiveBox ? <span className="prob__cursor">_</span> : "")}
-                </div>
-              );
-            })}
+              })}
+            </div>
           </div>
         </div>
 

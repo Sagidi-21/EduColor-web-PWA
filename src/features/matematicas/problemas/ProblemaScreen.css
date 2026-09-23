@@ -67,94 +67,120 @@
   align-self: flex-start;
 }
 
-/* ── Vertical operation layout ────────────────────────── */
+/* ── Operation row (horizontal a op b = slots) ─────────── */
 
-.prob__vertical {
+.prob__op-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.prob__operand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.prob__num-box {
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 900;
+  color: var(--color-primary-dark);
+  background: #fff;
+  border: 3px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 10px 20px;
+  min-width: 80px;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.prob__op-sym {
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 900;
+  color: #475569;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* ── Answer slots (1 o 2, con D/U) ─────────────────────── */
+
+.prob__answer-slots {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.prob__dab-slot {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  position: relative;
 }
 
-.prob__vcell {
-  font-size: clamp(32px, 4.5vw, 52px);
+.prob__du-label {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+/* Override canvas de DigitCell dentro de problemas para mantener compacto */
+.prob__dab-slot .dab__canvas {
+  width: clamp(100px, 14vw, 160px);
+  height: clamp(100px, 14vw, 160px);
+}
+.prob__dab-slot .dab {
+  min-width: clamp(100px, 14vw, 160px);
+}
+
+.prob__answer-box {
+  font-size: clamp(36px, 5vw, 56px);
   font-weight: 900;
   color: var(--color-primary-dark);
-  min-width: clamp(50px, 7vw, 80px);
-  text-align: center;
-  line-height: 1.1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.prob__vcell--sym {
-  color: #475569;
-  font-size: clamp(28px, 3.5vw, 44px);
-}
-
-.prob__vdivider {
-  width: 80%;
-  height: 2px;
-  background: #cbd5e1;
-  margin: 4px 0;
-}
-
-.prob__vbox {
-  font-size: clamp(32px, 4.5vw, 52px);
-  font-weight: 900;
-  color: var(--color-primary-dark);
-  min-width: clamp(50px, 7vw, 80px);
+  min-width: clamp(80px, 12vw, 110px);
   text-align: center;
   line-height: 1.1;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #fff;
-  border: 3px solid #e2e8f0;
-  border-radius: 12px;
+  border: 3px solid #cbd5e1;
+  border-radius: 16px;
   cursor: pointer;
   transition:
     border-color 0.15s,
-    background 0.15s;
-  height: clamp(50px, 7vw, 70px);
+    background 0.15s,
+    transform 0.08s;
+  height: clamp(72px, 10vw, 100px);
+  padding: 0 16px;
 }
 
-.prob__vbox:hover {
+.prob__answer-box:hover {
   border-color: #2563eb;
 }
+.prob__answer-box:active {
+  transform: scale(0.98);
+}
 
-.prob__vbox--active {
+.prob__answer-box--active {
   border-color: #2563eb;
   background: #eff6ff;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-.prob__vbox--correct {
+.prob__answer-box--correct {
   border-color: #16a34a;
   background: #dcfce7;
+  color: #14532d;
 }
 
-.prob__vbox--wrong {
+.prob__answer-box--wrong {
   border-color: #dc2626;
   background: #fee2e2;
-}
-
-.prob__cursor {
-  font-size: clamp(28px, 4vw, 44px);
-  color: #2563eb;
-  animation: blink 1s step-end infinite;
-}
-
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
+  color: #7f1d1d;
 }
 
 /* ── Solution template ─────────────────────────────────── */
@@ -170,6 +196,8 @@
   border-radius: 14px;
   letter-spacing: 0.01em;
   min-width: 260px;
+  max-width: 720px;
+  width: 100%;
   text-align: center;
   transition: all 0.3s ease;
 }
@@ -182,7 +210,7 @@
   font-size: clamp(20px, 2.6vw, 30px);
 }
 
-/* ── Selector de tema ──────────────────────────────────── */
+/* ── Theme selector (colores por tarjeta) ──────────────── */
 
 .prob__theme-screen {
   flex: 1;
@@ -217,7 +245,7 @@
   justify-content: center;
   gap: 10px;
   padding: 24px 16px;
-  border: 3px solid #6d28d9;
+  border: 3px solid var(--theme-color, #6d28d9);
   border-radius: 20px;
   background: transparent;
   cursor: pointer;
@@ -227,7 +255,7 @@
 }
 
 .prob__theme-card:hover {
-  background: rgba(109, 40, 217, 0.12);
+  background: color-mix(in srgb, var(--theme-color, #6d28d9) 12%, transparent);
   transform: scale(1.04);
 }
 
@@ -243,10 +271,10 @@
 .prob__theme-label {
   font-size: 16px;
   font-weight: 700;
-  color: #6d28d9;
+  color: var(--theme-color, #6d28d9);
 }
 
-/* ── Footer ────────────────────────────────────────────── */
+/* ── Footer (numpad) ───────────────────────────────────── */
 
 .prob__footer {
   flex-shrink: 0;
@@ -299,7 +327,7 @@
   background: linear-gradient(160deg, #fee2e2 0%, #fef2f2 100%);
 }
 
-/* ── Animaciones ───────────────────────────────────────── */
+/* ── Animations ────────────────────────────────────────── */
 
 @keyframes celebrate {
   from {
@@ -312,5 +340,29 @@
   to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media (max-width: 720px) {
+  .prob__card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 18px;
+  }
+  .prob__emoji {
+    font-size: 44px;
+  }
+  .prob__op-row {
+    gap: 12px;
+  }
+  .prob__num-box {
+    min-width: 64px;
+    padding: 8px 14px;
+  }
+  .prob__answer-box {
+    min-width: clamp(64px, 14vw, 92px);
+    height: clamp(64px, 12vw, 88px);
+    padding: 0 12px;
   }
 }
