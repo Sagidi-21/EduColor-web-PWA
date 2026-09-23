@@ -195,7 +195,7 @@ export function CountingScreen({
   // Avance automático tras respuesta correcta (1.2s para que se vea bien la respuesta)
   useEffect(() => {
     if (session.answerState !== "correct") return;
-    const t = setTimeout(handleNext, 1200);
+    const t = setTimeout(handleNext, 900);
     return () => clearTimeout(t);
   }, [session.answerState, handleNext]);
 
@@ -221,14 +221,30 @@ export function CountingScreen({
     setActiveInputCell(isLevel2 ? "hundreds" : "tens");
   };
 
-  if (finished || !current) {
+  if (finished) {
     return (
       <SummaryScreen
-        result={finished!}
+        result={finished}
         onRestart={handleRestart}
         onExit={onExit}
         gradeLabel={gradeTitle || "Matemáticas"}
       />
+    );
+  }
+  if (!current) {
+    return (
+      <div className="counting counting--loading">
+        <ActivityHeader
+          onExit={onExit}
+          gradeTitle={gradeTitle}
+          className={className}
+          unitTitle={activity.title}
+          mascotUrl={mascotUrl}
+          difficultyStars={difficultyStars}
+          progress="0/0"
+        />
+        <div className="counting__loading">Cargando sesión de conteo…</div>
+      </div>
     );
   }
 
