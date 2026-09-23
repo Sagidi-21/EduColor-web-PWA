@@ -13,6 +13,11 @@ import InputModeToggle from "../../shared/components/InputModeToggle";
 import { useInputMode } from "../../shared/hooks/useInputMode";
 import "./ProblemaScreen.css";
 
+import deportesImg from "../../../assets/problemas/temas/deportes.png";
+import animalesImg from "../../../assets/problemas/temas/animales.png";
+import claseImg from "../../../assets/problemas/temas/clase.png";
+import naturalezaImg from "../../../assets/problemas/temas/naturaleza.png";
+
 type AnswerState = "idle" | "correct" | "wrong";
 
 interface SessionState {
@@ -27,11 +32,11 @@ interface SessionState {
   alreadyFailed: boolean;
 }
 
-const THEMES: { id: Theme; label: string; emoji: string; color: string }[] = [
-  { id: "deportes", label: "Deportes", emoji: "⚽", color: "var(--color-primary)" },
-  { id: "animales", label: "Animales", emoji: "🐾", color: "#22c55e" },
-  { id: "clase", label: "Clase", emoji: "✏️", color: "#f59e0b" },
-  { id: "naturaleza", label: "Naturaleza", emoji: "🌿", color: "#10b981" },
+const THEMES: { id: Theme; label: string; image: string; color: string }[] = [
+  { id: "deportes", label: "Deportes", image: deportesImg, color: "#2563eb" },
+  { id: "animales", label: "Animales", image: animalesImg, color: "#ef4444" },
+  { id: "clase", label: "Clase", image: claseImg, color: "#f59e0b" },
+  { id: "naturaleza", label: "Naturaleza", image: naturalezaImg, color: "#22c55e" },
 ];
 
 function sanitizeText(value: string): string {
@@ -264,7 +269,7 @@ export function ProblemaScreen({
                 style={{ ["--theme-color" as never]: t.color }}
                 onClick={() => startSession(t.id)}
               >
-                <span className="prob__theme-emoji">{t.emoji}</span>
+                <img className="prob__theme-image" src={t.image} alt={t.label} />
                 <span className="prob__theme-label">{t.label}</span>
               </button>
             ))}
@@ -300,106 +305,109 @@ export function ProblemaScreen({
         <InputModeToggle mode={mode} onToggle={toggle} />
       </ActivityHeader>
 
-      <div
-        className={`prob__stage ${stageOk ? "prob__stage--correct" : stageBad ? "prob__stage--wrong" : ""}`}
-      >
-        {stageOk && <div className="prob__celebration">¡Muy bien! ⭐</div>}
+      <div className="prob__body">
+        <div
+          className={`prob__stage ${stageOk ? "prob__stage--correct" : stageBad ? "prob__stage--wrong" : ""}`}
+        >
+          {stageOk && <div className="prob__celebration">¡Muy bien! ⭐</div>}
 
-        <div className="prob__card">
-          <span className="prob__emoji">{current.emoji}</span>
-          <div className="prob__card-texts">
-            <p className="prob__story">{safeStory}</p>
-            <p className="prob__question">{safeQuestion}</p>
-          </div>
-        </div>
-
-        <div className="prob__section-block">
-          <span className="prob__section-label">OPERACIÓN</span>
-          <div className="prob__op-row">
-            <div className="prob__operand">
-              <div className="prob__num-box">{current.a}</div>
-            </div>
-
-            <span className="prob__op-sym">{opSym}</span>
-
-            <div className="prob__operand">
-              <div className="prob__num-box">{current.b}</div>
-            </div>
-
-            <span className="prob__op-sym">=</span>
-
-            <div className="prob__answer-slots">
-              {session.digits.map((val, slot) => {
-                const isActiveBox = session.answerState === "idle" && session.activeDigit === slot;
-                const showCanvas = mode === "canvas" && isActiveBox;
-                return (
-                  <div key={slot} className="prob__dab-slot">
-                    {isTwoDigits && (
-                      <span className="prob__du-label">{slot === 0 ? "D" : "U"}</span>
-                    )}
-                    {showCanvas ? (
-                      <LazyDigitCell
-                        key={`dab-${slot}-${canvasKey}`}
-                        isActive={true}
-                        onActivate={() => {}}
-                        onConfirm={(dig) => handleCanvasConfirm(slot, dig)}
-                        onClear={() => {
-                          const nd = [...session.digits];
-                          nd[slot] = "";
-                          setSession((s) => ({ ...s, digits: nd }));
-                        }}
-                        state={session.answerState !== "idle" ? session.answerState : "idle"}
-                        value={val}
-                      />
-                    ) : (
-                      <div
-                        className={[
-                          "prob__answer-box",
-                          isActiveBox ? "prob__answer-box--active" : "",
-                          session.answerState === "correct" ? "prob__answer-box--correct" : "",
-                          session.answerState === "wrong" ? "prob__answer-box--wrong" : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                        onClick={() => {
-                          if (session.answerState !== "idle") return;
-                          const nd = [...session.digits];
-                          nd[slot] = "";
-                          setSession((s) => ({ ...s, activeDigit: slot, digits: nd }));
-                        }}
-                      >
-                        {stageOk
-                          ? String(current.answer).padStart(slotCount(current.answer), "0")[slot]
-                          : val}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+          <div className="prob__card">
+            <span className="prob__emoji">{current.emoji}</span>
+            <div className="prob__card-texts">
+              <p className="prob__story">{safeStory}</p>
+              <p className="prob__question">{safeQuestion}</p>
             </div>
           </div>
+
+          <div className="prob__section-block">
+            <span className="prob__section-label">OPERACIÓN</span>
+            <div className="prob__op-row">
+              <div className="prob__operand">
+                <div className="prob__num-box">{current.a}</div>
+              </div>
+
+              <span className="prob__op-sym">{opSym}</span>
+
+              <div className="prob__operand">
+                <div className="prob__num-box">{current.b}</div>
+              </div>
+
+              <span className="prob__op-sym">=</span>
+
+              <div className="prob__answer-slots">
+                {session.digits.map((val, slot) => {
+                  const isActiveBox =
+                    session.answerState === "idle" && session.activeDigit === slot;
+                  const showCanvas = mode === "canvas" && isActiveBox;
+                  return (
+                    <div key={slot} className="prob__dab-slot">
+                      {isTwoDigits && (
+                        <span className="prob__du-label">{slot === 0 ? "D" : "U"}</span>
+                      )}
+                      {showCanvas ? (
+                        <LazyDigitCell
+                          key={`dab-${slot}-${canvasKey}`}
+                          isActive={true}
+                          onActivate={() => {}}
+                          onConfirm={(dig) => handleCanvasConfirm(slot, dig)}
+                          onClear={() => {
+                            const nd = [...session.digits];
+                            nd[slot] = "";
+                            setSession((s) => ({ ...s, digits: nd }));
+                          }}
+                          state={session.answerState !== "idle" ? session.answerState : "idle"}
+                          value={val}
+                        />
+                      ) : (
+                        <div
+                          className={[
+                            "prob__answer-box",
+                            isActiveBox ? "prob__answer-box--active" : "",
+                            session.answerState === "correct" ? "prob__answer-box--correct" : "",
+                            session.answerState === "wrong" ? "prob__answer-box--wrong" : "",
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
+                          onClick={() => {
+                            if (session.answerState !== "idle") return;
+                            const nd = [...session.digits];
+                            nd[slot] = "";
+                            setSession((s) => ({ ...s, activeDigit: slot, digits: nd }));
+                          }}
+                        >
+                          {stageOk
+                            ? String(current.answer).padStart(slotCount(current.answer), "0")[slot]
+                            : val}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className="prob__section-block">
+            <span className="prob__section-label">SOLUCIÓN</span>
+            <p className={`prob__solution-text ${stageOk ? "prob__solution-text--filled" : ""}`}>
+              {solutionText}
+            </p>
+          </div>
+
+          {stageBad && <ActionButtons onRetry={handleRetry} onNext={handleNext} />}
         </div>
 
-        <div className="prob__section-block">
-          <span className="prob__section-label">SOLUCIÓN</span>
-          <p className={`prob__solution-text ${stageOk ? "prob__solution-text--filled" : ""}`}>
-            {solutionText}
-          </p>
-        </div>
-
-        {stageBad && <ActionButtons onRetry={handleRetry} onNext={handleNext} />}
+        <footer className="prob__footer">
+          {mode === "numpad" && (
+            <Numpad
+              onDigit={handleDigit}
+              onDelete={handleDelete}
+              onConfirm={handleConfirm}
+              disabled={session.answerState !== "idle"}
+            />
+          )}
+        </footer>
       </div>
-
-      <footer className="prob__footer">
-        {mode === "numpad" && (
-          <Numpad
-            onDigit={handleDigit}
-            onDelete={handleDelete}
-            onConfirm={handleConfirm}
-            disabled={session.answerState !== "idle"}
-          />
-        )}
-      </footer>
     </div>
   );
 }
