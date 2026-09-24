@@ -20,7 +20,11 @@ export interface ViewTransitionProps {
   defaultTheme?: TransitionTheme;
 }
 
-export function ViewTransition({ views, initialView, defaultTheme = "pageTurn" }: ViewTransitionProps) {
+export function ViewTransition({
+  views,
+  initialView,
+  defaultTheme = "pageTurn",
+}: ViewTransitionProps) {
   const [current, setCurrent] = useState(initialView);
   const [exiting, setExiting] = useState<string | null>(null);
   const [exitDirection, setExitDirection] = useState<TransitionDirection>("right");
