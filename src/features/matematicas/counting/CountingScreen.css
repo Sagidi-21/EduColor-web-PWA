@@ -1,14 +1,28 @@
 .counting {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  width: calc(100vw / var(--zoom, 1));
+  height: calc(100vh / var(--zoom, 1));
   background: linear-gradient(160deg, #eff6ff 0%, #f0fdf4 100%);
   overflow: hidden;
+  box-sizing: border-box;
 }
 
-/* -- Stage (área de objetos) -- */
+/* -- Body / teclado -- */
+.counting__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+/* -- Escenario -- */
 .counting__stage {
   flex: 1;
+  min-height: 0;
+  min-width: 0;
   position: relative;
   overflow: hidden;
   transition: background-color 0.3s;
@@ -478,7 +492,6 @@
   line-height: 1;
 }
 
-/* -- Footer (pregunta + botones) -- */
 .counting__footer {
   flex-shrink: 0;
   background: #fff;
@@ -488,6 +501,56 @@
   flex-direction: column;
   align-items: center;
   gap: 14px;
+}
+
+@media (min-width: 1500px) {
+  .counting__body--with-numpad {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .counting__body--with-numpad .counting__stage {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .counting__body--with-numpad .counting__footer {
+    flex: 0 0 420px;
+    width: 420px;
+    height: 100%;
+    min-height: 0;
+    border-top: 0;
+    border-left: 2px solid #e2e8f0;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .counting__body--with-numpad .counting__numpad-wrapper {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .counting__body--with-numpad .counting__positional-table--footer {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .counting__body--with-numpad .counting__positional-col {
+    min-width: 80px;
+    min-height: 90px;
+  }
+
+  .counting__body--with-numpad .shared-numpad--horizontal {
+    flex-wrap: wrap;
+    max-width: 280px;
+    justify-content: center;
+  }
+
+  .counting__body--with-numpad .shared-numpad__key {
+    width: 56px;
+    height: 52px;
+  }
 }
 
 .counting__instruction {

@@ -175,6 +175,11 @@ export function Numeracion6099Screen({
       : session.answerState === "wrong"
         ? "ops__stage--wrong"
         : "";
+  const bodyClass = isMultiChoice
+    ? "ops__body"
+    : mode === "numpad"
+      ? "ops__body ops__body--with-numpad"
+      : "ops__body";
 
   return (
     <div className="ops">
@@ -190,99 +195,108 @@ export function Numeracion6099Screen({
         {!isMultiChoice && <InputModeToggle mode={mode} onToggle={toggle} />}
       </ActivityHeader>
 
-      <div className={`ops__stage ${stageClass}`}>
-        {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
+      <div className={bodyClass}>
+        <div className={`ops__stage ${stageClass}`}>
+          {session.answerState === "correct" && (
+            <div className="ops__celebration">¡Muy bien! ⭐</div>
+          )}
 
-        {current.type === "identify" && <TensBlock number={current.number} />}
+          {current.type === "identify" && <TensBlock number={current.number} />}
 
-        <div className="n6099__question">{current.question}</div>
+          <div className="n6099__question">{current.question}</div>
 
-        {!isMultiChoice && (
-          <div className="ops__formula">
-            {mode === "numpad" ? (
-              <div
-                className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : session.answerState === "wrong" ? "ops__answer-box--wrong" : ""}`}
-              >
-                {session.answerState === "correct"
-                  ? current.answer
-                  : session.input || <span className="ops__cursor">_</span>}
+          {!isMultiChoice && (
+            <div className="ops__formula">
+              {mode === "numpad" ? (
+                <div
+                  className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : session.answerState === "wrong" ? "ops__answer-box--wrong" : ""}`}
+                >
+                  {session.answerState === "correct"
+                    ? current.answer
+                    : session.input || <span className="ops__cursor">_</span>}
+                </div>
+              ) : session.answerState === "idle" ? (
+                <LazyDigitCell
+                  key={canvasKey}
+                  isActive={true}
+                  onActivate={() => {}}
+                  onConfirm={(digit) => {
+                    if (session.answerState !== "idle") return;
+                    setSession((s) => ({
+                      ...s,
+                      input: s.input.length < 2 ? s.input + digit : s.input,
+                    }));
+                    setCanvasKey((k) => k + 1);
+                  }}
+                  onClear={() => setSession((s) => ({ ...s, input: "" }))}
+                  state={session.answerState}
+                  value={session.input}
+                />
+              ) : (
+                <div
+                  className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : "ops__answer-box--wrong"}`}
+                >
+                  {session.answerState === "correct" ? current.answer : session.input || "?"}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {(isMultiChoice || mode === "numpad" || session.answerState === "wrong") && (
+          <footer className="ops__footer">
+            {isMultiChoice ? (
+              <div className="n6099__options">
+                <div className="n6099__options-grid">
+                  {(current.options ?? []).map((opt, i) => {
+                    let cls = "n6099__option";
+                    if (session.answerState === "correct" && opt === current.answer)
+                      cls += " n6099__option--correct";
+                    else if (session.answerState === "wrong" && opt === session.chosen)
+                      cls += " n6099__option--wrong";
+                    return (
+                      <button
+                        key={i}
+                        className={cls}
+                        onClick={() => handleChoice(opt)}
+                        disabled={session.answerState !== "idle"}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+                {session.answerState === "wrong" && (
+                  <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+                )}
               </div>
-            ) : session.answerState === "idle" ? (
-              <LazyDigitCell
-                key={canvasKey}
-                isActive={true}
-                onActivate={() => {}}
-                onConfirm={(digit) => {
-                  if (session.answerState !== "idle") return;
-                  setSession((s) => ({
-                    ...s,
-                    input: s.input.length < 2 ? s.input + digit : s.input,
-                  }));
-                  setCanvasKey((k) => k + 1);
-                }}
-                onClear={() => setSession((s) => ({ ...s, input: "" }))}
-                state={session.answerState}
-                value={session.input}
-              />
             ) : (
-              <div
-                className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : "ops__answer-box--wrong"}`}
-              >
-                {session.answerState === "correct" ? current.answer : session.input || "?"}
-              </div>
+              <>
+                {mode === "numpad" && (
+                  <Numpad
+                    onDigit={(d) => {
+                      if (session.answerState !== "idle") return;
+                      setSession((s) => ({
+                        ...s,
+                        input: s.input.length < 2 ? s.input + d : s.input,
+                      }));
+                    }}
+                    onDelete={() => {
+                      if (session.answerState !== "idle") return;
+                      setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
+                    }}
+                    onConfirm={confirm}
+                    disabled={session.answerState !== "idle"}
+                  />
+                )}
+                {session.answerState === "wrong" && (
+                  <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+                )}
+              </>
             )}
-          </div>
+          </footer>
         )}
       </div>
-
-      <footer className="ops__footer">
-        {isMultiChoice ? (
-          <div className="n6099__options">
-            <div className="n6099__options-grid">
-              {(current.options ?? []).map((opt, i) => {
-                let cls = "n6099__option";
-                if (session.answerState === "correct" && opt === current.answer)
-                  cls += " n6099__option--correct";
-                else if (session.answerState === "wrong" && opt === session.chosen)
-                  cls += " n6099__option--wrong";
-                return (
-                  <button
-                    key={i}
-                    className={cls}
-                    onClick={() => handleChoice(opt)}
-                    disabled={session.answerState !== "idle"}
-                  >
-                    {opt}
-                  </button>
-                );
-              })}
-            </div>
-            {session.answerState === "wrong" && (
-              <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
-            )}
-          </div>
-        ) : (
-          <>
-            {mode === "numpad" && (
-              <Numpad
-                onDigit={(d) => {
-                  if (session.answerState !== "idle") return;
-                  setSession((s) => ({ ...s, input: s.input.length < 2 ? s.input + d : s.input }));
-                }}
-                onDelete={() => {
-                  if (session.answerState !== "idle") return;
-                  setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
-                }}
-                onConfirm={confirm}
-                disabled={session.answerState !== "idle"}
-              />
-            )}
-            {session.answerState === "wrong" && (
-              <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
-            )}
-          </>
-        )}
-      </footer>
     </div>
   );
 }

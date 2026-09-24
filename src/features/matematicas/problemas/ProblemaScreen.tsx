@@ -397,16 +397,16 @@ export function ProblemaScreen({
           {stageBad && <ActionButtons onRetry={handleRetry} onNext={handleNext} />}
         </div>
 
-        <footer className="prob__footer">
-          {mode === "numpad" && (
+        {mode === "numpad" && (
+          <footer className="prob__footer">
             <Numpad
               onDigit={handleDigit}
               onDelete={handleDelete}
               onConfirm={handleConfirm}
               disabled={session.answerState !== "idle"}
             />
-          )}
-        </footer>
+          </footer>
+        )}
       </div>
     </div>
   );

@@ -226,111 +226,117 @@ export function TresSumandosScreen({
         <InputModeToggle mode={mode} onToggle={toggle} />
       </ActivityHeader>
 
-      <div className={`ops__stage ${stageClass}`}>
-        {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
-        <div className="ops__exercise">
-          {showImg && current.imageUrl && (
-            <div className="ops__emoji-support tres__triple-imgs">
-              {[current.a, current.b, current.c].map((n, gi) => (
-                <div key={gi} className="ops__emoji-row">
-                  {Array.from({ length: n }, (_, i) => (
-                    <img key={i} src={current.imageUrl} className="ops__emoji-img" alt="" />
-                  ))}
-                </div>
-              ))}
-            </div>
+      <div className={mode === "numpad" ? "ops__body ops__body--with-numpad" : "ops__body"}>
+        <div className={`ops__stage ${stageClass}`}>
+          {session.answerState === "correct" && (
+            <div className="ops__celebration">¡Muy bien! ⭐</div>
           )}
+          <div className="ops__exercise">
+            {showImg && current.imageUrl && (
+              <div className="ops__emoji-support tres__triple-imgs">
+                {[current.a, current.b, current.c].map((n, gi) => (
+                  <div key={gi} className="ops__emoji-row">
+                    {Array.from({ length: n }, (_, i) => (
+                      <img key={i} src={current.imageUrl} className="ops__emoji-img" alt="" />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
 
-          {/* Column layout for the three addends and result */}
-          <div className="ops__vertical" style={{ "--ncols": numCols } as React.CSSProperties}>
-            {/* First addend */}
-            <span className="ops__vcell ops__vcell--sym" />
-            {aDigits.map((d, i) => (
-              <span key={`a${i}`} className="ops__vcell">
-                {d ?? ""}
-              </span>
-            ))}
-            {/* Operator */}
-            <span className="ops__vcell ops__vcell--sym">+</span>
-            {/* Second addend */}
-            {bDigits.map((d, i) => (
-              <span key={`b${i}`} className="ops__vcell">
-                {d ?? ""}
-              </span>
-            ))}
-            {/* Operator */}
-            <span className="ops__vcell ops__vcell--sym">+</span>
-            {/* Third addend */}
-            {cDigits.map((d, i) => (
-              <span key={`c${i}`} className="ops__vcell">
-                {d ?? ""}
-              </span>
-            ))}
-            {/* Divider */}
-            <div className="ops__vdivider" />
-            {/* Result row */}
-            <span className="ops__vcell ops__vcell--sym" />
-            {Array.from({ length: numCols - aLen }, (_, i) => (
-              <span key={`pad${i}`} className="ops__vcell" />
-            ))}
-            {Array.from({ length: aLen }, (_, i) => {
-              const isActiveBox = session.answerState === "idle" && session.activeDigit === i;
-              if (mode === "canvas" && isActiveBox) {
+            {/* Column layout for the three addends and result */}
+            <div className="ops__vertical" style={{ "--ncols": numCols } as React.CSSProperties}>
+              {/* First addend */}
+              <span className="ops__vcell ops__vcell--sym" />
+              {aDigits.map((d, i) => (
+                <span key={`a${i}`} className="ops__vcell">
+                  {d ?? ""}
+                </span>
+              ))}
+              {/* Operator */}
+              <span className="ops__vcell ops__vcell--sym">+</span>
+              {/* Second addend */}
+              {bDigits.map((d, i) => (
+                <span key={`b${i}`} className="ops__vcell">
+                  {d ?? ""}
+                </span>
+              ))}
+              {/* Operator */}
+              <span className="ops__vcell ops__vcell--sym">+</span>
+              {/* Third addend */}
+              {cDigits.map((d, i) => (
+                <span key={`c${i}`} className="ops__vcell">
+                  {d ?? ""}
+                </span>
+              ))}
+              {/* Divider */}
+              <div className="ops__vdivider" />
+              {/* Result row */}
+              <span className="ops__vcell ops__vcell--sym" />
+              {Array.from({ length: numCols - aLen }, (_, i) => (
+                <span key={`pad${i}`} className="ops__vcell" />
+              ))}
+              {Array.from({ length: aLen }, (_, i) => {
+                const isActiveBox = session.answerState === "idle" && session.activeDigit === i;
+                if (mode === "canvas" && isActiveBox) {
+                  return (
+                    <LazyDigitCell
+                      key={`res-${session.activeDigit}-${canvasKey}`}
+                      isActive={true}
+                      onActivate={() => {}}
+                      onConfirm={(d) => handleCanvasConfirm(i, d)}
+                      onClear={() => {
+                        const nd = [...session.digits];
+                        nd[i] = "";
+                        setSession((s) => ({ ...s, digits: nd }));
+                      }}
+                      state="idle"
+                      value=""
+                    />
+                  );
+                }
                 return (
-                  <LazyDigitCell
-                    key={`res-${session.activeDigit}-${canvasKey}`}
-                    isActive={true}
-                    onActivate={() => {}}
-                    onConfirm={(d) => handleCanvasConfirm(i, d)}
-                    onClear={() => {
+                  <div
+                    key={i}
+                    className={[
+                      "ops__vbox",
+                      isActiveBox ? "ops__vbox--active" : "",
+                      session.answerState === "correct" ? "ops__vbox--correct" : "",
+                      session.answerState === "wrong" ? "ops__vbox--wrong" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() => {
+                      if (session.answerState !== "idle") return;
                       const nd = [...session.digits];
                       nd[i] = "";
-                      setSession((s) => ({ ...s, digits: nd }));
+                      setSession((s) => ({ ...s, activeDigit: i, digits: nd }));
                     }}
-                    state="idle"
-                    value=""
-                  />
+                  >
+                    {boxValue(i) || (isActiveBox ? <span className="ops__cursor">_</span> : "")}
+                  </div>
                 );
-              }
-              return (
-                <div
-                  key={i}
-                  className={[
-                    "ops__vbox",
-                    isActiveBox ? "ops__vbox--active" : "",
-                    session.answerState === "correct" ? "ops__vbox--correct" : "",
-                    session.answerState === "wrong" ? "ops__vbox--wrong" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  onClick={() => {
-                    if (session.answerState !== "idle") return;
-                    const nd = [...session.digits];
-                    nd[i] = "";
-                    setSession((s) => ({ ...s, activeDigit: i, digits: nd }));
-                  }}
-                >
-                  {boxValue(i) || (isActiveBox ? <span className="ops__cursor">_</span> : "")}
-                </div>
-              );
-            })}
+              })}
+            </div>
           </div>
         </div>
-      </div>
 
-      <footer className="ops__footer">
-        {mode === "numpad" && (
-          <Numpad
-            onDigit={handleNumpadDigit}
-            onDelete={handleDelete}
-            onConfirm={handleConfirm}
-            disabled={session.answerState !== "idle"}
-          />
+        {(mode === "numpad" || session.answerState === "wrong") && (
+          <footer className="ops__footer">
+            {mode === "numpad" && (
+              <Numpad
+                onDigit={handleNumpadDigit}
+                onDelete={handleDelete}
+                onConfirm={handleConfirm}
+                disabled={session.answerState !== "idle"}
+              />
+            )}
+            {session.answerState === "wrong" && (
+              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+            )}
+          </footer>
         )}
-        {session.answerState === "wrong" && (
-          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-        )}
-      </footer>
+      </div>
     </div>
   );
 }

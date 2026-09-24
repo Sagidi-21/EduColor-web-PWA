@@ -1,9 +1,11 @@
 .ops {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  width: calc(100vw / var(--zoom, 1));
+  height: calc(100vh / var(--zoom, 1));
   background: #f8faff;
   overflow: hidden;
+  box-sizing: border-box;
   font-family: "Segoe UI", system-ui, sans-serif;
 }
 
@@ -78,6 +80,16 @@
   transition: width 0.4s ease;
 }
 
+/* -- Body / teclado -- */
+.ops__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+}
+
 /* -- Escenario -- */
 .ops__stage {
   flex: 1;
@@ -90,6 +102,7 @@
   transition: background 0.3s;
   position: relative;
   min-height: 0;
+  min-width: 0;
   overflow-y: auto;
 }
 
@@ -228,7 +241,8 @@
 
 /* -- Footer / teclado -- */
 .ops__footer {
-  flex-shrink: 0;
+  flex: 0 0 auto;
+  width: 100%;
   padding: 10px 16px 14px;
   background: #fff;
   border-top: 2px solid #e2e8f0;
@@ -344,6 +358,39 @@
 }
 
 /* -- Botones de opci�n (motores U9: graficoBarras, inventarProblema, menuCafeteria, monedasBilletes) -- */
+@media (min-width: 1500px) {
+  .ops__body--with-numpad {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .ops__body--with-numpad .ops__stage {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .ops__body--with-numpad .ops__footer {
+    flex: 0 0 320px;
+    width: 320px;
+    height: 100%;
+    min-height: 0;
+    border-top: 0;
+    border-left: 2px solid #e2e8f0;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .ops__body--with-numpad .ops__footer .shared-numpad {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .ops__body--with-numpad .ops__footer .shared-numpad__key {
+    width: clamp(56px, 7vw, 76px);
+    height: clamp(52px, 7vw, 68px);
+  }
+}
+
 .ops__option-btn {
   padding: 14px 24px;
   border-radius: 14px;

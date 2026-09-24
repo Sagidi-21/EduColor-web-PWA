@@ -241,113 +241,119 @@ export function OperationsScreen({
         <InputModeToggle mode={mode} onToggle={toggle} />
       </ActivityHeader>
 
-      <div className={`ops__stage ${stageClass}`}>
-        {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
-
-        <div className="ops__exercise">
-          {showImg && current.imageUrl && (
-            <div className="ops__emoji-support">
-              <ImageRow count={current.a} imageUrl={current.imageUrl} />
-              {op === "suma" && <ImageRow count={current.b} imageUrl={current.imageUrl} />}
-              {op === "resta" && (
-                <div className="ops__emoji-row ops__emoji-row--resta">
-                  {Array.from({ length: current.a }, (_, i) => (
-                    <img
-                      key={i}
-                      src={current.imageUrl}
-                      className={`ops__emoji-img ${i >= current.a - current.b ? "ops__emoji-img--tachado" : ""}`}
-                      alt=""
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+      <div className={mode === "numpad" ? "ops__body ops__body--with-numpad" : "ops__body"}>
+        <div className={`ops__stage ${stageClass}`}>
+          {session.answerState === "correct" && (
+            <div className="ops__celebration">¡Muy bien! ⭐</div>
           )}
 
-          <div className="ops__vertical" style={{ "--ncols": numCols } as React.CSSProperties}>
-            <span className="ops__vcell ops__vcell--sym" />
-            {aDigits.map((d, i) => (
-              <span key={`a${i}`} className="ops__vcell">
-                {d ?? ""}
-              </span>
-            ))}
+          <div className="ops__exercise">
+            {showImg && current.imageUrl && (
+              <div className="ops__emoji-support">
+                <ImageRow count={current.a} imageUrl={current.imageUrl} />
+                {op === "suma" && <ImageRow count={current.b} imageUrl={current.imageUrl} />}
+                {op === "resta" && (
+                  <div className="ops__emoji-row ops__emoji-row--resta">
+                    {Array.from({ length: current.a }, (_, i) => (
+                      <img
+                        key={i}
+                        src={current.imageUrl}
+                        className={`ops__emoji-img ${i >= current.a - current.b ? "ops__emoji-img--tachado" : ""}`}
+                        alt=""
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
-            <span className="ops__vcell ops__vcell--sym">{sym}</span>
-            {bDigits.map((d, i) => (
-              <span key={`b${i}`} className="ops__vcell">
-                {d ?? ""}
-              </span>
-            ))}
+            <div className="ops__vertical" style={{ "--ncols": numCols } as React.CSSProperties}>
+              <span className="ops__vcell ops__vcell--sym" />
+              {aDigits.map((d, i) => (
+                <span key={`a${i}`} className="ops__vcell">
+                  {d ?? ""}
+                </span>
+              ))}
 
-            <div className="ops__vdivider" />
+              <span className="ops__vcell ops__vcell--sym">{sym}</span>
+              {bDigits.map((d, i) => (
+                <span key={`b${i}`} className="ops__vcell">
+                  {d ?? ""}
+                </span>
+              ))}
 
-            <span className="ops__vcell ops__vcell--sym" />
-            {Array.from({ length: numCols - aLen }, (_, i) => (
-              <span key={`pad${i}`} className="ops__vcell" />
-            ))}
-            {Array.from({ length: aLen }, (_, i) => {
-              const isActiveBox = session.answerState === "idle" && session.activeDigit === i;
+              <div className="ops__vdivider" />
 
-              if (mode === "canvas" && isActiveBox) {
+              <span className="ops__vcell ops__vcell--sym" />
+              {Array.from({ length: numCols - aLen }, (_, i) => (
+                <span key={`pad${i}`} className="ops__vcell" />
+              ))}
+              {Array.from({ length: aLen }, (_, i) => {
+                const isActiveBox = session.answerState === "idle" && session.activeDigit === i;
+
+                if (mode === "canvas" && isActiveBox) {
+                  return (
+                    <LazyDigitCell
+                      key={`dab-${session.activeDigit}-${canvasKey}`}
+                      isActive={true}
+                      onActivate={() => {}}
+                      onConfirm={(d: string) => {
+                        handleCanvasConfirm(i, d);
+                        setCanvasKey((k) => k + 1);
+                      }}
+                      onClear={() => {
+                        const nd = [...session.digits];
+                        nd[i] = "";
+                        setSession((s) => ({ ...s, digits: nd }));
+                      }}
+                      state="idle"
+                      value=""
+                    />
+                  );
+                }
+
                 return (
-                  <LazyDigitCell
-                    key={`dab-${session.activeDigit}-${canvasKey}`}
-                    isActive={true}
-                    onActivate={() => {}}
-                    onConfirm={(d: string) => {
-                      handleCanvasConfirm(i, d);
-                      setCanvasKey((k) => k + 1);
-                    }}
-                    onClear={() => {
+                  <div
+                    key={i}
+                    className={[
+                      "ops__vbox",
+                      isActiveBox ? "ops__vbox--active" : "",
+                      session.answerState === "correct" ? "ops__vbox--correct" : "",
+                      session.answerState === "wrong" ? "ops__vbox--wrong" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() => {
+                      if (session.answerState !== "idle") return;
                       const nd = [...session.digits];
                       nd[i] = "";
-                      setSession((s) => ({ ...s, digits: nd }));
+                      setSession((s) => ({ ...s, activeDigit: i, digits: nd }));
                     }}
-                    state="idle"
-                    value=""
-                  />
+                  >
+                    {boxValue(i) || (isActiveBox ? <span className="ops__cursor">_</span> : "")}
+                  </div>
                 );
-              }
-
-              return (
-                <div
-                  key={i}
-                  className={[
-                    "ops__vbox",
-                    isActiveBox ? "ops__vbox--active" : "",
-                    session.answerState === "correct" ? "ops__vbox--correct" : "",
-                    session.answerState === "wrong" ? "ops__vbox--wrong" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  onClick={() => {
-                    if (session.answerState !== "idle") return;
-                    const nd = [...session.digits];
-                    nd[i] = "";
-                    setSession((s) => ({ ...s, activeDigit: i, digits: nd }));
-                  }}
-                >
-                  {boxValue(i) || (isActiveBox ? <span className="ops__cursor">_</span> : "")}
-                </div>
-              );
-            })}
+              })}
+            </div>
           </div>
         </div>
-      </div>
 
-      <footer className="ops__footer">
-        {mode === "numpad" && (
-          <Numpad
-            onDigit={handleDigit}
-            onDelete={handleDelete}
-            onConfirm={handleConfirm}
-            disabled={session.answerState !== "idle"}
-          />
+        {(mode === "numpad" || session.answerState === "wrong") && (
+          <footer className="ops__footer">
+            {mode === "numpad" && (
+              <Numpad
+                onDigit={handleDigit}
+                onDelete={handleDelete}
+                onConfirm={handleConfirm}
+                disabled={session.answerState !== "idle"}
+              />
+            )}
+            {session.answerState === "wrong" && (
+              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+            )}
+          </footer>
         )}
-        {session.answerState === "wrong" && (
-          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-        )}
-      </footer>
+      </div>
     </div>
   );
 }
