@@ -306,6 +306,19 @@
   gap: 24px;
 }
 
+.mat__popup--shrinking {
+  animation: popup-shrink 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+@keyframes popup-shrink {
+  to {
+    transform: scale(0.05);
+    opacity: 0;
+  }
+}
+
 .mat__popup-close {
   position: absolute;
   top: 16px;

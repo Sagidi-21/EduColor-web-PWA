@@ -6,6 +6,8 @@ import { ConfiguracionScreen } from "./features/configuracion/ConfiguracionScree
 import { MascotaScreen } from "./features/mascota/MascotaScreen";
 import { HomeScreen } from "./features/home/HomeScreen";
 import { MatematicasCatalogScreen } from "./features/matematicas/MatematicasCatalogScreen";
+import { ExerciseSessionProvider } from "./features/matematicas/ExerciseSessionContext";
+import { ExerciseView } from "./features/matematicas/ExerciseView";
 import { SplashScreen } from "./features/splash/SplashScreen";
 import { WelcomeScreen } from "./features/splash/WelcomeScreen";
 
@@ -49,27 +51,32 @@ function AppShell() {
   const initialGradeId = activeAula.grade === 1 ? "grade-1" : "grade-2";
 
   return (
-    <ViewTransition
-      initialView="home"
-      views={{
-        home: ({ navigate }) => <HomeScreen onNavigate={navigate} />,
-        configuration: ({ navigate }) => (
-          <ConfiguracionScreen
-            onBack={() => navigate("home", "left")}
-            onNavigate={(view) => navigate(view)}
-          />
-        ),
-        mascota: ({ navigate }) => (
-          <MascotaScreen onBack={() => navigate("configuration", "left")} />
-        ),
-        mathematics: ({ navigate }) => (
-          <MatematicasCatalogScreen
-            initialGradeId={initialGradeId}
-            onBack={() => navigate("home", "left")}
-          />
-        ),
-      }}
-    />
+    <ExerciseSessionProvider>
+      <ViewTransition
+        initialView="home"
+        views={{
+          home: ({ navigate }) => <HomeScreen onNavigate={navigate} />,
+          configuration: ({ navigate }) => (
+            <ConfiguracionScreen
+              onBack={() => navigate("home", "left")}
+              onNavigate={(view) => navigate(view)}
+            />
+          ),
+          mascota: ({ navigate }) => (
+            <MascotaScreen onBack={() => navigate("configuration", "left")} />
+          ),
+          mathematics: ({ navigate }) => (
+            <MatematicasCatalogScreen
+              initialGradeId={initialGradeId}
+              onBack={() => navigate("home", "left")}
+            />
+          ),
+          exercise: ({ navigate }) => (
+            <ExerciseView onExit={() => navigate("mathematics", "left")} />
+          ),
+        }}
+      />
+    </ExerciseSessionProvider>
   );
 }
 

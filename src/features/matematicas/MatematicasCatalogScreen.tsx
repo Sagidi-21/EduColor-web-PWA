@@ -13,7 +13,8 @@ import type {
 } from "../../core/content/contracts";
 import { canLaunchActivity } from "../../core/content/engine-registry";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
-import { EngineScreen } from "./engine-screens";
+import { useViewTransition } from "../../core/transition/ViewTransitionContext";
+import { useExerciseSession } from "./ExerciseSessionContext";
 import { CatalogFilterBar } from "./CatalogFilterBar";
 import "./MatematicasCatalogScreen.css";
 import fondoImg from "../../assets/catalogo-fondo.png";
@@ -140,6 +141,8 @@ function getDifficultyStars(difficulty?: ActivityDifficulty): string {
 
 export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
   const { profile } = useClassProfile();
+  const { launchSession } = useExerciseSession();
+  const { navigate } = useViewTransition();
   const subjects = getSubjects();
   const [subjectId, setSubjectId] = useState(subjects[0].id);
   const [gradeId, setGradeId] = useState(initialGradeId);
@@ -147,12 +150,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
   const [selected, setSelected] = useState<ActivityManifest | null>(null);
   const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard" | "expert">("easy");
   const [levelId, setLevelId] = useState<CurriculumLevelId | null>(null);
-  const [session, setSession] = useState<{
-    activity: ActivityManifest;
-    difficulty?: "easy" | "medium" | "hard" | "expert";
-    levelId?: CurriculumLevelId;
-    seed: number;
-  } | null>(null);
+  const [popupShrinking, setPopupShrinking] = useState(false);
   const grades = getGrades(subjectId);
   const blocks = getCurriculumBlocks(subjectId, gradeId);
   const visibleBlocks = blockId ? blocks.filter((block) => block.id === blockId) : blocks;
@@ -161,24 +159,25 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
     block,
     activities: getActivities({ subjectId, gradeId, curriculumBlockId: block.id }),
   }));
-  if (session) {
-    const diffStars = session.levelId
-      ? getStarsForLevel(session.levelId)
-      : getDifficultyStars(session.difficulty);
-    return (
-      <EngineScreen
-        activity={session.activity}
-        difficulty={session.difficulty ?? "easy"}
-        seed={session.seed}
-        onExit={() => setSession(null)}
-        gradeTitle={gradeTitle}
-        className={profile.className}
-        mascotUrl={profile.mascotUrl}
-        difficultyStars={diffStars}
-        levelId={session.levelId}
-      />
-    );
-  }
+
+  const launchExercise = () => {
+    if (!selected) return;
+    const diffStars = levelId
+      ? getStarsForLevel(levelId)
+      : getDifficultyStars(difficulty);
+    launchSession({
+      activity: selected,
+      difficulty,
+      levelId: levelId ?? undefined,
+      gradeTitle,
+      className: profile.className,
+      mascotUrl: profile.mascotUrl,
+      difficultyStars: diffStars,
+    });
+    setSelected(null);
+    setPopupShrinking(false);
+    navigate("exercise", "right");
+  };
 
   return (
     <div className="mat">
@@ -263,10 +262,13 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
       {selected && (
         <div className="mat__popup-backdrop" onClick={() => setSelected(null)}>
           <div
-            className="mat__popup"
+            className={`mat__popup ${popupShrinking ? "mat__popup--shrinking" : ""}`}
             role="dialog"
             aria-labelledby="activity-launch-title"
             onClick={(event) => event.stopPropagation()}
+            onAnimationEnd={() => {
+              if (popupShrinking) launchExercise();
+            }}
           >
             <button
               className="mat__popup-close"
@@ -364,13 +366,13 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
             <button
               className="mat__start-btn"
               onClick={() => {
-                setSession({
-                  activity: selected,
-                  difficulty,
-                  levelId: levelId ?? undefined,
-                  seed: Date.now(),
-                });
-                setSelected(null);
+                if (
+                  window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                ) {
+                  launchExercise();
+                } else {
+                  setPopupShrinking(true);
+                }
               }}
             >
               Empezar
