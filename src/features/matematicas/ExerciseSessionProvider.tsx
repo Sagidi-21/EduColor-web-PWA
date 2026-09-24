@@ -1,4 +1,4 @@
-import { useState, type ReactNode, useContext } from "react";
+import { useState, type ReactNode } from "react";
 import type {
   ActivityManifest,
   ActivityDifficulty,
@@ -34,12 +34,4 @@ export function ExerciseSessionProvider({ children }: { children: ReactNode }) {
       {children}
     </ExerciseSessionContext.Provider>
   );
-}
-
-export function useExerciseSession(): ExerciseSessionContextValue {
-  const ctx = useContext(ExerciseSessionContext);
-  if (!ctx) {
-    throw new Error("useExerciseSession must be used within ExerciseSessionProvider");
-  }
-  return ctx;
 }
