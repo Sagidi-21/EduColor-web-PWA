@@ -167,13 +167,36 @@
 
 .grade-card:hover {
   border-color: var(--grade-color);
+  background: var(--grade-color);
+  color: #fff;
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
+.grade-card:hover .grade-card__label,
+.grade-card:hover .grade-card__age,
+.grade-card:hover .grade-card__emoji {
+  color: #fff;
+}
+
 .grade-card--selected {
   border-color: var(--grade-color) !important;
-  background: var(--grade-color-light);
+  background: var(--grade-color);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.grade-card--selected .grade-card__label,
+.grade-card--selected .grade-card__age,
+.grade-card--selected .grade-card__emoji {
+  color: #fff;
+}
+
+.grade-card--selected .grade-card__check {
+  display: flex;
+  background: #fff;
+  color: var(--grade-color);
 }
 
 .grade-card--soon {
@@ -240,9 +263,51 @@
 }
 
 .mode-card:hover {
+  background: var(--mode-color);
   border-color: var(--mode-color);
+  color: #fff;
   transform: translateY(-3px);
   box-shadow: 0 12px 20px -4px rgba(0, 0, 0, 0.12);
+}
+
+.mode-card:hover .mode-card__label,
+.mode-card:hover .mode-card__desc,
+.mode-card:hover .mode-card__icon {
+  color: #fff;
+}
+
+.mode-card--selected {
+  background: var(--mode-color);
+  border-color: var(--mode-color);
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 20px -4px rgba(0, 0, 0, 0.12);
+}
+
+.mode-card__check {
+  display: none;
+}
+
+.mode-card--selected .mode-card__label,
+.mode-card--selected .mode-card__desc,
+.mode-card--selected .mode-card__icon {
+  color: #fff;
+}
+
+.mode-card--selected .mode-card__check {
+  display: flex;
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--mode-color);
+  font-size: 13px;
+  font-weight: 700;
+  align-items: center;
+  justify-content: center;
 }
 
 .mode-card--dimmed {

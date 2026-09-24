@@ -110,6 +110,7 @@ export function HomeScreen({ onNavigate }: { onNavigate: (view: AppView) => void
                   <span className="mode-card__desc">
                     {isMigrated ? mode.description : "En migración desde la aplicación original"}
                   </span>
+                  <span className="mode-card__check">✓</span>
                 </button>
               );
             })}
