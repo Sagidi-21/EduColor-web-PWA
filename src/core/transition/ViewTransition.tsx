@@ -1,9 +1,5 @@
 import { useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  type Variants,
-} from "framer-motion";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
 
 import {
   THEMES,
@@ -15,10 +11,7 @@ import {
   type PortalOrigin,
 } from "./vtThemes";
 
-import {
-  ViewTransitionContext,
-  TransitionThemeContext,
-} from "./ViewTransitionContext";
+import { ViewTransitionContext, TransitionThemeContext } from "./ViewTransitionContext";
 
 import "./ViewTransition.css";
 
@@ -147,11 +140,7 @@ const portalVariants: Variants = {
   }),
 };
 
-export function ViewTransition({
-  views,
-  initialView,
-  defaultTheme = "cube",
-}: ViewTransitionProps) {
+export function ViewTransition({ views, initialView, defaultTheme = "cube" }: ViewTransitionProps) {
   const [current, setCurrent] = useState(initialView);
   const [direction, setDirection] = useState<TransitionDirection>("right");
   const [nextView, setNextView] = useState<string | null>(null);
@@ -171,7 +160,7 @@ export function ViewTransition({
   const navigate = (
     viewName: string,
     dir: TransitionDirection = "right",
-    origin?: PortalOrigin
+    origin?: PortalOrigin,
   ) => {
     if (!views[viewName] || viewName === current || isTransitioning) {
       return;
@@ -210,7 +199,11 @@ export function ViewTransition({
   const api: ViewTransitionApi = { navigate };
   const themeApi: TransitionThemeApi = { theme, setTheme };
 
-  const activeVariants = portalActive ? portalVariants : theme === "cube" ? cubeVariants.cube : cubeVariants.fade;
+  const activeVariants = portalActive
+    ? portalVariants
+    : theme === "cube"
+      ? cubeVariants.cube
+      : cubeVariants.fade;
 
   // For portal: drive both pages via animate, not exit
   const getCurrentPageProps = () => {
@@ -301,20 +294,13 @@ export function ViewTransition({
           <div style={STAGE_STYLE}>
             <AnimatePresence mode={portalActive ? "wait" : "popLayout"}>
               {/* CURRENT PAGE - leaving */}
-              <motion.div
-                key={current}
-                {...getCurrentPageProps()}
-              >
+              <motion.div key={current} {...getCurrentPageProps()}>
                 {views[current]?.(api)}
               </motion.div>
 
               {/* NEXT PAGE - entering */}
               {nextView && (
-                <motion.div
-                  {...getNextPageProps()}
-                >
-                  {views[nextView]?.(api)}
-                </motion.div>
+                <motion.div {...getNextPageProps()}>{views[nextView]?.(api)}</motion.div>
               )}
             </AnimatePresence>
           </div>

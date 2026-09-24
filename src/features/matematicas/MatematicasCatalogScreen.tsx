@@ -162,9 +162,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
 
   const launchExercise = () => {
     if (!selected) return;
-    const diffStars = levelId
-      ? getStarsForLevel(levelId)
-      : getDifficultyStars(difficulty);
+    const diffStars = levelId ? getStarsForLevel(levelId) : getDifficultyStars(difficulty);
     launchSession({
       activity: selected,
       difficulty,
@@ -366,9 +364,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
             <button
               className="mat__start-btn"
               onClick={() => {
-                if (
-                  window.matchMedia("(prefers-reduced-motion: reduce)").matches
-                ) {
+                if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
                   launchExercise();
                 } else {
                   setPopupShrinking(true);
