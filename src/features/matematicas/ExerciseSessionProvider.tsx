@@ -1,9 +1,10 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { useState, type ReactNode, useContext } from "react";
 import type {
   ActivityManifest,
   ActivityDifficulty,
   CurriculumLevelId,
 } from "../../core/content/contracts";
+import { ExerciseSessionContext } from "./ExerciseSessionContext";
 
 export interface ExerciseSession {
   activity: ActivityManifest;
@@ -16,12 +17,10 @@ export interface ExerciseSession {
   difficultyStars: string;
 }
 
-interface ExerciseSessionContextValue {
+export interface ExerciseSessionContextValue {
   session: ExerciseSession | null;
   launchSession: (data: Omit<ExerciseSession, "seed">) => void;
 }
-
-const ExerciseSessionContext = createContext<ExerciseSessionContextValue | null>(null);
 
 export function ExerciseSessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<ExerciseSession | null>(null);

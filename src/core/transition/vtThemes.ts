@@ -24,6 +24,11 @@ export interface TransitionThemeApi {
 
 export type ViewRender = (api: ViewTransitionApi) => ReactNode;
 
+export interface PortalOrigin {
+  x: number;
+  y: number;
+}
+
 export interface ViewTransitionProps {
   views: Record<string, ViewRender>;
   initialView: string;

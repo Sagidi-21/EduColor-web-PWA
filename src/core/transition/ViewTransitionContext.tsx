@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { ViewTransitionApi, TransitionThemeApi, TransitionTheme } from "./vtThemes";
+import type { ViewTransitionApi, TransitionThemeApi } from "./vtThemes";
 
 const ViewTransitionContext = createContext<ViewTransitionApi | null>(null);
 const TransitionThemeContext = createContext<TransitionThemeApi | null>(null);
