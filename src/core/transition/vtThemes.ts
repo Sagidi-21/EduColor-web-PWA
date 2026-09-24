@@ -17,6 +17,11 @@ export interface ViewTransitionApi {
   navigate: (view: string, direction?: TransitionDirection) => void;
 }
 
+export interface TransitionThemeApi {
+  theme: TransitionTheme;
+  setTheme: (theme: TransitionTheme) => void;
+}
+
 export type ViewRender = (api: ViewTransitionApi) => ReactNode;
 
 export interface ViewTransitionProps {

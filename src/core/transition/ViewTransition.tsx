@@ -1,47 +1,27 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import "./ViewTransition.css";
+import { useState } from "react";
+import {
+  AnimatePresence,
+  motion,
+  type Variants,
+} from "framer-motion";
+
 import {
   THEMES,
   type TransitionDirection,
   type TransitionTheme,
   type ViewTransitionApi,
   type ViewRender,
+  type TransitionThemeApi,
 } from "./vtThemes";
 
+import {
+  ViewTransitionContext,
+  TransitionThemeContext,
+} from "./ViewTransitionContext";
+
+import "./ViewTransition.css";
+
 const THEME_STORAGE_KEY = "vt_theme";
-
-/* ---------------------------------------------------------------- */
-/* Transition theme context (for runtime theme switching)           */
-/* ---------------------------------------------------------------- */
-
-interface TransitionThemeApi {
-  theme: TransitionTheme;
-  setTheme: (theme: TransitionTheme) => void;
-}
-
-const TransitionThemeContext = createContext<TransitionThemeApi | null>(null);
-
-export function useTransitionTheme(): TransitionThemeApi {
-  const ctx = useContext(TransitionThemeContext);
-  if (!ctx) {
-    throw new Error("useTransitionTheme must be used within ViewTransition");
-  }
-  return ctx;
-}
-
-/* ---------------------------------------------------------------- */
-/* View transition context (navigation API)                         */
-/* ---------------------------------------------------------------- */
-
-const ViewTransitionContext = createContext<ViewTransitionApi | null>(null);
-
-export function useViewTransition(): ViewTransitionApi {
-  const ctx = useContext(ViewTransitionContext);
-  if (!ctx) {
-    throw new Error("useViewTransition must be used within ViewTransition");
-  }
-  return ctx;
-}
 
 export interface ViewTransitionProps {
   views: Record<string, ViewRender>;
@@ -49,14 +29,100 @@ export interface ViewTransitionProps {
   defaultTheme?: TransitionTheme;
 }
 
+const CUBE_DEPTH = 200;
+
+const cubeVariants: Record<string, Variants> = {
+  cube: {
+    // Center/idle state
+    center: {
+      rotateY: 0,
+      x: 0,
+      z: 0,
+      opacity: 1,
+      transformOrigin: "50% 50%",
+    },
+
+    // OUT variants - current page leaving
+    leftOut: {
+      rotateY: -90,
+      x: "-100%",
+      z: -CUBE_DEPTH,
+      opacity: 0.3,
+      transformOrigin: "100% 50%",
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
+      },
+    },
+    rightOut: {
+      rotateY: 90,
+      x: "100%",
+      z: -CUBE_DEPTH,
+      opacity: 0.3,
+      transformOrigin: "0% 50%",
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
+      },
+    },
+
+    // IN variants - next page entering
+    leftIn: {
+      rotateY: 0,
+      x: 0,
+      z: 0,
+      opacity: 1,
+      transformOrigin: "0% 50%",
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
+      },
+    },
+    rightIn: {
+      rotateY: 0,
+      x: 0,
+      z: 0,
+      opacity: 1,
+      transformOrigin: "100% 50%",
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
+      },
+    },
+
+    // Initial states for entering pages
+    leftInStart: {
+      rotateY: 90,
+      x: "100%",
+      z: -CUBE_DEPTH,
+      opacity: 0.3,
+      transformOrigin: "0% 50%",
+    },
+    rightInStart: {
+      rotateY: -90,
+      x: "-100%",
+      z: -CUBE_DEPTH,
+      opacity: 0.3,
+      transformOrigin: "100% 50%",
+    },
+  },
+  fade: {
+    enter: { opacity: 0 },
+    center: { opacity: 1 },
+    exit: { opacity: 0 },
+  },
+};
+
 export function ViewTransition({
   views,
   initialView,
-  defaultTheme = "pageTurn",
+  defaultTheme = "cube",
 }: ViewTransitionProps) {
   const [current, setCurrent] = useState(initialView);
-  const [exiting, setExiting] = useState<string | null>(null);
-  const [exitDirection, setExitDirection] = useState<TransitionDirection>("right");
+  const [direction, setDirection] = useState<TransitionDirection>("right");
+  const [nextView, setNextView] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
   const [theme, setThemeState] = useState<TransitionTheme>(() => {
     if (typeof window !== "undefined") {
       const saved = window.localStorage.getItem(THEME_STORAGE_KEY);
@@ -67,40 +133,14 @@ export function ViewTransition({
     return defaultTheme;
   });
 
-  // Usamos refs para que el callback `navigate` pueda leer los valores
-  // más recientes sin cambiar de referencia en cada render.
-  const viewsRef = useRef(views);
-  const currentRef = useRef(current);
-  const exitingRef = useRef(exiting);
-
-  useEffect(() => {
-    viewsRef.current = views;
-    currentRef.current = current;
-    exitingRef.current = exiting;
-  });
-
-  const navigate = (nextView: string, dir: TransitionDirection = "right") => {
-    const currentView = currentRef.current;
-    const exitingView = exitingRef.current;
-    const currentViews = viewsRef.current;
-    if (exitingView !== null || nextView === currentView || !currentViews[nextView]) return;
-    setExiting(currentView);
-    setCurrent(nextView);
-    setExitDirection(dir);
+  const navigate = (viewName: string, dir: TransitionDirection = "right") => {
+    if (!views[viewName] || viewName === current || isTransitioning) {
+      return;
+    }
+    setDirection(dir);
+    setNextView(viewName);
+    setIsTransitioning(true);
   };
-
-  // Mantener una ref con la última función navigate para usarla desde
-  // el effect que expone window(view) (sin depender de `navigate`).
-  const navigateRef = useRef(navigate);
-  useEffect(() => {
-    navigateRef.current = navigate;
-  });
-
-  useEffect(() => {
-    (window as unknown as { setView: (view: string) => void }).setView = (view: string) => {
-      navigateRef.current(view);
-    };
-  }, []);
 
   const setTheme = (newTheme: TransitionTheme) => {
     setThemeState(newTheme);
@@ -109,66 +149,90 @@ export function ViewTransition({
     }
   };
 
+  const handleTransitionComplete = () => {
+    if (nextView) {
+      setCurrent(nextView);
+    }
+    setNextView(null);
+    setIsTransitioning(false);
+  };
+
   const api: ViewTransitionApi = { navigate };
   const themeApi: TransitionThemeApi = { theme, setTheme };
 
-  const handleExitComplete = () => {
-    setExiting(null);
-    setExitDirection("right");
+  const activeVariants = theme === "cube" ? cubeVariants.cube : cubeVariants.fade;
+
+  const WRAPPER_STYLE: React.CSSProperties = {
+    perspective: "1200px",
+    width: "calc(100vw / var(--zoom, 1))",
+    height: "calc(100vh / var(--zoom, 1))",
+    position: "fixed",
+    top: 0,
+    left: 0,
+    overflow: "hidden",
+    background: "white",
   };
 
-  const hasTransition = exiting !== null;
-  const isPageTurn = theme === "pageTurn";
+  const STAGE_STYLE: React.CSSProperties = {
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    transformStyle: "preserve-3d",
+  };
 
-  // For pageTurn theme, we need to know what content goes on front/back
-  // Front = exiting view (current page turning away) or current view (idle)
-  // Back = current view (new page being revealed) - only during transition
-  const frontViewKey = exiting ?? current;
-  const backViewKey = hasTransition ? current : null;
-  const backViewRender = hasTransition ? views[backViewKey!] : null;
+  const PAGE_STYLE: React.CSSProperties = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    background: "white",
+    border: "none",
+    borderRadius: 0,
+    boxShadow: "none",
+    overflow: "hidden",
+    display: "flex",
+    flexDirection: "column",
+    boxSizing: "border-box",
+    backfaceVisibility: "hidden" as const,
+    transformStyle: "preserve-3d" as const,
+  };
 
   return (
     <ViewTransitionContext.Provider value={api}>
       <TransitionThemeContext.Provider value={themeApi}>
-        <div className="vt-wrapper" data-theme={theme}>
-          {isPageTurn ? (
-            <>
-              {/* Back page (destination) - only during transition */}
-              {hasTransition && backViewRender && (
-                <div className="vt-page vt-page--back" key={`back-${backViewKey}`}>
-                  {backViewRender(api)}
-                </div>
-              )}
-              {/* Front page (current/exiting) - always rendered */}
-              <div
-                className={`vt-page vt-page--front${hasTransition ? ` vt-page--turn-${exitDirection}` : ""}`}
-                onAnimationEnd={hasTransition ? handleExitComplete : undefined}
-                key={`front-${frontViewKey}`}
+        <div className="vt-wrapper" style={WRAPPER_STYLE}>
+          <div style={STAGE_STYLE}>
+            <AnimatePresence mode="popLayout" custom={direction}>
+              {/* CURRENT PAGE - leaving */}
+              <motion.div
+                key={current}
+                custom={direction}
+                variants={activeVariants}
+                initial={isTransitioning ? (direction === "right" ? "rightOut" : "leftOut") : "center"}
+                animate={isTransitioning ? (direction === "right" ? "rightOut" : "leftOut") : "center"}
+                exit={direction === "right" ? "rightOut" : "leftOut"}
+                style={PAGE_STYLE}
+                onAnimationComplete={handleTransitionComplete}
               >
-                <div className="vt-page__content">{views[frontViewKey]?.(api)}</div>
-                {hasTransition && <div className="vt-page__shadow" />}
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="vt-panel vt-panel--active">{views[current]?.(api)}</div>
-              {hasTransition && (
-                <div
-                  className={`vt-panel vt-panel--exiting vt-panel--exiting-${theme}-${exitDirection}`}
-                  onAnimationEnd={handleExitComplete}
+                {views[current]?.(api)}
+              </motion.div>
+
+              {/* NEXT PAGE - entering */}
+              {nextView && (
+                <motion.div
+                  key={nextView}
+                  custom={direction}
+                  variants={activeVariants}
+                  initial={direction === "right" ? "rightInStart" : "leftInStart"}
+                  animate={direction === "right" ? "rightIn" : "leftIn"}
+                  style={PAGE_STYLE}
                 >
-                  {views[exiting]?.(api)}
-                </div>
+                  {views[nextView]?.(api)}
+                </motion.div>
               )}
-              {hasTransition && (
-                <div
-                  className={`vt-panel vt-panel--entering vt-panel--entering-${theme}-${exitDirection}`}
-                >
-                  {views[current]?.(api)}
-                </div>
-              )}
-            </>
-          )}
+            </AnimatePresence>
+          </div>
         </div>
       </TransitionThemeContext.Provider>
     </ViewTransitionContext.Provider>
