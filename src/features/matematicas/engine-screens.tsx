@@ -71,6 +71,21 @@ const Numeracion999Screen = lazy(() =>
 const LeftRightScreen = lazy(() =>
   import("./leftRight/LeftRightScreen").then((module) => ({ default: module.LeftRightScreen })),
 );
+const AlgoritmoColumnaScreen = lazy(() =>
+  import("./algoritmoColumna/AlgoritmoColumnaScreen").then((module) => ({
+    default: module.AlgoritmoColumnaScreen,
+  })),
+);
+const SumaLlevandoScreen = lazy(() =>
+  import("./sumaLlevando/SumaLlevandoScreen").then((module) => ({
+    default: module.SumaLlevandoScreen,
+  })),
+);
+const TresSumandosColumnaScreen = lazy(() =>
+  import("./tresSumandosColumna/TresSumandosColumnaScreen").then((module) => ({
+    default: module.TresSumandosColumnaScreen,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -203,6 +218,30 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <LeftRightScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (
+    props.activity.engineId === "algoritmoVertical" ||
+    props.activity.engineId === "restaColumna"
+  ) {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <AlgoritmoColumnaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "sumaLlevando") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <SumaLlevandoScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "tresSumandosColumna") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <TresSumandosColumnaScreen {...props} />
       </Suspense>
     );
   }

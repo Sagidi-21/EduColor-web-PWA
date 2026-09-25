@@ -1,0 +1,157 @@
+/* ─── Contenedor principal ─────────────────────────────────────────── */
+.algcol {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-bg, #f4f7fb);
+  font-family: var(--font-base, "Nunito", sans-serif);
+}
+
+.algcol__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  gap: 1.5rem;
+  overflow-y: auto;
+}
+
+.algcol__body--with-numpad {
+  justify-content: flex-start;
+  padding-top: 2rem;
+}
+
+/* ─── Stage (zona del ejercicio) ───────────────────────────────────── */
+.algcol__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  transition: background 0.2s;
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+  min-width: 200px;
+}
+
+.algcol__stage--correct {
+  background: #efffef;
+}
+
+.algcol__stage--wrong {
+  background: #fff4f4;
+}
+
+.algcol__celebration {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-success, #22c55e);
+  animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ─── Cuadrícula D / U ─────────────────────────────────────────────── */
+.algcol__grid {
+  display: grid;
+  grid-template-columns: 3rem 4rem 4rem;
+  row-gap: 0.4rem;
+  align-items: center;
+  justify-items: center;
+}
+
+.algcol__col-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.algcol__digit {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1;
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+.algcol__op {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #64748b;
+  justify-self: end;
+  padding-right: 0.4rem;
+}
+
+/* Ocupa las 3 columnas */
+.algcol__separator {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 3px;
+  background: #1e293b;
+  border-radius: 2px;
+  margin: 0.3rem 0;
+}
+
+/* ─── Cajas de respuesta ────────────────────────────────────────────── */
+.algcol__box {
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 3px solid #cbd5e1;
+  border-radius: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: #f8fafc;
+  user-select: none;
+}
+
+.algcol__box--active {
+  border-color: var(--color-primary, #6366f1);
+  background: #eef2ff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+.algcol__box--correct {
+  border-color: var(--color-success, #22c55e);
+  background: #f0fdf4;
+  color: var(--color-success, #22c55e);
+}
+
+.algcol__box--wrong {
+  border-color: var(--color-error, #ef4444);
+  background: #fef2f2;
+  color: var(--color-error, #ef4444);
+}
+
+.algcol__cursor {
+  color: var(--color-primary, #6366f1);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ─── Footer con numpad / botones ───────────────────────────────────── */
+.algcol__footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}

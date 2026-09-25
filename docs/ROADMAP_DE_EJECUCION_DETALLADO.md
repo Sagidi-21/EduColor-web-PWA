@@ -141,10 +141,23 @@ Trasladar gradualmente las actividades con mayor valor pedagógico, sin una migr
 - `comparison` cuenta con la pantalla de resumen compartida y paridad con el
   comportamiento visual y de audio de Electron.
 - `ordenar` conserva la configuración original de 10 ejercicios y sus rangos
-  por dificultad, pendiente de añadirle el `SummaryScreen`.
+  por dificultad.
+- **Ola P1/P2 completa:** `counting`, `comparison`, `ordenar`, `seriesNumericas`,
+  `vecinosNumero`, `numeracion1119`, `suma`, `resta`, `igualdad`, `problemas`,
+  `relacionar`, `tresSumandos`, `leftRight`, `numeracion4059`, `numeracion6099`,
+  `numeracion999` — todos con motor, renderer, SummaryScreen, audio y tests.
+- **Algoritmos en columna (2026-09-25):** migradas las 4 actividades de algoritmo
+  vertical:
+  - `algoritmoVertical` + `restaColumna` → renderer compartido `AlgoritmoColumnaScreen`,
+    9 tests cada una.
+  - `tresSumandosColumna` → renderer propio `TresSumandosColumnaScreen`, 8 tests.
+  - `sumaLlevando` → renderer propio `SumaLlevandoScreen` con mecánica de dígito
+    "llevar" (3 pasos: U → carry → D), 6 tests.
+  - Los 4 manifiestos existentes con `status: "available"` y registro lazy en
+    `engine-screens.tsx`.
 - La validación manual en escritorio, tableta y pizarra, junto
-  con el feedback docente, sigue siendo requisito antes de declararlas cerradas
-  pedagógicamente.
+  con el feedback docente, sigue siendo requisito antes de declarar cada
+  actividad cerrada pedagógicamente.
 
 ---
 
