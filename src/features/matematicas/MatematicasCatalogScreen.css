@@ -559,6 +559,18 @@
   background: transparent;
 }
 
+/* Selected: mantenemos el brillo fijo en la tarjeta seleccionada */
+.level-card--selected.edu-glow::before,
+.diff-card--selected.edu-glow::before {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+.level-card--selected.edu-glow::after,
+.diff-card--selected.edu-glow::after {
+  background: transparent;
+}
+
 .edu-glow--soon::before,
 .edu-glow--soon::after {
   display: none;
