@@ -9,6 +9,12 @@ export interface Aula {
 export interface ClassProfile {
   className: string;
   mascotUrl: string;
+  mascotAssets?: {
+    explain: string;
+    point: string;
+    think: string;
+    celebrate: string;
+  };
   accentColor: string;
 }
 

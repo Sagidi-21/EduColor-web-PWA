@@ -230,8 +230,11 @@ export const checkHfHealth = asyncHandler(async (req: Request, res: Response) =>
 
 // Dev-only: return the exact prompt that would be sent to HF for a given config
 export const getMascotPromptDev = asyncHandler(async (req: Request, res: Response) => {
+  console.log("[prompt-dev] raw body:", JSON.stringify(req.body, null, 2));
   const rawConfig = req.body as Partial<MascotConfig>;
   const config = sanitizeMascotConfig(rawConfig);
+  console.log("[prompt-dev] sanitized config:", JSON.stringify(config, null, 2));
   const prompt = getMascotPromptForConfig(config);
+  console.log("[prompt-dev] prompt length:", prompt.length);
   res.json({ prompt });
 });

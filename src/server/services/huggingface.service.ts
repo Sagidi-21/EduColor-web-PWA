@@ -153,6 +153,27 @@ function resolveCharacterType(config: MascotConfig): string {
   return themeToCharacter[theme] ?? "friendly character fitting the theme";
 }
 
+function resolveAppearance(characterType: string): string {
+  const lower = characterType.toLowerCase();
+  if (lower.includes("robot") || lower.includes("mech")) {
+    return "Compact, cute robot with expressive LED eyes, round friendly proportions, small size — clearly a machine, NOT a human or child";
+  }
+  if (lower.includes("animal") || lower.includes("dinosaur") || lower.includes("creature") || lower.includes("dragon") || lower.includes("sea")) {
+    return "Friendly, small animal-sized creature with expressive face and clear species characteristics — NOT a human or child";
+  }
+  if (lower.includes("fantasy") || lower.includes("fairy") || lower.includes("elf") || lower.includes("magical") || lower.includes("spirit")) {
+    return "Magical non-human creature with fantastical features (wings, horns, ethereal glow, etc.) — clearly a fantasy being, NOT a plain human child";
+  }
+  if (lower.includes("magic") || lower.includes("wizard") || lower.includes("witch")) {
+    return "Magical character with fantasy costume, wand or magical accessories — human-like but clearly a magical being with distinctive magical traits";
+  }
+  if (lower.includes("person") || lower.includes("human") || lower.includes("child") || lower.includes("kid")) {
+    return "Child-like, approximately 7-8 years old equivalent, friendly and approachable human character";
+  }
+  // ai_choice or generic
+  return "Friendly, distinctive character with clear non-human or fantasy traits, small and approachable";
+}
+
 function buildMascotPrompt(config: MascotConfig): string {
   const theme = config.theme === "other" ? config.customTheme : config.theme;
   const characterType = resolveCharacterType(config);
@@ -168,15 +189,16 @@ function buildMascotPrompt(config: MascotConfig): string {
   };
 
   const styleDescription = styleLabels[visualStyle] ?? visualStyle;
+  const appearance = resolveAppearance(characterType);
 
   const identity = `
 CHARACTER IDENTITY:
 - Type/Species: ${characterType}
-- Age appearance: Child-like, approximately 7-8 years old equivalent, friendly and approachable
+- Appearance: ${appearance}
 - Personality traits: ${personality}
 - World/Setting: ${theme}
 - Primary colors: Harmonious palette fitting ${theme} theme, warm and inviting
-- Clothing/Accessories: Simple, distinctive outfit matching ${theme} world, ${specialDetails ? `including: ${specialDetails}` : "minimal but characteristic"}
+- Clothing/Accessories: ${characterType.toLowerCase().includes("robot") ? `Mechanical details and joints matching ${theme} world` : `Simple, distinctive outfit matching ${theme} world`}${specialDetails ? `, including: ${specialDetails}` : ""}
 - Visual style: ${styleDescription}
 - Distinctive features: Clear silhouette, recognizable face, consistent proportions, memorable design elements
 - Name reference: ${config.nameMode === "teacher" && config.teacherName.trim() ? config.teacherName.trim() : "(AI-generated, not shown in image)"}
@@ -191,7 +213,7 @@ COMPOSITION RULES (CRITICAL):
 - Each character stays completely within its own quadrant
 - Approximate equal character size in all four quadrants
 - Consistent camera framing across quadrants
-- Uniform, simple background across entire image
+- Transparent background across the entire image (pure white or solid flat color with no gradients, no textures, no scenery — suitable for PNG cutout)
 - NO text, NO numbers, NO letters, NO speech bubbles, NO watermarks, NO UI elements
 - NO additional characters, NO decorative elements crossing quadrants
 `.trim();

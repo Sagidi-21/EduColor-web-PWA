@@ -61,8 +61,8 @@ export function validateMascotConfig(req: Request, res: Response, next: NextFunc
     errors.push("visualStyle: valor no permitido");
   }
 
-  if (body.specialDetails && body.specialDetails.length > 250) {
-    errors.push("specialDetails: máximo 250 caracteres");
+  if (body.specialDetails && body.specialDetails.length > 100) {
+    errors.push("specialDetails: máximo 100 caracteres");
   }
 
   const allowedKeys: (keyof MascotConfig)[] = [
@@ -133,10 +133,104 @@ function stripUnknownFields(config: Partial<MascotConfig>): MascotConfig {
     customTheme: config.customTheme ?? "",
     characterType: config.characterType ?? "ai_choice",
     customCharacterType: config.customCharacterType ?? "",
-    personality: config.personality ?? [],
+    personality: Array.isArray(config.personality)
+      ? config.personality.filter((p) => typeof p === "string")
+      : config.personality
+        ? [config.personality]
+        : [],
     nameMode: config.nameMode ?? "ai",
     teacherName: config.teacherName ?? "",
     visualStyle: config.visualStyle ?? "cartoon_3d",
     specialDetails: config.specialDetails ?? "",
   };
+}
+
+export function validateMascotConfigDev(req: Request, res: Response, next: NextFunction) {
+  const body = req.body as Partial<MascotConfig>;
+  const errors: string[] = [];
+
+  if (!body.theme || !ALLOWED_THEMES.includes(body.theme as any)) {
+    errors.push("theme: valor no permitido");
+  }
+  if (body.theme === "other" && !body.customTheme?.trim()) {
+    errors.push("customTheme: requerido cuando theme es 'other'");
+  }
+  if (body.customTheme && body.customTheme.length > 100) {
+    errors.push("customTheme: máximo 100 caracteres");
+  }
+
+  if (!body.characterType || !ALLOWED_CHARACTER_TYPES.includes(body.characterType as any)) {
+    errors.push("characterType: valor no permitido");
+  }
+  if (body.characterType === "other" && !body.customCharacterType?.trim()) {
+    errors.push("customCharacterType: requerido cuando characterType es 'other'");
+  }
+  if (body.customCharacterType && body.customCharacterType.length > 100) {
+    errors.push("customCharacterType: máximo 100 caracteres");
+  }
+
+  // Dev endpoint: personality puede llegar como string (selección única del formulario)
+  // o como array. Se acepta 1–3 elementos.
+  const personalityArr: string[] = Array.isArray(body.personality)
+    ? (body.personality as string[])
+    : typeof body.personality === "string" && body.personality
+      ? [body.personality]
+      : [];
+  if (personalityArr.length < 1 || personalityArr.length > 3) {
+    errors.push("personality: debe tener entre 1 y 3 elementos");
+  } else {
+    personalityArr.forEach((p) => {
+      if (!ALLOWED_PERSONALITY.includes(p as any)) {
+        errors.push(`personality: valor no permitido '${p}'`);
+      }
+    });
+  }
+
+  if (!body.nameMode || !ALLOWED_NAME_MODES.includes(body.nameMode as any)) {
+    errors.push("nameMode: valor no permitido");
+  }
+  if (body.nameMode === "teacher") {
+    if (!body.teacherName?.trim()) {
+      errors.push("teacherName: requerido cuando nameMode es 'teacher'");
+    } else if (body.teacherName.length < 2 || body.teacherName.length > 20) {
+      errors.push("teacherName: debe tener entre 2 y 20 caracteres");
+    }
+  }
+
+  if (!body.visualStyle || !ALLOWED_VISUAL_STYLES.includes(body.visualStyle as any)) {
+    errors.push("visualStyle: valor no permitido");
+  }
+
+  if (body.specialDetails && body.specialDetails.length > 100) {
+    errors.push("specialDetails: máximo 100 caracteres");
+  }
+
+  const allowedKeys: (keyof MascotConfig)[] = [
+    "theme",
+    "customTheme",
+    "characterType",
+    "customCharacterType",
+    "personality",
+    "nameMode",
+    "teacherName",
+    "visualStyle",
+    "specialDetails",
+  ];
+  const extraKeys = Object.keys(body).filter((k) => !(allowedKeys as string[]).includes(k));
+  if (extraKeys.length > 0) {
+    errors.push(`Campos desconocidos: ${extraKeys.join(", ")}`);
+  }
+
+  if (errors.length > 0) {
+    res.status(400).json({ error: "Validación fallida", details: errors });
+    return;
+  }
+
+  // Normalizar personality a array antes de pasar al controller
+  const normalizedBody = {
+    ...body,
+    personality: personalityArr,
+  };
+  req.body = stripUnknownFields(normalizedBody) as MascotConfig;
+  next();
 }

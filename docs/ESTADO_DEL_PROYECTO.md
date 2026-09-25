@@ -1,9 +1,9 @@
-﻿# Estado del proyecto
+# Estado del proyecto
 
 ## Punto de trabajo actual
 
 - **Fase activa:** 2 — Migración del catálogo matemático V1 (con Fase 5 adelantada ya completada).
-- **Paso activo:** Las actividades `suma`, `resta`, `igualdad`, `counting`, `problemas`, `relacionar`, `rectaNumerica` y `tresSumandos` están técnicamente implementadas (core, tests, manifiestos, renderer, routing). Se está migrando `tresSumandos` (Sumas con tres sumandos). El punto 7 (`ordenar`) de la Fase 2 y la Fase 5 del canvas (reconocimiento de dígitos y preprocesado) ya están completados. La Fase 1 cerró con manifiestos, selector y un motor extra (`comparison`) no acoplado al conteo.
+- **Paso activo:** Las actividades `suma`, `resta`, `igualdad`, `counting`, `problemas`, `relacionar`, `rectaNumerica` y `tresSumandos` están técnicamente implementadas (core, tests, manifiestos, renderer, routing). El punto 7 (`ordenar`) de la Fase 2 y la Fase 5 del canvas (reconocimiento de dígitos y preprocesado) ya están completados. La Fase 1 cerró con manifiestos, selector y un motor extra (`comparison`) no acoplado al conteo.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
 
@@ -67,3 +67,5 @@ personalizado para cada clase, generado mediante la API de Hugging Face Inferenc
 - **Comprobación de conexión:** `GET /api/mascot/health-hf` valida el token y el modelo sin generar imágenes.
 
 La implementación actual queda recogida en este registro y en los archivos de `src/features/mascota/`, `src/server/` y `src/assets/mascota/`.
+
+- **Arquitectura futura (Producción):** Actualmente, las imágenes generadas se manejan en memoria (Base64) y se almacenan temporalmente en el `localStorage` del navegador a través de `ClassProfileContext`. Debido a los límites de tamaño del `localStorage` (típicamente 5MB), para el entorno de producción real se utilizará **Supabase** (Storage y Database) en su capa gratuita. Cuando el profesor apruebe una nueva mascota y haga clic en "Guardar", el servidor subirá la imagen al _Bucket_ de Storage de Supabase y actualizará la base de datos reemplazando la URL de la mascota anterior por la nueva, garantizando escalabilidad y sincronización en múltiples dispositivos sin consumir el almacenamiento local del navegador.

@@ -55,7 +55,8 @@ describe("hf.service", () => {
       expect(imageCall[1].inputs).toContain("space");
       expect(imageCall[1].inputs).toContain("funny");
       expect(imageCall[1].inputs).toContain("curious");
-      expect(imageCall[1].inputs).toContain("AI choice");
+      // characterType "ai_choice" se resuelve a tipo coherente con el tema (space → alien/robot)
+      expect(imageCall[1].inputs).toContain("alien or small explorer robot");
     });
 
     it("usa teacherName cuando nameMode es 'teacher'", async () => {

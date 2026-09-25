@@ -155,8 +155,8 @@ describe("validation middleware", () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it("acepta specialDetails con 250 caracteres", () => {
-      req.body = { ...VALID_CONFIG, specialDetails: "x".repeat(250) };
+    it("acepta specialDetails con 100 caracteres", () => {
+      req.body = { ...VALID_CONFIG, specialDetails: "x".repeat(100) };
       validateMascotConfig(req, res, next);
       expect(next).toHaveBeenCalled();
     });

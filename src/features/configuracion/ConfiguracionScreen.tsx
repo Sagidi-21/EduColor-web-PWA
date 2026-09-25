@@ -136,7 +136,7 @@ export function ConfiguracionScreen({
                 📷 Subir imagen
               </button>
               {profile.mascotUrl && (
-                <button className="cfg__remove-btn" onClick={() => save({ mascotUrl: "" })}>
+                <button className="cfg__remove-btn" onClick={() => save({ mascotUrl: "", mascotAssets: undefined })}>
                   Quitar imagen
                 </button>
               )}

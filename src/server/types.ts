@@ -62,6 +62,10 @@ export interface MascotPreviewResult {
   description: string;
 }
 
+export interface MascotPoseGridResult {
+  imageUrl: string;
+}
+
 export interface MascotAssetsResult {
   referenceImage: string;
   assets: {
@@ -72,4 +76,11 @@ export interface MascotAssetsResult {
     header: string;
     blackboard: string;
   };
+}
+
+export interface MascotPoseAssetsResult {
+  explain: string;
+  point: string;
+  think: string;
+  celebrate: string;
 }

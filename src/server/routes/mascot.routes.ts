@@ -2,12 +2,15 @@ import express from "express";
 import {
   generateMascotPreview,
   generateMascotAssets,
+  generateMascotPoseGrid,
   getMascotStatus,
   regeneratePreview,
   checkHfHealth,
+  getMascotPromptDev,
 } from "../controllers/mascot.controller.ts";
 import {
   validateMascotConfig,
+  validateMascotConfigDev,
   validateMascotGeneration,
 } from "../middleware/validation.middleware.ts";
 import { rateLimit } from "../middleware/rateLimit.middleware.ts";
@@ -30,10 +33,15 @@ router.post("/preview", previewRateLimit, validateMascotConfig, generateMascotPr
 
 router.post("/regenerate-preview", previewRateLimit, regeneratePreview);
 
+router.post("/generate-pose-grid", assetsRateLimit, validateMascotGeneration, generateMascotPoseGrid);
+
 router.post("/generate-assets", assetsRateLimit, validateMascotGeneration, generateMascotAssets);
 
 router.get("/status/:id", getMascotStatus);
 
 router.get("/health-hf", checkHfHealth);
+
+// Dev-only: get the exact prompt that would be sent to HF
+router.post("/prompt-dev", validateMascotConfigDev, getMascotPromptDev);
 
 export default router;

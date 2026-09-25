@@ -151,16 +151,20 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
   const fetchDevPrompt = async () => {
     setDevPromptLoading(true);
     try {
+      console.log("[fetchDevPrompt] sending config:", JSON.stringify(config, null, 2));
       const response = await fetch("/api/mascot/prompt-dev", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(config),
       });
+      console.log("[fetchDevPrompt] response status:", response.status, response.statusText);
       if (!response.ok) {
         const error = await response.json();
+        console.error("[fetchDevPrompt] error response:", error);
         throw new Error(error.error || "Error al obtener el prompt");
       }
       const data = await response.json();
+      console.log("[fetchDevPrompt] response data:", data);
       setDevPrompt(data.prompt);
       setShowPromptModal(true);
     } catch (err) {
@@ -1085,13 +1089,25 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
                   rows={2}
                   spellCheck={false}
                 />
-                <button
-                  className="mascot-screen__btn-primary special-details-input__create-btn"
-                  onClick={generateMascot}
-                  disabled={isGenerating}
-                >
-                  {isGenerating ? "Generando..." : "✨ Crear compañero"}
-                </button>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px", flexShrink: 0 }}>
+                  <button
+                    className="mascot-screen__btn-primary special-details-input__create-btn"
+                    onClick={generateMascot}
+                    disabled={isGenerating}
+                    style={{ margin: 0, padding: "16px 24px", width: "100%" }}
+                  >
+                    {isGenerating ? "Generando..." : "✨ Crear compañero"}
+                  </button>
+                  <button
+                    type="button"
+                    className="mascot-screen__btn-secondary special-details-input__create-btn"
+                    onClick={fetchDevPrompt}
+                    disabled={devPromptLoading}
+                    style={{ margin: 0, padding: "16px 24px", width: "100%" }}
+                  >
+                    {devPromptLoading ? "⏳ Cargando..." : "🧪 Ver prompt"}
+                  </button>
+                </div>
               </div>
               <small>Máximo 100 caracteres</small>
             </div>
@@ -1331,6 +1347,41 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
           </div>
         )}
       </div>
+
+      {/* Dev-only: Prompt viewer modal */}
+      {showPromptModal && (
+        <div className="mascot-screen__dev-prompt-overlay" onClick={() => setShowPromptModal(false)}>
+          <div className="mascot-screen__dev-prompt-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="mascot-screen__dev-prompt-header">
+              <h3>🧪 Prompt de desarrollo (debug)</h3>
+              <p className="mascot-screen__dev-prompt-note">
+                Este es el prompt EXACTO que se enviaría a Hugging Face. Copia y prueba en Google Flow.
+              </p>
+            </div>
+            <textarea
+              className="mascot-screen__dev-prompt-textarea"
+              value={devPrompt}
+              readOnly
+              spellCheck={false}
+              rows={25}
+            />
+            <div className="mascot-screen__dev-prompt-actions">
+              <button
+                className="mascot-screen__btn-primary"
+                onClick={() => navigator.clipboard.writeText(devPrompt)}
+              >
+                📋 Copiar prompt
+              </button>
+              <button
+                className="mascot-screen__btn-secondary"
+                onClick={() => setShowPromptModal(false)}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {portalTransition && (
         <PortalTransition
