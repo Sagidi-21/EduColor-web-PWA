@@ -91,6 +91,11 @@ const RelacionSumaRestaScreen = lazy(() =>
     default: module.RelacionSumaRestaScreen,
   })),
 );
+const RepartoIgualScreen = lazy(() =>
+  import("./repartoIgual/RepartoIgualScreen").then((module) => ({
+    default: module.RepartoIgualScreen,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -254,6 +259,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <RelacionSumaRestaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "repartoIgual") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <RepartoIgualScreen {...props} />
       </Suspense>
     );
   }

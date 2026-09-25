@@ -13,8 +13,6 @@ import { ActionButtons } from "../components/ActivityActionButtons";
 import { Numpad } from "../../shared/components/Numpad";
 import "./RelacionSumaRestaScreen.css";
 
-
-
 // ────────────────────────────────────────────────────────────────
 // Tipos internos
 // ────────────────────────────────────────────────────────────────
@@ -38,10 +36,7 @@ interface SessionState {
 // Utilidades de estado
 // ────────────────────────────────────────────────────────────────
 
-function initSession(
-  difficulty: string,
-  seed = Date.now() % 999983,
-): SessionState {
+function initSession(difficulty: string, seed = Date.now() % 999983): SessionState {
   return {
     exercises: generateSession(
       difficulty as Parameters<typeof generateSession>[0],
@@ -98,19 +93,20 @@ function EquationRow({
     .filter(Boolean)
     .join(" ");
 
-  const displayValue =
-    answerState === "correct" ? String(expectedValue) : inputValue;
+  const displayValue = answerState === "correct" ? String(expectedValue) : inputValue;
 
   return (
-    <div className="relsr__equation-row" onClick={onClick} role="button" tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && onClick()}>
+    <div
+      className="relsr__equation-row"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === "Enter" && onClick()}
+    >
       {showVisual && visualItems > 0 && (
         <div className="relsr__dots" aria-hidden="true">
           {Array.from({ length: visualItems }).map((_, i) => (
-            <span
-              key={i}
-              className={`relsr__dot relsr__dot--${itemVariant}`}
-            />
+            <span key={i} className={`relsr__dot relsr__dot--${itemVariant}`} />
           ))}
         </div>
       )}
@@ -136,9 +132,7 @@ export function RelacionSumaRestaScreen({
   onExit,
   gradeTitle,
 }: EngineScreenProps) {
-  const [session, setSession] = useState<SessionState>(() =>
-    initSession(difficulty, seed),
-  );
+  const [session, setSession] = useState<SessionState>(() => initSession(difficulty, seed));
   const [finished, setFinished] = useState<{
     total: number;
     correct: number;

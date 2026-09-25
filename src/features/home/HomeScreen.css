@@ -167,7 +167,7 @@
 
 .grade-card:hover {
   border-color: var(--grade-color);
-  background: var(--grade-color);
+  background: var(--grade-color-hover, var(--grade-color));
   color: #fff;
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
@@ -181,7 +181,7 @@
 
 .grade-card--selected {
   border-color: var(--grade-color) !important;
-  background: var(--grade-color);
+  background: var(--grade-color-hover, var(--grade-color));
   color: #fff;
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
@@ -263,7 +263,7 @@
 }
 
 .mode-card:hover {
-  background: var(--mode-color);
+  background: var(--mode-color-hover, var(--mode-color));
   border-color: var(--mode-color);
   color: #fff;
   transform: translateY(-3px);
@@ -277,7 +277,7 @@
 }
 
 .mode-card--selected {
-  background: var(--mode-color);
+  background: var(--mode-color-hover, var(--mode-color));
   border-color: var(--mode-color);
   color: #fff;
   transform: translateY(-3px);

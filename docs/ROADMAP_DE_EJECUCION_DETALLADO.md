@@ -154,7 +154,8 @@ Trasladar gradualmente las actividades con mayor valor pedagógico, sin una migr
   - `sumaLlevando` → renderer propio `SumaLlevandoScreen` con mecánica de dígito
     "llevar" (3 pasos: U → carry → D), 6 tests.
   - `relacionSumaResta` → renderer propio `RelacionSumaRestaScreen` con 3 ecuaciones secuenciales, apoyo visual de puntos, 21 tests.
-  - Los 4 manifiestos existentes con `status: "available"` y registro lazy en
+  - `repartoIgual` → renderer propio `RepartoIgualScreen` con visualización de agrupaciones y animaciones, 5 tests.
+  - Los 5 manifiestos existentes con `status: "available"` y registro lazy en
     `engine-screens.tsx`.
 - La validación manual en escritorio, tableta y pizarra, junto
   con el feedback docente, sigue siendo requisito antes de declarar cada

@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  generateSession,
-  validateAnswers,
-  allCorrect,
-} from "./relacionSumaResta";
+import { generateSession, validateAnswers, allCorrect } from "./relacionSumaResta";
 
 // ────────────────────────────────────────────────────────────────
 // generateSession
@@ -66,9 +62,7 @@ describe("relacionSumaResta – generateSession", () => {
 
   it("no repite ejercicios con la misma semilla", () => {
     const session = generateSession("easy", 42);
-    const keys = session.map(
-      (ex) => `${ex.total}-${Math.min(ex.partA, ex.partB)}`,
-    );
+    const keys = session.map((ex) => `${ex.total}-${Math.min(ex.partA, ex.partB)}`);
     const unique = new Set(keys);
     expect(unique.size).toBe(session.length);
   });

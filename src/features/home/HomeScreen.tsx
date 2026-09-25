@@ -73,6 +73,7 @@ export function HomeScreen({ onNavigate }: { onNavigate: (view: AppView) => void
                   style={
                     {
                       "--grade-color": meta.color,
+                      "--grade-color-hover": `${meta.color}99`,
                       "--grade-color-light": meta.light,
                     } as React.CSSProperties
                   }
@@ -101,7 +102,7 @@ export function HomeScreen({ onNavigate }: { onNavigate: (view: AppView) => void
                 <button
                   key={mode.id}
                   className={`mode-card ${blocked ? "mode-card--dimmed" : ""}`}
-                  style={{ "--mode-color": mode.color } as React.CSSProperties}
+                  style={{ "--mode-color": mode.color, "--mode-color-hover": `${mode.color}99` } as React.CSSProperties}
                   disabled={blocked}
                   onClick={() => onNavigate(mode.id)}
                 >
