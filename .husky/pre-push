@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
-# Bloquea el push si el lint o los tests fallan
+# Bloquea el push si el typecheck, lint o los tests fallan
+npm run typecheck || exit 1
 npm run lint || exit 1
 npm run test || exit 1

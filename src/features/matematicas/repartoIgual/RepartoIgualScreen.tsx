@@ -156,7 +156,7 @@ export function RepartoIgualScreen({
   return (
     <div className="ops">
       <ActivityHeader
-        title={activity.title}
+        unitTitle={activity.title}
         gradeTitle={gradeTitle}
         progress={`${session.currentIndex + 1} / ${total}`}
         onExit={onExit}

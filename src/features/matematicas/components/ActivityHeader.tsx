@@ -7,6 +7,7 @@ export interface ActivityHeaderProps {
   gradeTitle?: string;
   className?: string;
   unitTitle?: string;
+  title?: string;
   difficultyStars?: string;
   mascotUrl?: string;
   progress?: string;
@@ -19,11 +20,14 @@ export function ActivityHeader({
   gradeTitle,
   className,
   unitTitle,
+  title,
   difficultyStars,
   mascotUrl,
   progress,
   children,
 }: ActivityHeaderProps): JSX.Element {
+  const headerTitle = unitTitle ?? title;
+
   return (
     <header className="activity-header">
       <button type="button" className="activity-header__exit" onClick={onExit}>
@@ -38,7 +42,7 @@ export function ActivityHeader({
             {className ? ` — ${className}` : ""}
           </span>
         )}
-        {unitTitle && <span className="activity-header__title">{unitTitle}</span>}
+        {headerTitle && <span className="activity-header__title">{headerTitle}</span>}
       </div>
 
       <div className="activity-header__right">
