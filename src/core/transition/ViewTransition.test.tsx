@@ -1,6 +1,7 @@
+/// <reference types="@testing-library/jest-dom" />
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, cleanup, act } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import "@testing-library/jest-dom/vitest";
 import { ViewTransition } from "./ViewTransition";
 import type { TransitionTheme, TransitionDirection } from "./vtThemes";
 
@@ -83,10 +84,11 @@ describe("ViewTransition (Framer Motion)", () => {
 
     it("ignores navigation to same view", () => {
       const { container } = renderTransition("a");
-      const navigate = (container.querySelector("button") as HTMLButtonElement).onclick;
+      const btn = container.querySelector("button") as HTMLButtonElement;
       act(() => {
-        if (navigate) {
-          navigate({ currentTarget: { dataset: {} } } as unknown as MouseEvent);
+        if (btn.onclick) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          btn.onclick.call(btn, { currentTarget: { dataset: {} } } as any);
         }
       });
     });
@@ -127,7 +129,8 @@ describe("ViewTransition (Framer Motion)", () => {
         if (navFn) {
           navFn("b", "right", origin);
         } else if (btn.onclick) {
-          btn.onclick({} as unknown as MouseEvent);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          btn.onclick.call(btn, {} as any);
         }
       });
 
