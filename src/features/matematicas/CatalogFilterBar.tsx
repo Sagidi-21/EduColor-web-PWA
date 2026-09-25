@@ -36,6 +36,8 @@ export function CatalogFilterBar({
   onBlockChange,
 }: CatalogFilterBarProps) {
   const [openColumn, setOpenColumn] = useState<OpenColumn>(null);
+  const [isExiting, setIsExiting] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
 
   // Chalkboard adjustment state
@@ -51,7 +53,16 @@ export function CatalogFilterBar({
   const chalkboardContentRef = useRef<HTMLDivElement>(null);
   const [copyStatus, setCopyStatus] = useState("");
 
-  const closeAll = useCallback(() => setOpenColumn(null), []);
+  const closeAll = useCallback(() => {
+    if (isAnimating) return; // Prevenir doble clic
+    setIsAnimating(true);
+    setIsExiting(true);
+    setTimeout(() => {
+      setOpenColumn(null);
+      setIsExiting(false);
+      setIsAnimating(false);
+    }, 1200);
+  }, [isAnimating]);
 
   useEffect(() => {
     function handleClick(event: MouseEvent) {
@@ -509,7 +520,7 @@ export function CatalogFilterBar({
       {openColumn &&
         createPortal(
           <div
-            className="filter-chalkboard-overlay"
+            className={`filter-chalkboard-overlay ${isExiting ? "filter-chalkboard-overlay--exiting" : ""}`}
             role="dialog"
             aria-modal="true"
             aria-label="Pizarra de selección"
