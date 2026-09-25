@@ -6,6 +6,7 @@ import type {
   SubjectId,
   GradeId,
 } from "../../core/content/contracts";
+import pizarraImg from "../../assets/pizarra.png";
 import "./CatalogFilterBar.css";
 
 interface CatalogFilterBarProps {
@@ -306,6 +307,11 @@ export function CatalogFilterBar({
           </div>
         )}
       </div>
+      {openColumn && (
+        <div className="filter-chalkboard-overlay" aria-hidden="true">
+          <img className="filter-chalkboard-image" src={pizarraImg} alt="" />
+        </div>
+      )}
     </div>
   );
 }

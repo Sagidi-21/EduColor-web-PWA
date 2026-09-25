@@ -316,8 +316,9 @@
 /* -- Panel D|U en tiempo real -- */
 .counting__du-panel {
   position: absolute;
-  top: 16px;
+  top: 50%;
   right: 24px;
+  transform: translateY(-50%);
   background: white;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -393,6 +394,9 @@
   transition:
     filter 0.2s,
     transform 0.2s;
+  /* Los objetos siempre van por encima del panel D|U (z-index 5) y de la tabla
+     posicional (z-index 5) para nunca quedar ocultos detrás de ellos. */
+  z-index: 6;
 }
 
 .counting__object--touchable {

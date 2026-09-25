@@ -696,16 +696,20 @@ function generatePositionsByArrangement(
     }
 
     // -- 1-L2: double-row 2×10, NO shuffle ----------------------------------
+    // Leave the rightmost ~18% free so the DECENAS/UNIDADES panel (bottom-right)
+    // never overlaps the 10th object of either row.
     case "double-row": {
       const COLS = 10;
-      const cellW = (100 - 12 * 2) / COLS;
+      const usableW = 82; // use only 0..82% of the width
+      const paddingX = 10;
+      const cellW = (usableW - paddingX * 2) / COLS;
       const cellH = (100 - 10 * 2) / 2;
       const positions: ObjectPosition[] = [];
       for (let i = 0; i < count; i++) {
         const r = Math.floor(i / COLS);
         const c = i % COLS;
         positions.push({
-          x: Math.max(8, Math.min(92, 12 + (c + 0.5) * cellW)),
+          x: Math.max(8, Math.min(92, paddingX + (c + 0.5) * cellW)),
           y: Math.max(8, Math.min(92, 10 + (r + 0.5) * cellH)),
           rotation: 0,
           scale: 0.88 + rng() * 0.12,
@@ -916,6 +920,8 @@ function generatePositionsByArrangement(
     }
 
     // -- 2-L3: mass-vs-blocks, three zones, NO global shuffle ---------------
+    // The positional table (DECENAS/UNIDADES counter) sits at the bottom of the
+    // stage. Keep every object above y=78% so images are never hidden behind it.
     case "mass-vs-blocks": {
       const hundreds = Math.floor(count / 100);
       const tens = Math.floor((count % 100) / 10);
@@ -924,12 +930,18 @@ function generatePositionsByArrangement(
       const groupFrames: GroupFrame[] = [];
       let posIdx = 0;
 
-      // Zone C (x: 5%–30%)
+      const TOP = 8;
+      const BOTTOM = 78; // bottom 22% reserved for the positional table
+
+      // Zone C (x: 5%–30%) — centenas
       const hundredsIndices: number[] = [];
+      const hRows = Math.max(1, Math.ceil(hundreds / 2));
+      const hStep = (BOTTOM - TOP) / hRows;
       for (let i = 0; i < hundreds; i++) {
+        const row = Math.floor(i / 2);
         positions.push({
           x: 10 + (i % 2) * 12,
-          y: 30 + Math.floor(i / 2) * 25,
+          y: TOP + (row + 0.5) * hStep,
           rotation: 0,
           scale: 1.4,
           zone: "hundreds",
@@ -944,12 +956,15 @@ function generatePositionsByArrangement(
           zone: "hundreds",
         });
 
-      // Zone D (x: 38%–62%)
+      // Zone D (x: 38%–62%) — decenas
       const tensIndices: number[] = [];
+      const tRows = Math.max(1, Math.ceil(tens / 2));
+      const tStep = (BOTTOM - TOP) / tRows;
       for (let i = 0; i < tens; i++) {
+        const row = Math.floor(i / 2);
         positions.push({
           x: 42 + (i % 2) * 8,
-          y: 25 + Math.floor(i / 2) * 22,
+          y: TOP + (row + 0.5) * tStep,
           rotation: 0,
           scale: 1.0,
           zone: "tens",
@@ -959,12 +974,15 @@ function generatePositionsByArrangement(
       if (tens > 0)
         groupFrames.push({ indices: tensIndices, size: tens, isComplete: true, zone: "tens" });
 
-      // Zone U (x: 70%–95%)
+      // Zone U (x: 70%–95%) — unidades
       const unitsIndices: number[] = [];
+      const uRows = Math.max(1, Math.ceil(units / 3));
+      const uStep = (BOTTOM - TOP) / uRows;
       for (let i = 0; i < units; i++) {
+        const row = Math.floor(i / 3);
         positions.push({
           x: 75 + (i % 3) * 6,
-          y: 25 + Math.floor(i / 3) * 22,
+          y: TOP + (row + 0.5) * uStep,
           rotation: 0,
           scale: 0.65,
           zone: "units",
