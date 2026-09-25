@@ -1,0 +1,143 @@
+/* Motor "Días de la semana" */
+
+.wd {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff7ed;
+  overflow: hidden;
+}
+
+/* ── Stage ─────────────────────────────────────────────────────────────────── */
+
+.wd__stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+  padding: 24px;
+  transition: background 0.3s;
+}
+
+.wd__stage--correct {
+  background: #f0fdf4;
+}
+.wd__stage--wrong {
+  background: #fff1f2;
+}
+
+.wd__celebration {
+  position: absolute;
+  top: 20px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #16a34a;
+  animation: wd-pop 0.3s ease;
+}
+
+@keyframes wd-pop {
+  0% {
+    transform: scale(0.5);
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ── Tira de días ───────────────────────────────────────────────────────────── */
+
+.wd__strip {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.wd__strip-day {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #fed7aa;
+  color: #7c2d12;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.wd__strip-day--active {
+  background: #ea580c;
+  color: #fff;
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);
+}
+
+.wd__question {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+  max-width: 400px;
+  margin: 0;
+}
+
+/* ── Footer con opciones ────────────────────────────────────────────────────── */
+
+.wd__footer {
+  padding: 16px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.wd__options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.wd__option {
+  min-width: 110px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 3px solid #e2e8f0;
+  background: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: capitalize;
+}
+
+.wd__option:hover:not(:disabled) {
+  border-color: #ea580c;
+  background: #fff7ed;
+  transform: translateY(-2px);
+}
+
+.wd__option:disabled {
+  cursor: not-allowed;
+}
+
+.wd__option--correct {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.wd__option--wrong {
+  border-color: #dc2626;
+  background: #fff1f2;
+  color: #dc2626;
+}

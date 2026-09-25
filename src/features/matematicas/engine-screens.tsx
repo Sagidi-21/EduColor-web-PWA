@@ -96,6 +96,11 @@ const RepartoIgualScreen = lazy(() =>
     default: module.RepartoIgualScreen,
   })),
 );
+const WeekDaysScreen = lazy(() =>
+  import("./weekDays/WeekDaysScreen").then((module) => ({
+    default: module.WeekDaysScreen,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -266,6 +271,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <RepartoIgualScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "weekDays") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <WeekDaysScreen {...props} />
       </Suspense>
     );
   }
