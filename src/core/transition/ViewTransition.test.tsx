@@ -84,7 +84,11 @@ describe("ViewTransition (Framer Motion)", () => {
     it("ignores navigation to same view", () => {
       const { container } = renderTransition("a");
       const navigate = (container.querySelector("button") as HTMLButtonElement).onclick;
-      act(() => navigate?.({ currentTarget: { dataset: {} } } as any));
+      act(() => {
+        if (navigate) {
+          navigate({ currentTarget: { dataset: {} } } as unknown as MouseEvent);
+        }
+      });
     });
 
     it("guards against rapid navigation while transitioning", () => {
@@ -108,18 +112,23 @@ describe("ViewTransition (Framer Motion)", () => {
       const { container } = renderTransition("a");
       const btn = container.querySelector("button") as HTMLButtonElement;
 
-      const api = (btn.onclick as any)?.target?.ownerDocument?.defaultView?.ViewTransitionContext
-        ?.current;
-      const nav = (window as any).setView || btn.onclick;
-
       act(() => {
         btn.click();
       });
 
       const origin = { x: 50, y: 50 };
-      const navFn = (window as any).ViewTransitionContext?.current?.navigate || btn.onclick;
+      const myWindow = window as unknown as {
+        ViewTransitionContext?: {
+          current?: { navigate?: (v: string, d: string, o: { x: number; y: number }) => void };
+        };
+      };
+      const navFn = myWindow.ViewTransitionContext?.current?.navigate;
       act(() => {
-        navFn?.("b", "right", origin);
+        if (navFn) {
+          navFn("b", "right", origin);
+        } else if (btn.onclick) {
+          btn.onclick({} as unknown as MouseEvent);
+        }
       });
 
       expect(container.querySelector(".vt-wrapper")).toBeInTheDocument();
