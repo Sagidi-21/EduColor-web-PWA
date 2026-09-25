@@ -153,6 +153,7 @@ Trasladar gradualmente las actividades con mayor valor pedagógico, sin una migr
   - `tresSumandosColumna` → renderer propio `TresSumandosColumnaScreen`, 8 tests.
   - `sumaLlevando` → renderer propio `SumaLlevandoScreen` con mecánica de dígito
     "llevar" (3 pasos: U → carry → D), 6 tests.
+  - `relacionSumaResta` → renderer propio `RelacionSumaRestaScreen` con 3 ecuaciones secuenciales, apoyo visual de puntos, 21 tests.
   - Los 4 manifiestos existentes con `status: "available"` y registro lazy en
     `engine-screens.tsx`.
 - La validación manual en escritorio, tableta y pizarra, junto

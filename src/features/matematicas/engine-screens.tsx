@@ -86,6 +86,11 @@ const TresSumandosColumnaScreen = lazy(() =>
     default: module.TresSumandosColumnaScreen,
   })),
 );
+const RelacionSumaRestaScreen = lazy(() =>
+  import("./relacionSumaResta/RelacionSumaRestaScreen").then((module) => ({
+    default: module.RelacionSumaRestaScreen,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -242,6 +247,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <TresSumandosColumnaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "relacionSumaResta") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <RelacionSumaRestaScreen {...props} />
       </Suspense>
     );
   }
