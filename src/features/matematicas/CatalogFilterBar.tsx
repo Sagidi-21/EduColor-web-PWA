@@ -306,43 +306,6 @@ export function CatalogFilterBar({
             </span>
           </span>
         </div>
-        {openColumn === "materia" && (
-          <div className="filter-dropdown" role="listbox">
-            <div className="dropdown-header">
-              <span className="dropdown-header-icon">&#127918;</span>
-              <span className="dropdown-header-text">SELECCIONA LA MATERIA</span>
-            </div>
-            <div className="dropdown-list">
-              {subjects.map((subject) => {
-                const isActive = subject.id === subjectId;
-                return (
-                  <button
-                    key={subject.id}
-                    className={"dropdown-item" + (isActive ? " dropdown-item--active" : "")}
-                    onClick={() => {
-                      onSubjectChange(subject.id);
-                      closeAll();
-                    }}
-                    role="option"
-                    aria-selected={isActive}
-                  >
-                    {isActive && (
-                      <>
-                        <span className="active-badge">ACTIVO</span>
-                        <span className="active-stars">&#10024;</span>
-                        <span className="active-check">&#10003;</span>
-                      </>
-                    )}
-                    <span className="dropdown-item-text">{subject.title}</span>
-                  </button>
-                );
-              })}
-            </div>
-            <button className="dropdown-footer" onClick={closeAll}>
-              Cerrar &#9650;
-            </button>
-          </div>
-        )}
       </div>
 
       {/* --- CURSO --- */}
@@ -383,44 +346,6 @@ export function CatalogFilterBar({
             </span>
           </span>
         </div>
-        {openColumn === "curso" && (
-          <div className="filter-dropdown" role="listbox">
-            <div className="dropdown-header">
-              <span className="dropdown-header-icon">&#127918;</span>
-              <span className="dropdown-header-text">SELECCIONA EL CURSO</span>
-            </div>
-            <div className="dropdown-list">
-              {grades.map((grade) => {
-                const isActive = grade.id === gradeId;
-                return (
-                  <button
-                    key={grade.id}
-                    className={"dropdown-item" + (isActive ? " dropdown-item--active" : "")}
-                    onClick={() => {
-                      onGradeChange(grade.id);
-                      closeAll();
-                    }}
-                    role="option"
-                    aria-selected={isActive}
-                  >
-                    <span className="dropdown-item-text">{grade.title}</span>
-                    {isActive && (
-                      <>
-                        <span className="active-badge">ACTIVO</span>
-                        <span className="active-stars">&#10024;</span>
-                        <span className="active-check">&#10003;</span>
-                      </>
-                    )}
-                    {!isActive && <span className="enter-btn">Entrar &#8594;</span>}
-                  </button>
-                );
-              })}
-            </div>
-            <button className="dropdown-footer" onClick={closeAll}>
-              Cerrar &#9650;
-            </button>
-          </div>
-        )}
       </div>
       <div className="filter-column filter-column--bloque">
         <div className="filter-label">
@@ -457,65 +382,6 @@ export function CatalogFilterBar({
             </span>
           </span>
         </div>
-        {openColumn === "bloque" && (
-          <div className="filter-dropdown" role="listbox">
-            <div className="dropdown-header">
-              <span className="dropdown-header-icon">&#127918;</span>
-              <span className="dropdown-header-text">SELECCIONA EL BLOQUE</span>
-            </div>
-            <div className="dropdown-list">
-              <button
-                className={"dropdown-item" + (blockId === "" ? " dropdown-item--active" : "")}
-                onClick={() => {
-                  onBlockChange("");
-                  closeAll();
-                }}
-                role="option"
-                aria-selected={blockId === ""}
-              >
-                <span className="dropdown-item-text">Todas las unidades</span>
-                {blockId === "" && (
-                  <>
-                    <span className="active-badge">ACTIVO</span>
-                    <span className="active-stars">&#10024;</span>
-                    <span className="active-check">&#10003;</span>
-                  </>
-                )}
-                {blockId !== "" && <span className="enter-btn">Entrar &#8594;</span>}
-              </button>
-              {blocks.map((block) => {
-                const isActive = block.id === blockId;
-                return (
-                  <button
-                    key={block.id}
-                    className={"dropdown-item" + (isActive ? " dropdown-item--active" : "")}
-                    onClick={() => {
-                      onBlockChange(block.id);
-                      closeAll();
-                    }}
-                    role="option"
-                    aria-selected={isActive}
-                  >
-                    <span className="dropdown-item-text">
-                      {block.description} - {block.title}
-                    </span>
-                    {isActive && (
-                      <>
-                        <span className="active-badge">ACTIVO</span>
-                        <span className="active-stars">&#10024;</span>
-                        <span className="active-check">&#10003;</span>
-                      </>
-                    )}
-                    {!isActive && <span className="enter-btn">Entrar &#8594;</span>}
-                  </button>
-                );
-              })}
-            </div>
-            <button className="dropdown-footer" onClick={closeAll}>
-              Cerrar &#9650;
-            </button>
-          </div>
-        )}
       </div>
       {openColumn &&
         createPortal(
