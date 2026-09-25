@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { generateSession, validateAnswer, DAYS } from "./weekDays";
+import { generateSession, validateAnswer, DAYS, type Day } from "./weekDays";
 
 describe("weekDays — generateSession", () => {
   it("genera exactamente 7 ejercicios", () => {
@@ -97,8 +97,8 @@ describe("weekDays — validateAnswer", () => {
   it("acepta la respuesta correcta", () => {
     const ex = {
       question: "¿Qué día va después del lunes?",
-      options: ["lunes", "martes", "miércoles", "jueves"] as const,
-      answer: "martes" as const,
+      options: ["lunes", "martes", "miércoles", "jueves"] as Day[],
+      answer: "martes" as Day,
     };
     expect(validateAnswer(ex, "martes")).toBe(true);
   });
@@ -106,8 +106,8 @@ describe("weekDays — validateAnswer", () => {
   it("rechaza una respuesta incorrecta", () => {
     const ex = {
       question: "¿Qué día va después del lunes?",
-      options: ["lunes", "martes", "miércoles", "jueves"] as const,
-      answer: "martes" as const,
+      options: ["lunes", "martes", "miércoles", "jueves"] as Day[],
+      answer: "martes" as Day,
     };
     expect(validateAnswer(ex, "lunes")).toBe(false);
     expect(validateAnswer(ex, "miércoles")).toBe(false);
@@ -116,8 +116,8 @@ describe("weekDays — validateAnswer", () => {
   it("es sensible al caso exacto del string", () => {
     const ex = {
       question: "¿Qué día va después del lunes?",
-      options: ["lunes", "martes", "miércoles", "jueves"] as const,
-      answer: "martes" as const,
+      options: ["lunes", "martes", "miércoles", "jueves"] as Day[],
+      answer: "martes" as Day,
     };
     expect(validateAnswer(ex, "Martes")).toBe(false);
     expect(validateAnswer(ex, "MARTES")).toBe(false);
