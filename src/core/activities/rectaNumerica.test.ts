@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { generateSession } from "./rectaNumerica";
+import { generateSession, validateAnswer } from "./rectaNumerica";
 
 describe("generateSession", () => {
   it("produces up to 10 exercises (easy max=10 has only 9 available targets)", () => {
@@ -87,5 +87,24 @@ describe("generateSession", () => {
     // Este test cubre el caso límite de que el bucle no entre en infinito.
     const session = generateSession("easy", 42);
     expect(session.length).toBeGreaterThan(0);
+  });
+});
+
+describe("validateAnswer", () => {
+  it("acepta el valor exacto", () => {
+    const ex = { target: 7, max: 10, labelEvery: 5 };
+    expect(validateAnswer(ex, 7)).toBe(true);
+  });
+
+  it("rechaza un valor incorrecto", () => {
+    const ex = { target: 7, max: 10, labelEvery: 5 };
+    expect(validateAnswer(ex, 6)).toBe(false);
+    expect(validateAnswer(ex, 8)).toBe(false);
+  });
+
+  it("rechaza los extremos (0 y max)", () => {
+    const ex = { target: 15, max: 20, labelEvery: 5 };
+    expect(validateAnswer(ex, 0)).toBe(false);
+    expect(validateAnswer(ex, 20)).toBe(false);
   });
 });

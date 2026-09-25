@@ -46,3 +46,12 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Rect
   }
   return out;
 }
+
+/**
+ * Valida si el valor colocado por el alumno coincide con el target del ejercicio.
+ * @param exercise - El ejercicio en curso
+ * @param placedValue - Valor entero resultante de ajustar la posición de soltar a la marca más cercana
+ */
+export function validateAnswer(exercise: RectaExercise, placedValue: number): boolean {
+  return placedValue === exercise.target;
+}
