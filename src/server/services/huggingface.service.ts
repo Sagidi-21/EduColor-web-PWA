@@ -158,16 +158,33 @@ function resolveAppearance(characterType: string): string {
   if (lower.includes("robot") || lower.includes("mech")) {
     return "Compact, cute robot with expressive LED eyes, round friendly proportions, small size — clearly a machine, NOT a human or child";
   }
-  if (lower.includes("animal") || lower.includes("dinosaur") || lower.includes("creature") || lower.includes("dragon") || lower.includes("sea")) {
+  if (
+    lower.includes("animal") ||
+    lower.includes("dinosaur") ||
+    lower.includes("creature") ||
+    lower.includes("dragon") ||
+    lower.includes("sea")
+  ) {
     return "Friendly, small animal-sized creature with expressive face and clear species characteristics — NOT a human or child";
   }
-  if (lower.includes("fantasy") || lower.includes("fairy") || lower.includes("elf") || lower.includes("magical") || lower.includes("spirit")) {
+  if (
+    lower.includes("fantasy") ||
+    lower.includes("fairy") ||
+    lower.includes("elf") ||
+    lower.includes("magical") ||
+    lower.includes("spirit")
+  ) {
     return "Magical non-human creature with fantastical features (wings, horns, ethereal glow, etc.) — clearly a fantasy being, NOT a plain human child";
   }
   if (lower.includes("magic") || lower.includes("wizard") || lower.includes("witch")) {
     return "Magical character with fantasy costume, wand or magical accessories — human-like but clearly a magical being with distinctive magical traits";
   }
-  if (lower.includes("person") || lower.includes("human") || lower.includes("child") || lower.includes("kid")) {
+  if (
+    lower.includes("person") ||
+    lower.includes("human") ||
+    lower.includes("child") ||
+    lower.includes("kid")
+  ) {
     return "Child-like, approximately 7-8 years old equivalent, friendly and approachable human character";
   }
   // ai_choice or generic

@@ -233,7 +233,6 @@ export function ViewTransition({ views, initialView, defaultTheme = "cube" }: Vi
     if (!nextView) return null;
     if (portalActive && isTransitioning && portalOrigin) {
       return {
-        key: nextView,
         custom: portalOrigin,
         variants: activeVariants,
         initial: "portalInStart",
@@ -242,7 +241,6 @@ export function ViewTransition({ views, initialView, defaultTheme = "cube" }: Vi
       };
     }
     return {
-      key: nextView,
       custom: direction,
       variants: activeVariants,
       initial: direction === "right" ? "rightInStart" : "leftInStart",
@@ -300,7 +298,9 @@ export function ViewTransition({ views, initialView, defaultTheme = "cube" }: Vi
 
               {/* NEXT PAGE - entering */}
               {nextView && (
-                <motion.div {...getNextPageProps()}>{views[nextView]?.(api)}</motion.div>
+                <motion.div key={nextView} {...getNextPageProps()}>
+                  {views[nextView]?.(api)}
+                </motion.div>
               )}
             </AnimatePresence>
           </div>

@@ -17,13 +17,19 @@ describe("ViewTransition (Framer Motion)", () => {
 
   const views = {
     a: ({ navigate }: { navigate: (view: string, direction?: TransitionDirection) => void }) => (
-      <div data-testid="view-a">View A<button onClick={() => navigate("b", "right")}>Go B</button></div>
+      <div data-testid="view-a">
+        View A<button onClick={() => navigate("b", "right")}>Go B</button>
+      </div>
     ),
     b: ({ navigate }: { navigate: (view: string, direction?: TransitionDirection) => void }) => (
-      <div data-testid="view-b">View B<button onClick={() => navigate("a", "left")}>Back A</button></div>
+      <div data-testid="view-b">
+        View B<button onClick={() => navigate("a", "left")}>Back A</button>
+      </div>
     ),
     c: ({ navigate }: { navigate: (view: string, direction?: TransitionDirection) => void }) => (
-      <div data-testid="view-c">View C<button onClick={() => navigate("a", "left")}>Back A</button></div>
+      <div data-testid="view-c">
+        View C<button onClick={() => navigate("a", "left")}>Back A</button>
+      </div>
     ),
   };
 
@@ -31,7 +37,8 @@ describe("ViewTransition (Framer Motion)", () => {
     return render(<ViewTransition views={views} initialView={initialView} defaultTheme={theme} />);
   };
 
-  const getCurrentView = (container: HTMLElement, viewId: string) => container.querySelector(`[data-testid="${viewId}"]`);
+  const getCurrentView = (container: HTMLElement, viewId: string) =>
+    container.querySelector(`[data-testid="${viewId}"]`);
 
   describe("Initial render", () => {
     it("renders only the initial view", () => {
@@ -101,7 +108,8 @@ describe("ViewTransition (Framer Motion)", () => {
       const { container } = renderTransition("a");
       const btn = container.querySelector("button") as HTMLButtonElement;
 
-      const api = (btn.onclick as any)?.target?.ownerDocument?.defaultView?.ViewTransitionContext?.current;
+      const api = (btn.onclick as any)?.target?.ownerDocument?.defaultView?.ViewTransitionContext
+        ?.current;
       const nav = (window as any).setView || btn.onclick;
 
       act(() => {

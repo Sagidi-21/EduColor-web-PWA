@@ -65,7 +65,7 @@ async function loadModel(): Promise<tf.LayersModel | null> {
   // y el modelo no está servido ahí, así que evitamos el fetch que falla
   const baseUrl = typeof document !== "undefined" ? document.baseURI : "";
   const isTestEnv = baseUrl.includes("localhost:3000") || baseUrl.includes("127.0.0.1:3000");
-  
+
   if (isTestEnv) {
     console.log("[digitModel] Entorno de test detectado, saltando carga de modelo base");
     return null;

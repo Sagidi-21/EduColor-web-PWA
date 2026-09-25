@@ -62,7 +62,7 @@ personalizado para cada clase, generado mediante la API de Hugging Face Inferenc
 
 - **Rama activa:** `main`; la feature se desarrolló en `Implementación_IA` y quedó integrada en `main`.
 - **Backend:** Servidor Express (`src/server/`) con proxy Vite (`/api → localhost:3001`), validación, rate limiting y manejo seguro de errores. El token de Hugging Face se carga desde `HF_TOKEN` en el servidor y nunca se expone al frontend.
-- **Frontend:** `MascotaScreen` en `src/features/mascota/` con cuestionario de 6 pasos. El primer paso muestra 11 tarjetas con imágenes y etiquetas de tema, con avance automático al elegir un tema; «Otro tema» requiere confirmar el texto con **OK**. Los pasos de tipo de personaje y personalidad usan tarjetas con imágenes, transición de portal y tarjetas de selecciones previas para volver atrás.
+- **Frontend:** `MascotaScreen` en `src/features/mascota/` con cuestionario de 6 pasos. El primer paso muestra 11 tarjetas con imágenes y etiquetas de tema, con avance automático al elegir un tema; «Otro tema» requiere confirmar el texto con **OK**. Los pasos de tipo de personaje y personalidad usan tarjetas con imágenes, transición de portal y tarjetas de selecciones previas para volver atrás. El paso final incluye un botón "Crear compañero" con diseño "Aurora" (neón/animado) en CSS puro.
 - **Estado:** Backend, frontend, assets de temas, tipos y personalidad, tests y build implementados. Suite completa verde (473 tests), junto con lint, typecheck, build y formato Prettier. Pendiente configurar `HF_TOKEN` en el `.env` del servidor, reiniciar el backend y realizar la validación pedagógica del profesorado.
 - **Comprobación de conexión:** `GET /api/mascot/health-hf` valida el token y el modelo sin generar imágenes.
 

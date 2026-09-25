@@ -1089,15 +1089,29 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
                   rows={2}
                   spellCheck={false}
                 />
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px", flexShrink: 0 }}>
-                  <button
-                    className="mascot-screen__btn-primary special-details-input__create-btn"
-                    onClick={generateMascot}
-                    disabled={isGenerating}
-                    style={{ margin: 0, padding: "16px 24px", width: "100%" }}
-                  >
-                    {isGenerating ? "Generando..." : "✨ Crear compañero"}
-                  </button>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px",
+                    flexShrink: 0,
+                    alignItems: "center",
+                  }}
+                >
+                  <div className="boton-contenedor" style={{ width: "100%" }}>
+                    <button
+                      type="button"
+                      className="btn-aurora"
+                      onClick={generateMascot}
+                      disabled={isGenerating}
+                    >
+                      <span className="icono-estrella">✨</span>
+                      <span className="texto-btn">
+                        {isGenerating ? "Generando..." : "Crear compañero"}
+                      </span>
+                      <span className="icono-flecha">→</span>
+                    </button>
+                  </div>
                   <button
                     type="button"
                     className="mascot-screen__btn-secondary special-details-input__create-btn"
@@ -1350,12 +1364,16 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
 
       {/* Dev-only: Prompt viewer modal */}
       {showPromptModal && (
-        <div className="mascot-screen__dev-prompt-overlay" onClick={() => setShowPromptModal(false)}>
+        <div
+          className="mascot-screen__dev-prompt-overlay"
+          onClick={() => setShowPromptModal(false)}
+        >
           <div className="mascot-screen__dev-prompt-modal" onClick={(e) => e.stopPropagation()}>
             <div className="mascot-screen__dev-prompt-header">
               <h3>🧪 Prompt de desarrollo (debug)</h3>
               <p className="mascot-screen__dev-prompt-note">
-                Este es el prompt EXACTO que se enviaría a Hugging Face. Copia y prueba en Google Flow.
+                Este es el prompt EXACTO que se enviaría a Hugging Face. Copia y prueba en Google
+                Flow.
               </p>
             </div>
             <textarea

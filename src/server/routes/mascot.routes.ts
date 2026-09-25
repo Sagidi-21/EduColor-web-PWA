@@ -33,7 +33,12 @@ router.post("/preview", previewRateLimit, validateMascotConfig, generateMascotPr
 
 router.post("/regenerate-preview", previewRateLimit, regeneratePreview);
 
-router.post("/generate-pose-grid", assetsRateLimit, validateMascotGeneration, generateMascotPoseGrid);
+router.post(
+  "/generate-pose-grid",
+  assetsRateLimit,
+  validateMascotGeneration,
+  generateMascotPoseGrid,
+);
 
 router.post("/generate-assets", assetsRateLimit, validateMascotGeneration, generateMascotAssets);
 

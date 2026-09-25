@@ -818,13 +818,23 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .mascot-screen__dev-prompt-header {
@@ -895,5 +905,161 @@
   .mascot-screen__dev-prompt-actions .mascot-screen__btn-primary,
   .mascot-screen__dev-prompt-actions .mascot-screen__btn-secondary {
     width: 100%;
+  }
+}
+
+/* Botón Aurora para Crear Compañero */
+.boton-contenedor {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-aurora {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 32px;
+  border-radius: 9999px;
+  border: none;
+  color: #ffffff;
+  font-family: var(--font-fredoka, "Fredoka", cursive, sans-serif);
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  box-shadow:
+    0 10px 25px -5px rgba(168, 85, 247, 0.5),
+    0 0 20px 2px rgba(99, 102, 241, 0.25);
+  transition:
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease;
+  overflow: hidden;
+  width: 100%;
+}
+
+.btn-aurora:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow:
+    0 15px 30px -5px rgba(168, 85, 247, 0.6),
+    0 0 28px 4px rgba(99, 102, 241, 0.4);
+}
+
+.btn-aurora:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-aurora:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.icono-flecha {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.btn-aurora:hover:not(:disabled) .icono-flecha {
+  transform: translateX(3px);
+}
+
+/* Chip indicador de conexión API */
+.chip-api {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #047857;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  user-select: none;
+}
+
+.chip-api--checking {
+  background-color: #fef3c7;
+  border-color: #fde68a;
+  color: #92400e;
+}
+
+.chip-api--unavailable {
+  background-color: #fee2e2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.punto-pulso {
+  position: relative;
+  display: inline-flex;
+  width: 8px;
+  height: 8px;
+}
+
+.ola-ping {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #34d399;
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.75;
+}
+
+.chip-api--checking .ola-ping {
+  background-color: #fbbf24;
+}
+
+.chip-api--unavailable .ola-ping {
+  display: none;
+}
+
+.punto-verde {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+}
+
+.chip-api--checking .punto-verde {
+  background-color: #f59e0b;
+}
+
+.chip-api--unavailable .punto-verde {
+  background-color: #ef4444;
+}
+
+.check-ok {
+  color: #059669;
+  font-weight: 900;
+}
+
+.check-error {
+  color: #b91c1c;
+  font-weight: 900;
+}
+
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
   }
 }
