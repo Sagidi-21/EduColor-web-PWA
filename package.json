@@ -61,6 +61,10 @@
   "lint-staged": {
     "docs/**/*.md": [
       "prettier --write"
+    ],
+    "src/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
     ]
   }
 }

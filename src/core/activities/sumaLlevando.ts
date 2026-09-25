@@ -42,21 +42,21 @@ export function generateSession(
   const exercises: SumaLlevandoExercise[] = [];
 
   for (let i = 0; i < count; i++) {
-    let a = 0,
-      b = 0,
-      c = 0;
-    let aU = 0,
-      bU = 0,
-      cU = 0;
+    let a: number;
+    let b: number;
+    let c: number;
+    let aU: number;
+    let bU: number;
+    let cU: number;
     let type: "2-addends" | "3-addends" = "2-addends";
 
     if (difficulty === "easy") {
       // 2 sumandos (2 cifras + 1 cifra), con llevada, resultado ≤ 50
       b = rnd(2, 9);
-      bU = b;
       aU = rnd(10 - b, 9);
       const aD = rnd(1, 3); // máx 39 + 9 = 48 ≤ 50
       a = aD * 10 + aU;
+      c = 0;
     } else if (difficulty === "medium") {
       // 2 sumandos (2 cifras + 2 cifras), con llevada, resultado ≤ 99
       aU = rnd(2, 9);
@@ -66,6 +66,7 @@ export function generateSession(
       const bD = rnd(1, maxD - aD);
       a = aD * 10 + aU;
       b = bD * 10 + bU;
+      c = 0;
     } else if (difficulty === "hard") {
       // 3 sumandos, llevada simple, resultado ≤ 99
       type = "3-addends";

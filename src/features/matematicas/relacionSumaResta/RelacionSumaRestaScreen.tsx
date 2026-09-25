@@ -36,7 +36,7 @@ interface SessionState {
 // Utilidades de estado
 // ────────────────────────────────────────────────────────────────
 
-function initSession(difficulty: string, seed = Date.now() % 999983): SessionState {
+function initSession(difficulty: string, _seed = Date.now() % 999983): SessionState {
   return {
     exercises: generateSession(
       difficulty as Parameters<typeof generateSession>[0],
@@ -126,7 +126,7 @@ function EquationRow({
 // ────────────────────────────────────────────────────────────────
 
 export function RelacionSumaRestaScreen({
-  activity,
+  activity: _activity,
   difficulty,
   seed,
   onExit,

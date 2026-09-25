@@ -18,8 +18,8 @@ export function generateSession(
   const exercises: RepartoIgualExercise[] = [];
 
   for (let i = 0; i < count; i++) {
-    let groups = 0;
-    let itemsPerGroup = 0;
+    let groups: number;
+    let itemsPerGroup: number;
     if (difficulty === "easy") {
       groups = rnd(2, 3);
       itemsPerGroup = rnd(2, 4);
