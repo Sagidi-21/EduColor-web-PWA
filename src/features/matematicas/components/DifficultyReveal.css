@@ -1,0 +1,300 @@
+/* DifficultyReveal.css — Animación Mágica de la Mochila y Selección de Dificultad */
+
+.diff-reveal__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 24px;
+  backdrop-filter: blur(8px);
+}
+
+.diff-reveal__container {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 24px 28px;
+  width: 100%;
+  max-width: 840px;
+  min-height: 610px;
+  height: 610px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 28px 72px rgba(15, 23, 42, 0.35);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+}
+
+.diff-reveal__container--shrinking {
+  animation: diff-reveal-shrink 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+@keyframes diff-reveal-shrink {
+  to {
+    transform: scale(0.05);
+    opacity: 0;
+  }
+}
+
+.diff-reveal__close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 20px;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 30;
+}
+
+.diff-reveal__close:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  border-color: #fca5a5;
+  transform: scale(1.05);
+}
+
+.diff-reveal__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 2px dashed #e2e8f0;
+  padding-bottom: 14px;
+  padding-right: 48px;
+  flex-shrink: 0;
+}
+
+.diff-reveal__icon {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.diff-reveal__title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Cuerpo interno deslizable con espacio holgado para que el edu-glow no se recorte */
+.diff-reveal__scroll-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 14px 18px 18px 18px;
+  margin: -14px -18px 0 -18px;
+}
+
+/* Área central de animación y mascota */
+.diff-reveal__stage {
+  position: relative;
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Capa de la mascota */
+.diff-reveal__mascot-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+  margin: 0 auto;
+}
+
+.diff-reveal__mascot-img {
+  width: 155px;
+  height: auto;
+  max-height: 155px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.18));
+}
+
+/* Partículas de destello mágico que salen de la mochila */
+.diff-reveal__magic-glow {
+  position: absolute;
+  top: 45%;
+  right: 25%;
+  width: 120px;
+  height: 120px;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.diff-reveal__sparkle {
+  position: absolute;
+  font-size: 20px;
+  animation: sparkle-float 0.8s ease-out infinite alternate;
+}
+
+@keyframes sparkle-float {
+  0% {
+    transform: translate(0, 0) scale(0.6) rotate(0deg);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(var(--dx, 10px), var(--dy, -20px)) scale(1.2) rotate(45deg);
+    opacity: 1;
+  }
+}
+
+/* Grid de Tarjetas de Dificultad con margen de desbordamiento */
+.diff-reveal__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  width: 100%;
+  margin-top: 4px;
+  padding: 6px;
+  z-index: 8;
+}
+
+
+/* Tarjeta individual animada con estrellas y explicación */
+.diff-reveal__card {
+  position: relative;
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 18px 16px;
+  min-height: 110px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  user-select: none;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
+}
+
+.diff-reveal__card:hover {
+  transform: translateY(-4px) scale(1.03);
+  border-color: #3b82f6;
+}
+
+.diff-reveal__card--selected {
+  border-color: #1d4ed8 !important;
+  box-shadow: 0 0 0 3px #2563eb, 0 10px 24px rgba(29, 78, 216, 0.4) !important;
+  transform: scale(1.02);
+}
+
+/* Al estar seleccionada o al hacer click (:active), se retira la capa opaca (::after)
+   haciendo que el gradiente arcoíris llene todo el INTERIOR de la tarjeta */
+.diff-reveal__card--selected.edu-glow::before,
+.diff-reveal__card.edu-glow:active::before {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+.diff-reveal__card--selected.edu-glow::after,
+.diff-reveal__card.edu-glow:active::after {
+  background: transparent !important;
+}
+
+.diff-reveal__card--selected .diff-reveal__card-title,
+.diff-reveal__card--selected .diff-reveal__card-mechanic,
+.diff-reveal__card--selected .diff-reveal__card-range,
+.diff-reveal__card.edu-glow:active .diff-reveal__card-title,
+.diff-reveal__card.edu-glow:active .diff-reveal__card-mechanic,
+.diff-reveal__card.edu-glow:active .diff-reveal__card-range {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.diff-reveal__stars {
+  font-size: 26px;
+  letter-spacing: 3px;
+  text-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+  text-align: center;
+  line-height: 1;
+  z-index: 2;
+}
+
+.diff-reveal__card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e293b;
+  z-index: 2;
+}
+
+.diff-reveal__card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  color: #64748b;
+  z-index: 2;
+}
+
+.diff-reveal__card-range {
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.diff-reveal__card-mechanic {
+  font-size: 12px;
+  line-height: 1.35;
+  color: #475569;
+}
+
+/* Botón de Empezar */
+.diff-reveal__start-btn {
+  width: 100%;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 800;
+  border: none;
+  border-radius: 18px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+  transition: all 0.2s ease;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.diff-reveal__start-btn:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  box-shadow: 0 12px 32px rgba(37, 99, 235, 0.55);
+  transform: translateY(-2px);
+}
+
+.diff-reveal__start-btn:active {
+  transform: translateY(0);
+}
+
+/* Media Queries */
+@media (max-width: 640px) {
+  .diff-reveal__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .diff-reveal__mascot-img {
+    width: 160px;
+  }
+}

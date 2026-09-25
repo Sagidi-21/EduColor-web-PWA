@@ -16,6 +16,7 @@ import { useClassProfile } from "../../core/context/ClassProfileContext";
 import { useViewTransition } from "../../core/transition/ViewTransitionContext";
 import { useExerciseSession } from "./ExerciseSessionContext";
 import { CatalogFilterBar } from "./CatalogFilterBar";
+import { DifficultyReveal } from "./components/DifficultyReveal";
 import "./MatematicasCatalogScreen.css";
 import fondoImg from "../../assets/catalogo-fondo.png";
 
@@ -56,77 +57,6 @@ function getStarsForLevel(levelId: CurriculumLevelId): string {
   const match = levelId.match(/L(\d)/);
   const stars = match ? parseInt(match[1], 10) : 1;
   return "⭐".repeat(stars);
-}
-
-function getLevelName(levelId: CurriculumLevelId, engineId: string): string {
-  if (engineId === "tresSumandos") {
-    const tresMap: Record<CurriculumLevelId, string> = {
-      "1-L1": "Descubro",
-      "1-L2": "Construyo",
-      "1-L3": "Sumo en columna",
-      "1-L4": "¡Me llevo una!",
-      "2-L1": "2 cifras, sin llevadas",
-      "2-L2": "2 cifras, con llevadas",
-      "2-L3": "3 cifras, sin llevadas",
-      "2-L4": "3 cifras, con llevadas",
-    };
-    return tresMap[levelId] || "";
-  }
-  const levelMap: Record<CurriculumLevelId, string> = {
-    "1-L1": "Conteo 1 a 1 y Subitización",
-    "1-L2": "Cuadrículas y Conteo por Pares",
-    "1-L3": "Agrupación en Decenas",
-    "1-L4": "Descomposición D+U",
-    "2-L1": "Saltos Numéricos Extendidos",
-    "2-L2": "Arreglos Matriciales",
-    "2-L3": "Descomposición C, D y U libre",
-    "2-L4": "Arreglos Matriciales",
-  };
-  return levelMap[levelId] || "";
-}
-
-function getLevelRange(levelId: CurriculumLevelId, engineId: string): string {
-  if (engineId === "tresSumandos") {
-    return ""; // Not specifically requested, covered by mechanic
-  }
-  const rangeMap: Record<CurriculumLevelId, string> = {
-    "1-L1": "1-10",
-    "1-L2": "1-20",
-    "1-L3": "1-50",
-    "1-L4": "1-99",
-    "2-L1": "",
-    "2-L2": "",
-    "2-L3": "",
-    "2-L4": "",
-  };
-  return rangeMap[levelId] || "";
-}
-
-function getLevelMechanic(levelId: CurriculumLevelId, engineId: string): string {
-  if (engineId === "tresSumandos") {
-    const mechanicMap: Record<CurriculumLevelId, string> = {
-      "1-L1": "3 sumandos pequeños, sin llevadas",
-      "1-L2": "3 sumandos hasta 20, con llevadas",
-      "1-L3": "2 cifras, sin llevadas",
-      "1-L4": "2 cifras con una llevada",
-      "2-L1": "3 sumandos de 2 cifras, sin llevadas",
-      "2-L2": "3 sumandos de 2 cifras, con llevadas",
-      "2-L3": "3 sumandos de 3 cifras, sin llevadas",
-      "2-L4": "3 sumandos de 3 cifras, con llevadas",
-    };
-    return mechanicMap[levelId] || "";
-  }
-  const mechanicMap: Record<CurriculumLevelId, string> = {
-    "1-L1": "Toque individual",
-    "1-L2": "Selección por pares",
-    "1-L3": "Arrastre a contenedores",
-    "1-L4": "Escribe D y U",
-    "2-L1": "Selección de respuesta",
-    "2-L2": "Escribe C, D y U",
-    "2-L3": "Selección de respuesta",
-    "2-L4": "Selección de respuesta",
-  };
-  return mechanicMap[levelId] || "";
 }
 
 function getDifficultyStars(difficulty?: ActivityDifficulty): string {
@@ -258,123 +188,28 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
       </div>
 
       {selected && (
-        <div className="mat__popup-backdrop" onClick={() => setSelected(null)}>
-          <div
-            className={`mat__popup ${popupShrinking ? "mat__popup--shrinking" : ""}`}
-            role="dialog"
-            aria-labelledby="activity-launch-title"
-            onClick={(event) => event.stopPropagation()}
-            onAnimationEnd={() => {
-              if (popupShrinking) launchExercise();
-            }}
-          >
-            <button
-              className="mat__popup-close"
-              onClick={() => setSelected(null)}
-              aria-label="Cerrar"
-            >
-              ×
-            </button>
-            <div className="mat__popup-header">
-              <span className="mat__popup-icon">{selected.boardCard?.icon ?? "🔢"}</span>
-              <h2 id="activity-launch-title" className="mat__popup-title">
-                {selected.title}
-              </h2>
-            </div>
-            <div className="mat__level-selector">
-              {selected.engineId === "counting" || selected.engineId === "tresSumandos"
-                ? // Selector de niveles de currículo
-                  getLevelsForActivity(selected, gradeId).map((level) => {
-                    const levelName = getLevelName(level, selected.engineId);
-                    const levelRange = getLevelRange(level, selected.engineId);
-                    const levelMechanic = getLevelMechanic(level, selected.engineId);
-                    const stars = getStarsForLevel(level);
-                    const isSelected = levelId === level;
-                    return (
-                      <div
-                        key={level}
-                        className={`level-card edu-glow ${isSelected ? "level-card--selected" : ""}`}
-                        onClick={() => {
-                          setLevelId(level);
-                          setDifficulty(
-                            level === "1-L1"
-                              ? "easy"
-                              : level === "1-L2"
-                                ? "medium"
-                                : level === "1-L3"
-                                  ? "hard"
-                                  : level === "1-L4"
-                                    ? "expert"
-                                    : level === "2-L1"
-                                      ? "hard"
-                                      : level === "2-L2"
-                                        ? "expert"
-                                        : level === "2-L3"
-                                          ? "expert"
-                                          : "expert",
-                          );
-                        }}
-                      >
-                        <div className="level-header">
-                          <span className="level-stars">{stars}</span>
-                          <span className="level-title">{levelName}</span>
-                        </div>
-                        <div className="level-info">
-                          {levelRange && <span className="level-range">Rango: {levelRange}</span>}
-                          <span className="level-mechanic">Mecánica: {levelMechanic}</span>
-                        </div>
-                      </div>
-                    );
-                  })
-                : // Selector de dificultad — para el resto de motores
-                  (["easy", "medium", "hard", "expert"] as const).map((diff) => {
-                    const desc = selected.boardCard?.difficultyDescriptions?.[diff];
-                    const stars = getDifficultyStars(diff);
-                    const isSelected = difficulty === diff && levelId === null;
-                    return (
-                      <div
-                        key={diff}
-                        className={`level-card edu-glow ${isSelected ? "level-card--selected" : ""}`}
-                        onClick={() => {
-                          setDifficulty(diff);
-                          setLevelId(null);
-                        }}
-                      >
-                        <div className="level-header">
-                          <span className="level-stars">{stars}</span>
-                          <span className="level-title">
-                            {diff === "easy"
-                              ? "Fácil"
-                              : diff === "medium"
-                                ? "Medio"
-                                : diff === "hard"
-                                  ? "Difícil"
-                                  : "Experto"}
-                          </span>
-                        </div>
-                        {desc && (
-                          <div className="level-info">
-                            <span className="level-mechanic">{desc}</span>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-            </div>
-            <button
-              className="mat__start-btn"
-              onClick={() => {
-                if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-                  launchExercise();
-                } else {
-                  setPopupShrinking(true);
-                }
-              }}
-            >
-              Empezar
-            </button>
-          </div>
-        </div>
+        <DifficultyReveal
+          activity={selected}
+          gradeId={gradeId}
+          selectedDifficulty={difficulty}
+          selectedLevelId={levelId}
+          onSelectDifficulty={(diff, lvlId) => {
+            setDifficulty(diff);
+            setLevelId(lvlId);
+          }}
+          onStart={() => {
+            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+              launchExercise();
+            } else {
+              setPopupShrinking(true);
+            }
+          }}
+          onClose={() => setSelected(null)}
+          isShrinking={popupShrinking}
+          onAnimationEnd={() => {
+            if (popupShrinking) launchExercise();
+          }}
+        />
       )}
     </div>
   );
