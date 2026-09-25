@@ -1,5 +1,5 @@
 ﻿import { useState, useRef, useEffect, useCallback } from "react";
-import { SlideTransition } from "../shared/components/SlideTransition";
+import { createPortal } from "react-dom";
 import type {
   Subject,
   Grade,
@@ -36,6 +36,8 @@ export function CatalogFilterBar({
   onBlockChange,
 }: CatalogFilterBarProps) {
   const [openColumn, setOpenColumn] = useState<OpenColumn>(null);
+  const [isExiting, setIsExiting] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
 
   // Chalkboard adjustment state
@@ -51,7 +53,16 @@ export function CatalogFilterBar({
   const chalkboardContentRef = useRef<HTMLDivElement>(null);
   const [copyStatus, setCopyStatus] = useState("");
 
-  const closeAll = useCallback(() => setOpenColumn(null), []);
+  const closeAll = useCallback(() => {
+    if (isAnimating) return; // Prevenir doble clic
+    setIsAnimating(true);
+    setIsExiting(true);
+    setTimeout(() => {
+      setOpenColumn(null);
+      setIsExiting(false);
+      setIsAnimating(false);
+    }, 1200);
+  }, [isAnimating]);
 
   useEffect(() => {
     function handleClick(event: MouseEvent) {
@@ -372,150 +383,154 @@ export function CatalogFilterBar({
           </span>
         </div>
       </div>
-      <SlideTransition
-        isOpen={!!openColumn}
-        onClose={closeAll}
-        duration={1200}
-        className="filter-chalkboard-overlay"
-      >
-        <div
-          className="filter-chalkboard-stage"
-          ref={stageRef}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <img ref={imageRef} className="filter-chalkboard-image" src={pizarraImg} alt="" />
-          {imageBounds && (
+      {openColumn &&
+        createPortal(
+          <div
+            className={`filter-chalkboard-overlay ${isExiting ? "filter-chalkboard-overlay--exiting" : ""}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Pizarra de selección"
+          >
             <div
-              className="filter-chalkboard-image-area"
-              style={{
-                left: imageBounds.left,
-                top: imageBounds.top,
-                width: imageBounds.width,
-                height: imageBounds.height,
-              }}
+              className="filter-chalkboard-stage"
+              ref={stageRef}
+              onClick={(e) => e.stopPropagation()}
             >
-              <div
-                className="chalkboard-content"
-                style={{
-                  top: geometry.top,
-                  left: geometry.left,
-                  width: geometry.width,
-                  height: geometry.height,
-                }}
-                ref={chalkboardContentRef}
-              >
-                {renderChalkboardOptions()}
-              </div>
+              <img ref={imageRef} className="filter-chalkboard-image" src={pizarraImg} alt="" />
+              {imageBounds && (
+                <div
+                  className="filter-chalkboard-image-area"
+                  style={{
+                    left: imageBounds.left,
+                    top: imageBounds.top,
+                    width: imageBounds.width,
+                    height: imageBounds.height,
+                  }}
+                >
+                  <div
+                    className="chalkboard-content"
+                    style={{
+                      top: geometry.top,
+                      left: geometry.left,
+                      width: geometry.width,
+                      height: geometry.height,
+                    }}
+                    ref={chalkboardContentRef}
+                  >
+                    {renderChalkboardOptions()}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        <div className="filter-chalkboard-controls" onClick={(e) => e.stopPropagation()}>
-          <div className="control-group">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                adjustGeometry({ top: geometry.top - moveStep });
-              }}
-              aria-label="Mover arriba"
-            >
-              ↑
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                adjustGeometry({ top: geometry.top + moveStep });
-              }}
-              aria-label="Mover abajo"
-            >
-              ↓
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                adjustGeometry({ left: geometry.left - moveStep });
-              }}
-              aria-label="Mover izquierda"
-            >
-              ←
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                adjustGeometry({ left: geometry.left + moveStep });
-              }}
-              aria-label="Mover derecha"
-            >
-              →
-            </button>
-          </div>
-          <div className="control-group">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                adjustGeometry({ width: geometry.width - resizeStep });
-              }}
-              aria-label="Disminuir anchura"
-            >
-              − Ancho
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                adjustGeometry({ width: geometry.width + resizeStep });
-              }}
-              aria-label="Aumentar anchura"
-            >
-              + Ancho
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                adjustGeometry({ height: geometry.height - resizeStep });
-              }}
-              aria-label="Disminuir altura"
-            >
-              − Alto
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                adjustGeometry({ height: geometry.height + resizeStep });
-              }}
-              aria-label="Aumentar altura"
-            >
-              + Alto
-            </button>
-          </div>
-          <div className="control-values">
-            <span>Top: {geometry.top}px</span>
-            <span>Left: {geometry.left}px</span>
-            <span>Width: {geometry.width}px</span>
-            <span>Height: {geometry.height}px</span>
-            {imageBounds && (
-              <>
-                <span>
-                  Right: {Math.round(imageBounds.width - geometry.left - geometry.width)}px
-                </span>
-                <span>
-                  Bottom: {Math.round(imageBounds.height - geometry.top - geometry.height)}px
-                </span>
-              </>
-            )}
-          </div>
-          <button className="copy-btn" onClick={copyCss}>
-            Copiar valores CSS
-          </button>
-          {copyStatus && <span className="copy-status">{copyStatus}</span>}
-        </div>
-      </SlideTransition>
+            <div className="filter-chalkboard-controls" onClick={(e) => e.stopPropagation()}>
+              <div className="control-group">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    adjustGeometry({ top: geometry.top - moveStep });
+                  }}
+                  aria-label="Mover arriba"
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    adjustGeometry({ top: geometry.top + moveStep });
+                  }}
+                  aria-label="Mover abajo"
+                >
+                  ↓
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    adjustGeometry({ left: geometry.left - moveStep });
+                  }}
+                  aria-label="Mover izquierda"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    adjustGeometry({ left: geometry.left + moveStep });
+                  }}
+                  aria-label="Mover derecha"
+                >
+                  →
+                </button>
+              </div>
+              <div className="control-group">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    adjustGeometry({ width: geometry.width - resizeStep });
+                  }}
+                  aria-label="Disminuir anchura"
+                >
+                  − Ancho
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    adjustGeometry({ width: geometry.width + resizeStep });
+                  }}
+                  aria-label="Aumentar anchura"
+                >
+                  + Ancho
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    adjustGeometry({ height: geometry.height - resizeStep });
+                  }}
+                  aria-label="Disminuir altura"
+                >
+                  − Alto
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    adjustGeometry({ height: geometry.height + resizeStep });
+                  }}
+                  aria-label="Aumentar altura"
+                >
+                  + Alto
+                </button>
+              </div>
+              <div className="control-values">
+                <span>Top: {geometry.top}px</span>
+                <span>Left: {geometry.left}px</span>
+                <span>Width: {geometry.width}px</span>
+                <span>Height: {geometry.height}px</span>
+                {imageBounds && (
+                  <>
+                    <span>
+                      Right: {Math.round(imageBounds.width - geometry.left - geometry.width)}px
+                    </span>
+                    <span>
+                      Bottom: {Math.round(imageBounds.height - geometry.top - geometry.height)}px
+                    </span>
+                  </>
+                )}
+              </div>
+              <button className="copy-btn" onClick={copyCss}>
+                Copiar valores CSS
+              </button>
+              {copyStatus && <span className="copy-status">{copyStatus}</span>}
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
