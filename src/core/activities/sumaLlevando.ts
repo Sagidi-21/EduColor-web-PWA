@@ -28,7 +28,10 @@ export interface SessionResult {
 //   expert — 3 sumandos, llevada doble (suma de U ≥ 20), resultado ≤ 99
 // ────────────────────────────────────────────────────────────────
 
-export function generateSession(difficulty: ActivityDifficulty, seed: number): SumaLlevandoExercise[] {
+export function generateSession(
+  difficulty: ActivityDifficulty,
+  seed: number,
+): SumaLlevandoExercise[] {
   let currentSeed = seed;
   const rnd = (min: number, max: number) => {
     currentSeed = (currentSeed * 9301 + 49297) % 233280;
@@ -39,8 +42,12 @@ export function generateSession(difficulty: ActivityDifficulty, seed: number): S
   const exercises: SumaLlevandoExercise[] = [];
 
   for (let i = 0; i < count; i++) {
-    let a = 0, b = 0, c = 0;
-    let aU = 0, bU = 0, cU = 0;
+    let a = 0,
+      b = 0,
+      c = 0;
+    let aU = 0,
+      bU = 0,
+      cU = 0;
     let type: "2-addends" | "3-addends" = "2-addends";
 
     if (difficulty === "easy") {

@@ -60,10 +60,7 @@ function make(a: number, b: number): RestaColumnaExercise {
 //   expert — minuendo 40–59, sin llevar, resultado ≥ 10
 // ────────────────────────────────────────────────────────────────
 
-export function generateSession(
-  difficulty: ActivityDifficulty,
-  seed = 42,
-): RestaColumnaExercise[] {
+export function generateSession(difficulty: ActivityDifficulty, seed = 42): RestaColumnaExercise[] {
   const rng = lcg(seed);
   const used = new Set<string>();
   const out: RestaColumnaExercise[] = [];

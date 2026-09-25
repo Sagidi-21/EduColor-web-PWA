@@ -56,8 +56,8 @@ function TresSumandosGrid({
   onCanvasConfirm: (i: number, d: string) => void;
   onCanvasClear: (i: number) => void;
 }) {
-  const ansD = answerState === "correct" ? String(Math.floor(ex.answer / 10)) : digits[0] ?? "";
-  const ansU = answerState === "correct" ? String(ex.answer % 10) : digits[1] ?? "";
+  const ansD = answerState === "correct" ? String(Math.floor(ex.answer / 10)) : (digits[0] ?? "");
+  const ansU = answerState === "correct" ? String(ex.answer % 10) : (digits[1] ?? "");
 
   const cellClass = (i: number) => {
     const active = answerState === "idle" && activeDigit === i ? "tsc__box--active" : "";
@@ -240,7 +240,11 @@ export function TresSumandosColumnaScreen({
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
     if (next >= total) {
-      setFinished({ total, correct: session.correctCount, duration: Date.now() - session.startTime });
+      setFinished({
+        total,
+        correct: session.correctCount,
+        duration: Date.now() - session.startTime,
+      });
     } else {
       setSession((s) => ({
         ...s,

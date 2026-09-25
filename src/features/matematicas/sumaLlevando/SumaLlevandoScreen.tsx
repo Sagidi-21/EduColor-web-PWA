@@ -123,11 +123,7 @@ function SumaLlevandoGrid({
       <span />
 
       {/* Sumando b */}
-      {c === null ? (
-        <span className="sumall__op">+</span>
-      ) : (
-        <span />
-      )}
+      {c === null ? <span className="sumall__op">+</span> : <span />}
       <span className="sumall__digit">{Math.floor(b / 10) > 0 ? Math.floor(b / 10) : ""}</span>
       <span className="sumall__digit">{b % 10}</span>
       <span />
@@ -282,7 +278,11 @@ export function SumaLlevandoScreen({
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
     if (next >= total) {
-      setFinished({ total, correct: session.correctCount, duration: Date.now() - session.startTime });
+      setFinished({
+        total,
+        correct: session.correctCount,
+        duration: Date.now() - session.startTime,
+      });
     } else {
       setSession((s) => ({
         ...s,
@@ -338,7 +338,9 @@ export function SumaLlevandoScreen({
         <InputModeToggle mode={mode} onToggle={toggle} />
       </ActivityHeader>
 
-      <div className={mode === "numpad" ? "sumall__body sumall__body--with-numpad" : "sumall__body"}>
+      <div
+        className={mode === "numpad" ? "sumall__body sumall__body--with-numpad" : "sumall__body"}
+      >
         <div className={`sumall__stage ${stageClass}`}>
           {session.answerState === "correct" && (
             <div className="sumall__celebration">¡Muy bien! ⭐</div>

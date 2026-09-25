@@ -37,8 +37,12 @@
   min-width: 200px;
 }
 
-.tsc__stage--correct { background: #efffef; }
-.tsc__stage--wrong   { background: #fff4f4; }
+.tsc__stage--correct {
+  background: #efffef;
+}
+.tsc__stage--wrong {
+  background: #fff4f4;
+}
 
 .tsc__celebration {
   font-size: 1.5rem;
@@ -48,8 +52,14 @@
 }
 
 @keyframes pop {
-  0%   { transform: scale(0.8); opacity: 0; }
-  100% { transform: scale(1);   opacity: 1; }
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* ─── Cuadrícula D/U con 3 sumandos ─────────────────────────────────── */
@@ -109,7 +119,9 @@
   color: #1e293b;
   cursor: pointer;
   background: #f8fafc;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
   user-select: none;
 }
 
@@ -137,7 +149,9 @@
 }
 
 @keyframes blink {
-  50% { opacity: 0; }
+  50% {
+    opacity: 0;
+  }
 }
 
 /* ─── Footer ─────────────────────────────────────────────────────────── */

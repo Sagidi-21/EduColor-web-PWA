@@ -67,15 +67,10 @@ function VerticalGrid({
   const aU = String(ex.aU);
   const bD = ex.bD > 0 ? String(ex.bD) : "";
   // Para restaColumna: mostrar bU sólo si hay bD o bU > 0
-  const bU =
-    op === "restaColumna"
-      ? ex.bU > 0 || ex.bD > 0
-        ? String(ex.bU)
-        : ""
-      : String(ex.bU);
+  const bU = op === "restaColumna" ? (ex.bU > 0 || ex.bD > 0 ? String(ex.bU) : "") : String(ex.bU);
 
-  const ansD = answerState === "correct" ? String(Math.floor(ex.answer / 10)) : digits[0] ?? "";
-  const ansU = answerState === "correct" ? String(ex.answer % 10) : digits[1] ?? "";
+  const ansD = answerState === "correct" ? String(Math.floor(ex.answer / 10)) : (digits[0] ?? "");
+  const ansU = answerState === "correct" ? String(ex.answer % 10) : (digits[1] ?? "");
 
   const cellClass = (i: number) => {
     const base = "algcol__box";
@@ -172,7 +167,11 @@ export function AlgoritmoColumnaScreen({
   );
 
   const [session, setSession] = useState<SessionState>(() => makeSession(seed));
-  const [finished, setFinished] = useState<{ total: number; correct: number; duration: number } | null>(null);
+  const [finished, setFinished] = useState<{
+    total: number;
+    correct: number;
+    duration: number;
+  } | null>(null);
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
@@ -258,7 +257,11 @@ export function AlgoritmoColumnaScreen({
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
     if (next >= total) {
-      setFinished({ total, correct: session.correctCount, duration: Date.now() - session.startTime });
+      setFinished({
+        total,
+        correct: session.correctCount,
+        duration: Date.now() - session.startTime,
+      });
     } else {
       setSession((s) => ({
         ...s,
@@ -314,7 +317,9 @@ export function AlgoritmoColumnaScreen({
         <InputModeToggle mode={mode} onToggle={toggle} />
       </ActivityHeader>
 
-      <div className={mode === "numpad" ? "algcol__body algcol__body--with-numpad" : "algcol__body"}>
+      <div
+        className={mode === "numpad" ? "algcol__body algcol__body--with-numpad" : "algcol__body"}
+      >
         <div className={`algcol__stage ${stageClass}`}>
           {session.answerState === "correct" && (
             <div className="algcol__celebration">¡Muy bien! ⭐</div>

@@ -53,8 +53,14 @@
 }
 
 @keyframes pop {
-  0% { transform: scale(0.8); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* ─── Cuadrícula D / U ─────────────────────────────────────────────── */
@@ -114,7 +120,9 @@
   font-weight: 700;
   color: #1e293b;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
   background: #f8fafc;
   user-select: none;
 }
@@ -143,7 +151,9 @@
 }
 
 @keyframes blink {
-  50% { opacity: 0; }
+  50% {
+    opacity: 0;
+  }
 }
 
 /* ─── Footer con numpad / botones ───────────────────────────────────── */
