@@ -2,10 +2,17 @@ import { Request, Response } from "express";
 import {
   generateMascotWithGrok,
   generateMascotAssetsWithGrok,
+  generateMascotPoseGrid as generateMascotPoseGridService,
   checkHfConnection,
+  getMascotPromptForConfig,
 } from "../services/huggingface.service.ts";
 import { v4 as uuidv4 } from "uuid";
-import { MascotConfig, MascotPreviewResult, MascotAssetsResult } from "../types.ts";
+import {
+  MascotConfig,
+  MascotPreviewResult,
+  MascotAssetsResult,
+  MascotPoseGridResult,
+} from "../types.ts";
 import { asyncHandler } from "../middleware/error.middleware.ts";
 
 interface GenerationEntry {
@@ -121,6 +128,34 @@ export const generateMascotAssets = asyncHandler(async (req: Request, res: Respo
   });
 });
 
+export const generateMascotPoseGrid = asyncHandler(async (req: Request, res: Response) => {
+  const { id, ...rawConfig } = req.body as { id: string } & Partial<MascotConfig>;
+  const config = sanitizeMascotConfig(rawConfig);
+
+  const status = generationStore.get(id);
+  if (!status) {
+    res.status(404).json({ error: "Generación no encontrada" });
+    return;
+  }
+
+  if (status.status !== "completed") {
+    res.status(400).json({ error: "La generación aún no ha terminado" });
+    return;
+  }
+
+  status.status = "generating";
+
+  const result: MascotPoseGridResult = await generateMascotPoseGridService(config);
+
+  status.status = "completed";
+  generationStore.set(id, status);
+
+  res.json({
+    id,
+    imageUrl: result.imageUrl,
+  });
+});
+
 export const getMascotStatus = (req: Request, res: Response) => {
   const { id } = req.params;
   const status = generationStore.get(id);
@@ -169,8 +204,34 @@ export const regeneratePreview = asyncHandler(async (req: Request, res: Response
 export const checkHfHealth = asyncHandler(async (req: Request, res: Response) => {
   const result = await checkHfConnection();
   if (result.ok) {
-    res.json({ ok: true, message: "Conexión a Hugging Face OK", models: result.models });
+    res.json({
+      ok: true,
+      tokenValid: result.tokenValid,
+      modelAvailable: result.modelAvailable,
+      providerLive: result.providerLive,
+      modelInference: result.modelInference,
+      message: result.message,
+      checks: result.checks,
+      models: result.models,
+    });
   } else {
-    res.status(502).json({ ok: false, error: result.error });
+    res.status(502).json({
+      ok: false,
+      tokenValid: result.tokenValid,
+      modelAvailable: result.modelAvailable,
+      providerLive: result.providerLive,
+      modelInference: result.modelInference,
+      message: result.message,
+      checks: result.checks,
+      error: result.error,
+    });
   }
+});
+
+// Dev-only: return the exact prompt that would be sent to HF for a given config
+export const getMascotPromptDev = asyncHandler(async (req: Request, res: Response) => {
+  const rawConfig = req.body as Partial<MascotConfig>;
+  const config = sanitizeMascotConfig(rawConfig);
+  const prompt = getMascotPromptForConfig(config);
+  res.json({ prompt });
 });

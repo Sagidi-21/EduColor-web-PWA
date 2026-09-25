@@ -134,11 +134,87 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
     type: "theme" | "character" | "personalidad" | "nombre" | "visual_style";
   } | null>(null);
   const [showTeacherNameInput, setShowTeacherNameInput] = useState(false);
+  const [apiStatus, setApiStatus] = useState<"checking" | "available" | "unavailable" | null>(null);
+  const [poseImages, setPoseImages] = useState<{
+    explain: string;
+    point: string;
+    think: string;
+    celebrate: string;
+  } | null>(null);
+  const [showPosePreview, setShowPosePreview] = useState(false);
+  // Dev-only: prompt viewer
+  const [showPromptModal, setShowPromptModal] = useState(false);
+  const [devPrompt, setDevPrompt] = useState<string>("");
+  const [devPromptLoading, setDevPromptLoading] = useState(false);
   const EXPANDED_SCREEN_WIDTH = 1024;
+
+  const fetchDevPrompt = async () => {
+    setDevPromptLoading(true);
+    try {
+      const response = await fetch("/api/mascot/prompt-dev", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(config),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Error al obtener el prompt");
+      }
+      const data = await response.json();
+      setDevPrompt(data.prompt);
+      setShowPromptModal(true);
+    } catch (err) {
+      console.error("Error fetching dev prompt:", err);
+      setError(err instanceof Error ? err.message : "Error al obtener el prompt");
+    } finally {
+      setDevPromptLoading(false);
+    }
+  };
+
+  const checkApiConnection = async (abortSignal?: AbortSignal) => {
+    setApiStatus("checking");
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      const response = await fetch("/api/mascot/health-hf", {
+        signal: abortSignal ?? controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        setApiStatus("unavailable");
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data.ok === true) {
+        setApiStatus("available");
+      } else {
+        setApiStatus("unavailable");
+      }
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        return;
+      }
+      setApiStatus("unavailable");
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem("mascota-config", JSON.stringify(config));
   }, [config]);
+
+  useEffect(() => {
+    if (currentStep === 6) {
+      const controller = new AbortController();
+      setTimeout(() => checkApiConnection(controller.signal), 0);
+      return () => controller.abort();
+    }
+    setTimeout(() => setApiStatus(null), 0);
+  }, [currentStep]);
 
   const updateConfig = (updates: Partial<MascotaConfig>) => {
     setConfig((prev) => ({ ...prev, ...updates }));
@@ -271,6 +347,102 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
     setCurrentStep(2);
   };
 
+  const cropPoseGrid = (
+    imageDataUrl: string,
+  ): Promise<{ explain: string; point: string; think: string; celebrate: string } | null> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        const W = img.naturalWidth;
+        const H = img.naturalHeight;
+
+        if (W === 0 || H === 0) {
+          console.error("cropPoseGrid: imagen con dimensiones inválidas");
+          resolve(null);
+          return;
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = W;
+        canvas.height = H;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          console.error("cropPoseGrid: no se pudo obtener contexto 2D");
+          resolve(null);
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, W, H);
+
+        const halfW = Math.floor(W / 2);
+        const halfH = Math.floor(H / 2);
+
+        const poses: { explain: string; point: string; think: string; celebrate: string } = {
+          explain: "",
+          point: "",
+          think: "",
+          celebrate: "",
+        };
+
+        const quadrants: Array<{
+          key: "explain" | "point" | "think" | "celebrate";
+          sx: number;
+          sy: number;
+        }> = [
+          { key: "explain", sx: 0, sy: 0 },
+          { key: "point", sx: halfW, sy: 0 },
+          { key: "think", sx: 0, sy: halfH },
+          { key: "celebrate", sx: halfW, sy: halfH },
+        ];
+
+        let completed = 0;
+        let hasError = false;
+
+        quadrants.forEach(({ key, sx, sy }) => {
+          const poseCanvas = document.createElement("canvas");
+          poseCanvas.width = halfW;
+          poseCanvas.height = halfH;
+          const poseCtx = poseCanvas.getContext("2d");
+          if (!poseCtx) {
+            hasError = true;
+            return;
+          }
+
+          poseCtx.drawImage(canvas, sx, sy, halfW, halfH, 0, 0, halfW, halfH);
+
+          try {
+            const dataUrl = poseCanvas.toDataURL("image/png");
+            if (!dataUrl || dataUrl.length < 100) {
+              hasError = true;
+              return;
+            }
+            poses[key] = dataUrl;
+          } catch {
+            hasError = true;
+            return;
+          }
+
+          completed++;
+          if (completed === 4 && !hasError) {
+            resolve(poses);
+          }
+        });
+
+        if (hasError) {
+          resolve(null);
+        }
+      };
+
+      img.onerror = () => {
+        console.error("cropPoseGrid: error cargando la imagen");
+        resolve(null);
+      };
+
+      img.src = imageDataUrl;
+    });
+  };
+
   const validateStep = (step: number): boolean => {
     switch (step) {
       case 1:
@@ -398,25 +570,53 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
     setError(null);
 
     try {
-      const response = await fetch("/api/mascot/generate-assets", {
+      // 1. Llamada a la nueva ruta para generar la cuadrícula 2×2
+      const gridResponse = await fetch("/api/mascot/generate-pose-grid", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: generationId,
-          referenceImage: previewImage,
           ...config,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(await getErrorMessage(response));
+      if (!gridResponse.ok) {
+        throw new Error(await getErrorMessage(gridResponse));
       }
 
-      const data = await response.json();
-      save({ mascotUrl: data.referenceImage });
+      const gridData = await gridResponse.json();
+      const poseGridDataUrl = gridData.imageUrl;
+
+      if (!poseGridDataUrl) {
+        throw new Error("No se recibió la imagen de cuadrícula 2×2");
+      }
+
+      // 2. Recortar la imagen 2×2 en 4 poses
+      const cropped = await cropPoseGrid(poseGridDataUrl);
+
+      if (!cropped) {
+        throw new Error("Error al recortar la imagen en 4 poses");
+      }
+
+      // 3. Validar que las 4 poses tienen contenido
+      const allValid = cropped.explain && cropped.point && cropped.think && cropped.celebrate;
+      if (!allValid) {
+        throw new Error("Una o más poses resultaron vacías tras el recorte");
+      }
+
+      // 4. Guardar previewImage como mascotUrl y las 4 poses en mascotAssets
+      save({
+        mascotUrl: previewImage,
+        mascotAssets: cropped,
+      });
+
+      // 5. Mostrar preview de las 4 poses para desarrollo
+      setPoseImages(cropped);
+      setShowPosePreview(true);
+
       setState("ready");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al guardar el compañero");
+      setError(err instanceof Error ? err.message : "Error al generar las poses del compañero");
       setState("error");
     }
   };
@@ -876,14 +1076,23 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
             <p>¿Quieres añadir algún detalle?</p>
             <div className="special-details-input">
               <label>Detalles adicionales (opcional):</label>
-              <textarea
-                value={config.specialDetails}
-                onChange={(e) => updateConfig({ specialDetails: sanitizeText(e.target.value) })}
-                placeholder="Ej: Lleva gafas verdes y una mochila amarilla"
-                maxLength={100}
-                rows={2}
-                spellCheck={false}
-              />
+              <div className="special-details-input__wrapper">
+                <textarea
+                  value={config.specialDetails}
+                  onChange={(e) => updateConfig({ specialDetails: sanitizeText(e.target.value) })}
+                  placeholder="Ej: Lleva gafas verdes y una mochila amarilla"
+                  maxLength={100}
+                  rows={2}
+                  spellCheck={false}
+                />
+                <button
+                  className="mascot-screen__btn-primary special-details-input__create-btn"
+                  onClick={generateMascot}
+                  disabled={isGenerating}
+                >
+                  {isGenerating ? "Generando..." : "✨ Crear compañero"}
+                </button>
+              </div>
               <small>Máximo 100 caracteres</small>
             </div>
             {(config.theme || config.characterType || config.personality || config.visualStyle) && (
@@ -996,6 +1205,23 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
         {state === "configuring" && (
           <div className="mascot-screen__progress">Paso {currentStep} de 6</div>
         )}
+        {currentStep === 6 && (
+          <div className="mascot-screen__api-status">
+            {apiStatus === "checking" && (
+              <span className="api-status-chip api-status-chip--checking">🟡 Comprobando…</span>
+            )}
+            {apiStatus === "available" && (
+              <span className="api-status-chip api-status-chip--available">
+                🟢 Generación disponible
+              </span>
+            )}
+            {apiStatus === "unavailable" && (
+              <span className="api-status-chip api-status-chip--unavailable">
+                🔴 Generación no disponible
+              </span>
+            )}
+          </div>
+        )}
       </header>
 
       <div className="mascot-screen__content">
@@ -1013,7 +1239,7 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
             {error && <div className="mascot-screen__error">{error}</div>}
             {renderStep()}
             <div className="mascot-screen__navigation">
-              {currentStep === 6 && (
+              {currentStep !== 6 && (
                 <button
                   className="mascot-screen__btn-primary"
                   onClick={generateMascot}
@@ -1076,6 +1302,29 @@ export function MascotaScreen({ onBack }: { onBack: () => void }) {
             <div className="mascot-screen__success-icon">🎉</div>
             <h3>¡Ya está!</h3>
             <p>Tu compañero de clase está listo y guardado.</p>
+            {showPosePreview && poseImages && (
+              <div className="mascot-screen__pose-preview">
+                <h4>Poses generadas (vista desarrollo)</h4>
+                <div className="mascot-screen__pose-grid">
+                  <div className="mascot-screen__pose-item">
+                    <img src={poseImages.explain} alt="Explicar" />
+                    <span>EXPLICAR</span>
+                  </div>
+                  <div className="mascot-screen__pose-item">
+                    <img src={poseImages.point} alt="Señalar" />
+                    <span>SEÑALAR</span>
+                  </div>
+                  <div className="mascot-screen__pose-item">
+                    <img src={poseImages.think} alt="Pensar" />
+                    <span>PENSAR</span>
+                  </div>
+                  <div className="mascot-screen__pose-item">
+                    <img src={poseImages.celebrate} alt="Celebrar" />
+                    <span>CELEBRAR</span>
+                  </div>
+                </div>
+              </div>
+            )}
             <button className="mascot-screen__btn-primary" onClick={onBack}>
               Volver a inicio
             </button>
