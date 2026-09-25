@@ -150,7 +150,7 @@ export function RepartoIgualScreen({
       : session.answerState === "wrong"
         ? "reparto__input--wrong"
         : "reparto__input--active";
-        
+
   const showVisual = difficulty === "easy" || difficulty === "medium";
 
   return (

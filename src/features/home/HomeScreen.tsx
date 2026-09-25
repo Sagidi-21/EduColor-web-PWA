@@ -16,7 +16,7 @@ const modes: readonly {
     label: "Pizarra Digital",
     description: "Actividades interactivas para clase",
     icon: "🖥️",
-    color: "#0ea5e9",
+    color: "#eab308",
   },
   {
     id: "generator",
@@ -102,7 +102,12 @@ export function HomeScreen({ onNavigate }: { onNavigate: (view: AppView) => void
                 <button
                   key={mode.id}
                   className={`mode-card ${blocked ? "mode-card--dimmed" : ""}`}
-                  style={{ "--mode-color": mode.color, "--mode-color-hover": `${mode.color}99` } as React.CSSProperties}
+                  style={
+                    {
+                      "--mode-color": mode.color,
+                      "--mode-color-hover": `${mode.color}99`,
+                    } as React.CSSProperties
+                  }
                   disabled={blocked}
                   onClick={() => onNavigate(mode.id)}
                 >
