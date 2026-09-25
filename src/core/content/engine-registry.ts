@@ -36,6 +36,7 @@ const migratedEngines: ReadonlySet<EngineId> = new Set([
   "repartoIgual",
   "sumaLlevando",
   "weekDays",
+  "shapes",
 ]);
 
 export function getEngineRegistration(engineId: EngineId): EngineRegistration {

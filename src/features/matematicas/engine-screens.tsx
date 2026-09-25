@@ -101,6 +101,11 @@ const WeekDaysScreen = lazy(() =>
     default: module.WeekDaysScreen,
   })),
 );
+const ShapesScreen = lazy(() =>
+  import("./shapes/ShapesScreen").then((module) => ({
+    default: module.ShapesScreen,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -278,6 +283,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <WeekDaysScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "shapes") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <ShapesScreen {...props} />
       </Suspense>
     );
   }
