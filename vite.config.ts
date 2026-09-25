@@ -18,6 +18,7 @@ export default defineConfig({
       // protegen de regresiones en el código React.
       // Decisión: docs/DECISIONES.md → D-015. Deuda técnica: docs/DEUDA_TECNICA.md → DT-009.
       "tests/**",
+      ".kilo/worktrees/**/tests/**",
     ],
   },
   server: {
