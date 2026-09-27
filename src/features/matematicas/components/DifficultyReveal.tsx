@@ -346,7 +346,7 @@ export function DifficultyReveal({
                         <span className="diff-reveal__stars">{stars}</span>
                         <span className="diff-reveal__card-title">{levelName}</span>
                         <div className="diff-reveal__card-info">
-                          {levelRange && (
+                          {activity.engineId !== "counting" && levelRange && (
                             <span className="diff-reveal__card-range">Rango: {levelRange}</span>
                           )}
                           <span className="diff-reveal__card-mechanic">{levelMechanic}</span>
