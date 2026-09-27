@@ -170,7 +170,6 @@
   z-index: 8;
 }
 
-
 /* Tarjeta individual animada con estrellas y explicación */
 .diff-reveal__card {
   position: relative;
@@ -188,7 +187,9 @@
   gap: 8px;
   text-align: center;
   user-select: none;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-color 0.2s ease;
 }
 
 .diff-reveal__card:hover {
@@ -198,7 +199,9 @@
 
 .diff-reveal__card--selected {
   border-color: #1d4ed8 !important;
-  box-shadow: 0 0 0 3px #2563eb, 0 10px 24px rgba(29, 78, 216, 0.4) !important;
+  box-shadow:
+    0 0 0 3px #2563eb,
+    0 10px 24px rgba(29, 78, 216, 0.4) !important;
   transform: scale(1.02);
 }
 
@@ -262,33 +265,33 @@
 }
 
 /* Botón de Empezar */
-  .diff-reveal__start-btn {
-    width: 100%;
-    padding: 16px 24px;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: #ffffff;
-    font-size: 19px;
-    font-weight: 800;
-    border: none;
-    border-radius: 18px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-  }
+.diff-reveal__start-btn {
+  width: 100%;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 800;
+  border: none;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
 
-  .diff-reveal__start-btn--chalk {
-    font-family: var(--font-chalk, "Walter Turncoat", cursive);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
+.diff-reveal__start-btn--chalk {
+  font-family: var(--font-chalk, "Walter Turncoat", cursive);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
 
-  .diff-reveal__start-btn:hover {
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-  }
+.diff-reveal__start-btn:hover {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+}
 
-  .diff-reveal__start-btn:active {
-    transform: translateY(0);
-  }
+.diff-reveal__start-btn:active {
+  transform: translateY(0);
+}
 
 /* Media Queries */
 @media (max-width: 640px) {
