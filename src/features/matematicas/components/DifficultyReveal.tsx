@@ -396,7 +396,7 @@ export function DifficultyReveal({
 
           {/* Botón de inicio volando el último desde la mochila */}
           <motion.button
-            className="diff-reveal__start-btn"
+            className="diff-reveal__start-btn diff-reveal__start-btn--chalk"
             onClick={onStart}
             initial={
               animStep !== "ready" ? { x: 0, y: -380, scale: 0.05, opacity: 0, rotate: -5 } : false
