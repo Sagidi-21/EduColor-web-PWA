@@ -68,6 +68,29 @@ export function pressNumpad(container: HTMLElement, key: string): void {
   fireEvent.click(numpadKey(container, key));
 }
 
+/**
+ * Teclea un número empezando por las unidades.
+ *
+ * Es lo que hacen `tresSumandosColumna` y `algoritmoColumna`: guardan
+ * `digits[0] = D` y `digits[1] = U`, y la casilla activa al montar es la de
+ * las unidades, que es por donde empieza la suma manual. El número se teclea
+ * invertido, de la derecha a la izquierda.
+ */
+export function typeUnitsFirst(container: HTMLElement, value: string | number): void {
+  typeOnNumpad(container, String(value).split("").reverse().join(""));
+}
+
+/**
+ * Las tres cifras que pide `sumaLlevando`, en el orden de los pasos: unidades
+ * del resultado, lo que se lleva y decenas del resultado. Se derivan de los
+ * sumandos aplicando la regla del cálculo manual, no leyendo el estado del
+ * renderer, para que el test sea independiente de la implementación.
+ */
+export function carryOf(addends: number[]): number {
+  const units = addends.reduce((acc, n) => acc + (n % 10), 0);
+  return Math.floor(units / 10);
+}
+
 /** Atajo de la tecla de confirmar del Numpad. */
 export const confirmKey = "✓";
 
