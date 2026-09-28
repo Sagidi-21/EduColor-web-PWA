@@ -25,10 +25,10 @@ falla si `src/core/activities/` baja de los umbrales de `vite.config.ts`.
 
 Motivo del alcance: en `src/core/activities/` vive la lógica que decide si la
 respuesta del alumno es correcta, que es donde un error se traduce en un alumno
-mal corregido. Los renderers, la plataforma de dígitos y el backend **no** tienen
-umbral: su cobertura sube de forma mayoritaria y la Definition of Done admite
-una justificación explícita en lugar de un número. La brecha está registrada
-como `DT-014`.
+mal corregido. Los renderers no tienen umbral numérico, pero sí están obligados a
+tener un smoke test (ver la sección siguiente): su cobertura sube de forma
+mayoritaria por ritmo de migración, no por criterio. `src/platform/digit/` y
+`src/server/` siguen sin exigir nada, y esa brecha está registrada como `DT-014`.
 
 Al tocar `src/core/activities/`, `npm run test:coverage` debe pasar. Si una
 rama nueva es difícil de cubrir, se justifica en la issue en lugar de relajar
@@ -39,6 +39,38 @@ el umbral.
 - [ ] Los límites pedagógicos y respuestas correctas están probados.
 - [ ] Se ha indicado si aplica a 1.º, 2.º o ambos cursos.
 - [ ] El profesor de Matemáticas del curso afectado ha dado feedback antes del cierre pedagógico.
+
+## Smoke test del renderer
+
+Cada renderer de `src/features/matematicas/` lleva su
+`XxxScreen.test.tsx`. El motor ya tiene sus tests de núcleo en
+`src/core/activities/`, que prueban la matemática pero nunca renderizan nada: un
+smoke test es lo que cubre la capa de React, que es la que toca el profesor.
+
+No es opcional y no entra en los umbrales de cobertura de
+`src/core/activities/`, porque protege de un fallo distinto: que el componente
+reviente al montarse, que no pinte lo que el motor dice, o que el clic en la
+opción correcta no produzca el feedback.
+
+Tres reglas de redacción, para que el test no se pudra:
+
+1. **Las aserciones se escriben contra el manifiesto y la salida del motor**, no
+   contra lo que el componente resulta hacer. Se llama a `generateSession` para
+   saber qué debería haber en pantalla y luego se comprueba que el DOM coincide.
+   Un test escrito leyendo el propio componente codifica las suposiciones del
+   autor y pasa en verde aunque la app esté rota.
+2. **Se comprueba comportamiento, nunca CSS.** El DOM solo tiene clases; los
+   bordes, colores y tamaños se verifican a ojo en el pase manual y ningún test
+   puede hacerlo. Un smoke test que afirmara sobre estilos daría una falsa
+   sensación de cobertura.
+3. **El `DigitCell` se comprueba por su _fallback_ de _Suspense_.** Va envuelto en
+   `React.lazy`, así que en `happy-dom` aparece `dab--loading`. Eso demuestra que
+   se montó sin necesidad de que TensorFlow.js cargue, que es justo lo que
+   interesa verificar aquí.
+
+Lo que un smoke test **no** cubre, y corresponde al pase manual en pizarra: el
+táctil y el Pen, el `DigitCell` reconociendo un trazo real, la legibilidad y el
+escalado a través del HDMI, y la coherencia visual de la actividad.
 
 ## Si cambia pizarra, táctil o reconocimiento
 
