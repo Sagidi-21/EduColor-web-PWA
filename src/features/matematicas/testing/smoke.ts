@@ -1,6 +1,7 @@
 import type { ActivityManifest } from "../../../core/content/contracts";
 import type { EngineScreenProps } from "../engine-screens";
 import { getActivityManifest } from "../../../manifests/content-registry";
+import { fireEvent } from "@testing-library/react";
 
 /**
  * Utilidades compartidas por los smoke tests de los renderers.
@@ -39,3 +40,43 @@ export function smokeProps(
 
 /** Las 4 dificultades, en el orden en que las usa el catálogo. */
 export const DIFFICULTIES = ["easy", "medium", "hard", "expert"] as const;
+
+const numpadKey = (container: HTMLElement, key: string) => {
+  const button = Array.from(
+    container.querySelectorAll<HTMLButtonElement>(".shared-numpad__key"),
+  ).find((k) => k.textContent === key);
+  if (!button) throw new Error(`El Numpad no tiene la tecla "${key}"`);
+  return button;
+};
+
+/**
+ * Teclea un número por el Numpad compartido.
+ *
+ * La familia de operaciones (suma, resta, tres sumandos y sus versiones en
+ * columna) empieza con la casilla de las unidades activa y va avanzando a la
+ * izquierda, así que se teclea el número en su orden de lectura habitual y la
+ * última pulsación confirma sola. En los motores de casilla única hay que
+ * pulsar además la tecla de confirmar.
+ */
+export function typeOnNumpad(container: HTMLElement, value: string | number): void {
+  String(value)
+    .split("")
+    .forEach((d) => fireEvent.click(numpadKey(container, d)));
+}
+
+export function pressNumpad(container: HTMLElement, key: string): void {
+  fireEvent.click(numpadKey(container, key));
+}
+
+/** Atajo de la tecla de confirmar del Numpad. */
+export const confirmKey = "✓";
+
+/** Atajo de la tecla de borrar del Numpad. */
+export const deleteKey = "←";
+
+/** Cambia entre Numpad y DigitCell mediante el toggle del header. */
+export function switchToCanvas(container: HTMLElement): void {
+  const toggle = container.querySelector<HTMLButtonElement>(".input-toggle__switch");
+  if (!toggle) throw new Error("No hay toggle de modo de entrada montado");
+  fireEvent.click(toggle);
+}
