@@ -16,6 +16,7 @@
     "format:check": "prettier --check .",
     "format:docs:check": "prettier --check docs",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc -b",
     "prepare": "husky"
   },
@@ -42,6 +43,7 @@
     "@types/react-dom": "^18.3.3",
     "@types/testing-library__jest-dom": "^5.14.9",
     "@vitejs/plugin-react": "^5.0.4",
+    "@vitest/coverage-v8": "^5.0.2",
     "ajv": "^8.20.0",
     "concurrently": "^10.0.5",
     "eslint": "^10.10.0",

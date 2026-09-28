@@ -40,5 +40,8 @@ jobs:
       - name: Ejecutar tests
         run: npm test
 
+      - name: Comprobar cobertura de src/core/activities
+        run: npm run test:coverage
+
       - name: Crear build de producción
         run: npm run build

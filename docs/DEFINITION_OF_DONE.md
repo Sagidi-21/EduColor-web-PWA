@@ -13,6 +13,27 @@ request.
 - [ ] Documentación, manifiestos, decisiones o estado actualizados cuando corresponda.
 - [ ] La CI de GitHub está verde.
 
+## Estándar de cobertura de test
+
+Se mide con `npm run test:coverage`, que instrumenta con `@vitest/coverage-v8` y
+falla si `src/core/activities/` baja de los umbrales de `vite.config.ts`.
+
+| Ámbito                                       | Umbral exigido                                        | Estado medido (2026-09-28)  |
+| -------------------------------------------- | ----------------------------------------------------- | --------------------------- |
+| `src/core/activities/**` (lógica matemática) | 100 % funciones, 90 % líneas y sentencias, 85 % ramas | 100 / 97,38 / 95,89 / 89,47 |
+| Resto del repositorio                        | Sin umbral                                            | 72,52 % líneas              |
+
+Motivo del alcance: en `src/core/activities/` vive la lógica que decide si la
+respuesta del alumno es correcta, que es donde un error se traduce en un alumno
+mal corregido. Los renderers, la plataforma de dígitos y el backend **no** tienen
+umbral: su cobertura sube de forma mayoritaria y la Definition of Done admite
+una justificación explícita en lugar de un número. La brecha está registrada
+como `DT-014`.
+
+Al tocar `src/core/activities/`, `npm run test:coverage` debe pasar. Si una
+rama nueva es difícil de cubrir, se justifica en la issue en lugar de relajar
+el umbral.
+
 ## Si cambia una actividad o contenido de Matemáticas
 
 - [ ] Los límites pedagógicos y respuestas correctas están probados.
