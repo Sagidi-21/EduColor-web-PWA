@@ -1,0 +1,74 @@
+/* ── Fila de objetos para contar de 2 a 10 ────────────────────────────── */
+.pi__objects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0 4px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.pi__object {
+  font-size: 48px;
+  line-height: 1;
+}
+
+/* ── Pregunta ────────────────────────────────────────────────────────── */
+.pi__question {
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  margin: 12px 0 4px;
+  max-width: 720px;
+}
+
+/* ── Opciones ────────────────────────────────────────────────────────── */
+.pi__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 0;
+}
+
+.pi__option {
+  min-width: 96px;
+  min-height: 96px;
+  padding: 12px 20px;
+  border-radius: 18px;
+  border: 3px solid #e2e8f0;
+  background: #fff;
+  font-size: 26px;
+  font-weight: 900;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.pi__option:hover:not(:disabled) {
+  border-color: #94a3b8;
+  transform: translateY(-2px);
+}
+
+.pi__option--correct {
+  border-color: #22c55e;
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.pi__option--wrong {
+  border-color: #ef4444;
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.pi__option:disabled {
+  cursor: default;
+}

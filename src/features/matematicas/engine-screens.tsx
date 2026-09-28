@@ -120,6 +120,9 @@ const CapacidadScreen = lazy(() =>
 const OrdinalesScreen = lazy(() =>
   import("./ordinales/OrdinalesScreen").then((module) => ({ default: module.OrdinalesScreen })),
 );
+const ParImparScreen = lazy(() =>
+  import("./parImpar/ParImparScreen").then((module) => ({ default: module.ParImparScreen })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -332,6 +335,13 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <OrdinalesScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "parImpar") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <ParImparScreen {...props} />
       </Suspense>
     );
   }

@@ -20,7 +20,7 @@ falla si `src/core/activities/` baja de los umbrales de `vite.config.ts`.
 
 | Ámbito                                       | Umbral exigido                                        | Estado medido (2026-09-28)  |
 | -------------------------------------------- | ----------------------------------------------------- | --------------------------- |
-| `src/core/activities/**` (lógica matemática) | 100 % funciones, 90 % líneas y sentencias, 85 % ramas | 100 / 97,38 / 95,89 / 89,47 |
+| `src/core/activities/**` (lógica matemática) | 100 % funciones, 90 % líneas y sentencias, 85 % ramas | 100 / 97,49 / 96,06 / 89,95 |
 | Resto del repositorio                        | Sin umbral                                            | 72,52 % líneas              |
 
 Motivo del alcance: en `src/core/activities/` vive la lógica que decide si la
