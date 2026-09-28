@@ -1,0 +1,232 @@
+.tbl {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Stage ── */
+.tbl__stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0.5rem 1rem;
+  gap: 10px;
+}
+
+.tbl__stage--correct {
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.08) 0%, transparent 70%);
+}
+
+.tbl__stage--wrong {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
+}
+
+.tbl__celebration {
+  position: absolute;
+  top: 1rem;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #4ade80;
+  text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+  pointer-events: none;
+}
+
+/* ── Símbolo a identificar ── */
+.tbl__symbol-prompt {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.tbl__big-symbol {
+  font-size: 2.4rem;
+  margin: 0 0.3em;
+  display: inline-block;
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.7));
+}
+
+/* ── Regla de coloreado ── */
+.tbl__color-rule {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(167, 139, 250, 0.15);
+  border: 2px solid rgba(167, 139, 250, 0.4);
+  border-radius: 16px;
+  padding: 10px 24px;
+}
+
+.tbl__color-rule-text {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #c084fc;
+}
+
+.tbl__color-rule-count {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #4ade80;
+  min-width: 48px;
+  text-align: right;
+}
+
+/* ── Rejilla ── */
+.tbl__grid-container {
+  background: rgba(15, 23, 42, 0.6);
+  border: 2px solid rgba(0, 0, 0, 0.04);
+  padding: 10px;
+  border-radius: 20px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 440px;
+}
+
+.tbl__grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 3px;
+}
+
+/* ── Celda base ── */
+.tbl__cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(9px, 1.8vw, 14px);
+  font-weight: 700;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: rgba(0, 0, 0, 0.04);
+  color: #64748b;
+  cursor: default;
+  transition: all 0.12s ease;
+  padding: 0;
+}
+
+.tbl__cell:not(:disabled):not(.tbl__cell--blank) {
+  cursor: pointer;
+}
+
+.tbl__cell:not(:disabled):not(.tbl__cell--blank):hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #1e1b4b;
+  transform: scale(1.08);
+}
+
+/* Casilla en blanco: contexto, no interactiva */
+.tbl__cell--blank {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.04);
+  color: transparent;
+  cursor: default;
+}
+
+/* Casilla amarilla: objetivo de tipo missing */
+.tbl__cell--target {
+  background: rgba(234, 179, 8, 0.18);
+  border: 2px solid #eab308;
+  color: #facc15;
+  font-size: clamp(11px, 2vw, 16px);
+  animation: tbl-pulse-border 1.5s infinite;
+}
+
+/* Celdas con símbolo */
+.tbl__cell--symbol {
+  font-size: clamp(10px, 1.9vw, 15px);
+  color: #a78bfa;
+  background: rgba(167, 139, 250, 0.1);
+  border-color: rgba(167, 139, 250, 0.3);
+}
+
+.tbl__cell--asked {
+  border: 2px solid #c084fc;
+  background: rgba(192, 132, 252, 0.2);
+  color: #fff;
+  font-size: clamp(12px, 2.2vw, 18px);
+  animation: tbl-pulse-border 1.2s infinite;
+}
+
+.tbl__cell--ok {
+  background: #059669;
+  border-color: #34d399;
+  color: #fff;
+  animation: none;
+}
+
+.tbl__cell--fail {
+  background: #b91c1c;
+  border-color: #f87171;
+  color: #fff;
+  animation: none;
+}
+
+.tbl__cell--found {
+  background: #059669;
+  border-color: #34d399;
+  color: #fff;
+  cursor: default;
+}
+
+.tbl__cell--flash {
+  background: #b91c1c;
+  border-color: #f87171;
+  color: #fff;
+  animation: tbl-wrong-shake 0.4s ease-out;
+}
+
+@keyframes tbl-pulse-border {
+  0% {
+    box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(234, 179, 8, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(234, 179, 8, 0);
+  }
+}
+
+@keyframes tbl-wrong-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+
+/* ── Footer ── */
+.tbl__footer {
+  background: rgba(15, 12, 30, 0.7);
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  flex-shrink: 0;
+}
+
+.tbl__question {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0;
+}
+
+.tbl__answer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}

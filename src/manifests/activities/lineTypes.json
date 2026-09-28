@@ -15,9 +15,9 @@
     "unit": 3,
     "unitLabel": "Paseamos por la calle",
     "difficultyDescriptions": {
-      "easy": "Horizontal, vertical, curva, oblicua",
-      "medium": "Igual que básico + variaciones",
-      "hard": "Líneas abiertas y cerradas",
+      "easy": "Horizontal, vertical, curva u oblicua",
+      "medium": "Los mismos cuatro tipos con otra distribución",
+      "hard": "Abierta, cerrada, curva o recta",
       "expert": "Los 7 tipos, 10 ejercicios"
     }
   },

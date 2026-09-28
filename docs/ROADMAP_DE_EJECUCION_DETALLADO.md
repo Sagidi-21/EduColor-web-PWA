@@ -157,6 +157,19 @@ Trasladar gradualmente las actividades con mayor valor pedagógico, sin una migr
   - `repartoIgual` → renderer propio `RepartoIgualScreen` con visualización de agrupaciones y animaciones, 5 tests.
   - Los 5 manifiestos existentes con `status: "available"` y registro lazy en
     `engine-screens.tsx`.
+- **Tabla numérica y tipos de línea (2026-09-28):** `tablaNumerica` cierra el
+  bloque de valor posicional del punto 2 de la prioridad de migración. Motor
+  propio (`src/core/activities/tablaNumerica.ts`, 12 tests) y renderer
+  `TablaNumericaScreen` con rejilla de 100 casillas, `Numpad`, `LazyDigitCell`,
+  `InputModeToggle`, `WrongFeedback` y `SummaryScreen`. Al portar se corrigió un
+  bucle infinito del motor original: en `hard` fijaba `isDecenas = false`, con
+  solo 9 reglas posibles para 10 ejercicios. En la misma tanda se migró
+  `lineTypes` (motor con 9 tests y renderer `LineTypesScreen` con las 7 clases
+  de línea dibujadas en SVG), que estaba en la lista como generador
+  "Por localizar". En la misma tanda se migró `capacidad` (motor con 13 tests
+  y renderer `CapacidadScreen` con recipientes y vasos dibujados en CSS), que
+  también figuraba como generador "Por localizar", y `ordinales` (motor con 15
+  tests y renderer `OrdinalesScreen` con la fila de objetos y las 3 mecánicas de identificación, posición y conteo desde la derecha).
 - La validación manual en escritorio, tableta y pizarra, junto
   con el feedback docente, sigue siendo requisito antes de declarar cada
   actividad cerrada pedagógicamente.

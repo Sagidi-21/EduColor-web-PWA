@@ -106,6 +106,20 @@ const ShapesScreen = lazy(() =>
     default: module.ShapesScreen,
   })),
 );
+const TablaNumericaScreen = lazy(() =>
+  import("./tablaNumerica/TablaNumericaScreen").then((module) => ({
+    default: module.TablaNumericaScreen,
+  })),
+);
+const LineTypesScreen = lazy(() =>
+  import("./lineTypes/LineTypesScreen").then((module) => ({ default: module.LineTypesScreen })),
+);
+const CapacidadScreen = lazy(() =>
+  import("./capacidad/CapacidadScreen").then((module) => ({ default: module.CapacidadScreen })),
+);
+const OrdinalesScreen = lazy(() =>
+  import("./ordinales/OrdinalesScreen").then((module) => ({ default: module.OrdinalesScreen })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -290,6 +304,34 @@ export function EngineScreen(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <ShapesScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "tablaNumerica") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <TablaNumericaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "lineTypes") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <LineTypesScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "capacidad") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <CapacidadScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "ordinales") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <OrdinalesScreen {...props} />
       </Suspense>
     );
   }
