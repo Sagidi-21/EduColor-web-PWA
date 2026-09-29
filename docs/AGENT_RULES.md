@@ -176,20 +176,37 @@ Ahora **NO** escribas nada nuevo. Primero **localiza la pieza PWA ya existente q
 corresponde a cada pieza que acabas de ver en electron-reference. Este es el
 mapeo estándar **documentado** del proyecto:
 
-| Pieza en `electron-reference/`                          | Su equivalente en la PWA web (REUTILIZA, no la copies)                                                                                                                                |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `playCorrect` / `playWrong` / sounds                    | `playFeedback(ok: boolean)` en `src/features/shared/audioFeedback.ts`                                                                                                                 |
-| `ExerciseHeader`                                        | `ActivityHeader` en `src/features/matematicas/components/ActivityHeader.tsx`                                                                                                          |
-| `SummaryScreen` shared                                  | `SummaryScreen` en `src/features/matematicas/components/SummaryScreen.tsx`                                                                                                            |
-| `WrongFeedback` shared                                  | `WrongFeedback` en `src/features/matematicas/components/WrongFeedback.tsx`                                                                                                            |
-| `InputModeToggle` shared                                | `InputModeToggle` en `src/features/shared/components/InputModeToggle.tsx`                                                                                                             |
-| `useInputMode` hook                                     | `useInputMode` en `src/features/shared/hooks/useInputMode.ts`                                                                                                                         |
-| Numpad local de cada renderer (4059, 6099, operations…) | **NUNCA** hagas un Numpad local. Usa el compartido: `Numpad` en `src/features/shared/components/Numpad.tsx`                                                                           |
-| `DrawableAnswerBox` de operations                       | `LazyDigitCell` en `src/features/shared/DigitCell.tsx`                                                                                                                                |
-| `OperationsRenderer.css`                                | `OperationsScreen.css` en `src/features/matematicas/operations/OperationsScreen.css` (importar con `import "../operations/OperationsScreen.css"` si el renderer usa clases `.ops__*`) |
-| Registro de actividades                                 | **NUNCA** registres a mano. Añade lazy load en `src/features/matematicas/engine-screens.tsx` con el mismo patrón que el resto                                                         |
-| `engineId` vs `registry/types.ts` de Electron           | Usa `EngineScreenProps` de `src/features/matematicas/engine-screens.tsx` y la prop `seed` (determinista) en vez de `Date.now() % 999983` inline                                       |
-| `props.difficulty` y `props.title` en Electron          | `activity.title` + `difficulty` de `EngineScreenProps`, no cambies su semántica                                                                                                       |
+| Pieza en `electron-reference/`                          | Su equivalente en la PWA web (REUTILIZA, no la copies)                                                                                                                                                             |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `playCorrect` / `playWrong` / sounds                    | `playFeedback(ok: boolean)` en `src/features/shared/audioFeedback.ts`                                                                                                                                              |
+| `ExerciseHeader`                                        | `ActivityHeader` en `src/features/matematicas/components/ActivityHeader.tsx`                                                                                                                                       |
+| `SummaryScreen` shared                                  | `SummaryScreen` en `src/features/matematicas/components/SummaryScreen.tsx`                                                                                                                                         |
+| `WrongFeedback` shared                                  | **Ya no existe.** Se unificó con `ActionButtons` (D-018). Usa `ActionButtons` en `src/features/matematicas/components/ActivityActionButtons.tsx`: es el **único** par de botones de reintentar/siguiente de la app |
+| `InputModeToggle` shared                                | `InputModeToggle` en `src/features/shared/components/InputModeToggle.tsx`                                                                                                                                          |
+| `useInputMode` hook                                     | `useInputMode` en `src/features/shared/hooks/useInputMode.ts`                                                                                                                                                      |
+| Numpad local de cada renderer (4059, 6099, operations…) | **NUNCA** hagas un Numpad local. Usa el compartido: `Numpad` en `src/features/shared/components/Numpad.tsx`                                                                                                        |
+| `DrawableAnswerBox` de operations                       | `LazyDigitCell` en `src/features/shared/DigitCell.tsx`                                                                                                                                                             |
+| `OperationsRenderer.css`                                | `OperationsScreen.css` en `src/features/matematicas/operations/OperationsScreen.css` (importar con `import "../operations/OperationsScreen.css"` si el renderer usa clases `.ops__*`)                              |
+| Registro de actividades                                 | **NUNCA** registres a mano. Añade lazy load en `src/features/matematicas/engine-screens.tsx` con el mismo patrón que el resto                                                                                      |
+| `engineId` vs `registry/types.ts` de Electron           | Usa `EngineScreenProps` de `src/features/matematicas/engine-screens.tsx` y la prop `seed` (determinista) en vez de `Date.now() % 999983` inline                                                                    |
+| `props.difficulty` y `props.title` en Electron          | `activity.title` + `difficulty` de `EngineScreenProps`, no cambies su semántica                                                                                                                                    |
+
+**Además de `electron-reference/`, la otra fuente de verdad es
+[`docs/COMPONENTES_COMPARTIDOS.md`](./COMPONENTES_COMPARTIDOS.md)**: el catálogo del
+mobiliario común de una actividad (cabecera, botones, numpad, casillas, selector de
+nivel, barrera de error y layout). Léelo junto al Paso 1. Si una pieza de la tabla
+anterior no está en ese catálogo y la necesitas, busca primero en
+`src/features/shared/` y `src/features/matematicas/components/`, y solo después
+pregunta.
+
+Pieces del catálogo que es fácil reinventar por error:
+
+| Necesitas…                            | Usa                                                                       | Documentado en             |
+| ------------------------------------- | ------------------------------------------------------------------------- | -------------------------- |
+| Botones de reintentar / siguiente     | `ActionButtons` (y **solo** `ActionButtons`)                              | [D-018](./DECISIONES.md)   |
+| Teclear un número, casilla por cifra  | `DigitBoxes` + `useDigitBoxes`, con `order` según se vea en vertical o no | [D-017](./DECISIONES.md)   |
+| Elegir nivel y dificultad             | `DifficultyReveal`                                                        | COMPONENTES_COMPARTIDOS §8 |
+| Que la pantalla no se quede en blanco | `ActivityErrorBoundary` + `NoExerciseNotice`; **nunca** `return null`     | COMPONENTES_COMPARTIDOS §9 |
 
 Si crees que necesitas una pieza que no está en esta tabla: **no la inventes**.
 Detente, busca si ya existe en `src/features/shared/components/`,
@@ -271,9 +288,38 @@ Ahora ya puedes escribir el renderer nuevo. La regla es:
 Antes de dar una migración de renderer por terminada, marca:
 
 - [ ] He leído el renderer original de `electron-reference/` y su `engine.ts` (si existe).
+- [ ] He leído `docs/COMPONENTES_COMPARTIDOS.md`.
 - [ ] He usado el mapeo del Paso 2 **en vez de** componentes/helpers locales.
 - [ ] He registrado el renderer en `engine-screens.tsx` con `lazy(() => import(...))`.
 - [ ] He añadido `import "../operations/OperationsScreen.css"` si el renderer usa las clases `.ops__*`.
 - [ ] Los tipos de `EngineScreenProps` (`activity`, `difficulty`, `seed`, `onExit`, `gradeTitle`, `className`, `mascotUrl`, `difficultyStars`) se pasan todos al `ActivityHeader` cuando aplican.
 - [ ] `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test` y `npm run build` pasan.
 - [ ] Si era una actividad del inventario, he actualizado `docs/INVENTARIO_MIGRACION_ACTIVIDADES.md` y `docs/EJECUCION_PASO_A_PASO.md`.
+
+### Paso 5 — Si en esta migración has unificado algo, documéntalo [V1] · CRÍTICA
+
+Unificar es buena idea, pero una pieza compartida que no está escrita en ningún
+documento se acaba duplicando. Ya ha pasado: `WrongFeedback` y `ActionButtons`
+convivieron hasta que se vio que dos actividades de la misma familia se veían distinto.
+
+Si al migrar decides que algo pasa a ser compartido, **antes de dar el trabajo por
+terminado**:
+
+1. Extrae la pieza a `src/features/matematicas/components/` o `src/features/shared/`.
+2. Aplícala a **todas** las pantallas que la usaban, no solo a la nueva.
+3. **Añádela a `docs/COMPONENTES_COMPARTIDOS.md`**, con su regla de uso.
+4. **Anótala en `docs/DECISIONES.md`**, con el porqué y a qué deuda cierra.
+5. **Anótala en el mapeo del Paso 2 de este documento**, para que se vea al migrar y no
+   solo al leer el catálogo.
+6. Revisa en pizarra al menos una de las pantallas afectadas.
+
+Si además has tenido que romper la regla por un caso concreto, escríbelo en el
+catálogo junto a la pieza: la excepción documentada es válida, la excepción callada
+no.
+
+En cada `npm test` corre un vigilante,
+`src/features/matematicas/components/SharedComponents.test.ts`, que **avisa por
+stderr** si aparece un numpad local, unos botones propios, una pantalla de nivel
+propia o una guarda `if (!current) return null`. No rompe la build: si salta, es
+para que lo valores con el profesor, y si la excepción es legítima se documenta en
+`COMPONENTES_COMPARTIDOS.md` y se añade a `EXCEPCIONES` en ese test.
