@@ -39,9 +39,30 @@ export function generateNumeracion1119Session(
 ): NumExercise[] {
   const rng = lcg(seed);
   const count = COUNTS[difficulty];
-  const used = new Set<string>();
   const out: NumExercise[] = [];
   let tries = 0;
+
+  // La paleta 11..19 tiene solo nueve valores, así que en "identify" y "units"
+  // no se pueden sacar diez ejercicios sin repetir. Antes el bucle exigía no
+  // repetir y devolvía una sesión de nueve mientras la tarjeta anuncia diez.
+  // Ahora, al agotarse los valores distintos, se admite un repetido (nunca
+  // igual al anterior) en lugar de acortar la sesión. Es lo que ya pasaba en
+  // "expert", donde al mezclar los tres tipos se llegaban a repetir.
+  const usados = new Set<string>();
+  let ultimoKey = "";
+  let intentosSinLibre = 0;
+
+  const aceptar = (key: string): boolean => {
+    if (!usados.has(key)) {
+      usados.add(key);
+      ultimoKey = key;
+      intentosSinLibre = 0;
+      return true;
+    }
+    if (key === ultimoKey) return false;
+    intentosSinLibre += 1;
+    return intentosSinLibre > count;
+  };
 
   while (out.length < count && tries < count * 30) {
     tries++;
@@ -57,9 +78,7 @@ export function generateNumeracion1119Session(
             : "sequence";
 
     if (activeType === "identify") {
-      const key = `id-${n}`;
-      if (used.has(key)) continue;
-      used.add(key);
+      if (!aceptar(`id-${n}`)) continue;
       const distSet = new Set<number>([n]);
       const cands = [n - 2, n - 1, n + 1, n + 2].filter((x) => x >= 11 && x <= 19);
       for (const c of shuffle(cands, rng)) {
@@ -78,9 +97,7 @@ export function generateNumeracion1119Session(
         answer: n,
       });
     } else if (activeType === "units") {
-      const key = `un-${n}`;
-      if (used.has(key)) continue;
-      used.add(key);
+      if (!aceptar(`un-${n}`)) continue;
       out.push({
         type: "units",
         number: n,
@@ -91,9 +108,7 @@ export function generateNumeracion1119Session(
       const isAnterior = rng() > 0.5;
       const target = isAnterior ? n - 1 : n + 1;
       if (target < 10 || target > 20) continue;
-      const key = `seq-${isAnterior ? "a" : "p"}-${n}`;
-      if (used.has(key)) continue;
-      used.add(key);
+      if (!aceptar(`seq-${isAnterior ? "a" : "p"}-${n}`)) continue;
       const q = isAnterior
         ? `El número anterior a ${n} es ___`
         : `El número posterior a ${n} es ___`;

@@ -2,9 +2,27 @@ import { describe, it, expect } from "vitest";
 import { generateNumeracion1119Session, validateNumeracion1119Answer } from "./numeracion1119";
 
 describe("generateNumeracion1119Session", () => {
-  it("genera exactamente 10 ejercicios", () => {
-    const session = generateNumeracion1119Session(42, "easy");
-    expect(session).toHaveLength(9); // Solo hay 9 números del 11 al 19
+  it("genera exactamente 10 ejercicios en las cuatro dificultades", () => {
+    for (const d of ["easy", "medium", "hard", "expert"] as const) {
+      expect(generateNumeracion1119Session(42, d), d).toHaveLength(10);
+    }
+  });
+
+  it("nunca repite el mismo ejercicio justo después", () => {
+    // La paleta 11..19 solo tiene nueve valores, así que para llegar a diez
+    // hay que repetir alguno. Se admite, pero no seguido: si el niño ve dos
+    // iguales pegados parece que la pantalla no avanza.
+    for (const d of ["easy", "medium", "hard", "expert"] as const) {
+      const s = generateNumeracion1119Session(7, d);
+      for (let i = 1; i < s.length; i++) {
+        const a = s[i - 1];
+        const b = s[i];
+        expect(
+          a.type === b.type && a.number === b.number && a.answer === b.answer,
+          `${d}: repite ${a.number} en las posiciones ${i} y ${i + 1}`,
+        ).toBe(false);
+      }
+    }
   });
 
   it("es determinista con la misma semilla", () => {
