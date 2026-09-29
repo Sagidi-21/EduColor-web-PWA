@@ -1,4 +1,4 @@
-﻿# Registro de deuda técnica y reservas
+# Registro de deuda técnica y reservas
 
 Este es el punto único de control de deuda técnica. No se repite una auditoría
 completa del repositorio en cada cambio: se revisan las filas abiertas de este
@@ -84,3 +84,5 @@ que sus recursos solo se preparan para una migración futura.
 la PWA como referencia visual de 1 kg, en sustitución del emoji ⚖️ que usaba el
 renderer de Electron. Es el mismo criterio que en `elLitro`, donde la botella de
 litro ya sustituyó a su emoji. El original no traía ningún asset de referencia.
+
+| DT-019 | Cerrada | El service worker se registraba **siempre**, sin guard de entorno, y en desarrollo cacheaba los módulos de Vite con `cacheFirst`. | Fase 3-4. | Detectado el 2026-09-29 al migrar `elKilo`. Tras borrar el emoji de la referencia de `elLitro` y pushear el arreglo, la botella **seguia apareciendo en el ejercicio**: el codigo ya no la contenia. En desarrollo Vite sirve los modulos en `/src/...` **sin hash de contenido**, y `sw.js` los cachea con `cacheFirst` bajo esa URL exacta, de modo que cada recarga seguia sirviendo la copia antigua de `ElLitroScreen.tsx`. Consecuencia: en desarrollo el codigo del repo y el que se ve en pantalla pueden divergir durante indefinidas iteraciones, y el sintoma (un elemento que "ya no existe") lleva a diagnosticar en el sitio equivocado. El registro queda condicionado a `import.meta.env.PROD`, que es justo lo que DT-015 dejo sin hacer al reescribir el worker. Vigila la guarda `src/platform/serviceWorkerRegistration.test.ts`; verificado que el patron falla si se quita. | Salvador |
