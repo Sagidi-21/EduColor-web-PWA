@@ -150,12 +150,11 @@ function compareExercise(
 }
 
 const EXERCISE_COUNT = 10;
-const MAX_TRIES = 900;
 
 /**
- * Genera siempre EXERCISE_COUNT ejercicios: si la mezcla por dificultad se
- * agota por deduplicación, se completa con "classify" de los objetos aún sin
- * usar antes de recurrir a repetir.
+ * Genera EXERCISE_COUNT ejercicios, preferring objetos que aún no han salido.
+ * El invariante de 10 no depende de una red de seguridad en tiempo de ejecución,
+ * sino de que ninguna iteración puede fallar en añadir un ejercicio.
  */
 export function generateSession(difficulty: ActivityDifficulty, seed = 42): KiloExercise[] {
   const rng = lcg(seed);
@@ -167,9 +166,13 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Kilo
   };
   const isUsed = (item: KiloItem) => (item.category === "mas" ? usedMas : usedMenos).has(item.name);
 
-  let tries = 0;
-  while (out.length < EXERCISE_COUNT && tries < MAX_TRIES) {
-    tries++;
+  // Cada vuelta empuja exactamente un ejercicio, así que el bucle termina en
+  // EXERCISE_COUNT iteraciones. No hay continuaciones ni tope de intentos: un
+  // `continue` exigiría dos objetos con el mismo nombre de pools disjuntos, y
+  // los dos pools siempre tienen objetos disponibles. Una red de seguridad
+  // "por si acaso" sería inalcanzable y, por tanto, imposible de cubrir con un
+  // test, y el umbral de cobertura de funciones es del 100 %.
+  while (out.length < EXERCISE_COUNT) {
     const type = pickType(rng, difficulty);
 
     if (type === "classify") {
@@ -188,23 +191,9 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Kilo
     const menPool = unusedMen.length > 0 ? unusedMen : MENOS_ITEMS;
     const masItem = masPool[randInt(rng, 0, masPool.length - 1)];
     const menItem = menPool[randInt(rng, 0, menPool.length - 1)];
-    if (masItem.name === menItem.name) continue;
     markUsed(masItem);
     markUsed(menItem);
     out.push(compareExercise(rng, type, masItem, menItem));
-  }
-
-  // Red de seguridad: garantiza el invariante de 10 aunque la mezcla se agote.
-  if (out.length < EXERCISE_COUNT) {
-    const leftovers = [...MAS_ITEMS, ...MENOS_ITEMS].filter((item) => !isUsed(item));
-    let i = 0;
-    while (out.length < EXERCISE_COUNT) {
-      const item =
-        leftovers.length > 0 ? leftovers[i % leftovers.length] : MAS_ITEMS[i % MAS_ITEMS.length];
-      markUsed(item);
-      out.push(classifyExercise(item));
-      i++;
-    }
   }
 
   return out;

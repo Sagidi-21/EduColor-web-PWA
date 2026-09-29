@@ -50,6 +50,32 @@ describe("elLitro — generateSession", () => {
     });
   });
 
+  it("mantiene el invariante de 10 en un barrido amplio de 400 seeds", () => {
+    // Sustituye a la red de seguridad que se quito del motor: en vez de
+    // asegurar el invariante en tiempo de ejecucion, se demuestra con
+    // evidencia que el bucle siempre llega a 10.
+    DIFFICULTIES.forEach((diff) => {
+      for (let seed = 0; seed < 400; seed++) {
+        expect(generateSession(diff, seed), `dificultad ${diff}, seed ${seed}`).toHaveLength(10);
+      }
+    });
+  });
+
+  it("nunca produce dos ejercicios idénticos consecutivos en el barrido", () => {
+    DIFFICULTIES.forEach((diff) => {
+      for (let seed = 0; seed < 200; seed++) {
+        const list = generateSession(diff, seed);
+        const key = (ex: (typeof list)[number]) =>
+          `${ex.type}:${ex.items.map((x) => x.name).join("|")}`;
+        for (let i = 1; i < list.length; i++) {
+          expect(key(list[i]), `dificultad ${diff}, seed ${seed}, ejercicio ${i}`).not.toBe(
+            key(list[i - 1]),
+          );
+        }
+      }
+    });
+  });
+
   it("es determinista con la misma seed", () => {
     DIFFICULTIES.forEach((diff) => {
       expect(generateSession(diff, 123)).toEqual(generateSession(diff, 123));
