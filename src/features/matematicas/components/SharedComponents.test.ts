@@ -35,12 +35,48 @@ const COMPARTIDOS = {
   NoExerciseNotice: "src/features/matematicas/components/NoExerciseNotice.tsx",
 };
 
-/** Excepciones conocidas y documentadas. Añadir solo con la decisión escrita. */
-const EXCEPCIONES: Record<string, string[]> = {
+/**
+ * Excepciones: piezas duplicadas que se aceptan a propósito.
+ *
+ * Cada una lleva su motivo. Una excepción sin explicación escrita es un
+ * olvido, no una decisión, así que el motivo es obligatorio.
+ */
+interface Excepcion {
+  motivo: string;
+  ficheros: string[];
+}
+
+const EXCEPCIONES: Record<string, Excepcion[]> = {
   numpadLocal: [],
   botonesPropios: [],
   pantallaNivel: [],
-  returnNull: [],
+  returnNull: [
+    {
+      motivo:
+        "Guarda inalcanzable. El avance comprueba `next >= total` (o `nextIdx >= rounds.length`) y, en vez de avanzar, muestra el resumen; el contador nunca pasa del último, así que `current` nunca es undefined. Se deja tal cual porque el código funciona y AGENT_RULES §4 prohíbe tocarlo sin motivo real. Si algún día se rompe el avance, esta excepción es lo primero que hay que quitar.",
+      ficheros: [
+        "src/features/matematicas/algoritmoColumna/AlgoritmoColumnaScreen.tsx",
+        "src/features/matematicas/igualdad/IgualdadScreen.tsx",
+        "src/features/matematicas/leftRight/LeftRightScreen.tsx",
+        "src/features/matematicas/problemas/ProblemaScreen.tsx",
+        "src/features/matematicas/rectaNumerica/RectaNumericaScreen.tsx",
+        "src/features/matematicas/relacionar/RelacionarScreen.tsx",
+        "src/features/matematicas/relacionSumaResta/RelacionSumaRestaScreen.tsx",
+        "src/features/matematicas/repartoIgual/RepartoIgualScreen.tsx",
+        "src/features/matematicas/shapes/ShapesScreen.tsx",
+        "src/features/matematicas/sumaLlevando/SumaLlevandoScreen.tsx",
+        "src/features/matematicas/tresSumandos/TresSumandosScreen.tsx",
+        "src/features/matematicas/tresSumandosColumna/TresSumandosColumnaScreen.tsx",
+        "src/features/matematicas/vecinos/VecinosScreen.tsx",
+        "src/features/matematicas/weekDays/WeekDaysScreen.tsx",
+      ],
+    },
+    {
+      motivo:
+        "Caso distinto: aquí la sesión viene de un contexto de React, no de un índice. No es inalcanzable por la misma razón, pero solo se ve la vista de ejercicio tras pasar por el catálogo, que es lo que crea la sesión, y al recargar la página se vuelve al catálogo. Aun así es la más frágil de las dos: si algún día se renderiza `ExerciseView` sin sesión, esto sí dejaría la pantalla en blanco. Candidato a pasar a `NoExerciseNotice` cuando se toque ese fichero.",
+      ficheros: ["src/features/matematicas/ExerciseView.tsx"],
+    },
+  ],
 };
 
 function* fuentes(dir: string): Generator<string> {
@@ -130,7 +166,9 @@ describe("Mobiliario compartido sin duplicar", () => {
     const nuevas = duplicados
       .map(([que, hallados, permitidos]) => ({
         que,
-        nuevas: hallados.filter((h) => !permitidos.includes(h.donde.split(":")[0])),
+        nuevas: hallados.filter(
+          (h) => !permitidos.some((e) => e.ficheros.includes(h.donde.split(":")[0])),
+        ),
       }))
       .filter((d) => d.nuevas.length > 0);
 

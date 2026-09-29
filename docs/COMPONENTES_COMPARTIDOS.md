@@ -210,3 +210,29 @@ lista `EXCEPCIONES` del test, con el motivo al lado.
 
 Lo único que sí hace fallar el test es que **desaparezca** una pieza compartida, que sí
 sería un error de verdad.
+
+## Excepciones aceptadas
+
+El vigilante avisa de 15 guardas `if (!current) return null` que existen en otros
+tantos renderers. **No son un fallo** y están en la lista `EXCEPCIONES` del test, con
+su motivo escrito. Se aceptan por esto:
+
+- El avance de la sesión comprueba `if (next >= total)` y, en vez de avanzar, muestra
+  el resumen. El contador nunca pasa del último ejercicio, así que `current` nunca es
+  `undefined` y la guarda no llega a dispararse.
+- Como el código funciona, no se toca: AGENT_RULES §4 dice que un refactor que cambie
+  el resultado educativo no es aceptable, y aquí no hay ningún resultado que mejorar.
+
+Afecta a `AlgoritmoColumnaScreen`, `IgualdadScreen`, `LeftRightScreen`,
+`ProblemaScreen`, `RectaNumericaScreen`, `RelacionarScreen`, `RelacionSumaRestaScreen`,
+`RepartoIgualScreen`, `ShapesScreen`, `SumaLlevandoScreen`, `TresSumandosScreen`,
+`TresSumandosColumnaScreen`, `VecinosScreen` y `WeekDaysScreen`.
+
+`ExerciseView` va aparte porque el motivo es otro: ahí la sesión viene de un contexto
+de React, no de un índice. Tampoco se dispara hoy, porque la vista de ejercicio solo se
+monta tras pasar por el catálogo, que es quien crea la sesión. **Es la más frágil de
+las dos** y la primera candidata a pasar a `NoExerciseNotice` cuando se toque ese
+fichero.
+
+Si alguna vez se rompe el avance de una de esas sesiones, esta lista es lo primero que
+hay que quitar: el aviso volvería a aparecer solo.
