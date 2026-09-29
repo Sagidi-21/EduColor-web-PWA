@@ -124,6 +124,9 @@ const OrdinalesScreen = lazy(() =>
 const ParImparScreen = lazy(() =>
   import("./parImpar/ParImparScreen").then((module) => ({ default: module.ParImparScreen })),
 );
+const ElLitroScreen = lazy(() =>
+  import("./elLitro/ElLitroScreen").then((module) => ({ default: module.ElLitroScreen })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -357,6 +360,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <ParImparScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "elLitro") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <ElLitroScreen {...props} />
       </Suspense>
     );
   }

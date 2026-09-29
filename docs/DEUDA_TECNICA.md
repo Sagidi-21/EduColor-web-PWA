@@ -59,7 +59,8 @@ La auditoría completa solo se repite al cerrar una fase o antes de una release.
 | `dinero/`                                             | `monedasBilletes`                            | Fase 2      | Reserva trazable.    |
 | `izquierda-derecha/`                                  | `leftRight`                                  | Fase 2      | En uso.              |
 | `laberinto/`                                          | `laberintoMatematico`                        | Fase 2      | Reserva trazable.    |
-| `+kilo/`, `-kilo/`, `+litro/`, `-litro/`, `litro/`    | `elKilo` y `elLitro`                         | Fase 2      | Reserva trazable.    |
+| `+kilo/`, `-kilo/`                                    | `elKilo`                                     | Fase 2      | Reserva trazable.    |
+| `+litro/`, `-litro/`, `litro/`                        | `elLitro`                                    | Fase 2      | En uso.              |
 | `shapes-real/`                                        | `shapes`                                     | Fase 2      | En uso.              |
 | `logo/logo.png`, `logo/logo.ico`                      | Exportación de fichas e iconografía PWA      | Fases 6 y 7 | Reserva trazable.    |
 
@@ -72,8 +73,8 @@ manifiesto:
 - `objects/` → `ComparisonScreen.tsx` (`import.meta.glob`).
 - `izquierda-derecha/` → `src/platform/characterImages.ts`, compartido con el motor `leftRight`.
 - `shapes-real/` → `shapesRealImages.ts`, importado por `ShapesScreen.tsx`.
+- `+litro/`, `-litro/`, `litro/` → `litroImages.ts`, importado por `ElLitroScreen.tsx`.
 
-`dinero/`, `laberinto/`, `+kilo/`, `-kilo/`, `+litro/`, `-litro/` y `litro/`
-siguen como **Reserva trazable**: sus motores (`monedasBilletes`,
-`laberintoMatematico`, `elKilo`, `elLitro`) aún no tienen renderer PWA, por lo
-que sus recursos solo se preparan para una migración futura.
+`dinero/`, `laberinto/`, `+kilo/` y `-kilo/` siguen como **Reserva trazable**: sus
+motores (`monedasBilletes`, `laberintoMatematico`, `elKilo`) aún no tienen
+renderer PWA, por lo que sus recursos solo se preparan para una migración futura.
