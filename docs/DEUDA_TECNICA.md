@@ -59,7 +59,7 @@ La auditoría completa solo se repite al cerrar una fase o antes de una release.
 | `dinero/`                                             | `monedasBilletes`                            | Fase 2      | Reserva trazable.    |
 | `izquierda-derecha/`                                  | `leftRight`                                  | Fase 2      | En uso.              |
 | `laberinto/`                                          | `laberintoMatematico`                        | Fase 2      | Reserva trazable.    |
-| `+kilo/`, `-kilo/`                                    | `elKilo`                                     | Fase 2      | Reserva trazable.    |
+| `+kilo/`, `-kilo/`, `kilo/`                           | `elKilo`                                     | Fase 2      | En uso.              |
 | `+litro/`, `-litro/`, `litro/`                        | `elLitro`                                    | Fase 2      | En uso.              |
 | `shapes-real/`                                        | `shapes`                                     | Fase 2      | En uso.              |
 | `logo/logo.png`, `logo/logo.ico`                      | Exportación de fichas e iconografía PWA      | Fases 6 y 7 | Reserva trazable.    |
@@ -74,7 +74,13 @@ manifiesto:
 - `izquierda-derecha/` → `src/platform/characterImages.ts`, compartido con el motor `leftRight`.
 - `shapes-real/` → `shapesRealImages.ts`, importado por `ShapesScreen.tsx`.
 - `+litro/`, `-litro/`, `litro/` → `litroImages.ts`, importado por `ElLitroScreen.tsx`.
+- `+kilo/`, `-kilo/`, `kilo/` → `kiloImages.ts`, importado por `ElKiloScreen.tsx`.
 
-`dinero/`, `laberinto/`, `+kilo/` y `-kilo/` siguen como **Reserva trazable**: sus
-motores (`monedasBilletes`, `laberintoMatematico`, `elKilo`) aún no tienen
-renderer PWA, por lo que sus recursos solo se preparan para una migración futura.
+`dinero/` y `laberinto/` siguen como **Reserva trazable**: sus motores
+(`monedasBilletes`, `laberintoMatematico`) aún no tienen renderer PWA, por lo
+que sus recursos solo se preparan para una migración futura.
+
+`kilo/pesa de 1 kilo.png` no existía en el proyecto original: se ha creado para
+la PWA como referencia visual de 1 kg, en sustitución del emoji ⚖️ que usaba el
+renderer de Electron. Es el mismo criterio que en `elLitro`, donde la botella de
+litro ya sustituyó a su emoji. El original no traía ningún asset de referencia.

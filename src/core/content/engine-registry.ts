@@ -43,6 +43,7 @@ const migratedEngines: ReadonlySet<EngineId> = new Set([
   "ordinales",
   "parImpar",
   "elLitro",
+  "elKilo",
 ]);
 
 export function getEngineRegistration(engineId: EngineId): EngineRegistration {
