@@ -75,9 +75,7 @@ describe("TresSumandosColumnaScreen smoke", () => {
 
     expect(container.querySelector(".tsc__celebration")).toBeNull();
     expect(boxes(container).every((b) => b.className.includes("tsc__box--wrong"))).toBe(true);
-    expect(
-      container.querySelector(".activity-action--retry, .wrong-feedback__btn--retry"),
-    ).not.toBeNull();
+    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
   });
 
   it("la casilla pulsada pasa a ser la activa", () => {

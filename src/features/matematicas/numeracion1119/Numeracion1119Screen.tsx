@@ -10,8 +10,10 @@ import { ActionButtons } from "../components/ActivityActionButtons";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { useInputMode } from "../../shared/hooks/useInputMode";
 import InputModeToggle from "../../shared/components/InputModeToggle";
-import { LazyDigitCell } from "../../shared/DigitCell";
 import { Numpad } from "../../shared/components/Numpad";
+import { NoExerciseNotice } from "../components/NoExerciseNotice";
+import { DigitBoxes } from "../components/DigitBoxes";
+import { useDigitBoxes } from "../components/useDigitBoxes";
 
 import "../operations/OperationsScreen.css";
 import "./Numeracion1119Screen.css";
@@ -36,7 +38,6 @@ interface SessionState {
   correctCount: number;
   startTime: number;
   answerState: AnswerState;
-  input: string;
   chosen: null | number;
   alreadyFailed: boolean;
 }
@@ -48,7 +49,6 @@ function freshSession(seed: number, difficulty: EngineScreenProps["difficulty"])
     correctCount: 0,
     startTime: Date.now(),
     answerState: "idle",
-    input: "",
     chosen: null,
     alreadyFailed: false,
   };
@@ -87,7 +87,6 @@ export function Numeracion1119Screen({
         ...s,
         currentIndex: next,
         answerState: "idle",
-        input: "",
         chosen: null,
         alreadyFailed: false,
       }));
@@ -99,7 +98,6 @@ export function Numeracion1119Screen({
       ...s,
       answerState: "idle",
       chosen: null,
-      input: "",
       alreadyFailed: true,
     }));
     setCanvasKey((k) => k + 1);
@@ -127,42 +125,32 @@ export function Numeracion1119Screen({
     [session, current],
   );
 
-  const confirm = useCallback(() => {
-    if (session.answerState !== "idle" || session.input === "") return;
-    const ok = validateNumeracion1119Answer(current, session.input);
-    playFeedback(ok);
-    setSession((s) => ({
-      ...s,
-      answerState: ok ? "correct" : "wrong",
-      correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
-      alreadyFailed: !ok ? true : s.alreadyFailed,
-    }));
-  }, [session.answerState, session.input, current]);
-
-  const handleCanvasConfirm = useCallback(
-    (digit: string) => {
+  const confirm = useCallback(
+    (escrito: string) => {
       if (session.answerState !== "idle") return;
-      setSession((s) => {
-        const nextInput = s.input.length < 2 ? s.input + digit : s.input;
-        const needsConfirm =
-          current?.type === "units" ? nextInput.length >= 1 : nextInput.length >= 2;
-        if (!needsConfirm) {
-          return { ...s, input: nextInput };
-        }
-        const ok = validateNumeracion1119Answer(current, nextInput);
-        playFeedback(ok);
-        return {
-          ...s,
-          input: nextInput,
-          answerState: ok ? "correct" : "wrong",
-          correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
-          alreadyFailed: !ok ? true : s.alreadyFailed,
-        };
-      });
-      setCanvasKey((k) => k + 1);
+      const ok = validateNumeracion1119Answer(current, escrito);
+      playFeedback(ok);
+      setSession((s) => ({
+        ...s,
+        answerState: ok ? "correct" : "wrong",
+        correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+        alreadyFailed: !ok ? true : s.alreadyFailed,
+      }));
     },
-    [current, session.answerState],
+    [session.answerState, current],
   );
+
+  // Una casilla por cada cifra de la respuesta, ni una mas: los ejercicios de
+  // tipo `units` responden con una sola cifra y no deben mostrar casilla de
+  // decenas. La familia de numeracion no se presenta en vertical, asi que se
+  // escribe de izquierda a derecha, que es como se leen los numeros.
+  const casillas = current ? String(current.answer).length : 0;
+  const boxes = useDigitBoxes({
+    length: casillas,
+    order: "ltr",
+    onComplete: confirm,
+    resetToken: session.currentIndex,
+  });
 
   if (finished) {
     return (
@@ -178,7 +166,7 @@ export function Numeracion1119Screen({
     );
   }
 
-  if (!current) return null;
+  if (!current) return <NoExerciseNotice activityTitle={activity.title} onExit={onExit} />;
 
   const stageClass =
     session.answerState === "correct"
@@ -217,31 +205,19 @@ export function Numeracion1119Screen({
 
           {!isMultiChoice && (
             <div className="ops__formula">
-              {mode === "numpad" ? (
-                <div
-                  className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : session.answerState === "wrong" ? "ops__answer-box--wrong" : ""}`}
-                >
-                  {session.answerState === "correct"
-                    ? current.answer
-                    : session.input || <span className="ops__cursor">_</span>}
-                </div>
-              ) : session.answerState === "idle" ? (
-                <LazyDigitCell
-                  key={canvasKey}
-                  isActive={true}
-                  onActivate={() => {}}
-                  onConfirm={handleCanvasConfirm}
-                  onClear={() => setSession((s) => ({ ...s, input: "" }))}
-                  state={session.answerState}
-                  value={session.input}
-                />
-              ) : (
-                <div
-                  className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : "ops__answer-box--wrong"}`}
-                >
-                  {session.answerState === "correct" ? current.answer : session.input || "?"}
-                </div>
-              )}
+              <DigitBoxes
+                length={casillas}
+                values={boxes.values}
+                activeIndex={boxes.activeIndex}
+                order="ltr"
+                state={session.answerState}
+                mode={mode}
+                onSelect={boxes.onSelect}
+                onDigit={boxes.onDigit}
+                onDelete={boxes.onDelete}
+                canvasKey={canvasKey}
+                correctText={String(current.answer)}
+              />
             </div>
           )}
         </div>
@@ -275,18 +251,9 @@ export function Numeracion1119Screen({
               <>
                 {mode === "numpad" && (
                   <Numpad
-                    onDigit={(d) => {
-                      if (session.answerState !== "idle") return;
-                      setSession((s) => ({
-                        ...s,
-                        input: s.input.length < 2 ? s.input + d : s.input,
-                      }));
-                    }}
-                    onDelete={() => {
-                      if (session.answerState !== "idle") return;
-                      setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
-                    }}
-                    onConfirm={confirm}
+                    onDigit={boxes.onDigit}
+                    onDelete={boxes.onDelete}
+                    onConfirm={boxes.onConfirm}
                     disabled={session.answerState !== "idle"}
                   />
                 )}

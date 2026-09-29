@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+﻿import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { Numeracion1119Screen } from "./Numeracion1119Screen";
 import { generateNumeracion1119Session } from "../../../core/activities/numeracion1119";
@@ -131,16 +131,89 @@ describe("Numeracion1119Screen smoke", () => {
     const seed = 4242;
     const exercises = session("hard", seed);
     const ex = exercises[0];
-    const digits = String(ex.answer);
+    const digits = String(ex.answer).split("");
 
     const { container } = render(<Numeracion1119Screen {...buildProps("hard", seed)} />);
-    digits.split("").forEach((d) => pressNumpad(container, d));
-    pressNumpad(container, deleteKey);
 
-    // Queda solo el prefijo, así que confirmar da fallo y no acierto.
-    pressNumpad(container, confirmKey);
+    // Con la regla nueva, rellenar la ultima casilla valida sola. Para poder
+    // borrar hay que quedarse a una cifra por escribir.
+    digits.slice(0, -1).forEach((d) => pressNumpad(container, d));
     expect(container.querySelector(".ops__celebration")).toBeNull();
-    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
+
+    pressNumpad(container, deleteKey);
+    pressNumpad(container, confirmKey);
+
+    // Quedan casillas vacias, asi que confirmar no valida y no hay acierto.
+    expect(container.querySelector(".ops__celebration")).toBeNull();
+    expect(container.querySelector(".activity-action--retry")).toBeNull();
+  });
+
+  it("rellenar la última casilla valida sola, sin pulsar ✓", () => {
+    const seed = 4242;
+    const exercises = session("hard", seed);
+    const ex = exercises[0];
+
+    const { container } = render(<Numeracion1119Screen {...buildProps("hard", seed)} />);
+
+    String(ex.answer)
+      .split("")
+      .forEach((d) => pressNumpad(container, d));
+
+    expect(container.querySelector(".ops__celebration")).not.toBeNull();
+  });
+
+  it("hay una casilla por cifra de la respuesta y se rellenan de izquierda a derecha", () => {
+    const seed = 4242;
+    const exercises = session("hard", seed);
+    const ex = exercises[0];
+
+    const { container } = render(<Numeracion1119Screen {...buildProps("hard", seed)} />);
+    const casillas = () => Array.from(container.querySelectorAll<HTMLElement>(".ops__answer-slot"));
+
+    expect(casillas()).toHaveLength(String(ex.answer).length);
+
+    // La primera casilla es la activa y va por el camino de la izquierda.
+    expect(casillas()[0].querySelector(".ops__answer-box--active")).not.toBeNull();
+
+    String(ex.answer)
+      .split("")
+      .forEach((d, i) => {
+        pressNumpad(container, d);
+        // Tras cada cifra, la activa es la siguiente hacia la derecha.
+        const siguiente = casillas()[i + 1];
+        if (siguiente) {
+          expect(siguiente.querySelector(".ops__answer-box--active")).not.toBeNull();
+        }
+      });
+
+    // Y cada casilla muestra su propia cifra, en su posicion.
+    String(ex.answer)
+      .split("")
+      .forEach((d, i) => {
+        expect(casillas()[i].textContent).toContain(d);
+      });
+  });
+
+  it("cada ejercicio muestra exactamente las casillas que necesita", () => {
+    // El invariante que importa: ni una casilla de mas ni de menos. Un ejercicio
+    // cuya respuesta sea de una sola cifra no debe ense�ar casilla de decenas.
+    const seed = 4242;
+    const ejercicios = session("hard", seed);
+
+    const { container } = render(<Numeracion1119Screen {...buildProps("hard", seed)} />);
+
+    ejercicios.forEach((ex) => {
+      expect(container.querySelectorAll(".ops__answer-slot")).toHaveLength(
+        String(ex.answer).length,
+      );
+      // Se responde para poder pasar al siguiente.
+      String(ex.answer)
+        .split("")
+        .forEach((d) => pressNumpad(container, d));
+      runAutoAdvance();
+    });
+
+    expect(container.querySelector(".activity-header__counter")).toBeNull();
   });
 
   it("acierto: el contador avanza solo y la respuesta correcta se muestra", () => {
@@ -171,7 +244,7 @@ describe("Numeracion1119Screen smoke", () => {
 
     expect(container.querySelector(".ops__celebration")).toBeNull();
     // Este renderer usa `ActionButtons`, a diferencia de sus hermanos 4059 y
-    // 6099, que montan `WrongFeedback`.
+    // 6099.
     expect(container.querySelector(".activity-action--retry")).not.toBeNull();
     expect(questionOf(container)).toBe(ex.question);
 

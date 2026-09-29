@@ -9,7 +9,7 @@ import { Numpad } from "../../shared/components/Numpad";
 import { LazyDigitCell } from "../../shared/DigitCell";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
-import { WrongFeedback } from "../components/WrongFeedback";
+import { ActionButtons } from "../components/ActivityActionButtons";
 
 import "../operations/OperationsScreen.css";
 import "./CapacidadScreen.css";
@@ -297,7 +297,7 @@ export function CapacidadScreen({
               );
             })}
             {session.answerState === "wrong" && (
-              <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
             )}
           </div>
         ) : (
@@ -317,7 +317,7 @@ export function CapacidadScreen({
               />
             )}
             {session.answerState === "wrong" && (
-              <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
             )}
           </>
         )}

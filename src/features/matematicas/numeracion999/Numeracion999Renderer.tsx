@@ -4,7 +4,7 @@ import type { EngineScreenProps } from "../engine-screens";
 import { playFeedback } from "../../shared/audioFeedback";
 import "./Numeracion999Renderer.css";
 import { ActivityHeader } from "../components/ActivityHeader";
-import { WrongFeedback } from "../components/WrongFeedback";
+import { ActionButtons } from "../components/ActivityActionButtons";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -186,7 +186,7 @@ export function Numeracion999Screen({
         </div>
 
         {session.answerState === "wrong" && (
-          <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
         )}
       </div>
     </div>

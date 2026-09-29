@@ -75,7 +75,7 @@ describe("WeekDaysScreen smoke", () => {
 
     expect(container.querySelector("button.wd__option--wrong")).not.toBeNull();
     expect(container.querySelector(".wd__celebration")).toBeNull();
-    expect(container.querySelector(".wrong-feedback__btn--retry")).not.toBeNull();
+    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
   });
 
   it("reintentar devuelve el estado a idle y rehabilita los botones", () => {
@@ -88,7 +88,7 @@ describe("WeekDaysScreen smoke", () => {
     fireEvent.click(optionButtons(container).find((b) => (b.textContent ?? "").trim() === wrong)!);
     expect(optionButtons(container).every((b) => b.disabled)).toBe(true);
 
-    fireEvent.click(container.querySelector<HTMLButtonElement>(".wrong-feedback__btn--retry")!);
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--retry")!);
 
     expect(container.querySelector("button.wd__option--wrong")).toBeNull();
     expect(optionButtons(container).every((b) => !b.disabled)).toBe(true);

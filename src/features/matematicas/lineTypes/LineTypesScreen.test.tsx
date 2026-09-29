@@ -82,7 +82,7 @@ describe("LineTypesScreen smoke", () => {
     fireEvent.click(optionButtons(container).find((b) => (b.textContent ?? "").trim() === wrong)!);
 
     expect(container.querySelector("button.lt__option--wrong")).not.toBeNull();
-    expect(container.querySelector(".wrong-feedback__btn--retry")).not.toBeNull();
+    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
     expect(container.querySelector(".lt__celebration")).toBeNull();
   });
 

@@ -377,6 +377,10 @@
     border-top: 0;
     border-left: 2px solid #e2e8f0;
     padding: 20px;
+    gap: 18px;
+    justify-content: center;
+    /* Si numpad + botones no caben, `safe` evita que se recorten por arriba. */
+    justify-content: safe center;
     overflow-y: auto;
   }
 
@@ -388,6 +392,24 @@
   .ops__body--with-numpad .ops__footer .shared-numpad__key {
     width: clamp(56px, 7vw, 76px);
     height: clamp(52px, 7vw, 68px);
+  }
+
+  /* La columna lateral ofrece 320px menos 20px de padding por lado, o sea
+     280px utiles. Los dos botones a tamano completo piden 340px mas su
+     padding, asi que se desbordan. Aqui se apilan a lo ancho de la columna;
+     el tamano grande se conserva intacto en la barra inferior y en canvas. */
+  .ops__body--with-numpad .ops__footer .activity-actions {
+    width: 100%;
+    padding: 0;
+    gap: 10px;
+  }
+
+  .ops__body--with-numpad .ops__footer .activity-action {
+    flex: 1 1 100%;
+    min-width: 0;
+    min-height: 48px;
+    padding: 0 12px;
+    font-size: 16px;
   }
 }
 

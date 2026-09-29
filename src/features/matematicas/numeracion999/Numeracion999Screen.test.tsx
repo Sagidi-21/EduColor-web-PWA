@@ -95,7 +95,7 @@ describe("Numeracion999Screen smoke", () => {
       // Pasamos al siguiente sin acertar: el botón de "Siguiente" solo aparece
       // tras un fallo.
       fireEvent.click(optionWithText(container, wrongOptionText(session[i])));
-      fireEvent.click(container.querySelector(".wrong-feedback__btn--next")!);
+      fireEvent.click(container.querySelector(".activity-action--next")!);
     }
 
     // `cdu-to-cifra` muestra la tarjeta de valor posicional; el resto, el
@@ -116,7 +116,7 @@ describe("Numeracion999Screen smoke", () => {
 
     expect(container.querySelector(".n999__cheer")?.textContent).toContain("¡Correcto!");
     expect(optionWithText(container, ex.correctAnswer).className).toContain("n999__opt--correct");
-    expect(container.querySelector(".wrong-feedback")).toBeNull();
+    expect(container.querySelector(".activity-actions")).toBeNull();
 
     // El acierto autoavanza sin que el niño toque nada.
     runAutoAdvance();
@@ -136,12 +136,12 @@ describe("Numeracion999Screen smoke", () => {
 
     expect(optionWithText(container, wrong).className).toContain("n999__opt--wrong");
     expect(container.querySelector(".n999__cheer")).toBeNull();
-    expect(container.querySelector(".wrong-feedback")).not.toBeNull();
+    expect(container.querySelector(".activity-actions")).not.toBeNull();
 
     // Reintentar deja el mismo ejercicio limpio y sin fallo previo acumulado.
-    fireEvent.click(container.querySelector(".wrong-feedback__btn--retry")!);
+    fireEvent.click(container.querySelector(".activity-action--retry")!);
     expect(questionOf(container)).toBe(ex.question);
-    expect(container.querySelector(".wrong-feedback")).toBeNull();
+    expect(container.querySelector(".activity-actions")).toBeNull();
     expect(optionWithText(container, wrong).className).not.toContain("n999__opt--wrong");
   });
 

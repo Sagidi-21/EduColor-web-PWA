@@ -95,8 +95,8 @@ describe("ParImparScreen smoke", () => {
     clickOptionWithLabel(container, wrong.label);
 
     expect(container.querySelector("button.pi__option--wrong")).not.toBeNull();
-    expect(container.querySelector(".wrong-feedback__btn--retry")).not.toBeNull();
-    expect(container.querySelector(".wrong-feedback__btn--next")).not.toBeNull();
+    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
+    expect(container.querySelector(".activity-action--next")).not.toBeNull();
     expect(container.querySelector(".ops__celebration")).toBeNull();
   });
 
@@ -108,10 +108,10 @@ describe("ParImparScreen smoke", () => {
     const { container } = render(<ParImparScreen {...buildProps("hard", seed)} />);
 
     clickOptionWithLabel(container, wrong.label);
-    fireEvent.click(container.querySelector<HTMLButtonElement>(".wrong-feedback__btn--retry")!);
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--retry")!);
 
     expect(container.querySelector("button.pi__option--wrong")).toBeNull();
-    expect(container.querySelector(".wrong-feedback")).toBeNull();
+    expect(container.querySelector(".activity-actions")).toBeNull();
   });
 
   it("un ejercicio de escritura monta Numpad y no monta el DigitCell", () => {
@@ -130,7 +130,7 @@ describe("ParImparScreen smoke", () => {
     // Se llega al de escritura contestando los de teoría previos.
     for (let i = 0; i < writeIndex; i++) {
       clickOptionWithLabel(container, optionLabels(session[i])[0]);
-      fireEvent.click(container.querySelector<HTMLButtonElement>(".wrong-feedback__btn--next")!);
+      fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--next")!);
     }
 
     expect(requiresWriting(session[writeIndex])).toBe(true);

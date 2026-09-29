@@ -137,7 +137,7 @@ describe("OrderingScreen smoke", () => {
 
     // No hay botones de reintento ni de siguiente: el fallo se agota solo.
     expect(container.querySelector(".activity-actions")).toBeNull();
-    expect(container.querySelector(".wrong-feedback")).toBeNull();
+    expect(container.querySelector(".activity-actions")).toBeNull();
     const failed = slots(container)[0];
     expect(failed.className).toContain("ord__slot--wrong");
     expect(failed.textContent).toBe(String(wrong));

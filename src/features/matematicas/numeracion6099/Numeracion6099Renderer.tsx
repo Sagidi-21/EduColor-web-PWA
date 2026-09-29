@@ -6,9 +6,11 @@ import { useInputMode } from "../../shared/hooks/useInputMode";
 import InputModeToggle from "../../shared/components/InputModeToggle";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
-import { WrongFeedback } from "../components/WrongFeedback";
+import { ActionButtons } from "../components/ActivityActionButtons";
 import { Numpad } from "../../shared/components/Numpad";
-import { LazyDigitCell } from "../../shared/DigitCell";
+import { NoExerciseNotice } from "../components/NoExerciseNotice";
+import { DigitBoxes } from "../components/DigitBoxes";
+import { useDigitBoxes } from "../components/useDigitBoxes";
 
 import "../operations/OperationsScreen.css";
 import "./Numeracion6099Renderer.css";
@@ -21,7 +23,6 @@ interface SessionState {
   correctCount: number;
   startTime: number;
   answerState: AnswerState;
-  input: string;
   chosen: null | string;
   alreadyFailed: boolean;
 }
@@ -33,7 +34,6 @@ function freshSession(seed: number, difficulty: EngineScreenProps["difficulty"])
     correctCount: 0,
     startTime: Date.now(),
     answerState: "idle",
-    input: "",
     chosen: null,
     alreadyFailed: false,
   };
@@ -87,7 +87,6 @@ export function Numeracion6099Screen({
       ...s,
       answerState: "idle",
       chosen: null,
-      input: "",
       alreadyFailed: true,
     }));
     setCanvasKey((k) => k + 1);
@@ -106,37 +105,31 @@ export function Numeracion6099Screen({
         ...s,
         currentIndex: next,
         answerState: "idle",
-        input: "",
         chosen: null,
         alreadyFailed: false,
       }));
   }, [session, total]);
 
-  const confirm = useCallback(() => {
-    if (session.answerState !== "idle" || session.input === "") return;
-    const ok = validateAnswer(current, session.input);
-    playFeedback(ok);
-    setSession((s) => ({
-      ...s,
-      answerState: ok ? "correct" : "wrong",
-      correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
-      alreadyFailed: !ok ? true : s.alreadyFailed,
-    }));
-  }, [session, current]);
+  const confirm = useCallback(
+    (escrito: string) => {
+      if (session.answerState !== "idle") return;
+      const ok = validateAnswer(current, escrito);
+      playFeedback(ok);
+      setSession((s) => ({
+        ...s,
+        answerState: ok ? "correct" : "wrong",
+        correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+        alreadyFailed: !ok ? true : s.alreadyFailed,
+      }));
+    },
+    [session.answerState, current],
+  );
 
   useEffect(() => {
     if (session.answerState !== "correct") return;
     const t = setTimeout(handleNext, 900);
     return () => clearTimeout(t);
   }, [session.answerState, handleNext]);
-
-  useEffect(() => {
-    if (mode !== "canvas") return;
-    if (session.answerState !== "idle") return;
-    if (session.input.length < 2) return;
-    const t = setTimeout(confirm, 0);
-    return () => clearTimeout(t);
-  }, [session.input.length, mode, session.answerState, current?.answer, confirm]);
 
   const handleChoice = useCallback(
     (opt: string) => {
@@ -153,6 +146,16 @@ export function Numeracion6099Screen({
     },
     [session, current],
   );
+  // Una casilla por cada cifra de la respuesta, ni una mas. La familia de
+  // numeracion no se presenta en vertical, asi que se escribe de izquierda a
+  // derecha, que es como se leen los numeros.
+  const casillas = current ? String(current.answer).length : 0;
+  const boxes = useDigitBoxes({
+    length: casillas,
+    order: "ltr",
+    onComplete: confirm,
+    resetToken: session.currentIndex,
+  });
 
   if (finished) {
     return (
@@ -168,7 +171,7 @@ export function Numeracion6099Screen({
     );
   }
 
-  if (!current) return null as unknown as JSX.Element;
+  if (!current) return <NoExerciseNotice activityTitle={activity.title} onExit={onExit} />;
   const stageClass =
     session.answerState === "correct"
       ? "ops__stage--correct"
@@ -207,38 +210,19 @@ export function Numeracion6099Screen({
 
           {!isMultiChoice && (
             <div className="ops__formula">
-              {mode === "numpad" ? (
-                <div
-                  className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : session.answerState === "wrong" ? "ops__answer-box--wrong" : ""}`}
-                >
-                  {session.answerState === "correct"
-                    ? current.answer
-                    : session.input || <span className="ops__cursor">_</span>}
-                </div>
-              ) : session.answerState === "idle" ? (
-                <LazyDigitCell
-                  key={canvasKey}
-                  isActive={true}
-                  onActivate={() => {}}
-                  onConfirm={(digit) => {
-                    if (session.answerState !== "idle") return;
-                    setSession((s) => ({
-                      ...s,
-                      input: s.input.length < 2 ? s.input + digit : s.input,
-                    }));
-                    setCanvasKey((k) => k + 1);
-                  }}
-                  onClear={() => setSession((s) => ({ ...s, input: "" }))}
-                  state={session.answerState}
-                  value={session.input}
-                />
-              ) : (
-                <div
-                  className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : "ops__answer-box--wrong"}`}
-                >
-                  {session.answerState === "correct" ? current.answer : session.input || "?"}
-                </div>
-              )}
+              <DigitBoxes
+                length={casillas}
+                values={boxes.values}
+                activeIndex={boxes.activeIndex}
+                order="ltr"
+                state={session.answerState}
+                mode={mode}
+                onSelect={boxes.onSelect}
+                onDigit={boxes.onDigit}
+                onDelete={boxes.onDelete}
+                canvasKey={canvasKey}
+                correctText={String(current.answer)}
+              />
             </div>
           )}
         </div>
@@ -267,30 +251,21 @@ export function Numeracion6099Screen({
                   })}
                 </div>
                 {session.answerState === "wrong" && (
-                  <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+                  <ActionButtons onRetry={handleRetry} onNext={handleNext} />
                 )}
               </div>
             ) : (
               <>
                 {mode === "numpad" && (
                   <Numpad
-                    onDigit={(d) => {
-                      if (session.answerState !== "idle") return;
-                      setSession((s) => ({
-                        ...s,
-                        input: s.input.length < 2 ? s.input + d : s.input,
-                      }));
-                    }}
-                    onDelete={() => {
-                      if (session.answerState !== "idle") return;
-                      setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
-                    }}
-                    onConfirm={confirm}
+                    onDigit={boxes.onDigit}
+                    onDelete={boxes.onDelete}
+                    onConfirm={boxes.onConfirm}
                     disabled={session.answerState !== "idle"}
                   />
                 )}
                 {session.answerState === "wrong" && (
-                  <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+                  <ActionButtons onRetry={handleRetry} onNext={handleNext} />
                 )}
               </>
             )}

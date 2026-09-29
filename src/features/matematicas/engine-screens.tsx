@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { ActivityErrorBoundary } from "./components/ActivityErrorBoundary";
 import type {
   ActivityDifficulty,
   ActivityManifest,
@@ -139,6 +140,20 @@ export interface EngineScreenProps {
 
 /** Registro de renderers PWA. Añadir aquí un motor no exige cambiar la navegación. */
 export function EngineScreen(props: EngineScreenProps) {
+  return (
+    <ActivityErrorBoundary activityTitle={props.activity.title} onExit={props.onExit}>
+      <EngineScreenForEngine {...props} />
+    </ActivityErrorBoundary>
+  );
+}
+
+/**
+ * Resuelve el motor y lo monta. Va separado de `EngineScreen` para que la
+ * barrera de error quede por encima del `React.lazy`: una barrera colocada
+ * dentro del `Suspense` no llega a ver el fallo de carga del trozo, que es
+ * justo el caso que dejaba la pantalla en blanco.
+ */
+function EngineScreenForEngine(props: EngineScreenProps) {
   if (props.activity.engineId === "comparison") {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
@@ -345,5 +360,26 @@ export function EngineScreen(props: EngineScreenProps) {
       </Suspense>
     );
   }
-  return null;
+  // Un `engineId` sin rama aqui se veia como una pantalla totalmente en blanco,
+  // sin ninguna pista de la causa. Ahora dice que falta el renderer.
+  return (
+    <div className="act-error" role="alert">
+      <div className="act-error__panel">
+        <p className="act-error__title">Actividad no disponible</p>
+        <p className="act-error__text">
+          No hay un renderer PWA para <code>{props.activity.engineId}</code>. Elige otra actividad
+          del catalogo.
+        </p>
+        <div className="act-error__actions">
+          <button
+            type="button"
+            className="act-error__btn act-error__btn--primary"
+            onClick={props.onExit}
+          >
+            Volver al catalogo
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }

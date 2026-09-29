@@ -107,9 +107,7 @@ describe("SumaLlevandoScreen smoke", () => {
     typeOnNumpad(container, Math.floor(ex.answer / 10));
 
     expect(container.querySelector(".sumall__celebration")).toBeNull();
-    expect(
-      container.querySelector(".activity-action--retry, .wrong-feedback__btn--retry"),
-    ).not.toBeNull();
+    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
   });
 
   it("la casilla pulsada pasa a ser el paso activo", () => {

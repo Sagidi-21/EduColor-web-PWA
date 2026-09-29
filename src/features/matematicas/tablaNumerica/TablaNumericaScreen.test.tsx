@@ -82,7 +82,7 @@ describe("TablaNumericaScreen smoke", () => {
     fireEvent.click(numpadKey(container, "✓"));
 
     expect(container.querySelector(".tbl__celebration")).toBeNull();
-    expect(container.querySelector(".wrong-feedback__btn--retry")).not.toBeNull();
+    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
   });
 
   it("el botón de borrar del Numpad quita el último dígito", () => {

@@ -76,7 +76,7 @@ describe("OrdinalesScreen smoke", () => {
     fireEvent.click(target!);
 
     expect(container.querySelector("button.ord__option--wrong")).not.toBeNull();
-    expect(container.querySelector(".wrong-feedback__btn--retry")).not.toBeNull();
+    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
     expect(container.querySelector(".ops__celebration")).toBeNull();
   });
 

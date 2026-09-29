@@ -6,7 +6,7 @@ import type { EngineScreenProps } from "../engine-screens";
 import { playFeedback } from "../../shared/audioFeedback";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
-import { WrongFeedback } from "../components/WrongFeedback";
+import { ActionButtons } from "../components/ActivityActionButtons";
 import "./ShapesScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -310,7 +310,7 @@ export function ShapesScreen({
           ))}
         </div>
         {session.answerState === "wrong" && (
-          <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
         )}
       </footer>
     </div>

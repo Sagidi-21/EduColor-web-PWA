@@ -5,6 +5,7 @@ import type { EngineScreenProps } from "../engine-screens";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { ActionButtons } from "../components/ActivityActionButtons";
+import { NoExerciseNotice } from "../components/NoExerciseNotice";
 import "./SeriesScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -107,7 +108,7 @@ export function SeriesScreen({
     );
   }
 
-  if (!current) return null;
+  if (!current) return <NoExerciseNotice activityTitle={activity.title} onExit={onExit} />;
 
   const stageClass =
     session.answerState === "correct"

@@ -58,9 +58,7 @@ describe("TresSumandosScreen smoke", () => {
     typeOnNumpad(container, wrong);
 
     expect(container.querySelector(".ops__celebration")).toBeNull();
-    expect(
-      container.querySelector(".activity-action--retry, .wrong-feedback__btn--retry"),
-    ).not.toBeNull();
+    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
   });
 
   it("la caja de las unidades es la activa al montar y se puede cambiar", () => {

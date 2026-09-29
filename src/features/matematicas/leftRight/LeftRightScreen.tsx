@@ -9,7 +9,7 @@ import type {
 import type { EngineScreenProps } from "../engine-screens";
 import { playFeedback } from "../../shared/audioFeedback";
 import { ActivityHeader } from "../components/ActivityHeader";
-import { WrongFeedback } from "../components/WrongFeedback";
+import { ActionButtons } from "../components/ActivityActionButtons";
 import { SummaryScreen } from "../components/SummaryScreen";
 import "./LeftRightScreen.css";
 
@@ -460,7 +460,7 @@ export function LeftRightScreen({
           </div>
         )}
         {session.answerState === "wrong" && (
-          <WrongFeedback onNext={handleNext} onRetry={handleRetry} />
+          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
         )}
       </footer>
     </div>

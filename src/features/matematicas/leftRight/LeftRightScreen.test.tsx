@@ -89,7 +89,7 @@ describe("LeftRightScreen smoke", () => {
     fireEvent.click(button!);
 
     expect(button!.className).toContain("lr__option--correct");
-    expect(container.querySelector(".wrong-feedback")).toBeNull();
+    expect(container.querySelector(".activity-actions")).toBeNull();
 
     runAutoAdvance();
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
@@ -108,9 +108,8 @@ describe("LeftRightScreen smoke", () => {
     fireEvent.click(button!);
 
     expect(button!.className).toContain("lr__option--wrong");
-    // Este renderer usa `WrongFeedback`, a diferencia de sus hermanos del lote.
-    expect(container.querySelector(".wrong-feedback__btn--retry")).not.toBeNull();
-    expect(container.querySelector(".wrong-feedback__btn--next")).not.toBeNull();
+    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
+    expect(container.querySelector(".activity-action--next")).not.toBeNull();
   });
 
   it("fallo: reintentar deja el mismo ejercicio limpio", () => {
@@ -121,10 +120,10 @@ describe("LeftRightScreen smoke", () => {
 
     const { container } = render(<LeftRightScreen {...buildProps("easy", seed)} />);
     fireEvent.click(optionButtons(container).find((b) => b.textContent === wrong)!);
-    fireEvent.click(container.querySelector(".wrong-feedback__btn--retry")!);
+    fireEvent.click(container.querySelector(".activity-action--retry")!);
 
     expect(questionOf(container)).toBe(ex.question);
-    expect(container.querySelector(".wrong-feedback")).toBeNull();
+    expect(container.querySelector(".activity-actions")).toBeNull();
     expect(container.querySelector(".lr__option--wrong")).toBeNull();
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
       `1 / ${exercises.length}`,
@@ -188,7 +187,7 @@ describe("LeftRightScreen smoke", () => {
     fireEvent.click(charBoxes(container)[1]);
 
     expect(charBoxes(container)[1].className).toContain("lr__char-box--wrong");
-    expect(container.querySelector(".wrong-feedback__btn--retry")).not.toBeNull();
+    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
   });
 
   it("el arrastre de objetos queda fuera del smoke por depender del DOM real", () => {

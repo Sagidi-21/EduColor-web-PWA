@@ -120,20 +120,41 @@ describe("Numeracion4059Screen smoke", () => {
     );
   });
 
-  it("borrar quita la última cifra y el siguiente fallo ofrece reintentar", () => {
+  it("borrar quita la última cifra de la casilla activa", () => {
+    // En `hard` las respuestas son de dos cifras, que es donde el borrado tiene
+    // sentido: hay una casilla por cifra y se ve cual se queda vacia.
     const seed = 4242;
     const exercises = session("hard", seed);
-    const ex = exercises[0];
+    const digits = String(exercises[0].answer).split("");
 
     const { container } = render(<Numeracion4059Screen {...buildProps("hard", seed)} />);
-    String(ex.answer)
-      .split("")
-      .forEach((d) => pressNumpad(container, d));
+
+    const casillas = () => Array.from(container.querySelectorAll<HTMLElement>(".ops__answer-slot"));
+
+    // Con la regla nueva rellenar la ultima casilla valida sola, asi que para
+    // poder borrar se deja una cifra sin escribir.
+    digits.slice(0, -1).forEach((d) => pressNumpad(container, d));
     pressNumpad(container, deleteKey);
-    pressNumpad(container, confirmKey);
+
+    // La casilla activa queda vacia y la seleccion vuelve a la anterior.
+    expect(casillas()[digits.length - 2].textContent).toContain("_");
+    expect(container.querySelector(".ops__celebration")).toBeNull();
+  });
+
+  it("una respuesta incorrecta ofrece reintentar y siguiente", () => {
+    const seed = 4242;
+    const exercises = session("hard", seed);
+    const digits = String(exercises[0].answer).split("");
+    // Se cambia la ultima cifra por otra cualquiera: el resultado es erroneo.
+    const ultimo = digits[digits.length - 1] === "0" ? "1" : "0";
+
+    const { container } = render(<Numeracion4059Screen {...buildProps("hard", seed)} />);
+    digits.slice(0, -1).forEach((d) => pressNumpad(container, d));
+    pressNumpad(container, ultimo);
 
     expect(container.querySelector(".ops__celebration")).toBeNull();
-    expect(container.querySelector(".wrong-feedback__btn--retry")).not.toBeNull();
+    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
+    expect(container.querySelector(".activity-action--next")).not.toBeNull();
   });
 
   it("fallo: el botón de reintentar deja el mismo ejercicio limpio", () => {
@@ -145,12 +166,12 @@ describe("Numeracion4059Screen smoke", () => {
     answerWithNumpad(container, ex.answer + 1);
 
     expect(container.querySelector(".ops__celebration")).toBeNull();
-    expect(container.querySelector(".wrong-feedback")).not.toBeNull();
+    expect(container.querySelector(".activity-actions")).not.toBeNull();
     expect(questionOf(container)).toBe(ex.question);
 
-    fireEvent.click(container.querySelector(".wrong-feedback__btn--retry")!);
+    fireEvent.click(container.querySelector(".activity-action--retry")!);
     expect(questionOf(container)).toBe(ex.question);
-    expect(container.querySelector(".wrong-feedback")).toBeNull();
+    expect(container.querySelector(".activity-actions")).toBeNull();
   });
 
   it("acierto: el contador avanza solo y la casilla muestra la respuesta", () => {

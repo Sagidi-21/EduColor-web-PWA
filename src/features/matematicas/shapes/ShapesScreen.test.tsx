@@ -72,7 +72,7 @@ describe("ShapesScreen smoke", () => {
 
     expect(container.querySelector(`.shp__option--wrong`)).not.toBeNull();
     expect(container.querySelector(".shp__celebration")).toBeNull();
-    expect(container.querySelector(".wrong-feedback__btn--retry")).not.toBeNull();
+    expect(container.querySelector(".activity-action--retry")).not.toBeNull();
   });
 
   it("reintentar devuelve los botones a idle", () => {
@@ -83,7 +83,7 @@ describe("ShapesScreen smoke", () => {
     const { container } = render(<ShapesScreen {...props("hard", seed)} />);
 
     fireEvent.click(container.querySelector(`#shp-option-${wrongId}`)!);
-    fireEvent.click(container.querySelector<HTMLButtonElement>(".wrong-feedback__btn--retry")!);
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--retry")!);
 
     expect(container.querySelector(".shp__option--wrong")).toBeNull();
     expect(optionButtons(container).every((b) => !b.disabled)).toBe(true);
