@@ -154,9 +154,6 @@ export function ElLitroScreen({
                 <ItemCard item={current.items[0]} testId="lit-item-0" />
               </div>
               <div className="lit__scale-hint">
-                <span className="lit__scale-icon" aria-hidden="true">
-                  🧴
-                </span>
                 <img
                   className="lit__ref-img"
                   src={litroImageUrl(REFERENCE_ITEM)}

@@ -103,6 +103,23 @@ describe("ElLitroScreen smoke", () => {
     expect(container.querySelector<HTMLImageElement>(".lit__ref-img")?.alt).toContain("1 litro");
   });
 
+  it("la referencia es el PNG del litro, no un emoji de icono", () => {
+    const seed = 4242;
+    const { container } = render(<ElLitroScreen {...buildProps("easy", seed)} />);
+
+    const hint = container.querySelector(".lit__scale-hint");
+    expect(hint).not.toBeNull();
+    // El PNG de referencia es la unica imagen de la pista.
+    expect(hint!.querySelectorAll("img")).toHaveLength(1);
+    expect(hint!.querySelector<HTMLImageElement>(".lit__ref-img")?.getAttribute("src")).not.toBe(
+      "",
+    );
+    // Sin emoji ni icono de sistema delante.
+    expect(hint!.querySelector(".lit__scale-icon")).toBeNull();
+    expect(hint!.textContent).not.toMatch(/\p{Extended_Pictographic}/u);
+    expect(hint!.textContent?.trim()).toBe("Referencia: 1 L");
+  });
+
   it("comparar muestra los dos recipientes enfrentados", () => {
     const seed = 5;
     const session = generateSession("expert", seed);
