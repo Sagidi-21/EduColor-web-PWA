@@ -136,6 +136,11 @@ const PoligonosScreen = lazy(() =>
 const BalanzaScreen = lazy(() =>
   import("./balanza/BalanzaScreen").then((module) => ({ default: module.BalanzaScreen })),
 );
+const BalanzaEquilibraScreen = lazy(() =>
+  import("./balanzaEquilibra/BalanzaEquilibraScreen").then((module) => ({
+    default: module.BalanzaEquilibraScreen,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -397,6 +402,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <BalanzaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "balanzaEquilibra") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <BalanzaEquilibraScreen {...props} />
       </Suspense>
     );
   }

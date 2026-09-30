@@ -46,6 +46,7 @@ const migratedEngines: ReadonlySet<EngineId> = new Set([
   "elKilo",
   "poligonos",
   "balanza",
+  "balanzaEquilibra",
 ]);
 
 export function getEngineRegistration(engineId: EngineId): EngineRegistration {

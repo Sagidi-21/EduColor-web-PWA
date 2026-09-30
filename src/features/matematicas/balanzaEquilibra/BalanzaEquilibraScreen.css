@@ -1,0 +1,79 @@
+.be__instruction {
+  font-size: clamp(17px, 2.4vw, 24px);
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+  margin: 0;
+  max-width: 640px;
+}
+
+.be__tray {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 16px 20px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  margin-top: 8px;
+}
+
+.be__tray-label {
+  font-size: clamp(15px, 1.9vw, 21px);
+  font-weight: 800;
+  color: #334159;
+}
+
+.be__token {
+  width: 64px;
+  height: 64px;
+  cursor: grab;
+  border-radius: 12px;
+  background: #e2e8f0;
+  border: 2px solid #cbd5e1;
+  transition:
+    transform 0.1s,
+    background 0.15s;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.be__token:hover {
+  background: #cbd5e1;
+}
+
+.be__token:active {
+  cursor: grabbing;
+  transform: scale(1.05);
+}
+
+.be__hint {
+  font-size: clamp(13px, 1.6vw, 17px);
+  color: #64748b;
+  flex-basis: 100%;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.be__right-label {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.be__right-label--balanced {
+  fill: #34d399;
+}
+
+.be__right-label--unbalanced {
+  fill: #a78bfa;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .be__token {
+    transition: none;
+  }
+}

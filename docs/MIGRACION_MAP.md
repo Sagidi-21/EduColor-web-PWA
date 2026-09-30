@@ -42,7 +42,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `features/splash/SplashScreen.tsx`                            | `src/features/splash/SplashScreen.tsx`                                    | Migrado                                       |
 | `features/home/HomeScreen.tsx`                                | `src/features/home/HomeScreen.tsx`                                        | Migrado                                       |
 
-## Actividades migradas (34 de 62)
+## Actividades migradas (35 de 62)
 
 `Estado` refleja `getEngineRegistration()` en `src/core/content/engine-registry.ts`.
 
@@ -82,6 +82,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `elKilo`              | `elKilo/ElKiloRenderer`                           | `elKilo.ts`                      | `elKilo/ElKiloScreen.tsx`                                  | ✅     |
 | `poligonos`           | `poligonos/PoligonosRenderer`                     | `poligonos.ts`                   | `poligonos/PoligonosScreen.tsx`                            | ✅     |
 | `balanza`             | `balanza/BalanzaRenderer`                         | `balanza.ts`                     | `balanza/BalanzaScreen.tsx`                                | ✅     |
+| `balanzaEquilibra`    | `balanzaEquilibra/BalanzaEquilibraRenderer`       | `balanzaEquilibra.ts`            | `balanzaEquilibra/BalanzaEquilibraScreen.tsx`              | ✅     |
 
 Tres detalles de este bloque que sorprenden al leerlo y conviene no volver a
 "arreglar" sin saber lo que hacen:
@@ -93,10 +94,10 @@ Tres detalles de este bloque que sorprenden al leerlo y conviene no volver a
 - `ordenar`, `seriesNumericas` y `vecinosNumero` no conservan su nombre: viven en
   `ordering.ts`, `series.ts` y `vecinos.ts`.
 - `algoritmoVertical` y `restaColumna` tienen núcleo propio pero comparten
-  renderer. Por eso hay 34 motores, 33 ficheros de núcleo para ellos y 32
+  renderer. Por eso hay 35 motores, 34 ficheros de núcleo para ellos y 33
   renderers de actividad.
 
-## Actividades pendientes (28 de 62)
+## Actividades pendientes (27 de 62)
 
 Existe el motor en `electron-reference/Colegio/src/renderer/src/core/engines/`,
 pero no hay ni núcleo ni renderer en la PWA, y el registro los da como `pending`,
@@ -108,7 +109,6 @@ inventario.
 | `abaco3cifras`          | `abaco3cifras/Abaco3CifrasRenderer`                   | —      | —        | ⏳     |
 | `algoritmo3cifras`      | `algoritmo3cifras/Algoritmo3CifrasRenderer`           | —      | —        | ⏳     |
 | `amigos10`              | `amigos10/Amigos10Renderer`                           | —      | —        | ⏳     |
-| `balanzaEquilibra`      | `balanzaEquilibra/BalanzaEquilibraRenderer`           | —      | —        | ⏳     |
 | `cintaMetrica`          | `cintaMetrica/CintaMetricaRenderer`                   | —      | —        | ⏳     |
 | `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | —      | —        | ⏳     |
 | `cuerpos3d`             | `cuerpos3d/Cuerpos3DRenderer`                         | —      | —        | ⏳     |
@@ -134,6 +134,6 @@ inventario.
 | `simetria`              | `simetria/SimetriaRenderer`                           | —      | —        | ⏳     |
 | `laberintoMatematico2`  | comparte renderer con `laberintoMatematico`           | —      | —        | ⏳     |
 
-Las 28 actividades pendientes salen de 27 carpetas de motor: `laberintoMatematico2`
+Las 27 actividades pendientes salen de 27 carpetas de motor: `laberintoMatematico2`
 no tiene carpeta propia, el registro de Electron lo apunta al mismo
 `laberintoMatematico/LaberintoMatematicoRenderer`, y el inventario lo refleja igual.
