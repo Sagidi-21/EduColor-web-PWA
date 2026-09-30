@@ -130,6 +130,9 @@ const ElLitroScreen = lazy(() =>
 const ElKiloScreen = lazy(() =>
   import("./elKilo/ElKiloScreen").then((module) => ({ default: module.ElKiloScreen })),
 );
+const PoligonosScreen = lazy(() =>
+  import("./poligonos/PoligonosScreen").then((module) => ({ default: module.PoligonosScreen })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -377,6 +380,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <ElKiloScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "poligonos") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <PoligonosScreen {...props} />
       </Suspense>
     );
   }

@@ -26,10 +26,10 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 - **Fase activa:** 2 — Migración del catálogo matemático V1. La Fase 1 (modelo de
   contenido) está cerrada: 62 manifiestos, selector de actividades y el motor
   `comparison` como extra no acoplado al conteo.
-- **Estado de la Fase 2:** 32 de 62 actividades migradas y lanzables; 30
+- **Estado de la Fase 2:** 33 de 62 actividades migradas y lanzables; 29
   pendientes. El detalle por actividad, con núcleo, renderer y tests, está en el
   [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md); no se repite aquí.
-- **Siguiente motor:** `poligonos`, la primera fila sin ✅ del inventario. La
+- **Siguiente motor:** `balanza`, la primera fila sin ✅ del inventario. La
   regla para elegirlo está en la sección "Siguiente motor a migrar" de ese
   documento, y su prioridad la confirma el profesor de Matemáticas.
 - **Fase 5 (escritura de dígitos y reconocimiento local):** adelantada y
@@ -40,7 +40,7 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
   el dataset de evaluación, la matriz de confusión y el resto del bloque. Este
   documento decía antes que la Fase 5 estaba "completada", y no lo estaba.
 - **Lo que bloquea el cierre de la fase:** la validación pedagógica en pizarra. Las
-  32 actividades están técnicamente terminadas, pero eso no es lo mismo que
+  33 actividades están técnicamente terminadas, pero eso no es lo mismo que
   aprobadas: ninguna está cerrada pedagógicamente todavía.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
@@ -120,6 +120,6 @@ Al elegir una actividad del catálogo, el popup de selección de nivel se sustit
 - **Niveles mostrados:** los 8 niveles curriculares (`1-L1`..`2-L4`), filtrados según el curso activo del perfil de clase; si la actividad pertenece a un solo curso se limita a sus 4 niveles.
 - **Variantes de mascota:** `src/assets/mascota/variants/` incluye 21 variantes (`variant_1.webp`..`variant_21.webp`) y `getRandomMascotVariant()`, que elige una al azar en cada apertura para que la escena no sea siempre idéntica. La mochila ya va dibujada en la propia variante: `variant_1` es la imagen con la mochila abierta y las otras 20 son recortes de cuatro en cuatro. Las hojas de origen de los recortes se eliminaron el 2026-09-28 al quedar cubiertas por los recortes; siguen en el historial de git.
 - **Audio:** `src/shared/utils/audioSFX.ts` sintetiza los efectos con Web Audio API pura, sin dependencias externas ni ficheros de audio: `playBackpackOpenSFX()` (whoosh + brillo ascendente) y `playCardsBurstSFX()` (ráfaga de cartas). El contexto se crea de forma perezosa, se reanuda ante las políticas de autoplay y degrade silenciosamente si no hay `AudioContext`.
-- **Estado:** implementado y verificado. La suite completa está en verde (81 ficheros de test, 826 tests, medido el 2026-09-30; ver la tabla de verificación del [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md)), junto con lint, typecheck, build y formato Prettier. Queda pendiente la validación pedagógica del profesorado sobre la claridad de las cartas de nivel antes de darlo por cerrado.
+- **Estado:** implementado y verificado. La suite completa está en verde (83 ficheros de test, 856 tests, medido el 2026-09-30; ver la tabla de verificación del [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md)), junto con lint, typecheck, build y formato Prettier. Queda pendiente la validación pedagógica del profesorado sobre la claridad de las cartas de nivel antes de darlo por cerrado.
 
 - **Deuda abierta:** ninguna en esta feature. Los assets de mascota se optimizaron el 2026-09-28 con un criterio único WebP (calidad 82): las 32 tarjetas del cuestionario de 1376×768 a 640 px (21,1 MB → 1,02 MB) y las 21 variantes a 512 px (5,5 MB → 0,58 MB), además de borrar las hojas de origen y los duplicados. Las imágenes de `dist` pasan de 43,38 MB a 18,99 MB. Cerrado como `DT-012` en [DEUDA_TECNICA.md](DEUDA_TECNICA.md).
