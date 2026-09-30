@@ -8,6 +8,11 @@ Este documento desarrolla el [roadmap de ejecución](ROADMAP_DE_EJECUCION_DETALL
 - Cada cambio de lógica lleva test; cada cambio visual/táctil lleva prueba manual documentada.
 - No se copian archivos Electron sin revisar dependencias, licencia, tests y acoplamiento a `window.api`.
 - Antes de migrar un activo: copiarlo, identificar origen, versión y licencia/autoría, y anotar la trazabilidad.
+- Todo paso completado se marca con un único indicador, sin variantes de redacción:
+  - `✅ completado` — el paso está terminado y verificado.
+  - `🚧 parcial` — el paso arrancó o quedó a medias; el texto dice exactamente qué falta.
+  - `⏳ pendiente` — el paso no ha empezado.
+- En las listas numeradas de fase, el indicador sustituye a la coletilla `**Completado:**`; en las secciones de seguimiento por actividad, precede al verbo (`✅ completado`, `✅ completados`).
 
 ---
 
@@ -86,17 +91,21 @@ Añadir una actividad de ejemplo exclusivamente mediante motor + manifiesto, sin
 5. Geometría, medida, reloj, dinero y restantes comunes.
 6. Específicas de 1.º; después las específicas de 2.º priorizadas por el colegio.
 
-## Seguimiento actual — `ordenar`
+## Seguimiento de actividades migradas
 
-- **Pasos 1 y 2:** completados. Es una actividad compartida de 1.º/2.º y se
+Una subsección por actividad, en orden de migración. Cada paso lleva su indicador de estado según las convenciones de trabajo.
+
+### `ordenar`
+
+- **Pasos 1 y 2:** ✅ completados. Es una actividad compartida de 1.º/2.º y se
   auditó su motor Electron completo. No usa recursos externos ni APIs de
   Electron.
-- **Pasos 3 y 4:** completados. El generador determinista y el validador viven
+- **Pasos 3 y 4:** ✅ completados. El generador determinista y el validador viven
   en `src/core/activities/ordering.ts`; tres pruebas cubren semilla, límites,
   mezcla y respuesta correcta.
-- **Pasos 5 y 6:** completados. Reutiliza su manifiesto JSON ya validado y
+- **Pasos 5 y 6:** ✅ completados. Reutiliza su manifiesto JSON ya validado y
   dispone de renderer PWA táctil, accesible y registrado en el catálogo.
-- **Paso 7:** completado. Verificación manual realizada en escritorio (Chrome).
+- **Paso 7:** ✅ completado. Verificación manual realizada en escritorio (Chrome).
   Se identificaron y corrigieron tres problemas respecto al original Electron:
   (1) audio del vídeo de intro bloqueado por política de autoplay del navegador
   → se reproduce con audio tras el primer gesto del usuario (fallback a muted si
@@ -108,88 +117,78 @@ Añadir una actividad de ejemplo exclusivamente mediante motor + manifiesto, sin
   Audio API), y los botones "Reintentar" / "Siguiente →" del profesor aparecen
   solo en fallo. Contador 1 / 10 añadido al header. CI verde (typecheck +
   18/18 tests).
-- **Paso 8:** trazabilidad actualizada en
+- **Paso 8:** ✅ completado. Trazabilidad actualizada en
   `INVENTARIO_MIGRACION_ACTIVIDADES.md`; el cierre pedagógico queda pendiente
   del feedback de Matemáticas de 1.º y 2.º.
 
-## Comprobación de salida
+### `suma` / `resta`
 
-La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tiene test de núcleo y comprobación visual.
-
----
-
-## Seguimiento actual — `suma` / `resta`
-
-- **Pasos 1 y 2:** completados. Son actividades compartidas de 1.º/2.º dentro del
+- **Pasos 1 y 2:** ✅ completados. Son actividades compartidas de 1.º/2.º dentro del
   bloque unidad-2 (suma y resta). Se auditó el motor y generador del proyecto
   Electron completo: `engine.ts`, `SumaRenderer.tsx`, `RestaRenderer.tsx`,
   `OperationsRenderer.tsx`, `OperationsRenderer.css`, `operations.generator.ts`
   y `operations.generator.test.ts`. El motor usa objetos genéricos de
   `src/assets/objects/` (7 categorías) y no APIs de Electron.
-- **Pasos 3 y 4:** completados. El generador determinista y el validador viven
+- **Pasos 3 y 4:** ✅ completados. El generador determinista y el validador viven
   en `src/core/activities/operations.ts`; 22 tests cubren generación, rangos,
   respuesta correcta, pares únicos, reproducibilidad, validador y showImage para
   ambas operaciones y las 4 dificultades.
-- **Pasos 5 y 6:** completados. Los manifiestos JSON `suma.json` y `resta.json`
+- **Pasos 5 y 6:** ✅ completados. Los manifiestos JSON `suma.json` y `resta.json`
   ya estaban importados y validados. El renderer PWA `OperationsScreen.tsx`
   (con `SumaScreen`/`RestaScreen` como factories) dispone de layout vertical,
   numpad, modo canvas (DigitCell con TF.js), SummaryScreen, auto-avance 900 ms
   en acierto, retry en error, contador 1/10 en el header y toggle de modo
   escritura/teclado.
-- **Paso 7:** completado. Verificación manual en escritorio (Chrome) confirmó
+- **Paso 7:** 🚧 parcial. Verificación manual en escritorio (Chrome) confirmó
   paridad visual y de audio con Electron. CI verde (typecheck + 22/22 tests).
-  Pendiente validación en pizarra/tableta.
-- **Paso 8:** trazabilidad actualizada en `INVENTARIO_MIGRACION_ACTIVIDADES.md`;
+  Falta la validación en pizarra/tableta.
+- **Paso 8:** ✅ completado. Trazabilidad actualizada en `INVENTARIO_MIGRACION_ACTIVIDADES.md`;
   el cierre pedagógico queda pendiente del feedback de Matemáticas de 1.º y 2.º.
 
----
+### `igualdad`
 
-## Seguimiento actual — `igualdad`
-
-- **Pasos 1 y 2:** completados. Actividad compartida de 1.º/2.º dentro del
+- **Pasos 1 y 2:** ✅ completados. Actividad compartida de 1.º/2.º dentro del
   bloque unidad-3. Se auditó el motor del proyecto Electron completo.
   No usa recursos externos ni APIs de Electron.
-- **Pasos 3 y 4:** completados. El generador determinista y el validador viven
+- **Pasos 3 y 4:** ✅ completados. El generador determinista y el validador viven
   en `src/core/activities/igualdad.ts`; 16 tests cubren generación, rangos,
   estructura, matemáticas por tipo y validador. Se añadió restricción
   `alreadyFailed` para el control de reintentos y `imageUrl` vacío en nivel experto.
-- **Pasos 5 y 6:** completados. El manifiesto JSON `igualdad.json`
+- **Pasos 5 y 6:** ✅ completados. El manifiesto JSON `igualdad.json`
   ya estaba importado y validado. El renderer PWA `IgualdadScreen.tsx`
   (`.css`) dispone de tres tipos de ejercicio (resultado, sumando, descomposición),
   opciones con estados visuales, auto-avance 900 ms en acierto, retry en error,
   contador 1/10 en el header y sin dibujos de apoyo en nivel experto.
-- **Paso 7:** completado. CI verde (typecheck + 16/16 tests).
-- **Paso 8:** trazabilidad actualizada en `INVENTARIO_MIGRACION_ACTIVIDADES.md`.
+- **Paso 7:** ✅ completado. CI verde (typecheck + 16/16 tests).
+- **Paso 8:** ✅ completado. Trazabilidad actualizada en `INVENTARIO_MIGRACION_ACTIVIDADES.md`.
 
----
+### `counting`
 
-## Seguimiento actual — `counting`
-
-- **Pasos 1 y 2:** ✅ completado. Actividad compartida de 1.º/2.º con currículo de 8 niveles (4 por curso). Motor en `src/core/activities/counting.ts`. Tests actualizados y en verde (10/10 tests counting).
-- **Pasos 5 y 6:** ✅ completado. Renderer PWA `CountingScreen.tsx` con los siguientes modos de interacción implementados y verificados:
+- **Pasos 1 y 2:** ✅ completados. Actividad compartida de 1.º/2.º con currículo de 8 niveles (4 por curso).
+- **Pasos 3 y 4:** ✅ completados. Generador determinista y validador en
+  `src/core/activities/counting.ts`, con 10/10 tests en verde.
+- **Pasos 5 y 6:** ✅ completados. Renderer PWA `CountingScreen.tsx` con los siguientes modos de interacción implementados y verificados:
   - `TOUCH` (1-L1, 1-L2): toque individual de objetos
   - `GROUP` (1-L3): agrupación de decenas en contenedores
   - `FILL_TABLE` (1-L4, 2-L2): tabla posicional con cajas D+U o C+D+U, soporta numpad horizontal y modo canvas
   - `SELECT` (2-L1, 2-L3, 2-L4): selección de opción múltiple
 - **Distribuciones visuales implementadas:** `scattered-large`, `double-row`, `semi-dispersed-tens`, `bundles-tens-units`, `packages`, `mass-vs-blocks` (3 zonas C/D/U con etiquetas), `matrix-grid` (paquetes de 10 + unidades sueltas)
 - **Numpad horizontal:** variante `layout="horizontal"` añadida al componente `Numpad` para ganar espacio en pantalla en niveles con tabla posicional.
-- **Paso 7:** ✅ tests locales en verde. (2 tests de worktree heredado `.kilo` no afectan al código activo.)
-- **Paso 8:** ✅ docs actualizados en rama feature antes del merge.
+- **Paso 7:** ✅ completado. Tests locales en verde. (2 tests de worktree heredado `.kilo` no afectan al código activo.)
+- **Paso 8:** ✅ completado. Documentación actualizada en rama feature antes del merge.
 
----
+### `numeracion4059` / `numeracion6099` / `numeracion999`
 
-## Seguimiento actual — `numeracion4059` / `numeracion6099` / `numeracion999`
-
-- **Pasos 1 y 2:** completados. `numeracion4059` y `numeracion6099` son actividades
+- **Pasos 1 y 2:** ✅ completados. `numeracion4059` y `numeracion6099` son actividades
   compartidas de 1.º/2.º (bloque de numeración 40-59 y 60-99); `numeracion999`
   es específica de 2.º (descomposición CDU hasta 999). Los 3 núcleos ya estaban
   migrados con tests en `src/core/activities/{numeracion4059,numeracion6099,numeracion999}.ts`
   y sus CSS de renderer existían; faltaba cerrar la integración de pantalla y
   registro en el engine central.
-- **Pasos 3 y 4:** ya completados en iteración anterior. 11/12/13 tests
+- **Pasos 3 y 4:** ✅ completados en iteración anterior. 11/12/13 tests
   respectivamente cubren semilla, rangos, tipos de ejercicio, validador y
   respuesta correcta; CI verde.
-- **Pasos 5 y 6:** completados. Refactor de los 3 renderers:
+- **Pasos 5 y 6:** ✅ completados. Refactor de los 3 renderers:
   - `Numeracion4059Renderer.tsx` → `Numeracion4059Screen` (named export),
     sustitución de summary inline por `SummaryScreen`, reordenación del
     `footer` fuera del `stage`, import de su CSS, `WrongFeedback` compartido,
@@ -210,32 +209,30 @@ La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tie
     `numeracion1119Screen` y el resto del catálogo. El `engine-registry` ya
     los tenía marcados como `available` por lo que el routing funciona
     sin tocar navegación ni manifiestos.
-- **Paso 7:** completado. CI local en verde: tests de los 3 cores (72/72),
+- **Paso 7:** 🚧 parcial. CI local en verde: tests de los 3 cores (72/72),
   `npm run typecheck` OK, `npm run build` OK (los 3 CSS y los 3 JS chunks se
   empaquetan como chunks separados: `Numeracion4059Renderer-Bw09cmtU.css`,
   `Numeracion6099Renderer-DFub4OKZ.css`, `Numeracion999Renderer-CWo1QZIB.css`
   y sus bundles JS homólogos). Los 4 archivos tocados (`engine-screens.tsx` + 3
-  renderers) pasan `prettier --check` sin cambios. Pendiente validación manual
-  en pizarra/tableta y cierre pedagógico.
+  renderers) pasan `prettier --check` sin cambios. Falta la validación manual
+  en pizarra/tableta y el cierre pedagógico.
   _(Nota: 2 errores de lint preexistentes en `features/mascota/PortalTransition*.tsx`
   y 9 warnings de prettier preexistentes en archivos de portal/test son ajenos
   a este hito y no afectan a Matemáticas.)_
-- **Paso 8:** trazabilidad actualizada en `INVENTARIO_MIGRACION_ACTIVIDADES.md`
+- **Paso 8:** ✅ completado. Trazabilidad actualizada en `INVENTARIO_MIGRACION_ACTIVIDADES.md`
   (líneas 39-41 y 64): las 3 filas pasan de "renderer pendiente" a
   "✅ P2 migrada" con detalle de componentes, tests y validación manual pendiente.
 
----
+### `leftRight`
 
-## Seguimiento actual — `leftRight`
-
-- **Pasos 1 y 2:** completados. `leftRight` es una actividad compartida de 1.º/2.º
+- **Pasos 1 y 2:** ✅ completados. `leftRight` es una actividad compartida de 1.º/2.º
   (bloque lateralidad, primera actividad del bloque 5 del roadmap Fase 2). Se
   auditó el motor Electron completo: `engine.ts` con 350 líneas, `LeftRightRenderer.tsx`
   con 470 líneas, `LeftRightRenderer.css` con 306 líneas, `leftRight.generator.ts` y
   `leftRight.generator.test.ts`. Dependencias: `IMAGE_CATEGORIES`/`pickImage` (compartido)
   y `CHARACTER_IMAGES` (nuevo en PWA, pero existente en Electron). Motor NO usa APIs
   de Electron. Recursos de personaje ya presentes en `src/assets/izquierda-derecha/`.
-- **Pasos 3 y 4:** completados. Core puro en `src/core/activities/leftRight.ts`,
+- **Pasos 3 y 4:** ✅ completados. Core puro en `src/core/activities/leftRight.ts`,
   1:1 con la referencia. Nueva dependencia platform: `src/platform/characterImages.ts`
   (mismo patrón `import.meta.glob` que objectImages.ts, glob a `izquierda-derecha/`).
   22 tests Vitest en `leftRight.test.ts` cubren: 10 ejercicios por dificultad,
@@ -244,7 +241,7 @@ La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tie
   expert (char-click 1-4, char-drag-one 5-7, char-drag-both 8-10 con
   targetBox "both"), espejo perspectiva frente/espaldas, validateAnswer.
   Todos 22/22 tests verdes.
-- **Pasos 5 y 6:** completados. Renderer `LeftRightScreen` (named export, NO default)
+- **Pasos 5 y 6:** ✅ completados. Renderer `LeftRightScreen` (named export, NO default)
   con todas las props `EngineScreenProps` pasadas a `ActivityHeader`
   (`className`, `mascotUrl`, `difficultyStars`, `gradeTitle`, `unitTitle`, `progress`).
   Sustituciones del mapeo AGENT_RULES Paso 2:
@@ -260,10 +257,10 @@ La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tie
   rojo #dc2626, background #f0fdf4, animación `lr-pop`, clases `lr__char-box`
   dashed/solid correct/wrong, `lr__drag-obj` absolute con `touch-action: none`.
   Añadido `@media` responsive móvil.
-- **Paso 7:** CI local a medio ejecutar (pendiente del Paso 7 completo).
-  Prettier, lint, typecheck, tests 22/22, build y chunks lazy separados.
-  Pendiente validación manual en pizarra/tableta y cierre pedagógico.
-- **Paso 8:** trazabilidad actualizada en `INVENTARIO_MIGRACION_ACTIVIDADES.md`
+- **Paso 7:** 🚧 parcial. Falta ejecutar el CI local completo (prettier, lint,
+  typecheck, tests 22/22, build y chunks lazy separados); queda pendiente la
+  validación manual en pizarra/tableta y el cierre pedagógico.
+- **Paso 8:** ✅ completado. Trazabilidad actualizada en `INVENTARIO_MIGRACION_ACTIVIDADES.md`
   (fila `leftRight`): pasa de "P2 pendiente" a "✅ P2 migrada".
   Registro en `engine-registry.ts` (añadido `leftRight` al Set `migratedEngines`)
   y `engine-screens.tsx` (lazy + Suspense con fallback estándar). El manifiesto
