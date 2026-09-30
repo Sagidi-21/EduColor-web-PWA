@@ -294,7 +294,7 @@ Antes de dar una migración de renderer por terminada, marca:
 - [ ] He añadido `import "../operations/OperationsScreen.css"` si el renderer usa las clases `.ops__*`.
 - [ ] Los tipos de `EngineScreenProps` (`activity`, `difficulty`, `seed`, `onExit`, `gradeTitle`, `className`, `mascotUrl`, `difficultyStars`) se pasan todos al `ActivityHeader` cuando aplican.
 - [ ] `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test` y `npm run build` pasan.
-- [ ] Si era una actividad del inventario, he actualizado `docs/INVENTARIO_MIGRACION_ACTIVIDADES.md` y `docs/EJECUCION_PASO_A_PASO.md`.
+- [ ] Si era una actividad del inventario, he actualizado `docs/INVENTARIO_MIGRACION_ACTIVIDADES.md` y he añadido su fila a la tabla de verificación. **No he tocado `EJECUCION_PASO_A_PASO.md`**: su sección de seguimiento es una bitácora histórica y no lleva el estado (ver §7).
 
 ### Paso 5 — Si en esta migración has unificado algo, documéntalo [V1] · CRÍTICA
 
@@ -323,3 +323,35 @@ stderr** si aparece un numpad local, unos botones propios, una pantalla de nivel
 propia o una guarda `if (!current) return null`. No rompe la build: si salta, es
 para que lo valores con el profesor, y si la excepción es legítima se documenta en
 `COMPONENTES_COMPARTIDOS.md` y se añade a `EXCEPCIONES` en ese test.
+
+## 7. Cada dato de estado tiene un solo dueño [V1] · CRÍTICA
+
+Hasta el 2026-09-30, trece documentos de `docs/` llevaban cada uno su propia lista
+de actividades migradas y sus propias cifras. Se contradijeron: `MIGRACION_MAP`
+daba 30 motores ya migrados por pendientes, `ESTADO_DEL_PROYECTO` daba 10 y una
+suite de 1157 tests que no existía, y `ROADMAP_DE_EJECUCION_DETALLADO` daba 26,
+con tres cifras distintas para el mismo hito y en diez líneas seguidas. No fue un
+descuido de un documento: fue que trece sitios-write del mismo dato no pueden
+mantenerse en pie.
+
+**Regla:** un dato se escribe en un único documento y el resto **enlaza**. No
+copies una lista de actividades, un recuento de tests, un número de renderers ni
+un estado de fase de un documento a otro. Si el destino necesita ese dato, pon un
+enlace y la fecha de la medición.
+
+| Dato                                               | Dueño                                                        | Lo demás                                                     |
+| :------------------------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
+| Qué actividades están migradas y cuál va siguiente | `INVENTARIO_MIGRACION_ACTIVIDADES.md`                        | Enlazan                                                      |
+| Dónde acabó cada fichero de Electron               | `MIGRACION_MAP.md`                                           | Enlazan                                                      |
+| Cifras de tests, ficheros y cobertura vigentes     | `INVENTARIO_MIGRACION_ACTIVIDADES.md`, tabla de verificación | Enlazan; los registros históricos citan la suya con su fecha |
+| Estado de la fase activa                           | `ESTADO_DEL_PROYECTO.md`                                     | Enlazan                                                      |
+| Por qué se decidió algo                            | `DECISIONES.md`                                              | Enlazan                                                      |
+| Deuda técnica abierta                              | `DEUDA_TECNICA.md`                                           | Enlazan                                                      |
+| Cómo se migra una actividad                        | `EJECUCION_PASO_A_PASO.md` y este documento                  | Enlazan                                                      |
+| A dónde va el producto                             | `ROADMAP_MAESTRO.md`                                         | No lleva estado                                              |
+
+Esto no es una recomendación de estilo: `src/manifests/docsConsistency.test.ts`
+deriva el estado desde `src/core/content/engine-registry.ts` y **falla** si un ✅
+del inventario no corresponde a un motor lanzable, si un motor lanzable no tiene
+núcleo, renderer y tests, o si otro documento afirma lo contrario. Si tocas el
+estado, ese test te va a decir que no.

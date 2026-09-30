@@ -1,6 +1,6 @@
 # Roadmap de ejecución detallado — EduColor web PWA
 
-**Fecha:** 2026-09-07  
+**Fecha:** 2026-09-07 · **Estado verificado contra el código:** 2026-09-30  
 **Alcance V1:** Matemáticas de 1.º y 2.º, profesorado, pizarra digital, fichas y uso offline.  
 **Regla principal:** conservar la experiencia visual, los recursos y el dominio
 educativo de Electron; reconstruir solo las integraciones incompatibles con la
@@ -8,6 +8,14 @@ web (IPC y empaquetado Windows).
 
 > Este documento es el índice de fases. Para el checklist operativo completo de
 > cada una, consultar [EJECUCION_PASO_A_PASO.md](EJECUCION_PASO_A_PASO.md).
+>
+> **Este documento no lleva el estado de las actividades.** El único sitio que
+> dice cuáles están migradas es
+> [INVENTARIO_MIGRACION_ACTIVIDADES.md](INVENTARIO_MIGRACION_ACTIVIDADES.md), que
+> lo deriva de `src/core/content/engine-registry.ts` y se comprueba en cada
+> `npm test`. La sección "Evidencia de avance" de la Fase 2 se limitaba a copiar
+> esa lista a mano y por eso quedó en 26 de 32 actividades; desde 2026-09-30 no
+> la vuelve a copiar.
 >
 > ⚠️ **ATENCIÓN AGENTES**: Debéis cumplir estrictamente las reglas definidas en
 > [AGENT_RULES.md](AGENT_RULES.md) antes de proponer o ejecutar cualquier cambio.
@@ -136,43 +144,31 @@ Trasladar gradualmente las actividades con mayor valor pedagógico, sin una migr
 
 ## Evidencia de avance
 
-- `comparison` y `ordenar` están migradas técnicamente: cada una tiene motor
-  PWA independiente, renderer registrado y pruebas de núcleo.
-- `comparison` cuenta con la pantalla de resumen compartida y paridad con el
-  comportamiento visual y de audio de Electron.
-- `ordenar` conserva la configuración original de 10 ejercicios y sus rangos
-  por dificultad.
-- **Ola P1/P2 completa:** `counting`, `comparison`, `ordenar`, `seriesNumericas`,
-  `vecinosNumero`, `numeracion1119`, `suma`, `resta`, `igualdad`, `problemas`,
-  `relacionar`, `tresSumandos`, `leftRight`, `numeracion4059`, `numeracion6099`,
-  `numeracion999` — todos con motor, renderer, SummaryScreen, audio y tests.
-- **Algoritmos en columna (2026-09-25):** migradas las 4 actividades de algoritmo
-  vertical:
-  - `algoritmoVertical` + `restaColumna` → renderer compartido `AlgoritmoColumnaScreen`,
-    9 tests cada una.
-  - `tresSumandosColumna` → renderer propio `TresSumandosColumnaScreen`, 8 tests.
-  - `sumaLlevando` → renderer propio `SumaLlevandoScreen` con mecánica de dígito
-    "llevar" (3 pasos: U → carry → D), 6 tests.
-  - `relacionSumaResta` → renderer propio `RelacionSumaRestaScreen` con 3 ecuaciones secuenciales, apoyo visual de puntos, 21 tests.
-  - `repartoIgual` → renderer propio `RepartoIgualScreen` con visualización de agrupaciones y animaciones, 5 tests.
-  - Los 5 manifiestos existentes con `status: "available"` y registro lazy en
-    `engine-screens.tsx`.
-- **Tabla numérica y tipos de línea (2026-09-28):** `tablaNumerica` cierra el
-  bloque de valor posicional del punto 2 de la prioridad de migración. Motor
-  propio (`src/core/activities/tablaNumerica.ts`, 12 tests) y renderer
-  `TablaNumericaScreen` con rejilla de 100 casillas, `Numpad`, `LazyDigitCell`,
-  `InputModeToggle`, `WrongFeedback` y `SummaryScreen`. Al portar se corrigió un
-  bucle infinito del motor original: en `hard` fijaba `isDecenas = false`, con
-  solo 9 reglas posibles para 10 ejercicios. En la misma tanda se migró
-  `lineTypes` (motor con 9 tests y renderer `LineTypesScreen` con las 7 clases
-  de línea dibujadas en SVG), que estaba en la lista como generador
-  "Por localizar". En la misma tanda se migró `capacidad` (motor con 13 tests
-  y renderer `CapacidadScreen` con recipientes y vasos dibujados en CSS), que
-  también figuraba como generador "Por localizar", y `ordinales` (motor con 15
-  tests y renderer `OrdinalesScreen` con la fila de objetos y las 3 mecánicas de identificación, posición y conteo desde la derecha).
+**El detalle de qué está migrado está en
+[INVENTARIO_MIGRACION_ACTIVIDADES.md](INVENTARIO_MIGRACION_ACTIVIDADES.md),** que
+es la fuente de verdad y se verifica contra `src/core/content/engine-registry.ts`.
+Verificado el 2026-09-30: **32 de 62 actividades migradas y lanzables**, con
+núcleo, renderer y tests, y 30 pendientes.
+
+Lo que sí pertenece a este documento es el cierre de la fase, no el recuento:
+
+- Las 32 actividades migradas están técnicamente terminadas: núcleo puro en
+  `src/core/activities/`, renderer en `src/features/matematicas/`, registro lazy
+  en `engine-screens.tsx` y `status: "available"` en `engine-registry.ts`.
+  Comparten `ActivityHeader`, `SummaryScreen`, `ActionButtons` y audio unificado.
+- Quedan 30 pendientes, de las que 12 son P2 y son las candidatas naturales a
+  seguir. La primera es `poligonos`; la lista completa, con la prioridad que le
+  fijó el profesor, está en el inventario.
+- **Correcciones de bug heredadas del motor de Electron**, registradas una a una
+  en [MIGRACION_CHANGELOG.md](MIGRACION_CHANGELOG.md): bucle infinito de
+  `tablaNumerica` en `hard` (9 reglas posibles para 10 ejercicios), deduplicación
+  de `easy` en `parImpar` que devolvía 9 ejercicios, deduplicación con `&&` en
+  `elLitro` y `elKilo` que podía devolver menos de 10, y el resaltado de la
+  respuesta correcta en `elKilo` tras fallar, que entregaba la solución.
 - La validación manual en escritorio, tableta y pizarra, junto
   con el feedback docente, sigue siendo requisito antes de declarar cada
-  actividad cerrada pedagógicamente.
+  actividad cerrada pedagógicamente. **Ninguna de las 32 la tiene todavía**, de
+  modo que la Fase 2 no está cerrada aunque el catálogo técnico esté completo.
 
 ---
 

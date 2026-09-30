@@ -85,9 +85,22 @@ paneles hermanos del `ViewTransition`.
 
 `counting` demuestra el contrato: generador determinista, validador, vista React, PWA y prueba. Se inspira en el motor Electron, pero no importa Electron.
 
+Ya no es el único: 32 actividades siguen este mismo contrato. Lo que sigue es su
+número exacto, en
+[INVENTARIO_MIGRACION_ACTIVIDADES.md](INVENTARIO_MIGRACION_ACTIVIDADES.md).
+
 ## Siguientes decisiones
 
-1. Definir manifiestos de actividad y migrar el registro manual.
-2. Validar Pointer Events y reconocimiento en la pizarra real.
-3. Acordar con colegio/DPD el modelo de datos y despliegue.
+Estas cuatro se escribieron al arrancar el proyecto, en la Fase 0. Su estado:
+
+1. ~~Definir manifiestos de actividad y migrar el registro manual.~~ **Hecho en
+   la Fase 1:** los 62 manifiestos están en `src/manifests/activities/` y validados
+   contra `schema/activity-manifest.schema.json` con Ajv. El registro manual que
+   quedaba por sustituir es el de los motores migrados, en
+   `src/core/content/engine-registry.ts`, que hoy es un conjunto de 32 ids.
+2. Validar Pointer Events y reconocimiento en la pizarra real. **Pendente**, y es
+   lo que bloquea el cierre pedagógico de la Fase 2: las 32 actividades migradas
+   esperan la validación en pizarra del profesorado.
+3. Acordar con colegio/DPD el modelo de datos y despliegue. **Pendiente.**
 4. Implementar autenticación y autorización antes de datos de alumnado.
+   **Pendiente.**

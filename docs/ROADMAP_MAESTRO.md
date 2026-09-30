@@ -2044,6 +2044,21 @@ Los pasos 1–239 del roadmap original se mantienen íntegros. Los bloques añad
 
 # Roadmap maestro — Plataforma educativa de Matemáticas para Primaria
 
+> ## Aviso: este documento es visión, no estado
+>
+> El roadmap de producto y arquitectura, con sus 239 pasos y sus criterios de
+> aceptación, se conserva íntegro. **No lleva el estado de nada**, y su numeración
+> de fases no coincide con la de
+> [ROADMAP_DE_EJECUCION_DETALLADO.md](ROADMAP_DE_EJECUCION_DETALLADO.md): aquí
+> "Fase 2" es Golden Master + paridad y allí es la migración del catálogo. Son dos
+> listas distintas y no se mezclan.
+>
+> Para saber qué está hecho, el único sitio es
+> [INVENTARIO_MIGRACION_ACTIVIDADES.md](INVENTARIO_MIGRACION_ACTIVIDADES.md). La
+> auditoría de abajo se escribió el 2026-09-07 y describe el punto de partida; su
+> apartado "Resumen ejecutivo" se corrige donde afirmaba que algo no existía y ya
+> existe.
+
 > ## Auditoría de reutilización desde EduColor original (Colegio)
 >
 > **Auditado el:** 2026-09-07 · **Origen:** `../Colegio` (versión declarada 0.2.10).
@@ -2076,8 +2091,15 @@ Los pasos 1–239 del roadmap original se mantienen íntegros. Los bloques añad
 >   y latencia en la pizarra real.
 > - ✅ El generador de fichas DOCX está operativo y dispone de pruebas. 🟡 Para
 >   cumplir este roadmap hay que añadir PDF y una plantilla A4 verificable.
-> - ❌ Login, API, D1/R2, PWA/service worker, multi-colegio, alumnado,
->   asignaciones, analítica, CI/CD y seguridad server-side no existen aún.
+> - ❌~~Login, API, D1/R2, PWA/service worker, multi-colegio, alumnado,
+>   asignaciones, analítica, CI/CD y seguridad server-side no existen aún.~~
+>   **Corregido el 2026-09-30.** Esa línea era cierta para el proyecto original y
+>   dejó de serlo: la PWA, el service worker (`public/sw.js`) y el workflow de
+>   CI/CD ya existen. Lo que **sigue sin existir** es el resto: login y
+>   autenticación, API propia del producto, D1/R2, multi-colegio, modelo de
+>   alumnado, asignaciones y analítica. Existe un backend Express
+>   (`src/server/`) pero es una isla para el Compañero IA, no la API del
+>   producto: no tiene identidad ni datos de alumnos.
 >
 > ### Inventario marcado por bloque
 >

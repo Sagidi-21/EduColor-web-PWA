@@ -153,7 +153,11 @@ la reimplementes ni la pintes en un renderer.
   volver al catálogo.
 
 **Nunca** devuelvas `null` para "no hay nada que pintar" en un renderer: es
-literalmente la pantalla en blanco que nos pasó.
+literalmente la pantalla en blanco que nos pasó. Usa `NoExerciseNotice`.
+
+**Salvedad para código ya escrito:** hay 15 ficheros que sí lo hacen y están
+aceptados uno a uno en [Excepciones aceptadas](#excepciones-aceptadas), con su
+motivo. La regla es para lo nuevo: si añades un renderer, no copies esa guarda.
 
 ## 10. Layout base — `OperationsScreen.css`
 
@@ -213,9 +217,10 @@ sería un error de verdad.
 
 ## Excepciones aceptadas
 
-El vigilante avisa de 15 guardas `if (!current) return null` que existen en otros
-tantos renderers. **No son un fallo** y están en la lista `EXCEPCIONES` del test, con
-su motivo escrito. Se aceptan por esto:
+El vigilante avisa de las guardas `if (!current) return null` que existen en 15
+ficheros: 14 renderers y `ExerciseView`. **No son un fallo** y están en la lista
+`EXCEPCIONES.returnNull` del test, con su motivo escrito al lado. Se aceptan por
+esto:
 
 - El avance de la sesión comprueba `if (next >= total)` y, en vez de avanzar, muestra
   el resumen. El contador nunca pasa del último ejercicio, así que `current` nunca es
@@ -223,12 +228,11 @@ su motivo escrito. Se aceptan por esto:
 - Como el código funciona, no se toca: AGENT_RULES §4 dice que un refactor que cambie
   el resultado educativo no es aceptable, y aquí no hay ningún resultado que mejorar.
 
-Afecta a `AlgoritmoColumnaScreen`, `IgualdadScreen`, `LeftRightScreen`,
+Afecta a 14 renderers: `AlgoritmoColumnaScreen`, `IgualdadScreen`, `LeftRightScreen`,
 `ProblemaScreen`, `RectaNumericaScreen`, `RelacionarScreen`, `RelacionSumaRestaScreen`,
 `RepartoIgualScreen`, `ShapesScreen`, `SumaLlevandoScreen`, `TresSumandosScreen`,
-`TresSumandosColumnaScreen`, `VecinosScreen` y `WeekDaysScreen`.
-
-`ExerciseView` va aparte porque el motivo es otro: ahí la sesión viene de un contexto
+`TresSumandosColumnaScreen`, `VecinosScreen` y `WeekDaysScreen`. Más
+`ExerciseView`, que va aparte porque el motivo es otro: ahí la sesión viene de un contexto
 de React, no de un índice. Tampoco se dispara hoy, porque la vista de ejercicio solo se
 monta tras pasar por el catálogo, que es quien crea la sesión. **Es la más frágil de
 las dos** y la primera candidata a pasar a `NoExerciseNotice` cuando se toque ese

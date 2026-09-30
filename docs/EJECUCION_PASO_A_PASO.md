@@ -2,6 +2,20 @@
 
 Este documento desarrolla el [roadmap de ejecución](ROADMAP_DE_EJECUCION_DETALLADO.md). No se empieza una fase hasta cumplir sus dependencias y no se marca como cerrada sin su validación.
 
+**Qué es este documento: el método.** Los ocho pasos de cada fase y lo que exige
+cada uno. **Qué no es: el estado.** Las actividades ya migradas están en
+[INVENTARIO_MIGRACION_ACTIVIDADES.md](INVENTARIO_MIGRACION_ACTIVIDADES.md), que
+deriva su estado de `src/core/content/engine-registry.ts` y se comprueba en cada
+`npm test`. La sección "Seguimiento de actividades migradas" es una **bitácora
+histórica**: describe cómo se migraron las seis primeras y se conserva por
+auditoría, no porque sea el estado actual. Las 26 restantes se migraron siguiendo
+los mismos ocho pasos y están registradas en
+[MIGRACION_CHANGELOG.md](MIGRACION_CHANGELOG.md), una fila por divergences y por
+corrección de bug.
+
+Este fichero se revisó el 2026-09-30. No contiene ninguna fecha en su propio
+cuerpo, y por eso los hitos que sí tienen fecha viven en el changelog, no aquí.
+
 ## Convenciones de trabajo
 
 - Una tarea se completa en una rama y pull request propios.
@@ -13,6 +27,10 @@ Este documento desarrolla el [roadmap de ejecución](ROADMAP_DE_EJECUCION_DETALL
   - `🚧 parcial` — el paso arrancó o quedó a medias; el texto dice exactamente qué falta.
   - `⏳ pendiente` — el paso no ha empezado.
 - En las listas numeradas de fase, el indicador sustituye a la coletilla `**Completado:**`; en las secciones de seguimiento por actividad, precede al verbo (`✅ completado`, `✅ completados`).
+- **Las cifras de tests que aparecen más abajo son de la bitácora, en el momento
+  en que se escribió cada entrada, y a veces no coinciden con las actuales.** No
+  las actualices una a una: las cifras vigentes están en la tabla de verificación
+  del inventario, y se miden con `npm test`.
 
 ---
 
@@ -91,9 +109,21 @@ Añadir una actividad de ejemplo exclusivamente mediante motor + manifiesto, sin
 5. Geometría, medida, reloj, dinero y restantes comunes.
 6. Específicas de 1.º; después las específicas de 2.º priorizadas por el colegio.
 
-## Seguimiento de actividades migradas
+## Seguimiento de actividades migradas (bitácora histórica)
 
 Una subsección por actividad, en orden de migración. Cada paso lleva su indicador de estado según las convenciones de trabajo.
+
+**Cubre solo las seis primeras**, las migradas entre la Fase 0 y el 2026-09-25. Las
+26 siguientes no tienen subsección aquí: se registran en el
+[MIGRACION_CHANGELOG.md](MIGRACION_CHANGELOG.md) y su estado actual está en el
+inventario. Estas entradas se conservan tal como se escribieron, con dos
+advertencias:
+
+- **Los componentes que se citan pueden ya no existir.** Mencionan
+  `WrongFeedback`, que D-018 borró al unificarlo con `ActionButtons`. Es un
+  registro de lo que se hizo en su día, no del código actual.
+- **Las cifras de tests son de su momento.** No se han recontado; las vigentes
+  están en la tabla de verificación del inventario.
 
 ### `ordenar`
 
@@ -116,7 +146,8 @@ Una subsección por actividad, en orden de migración. Cada paso lleva su indica
   debajo, hay avance automático a 900 ms en acierto con piribip sintético (Web
   Audio API), y los botones "Reintentar" / "Siguiente →" del profesor aparecen
   solo en fallo. Contador 1 / 10 añadido al header. CI verde (typecheck +
-  18/18 tests).
+  18/18 tests, de los que 3 son del núcleo: ver `ordering.test.ts` y
+  `OrderingScreen.test.tsx` en la tabla de verificación del inventario).
 - **Paso 8:** ✅ completado. Trazabilidad actualizada en
   `INVENTARIO_MIGRACION_ACTIVIDADES.md`; el cierre pedagógico queda pendiente
   del feedback de Matemáticas de 1.º y 2.º.
@@ -209,7 +240,8 @@ Una subsección por actividad, en orden de migración. Cada paso lleva su indica
     `numeracion1119Screen` y el resto del catálogo. El `engine-registry` ya
     los tenía marcados como `available` por lo que el routing funciona
     sin tocar navegación ni manifiestos.
-- **Paso 7:** 🚧 parcial. CI local en verde: tests de los 3 cores (72/72),
+- **Paso 7:** 🚧 parcial. CI local en verde: los 3 cores con 11, 12 y 13 tests de
+  núcleo (36 en total; la entrada decía antes "72/72", que duplicaba la cifra),
   `npm run typecheck` OK, `npm run build` OK (los 3 CSS y los 3 JS chunks se
   empaquetan como chunks separados: `Numeracion4059Renderer-Bw09cmtU.css`,
   `Numeracion6099Renderer-DFub4OKZ.css`, `Numeracion999Renderer-CWo1QZIB.css`
