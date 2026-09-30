@@ -26,10 +26,10 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 - **Fase activa:** 2 — Migración del catálogo matemático V1. La Fase 1 (modelo de
   contenido) está cerrada: 62 manifiestos, selector de actividades y el motor
   `comparison` como extra no acoplado al conteo.
-- **Estado de la Fase 2:** 33 de 62 actividades migradas y lanzables; 29
+- **Estado de la Fase 2:** 34 de 62 actividades migradas y lanzables; 28
   pendientes. El detalle por actividad, con núcleo, renderer y tests, está en el
   [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md); no se repite aquí.
-- **Siguiente motor:** `balanza`, la primera fila sin ✅ del inventario. La
+- **Siguiente motor:** `balanzaEquilibra`, la primera fila sin ✅ del inventario. La
   regla para elegirlo está en la sección "Siguiente motor a migrar" de ese
   documento, y su prioridad la confirma el profesor de Matemáticas.
 - **Fase 5 (escritura de dígitos y reconocimiento local):** adelantada y
@@ -40,7 +40,7 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
   el dataset de evaluación, la matriz de confusión y el resto del bloque. Este
   documento decía antes que la Fase 5 estaba "completada", y no lo estaba.
 - **Lo que bloquea el cierre de la fase:** la validación pedagógica en pizarra. Las
-  33 actividades están técnicamente terminadas, pero eso no es lo mismo que
+  34 actividades están técnicamente terminadas, pero eso no es lo mismo que
   aprobadas: ninguna está cerrada pedagógicamente todavía.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.

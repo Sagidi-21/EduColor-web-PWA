@@ -42,7 +42,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `features/splash/SplashScreen.tsx`                            | `src/features/splash/SplashScreen.tsx`                                    | Migrado                                       |
 | `features/home/HomeScreen.tsx`                                | `src/features/home/HomeScreen.tsx`                                        | Migrado                                       |
 
-## Actividades migradas (32 de 62)
+## Actividades migradas (34 de 62)
 
 `Estado` refleja `getEngineRegistration()` en `src/core/content/engine-registry.ts`.
 
@@ -80,6 +80,8 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `parImpar`            | `parImpar/ParImparRenderer`                       | `parImpar.ts`                    | `parImpar/ParImparScreen.tsx`                              | ✅     |
 | `elLitro`             | `elLitro/ElLitroRenderer`                         | `elLitro.ts`                     | `elLitro/ElLitroScreen.tsx`                                | ✅     |
 | `elKilo`              | `elKilo/ElKiloRenderer`                           | `elKilo.ts`                      | `elKilo/ElKiloScreen.tsx`                                  | ✅     |
+| `poligonos`           | `poligonos/PoligonosRenderer`                     | `poligonos.ts`                   | `poligonos/PoligonosScreen.tsx`                            | ✅     |
+| `balanza`             | `balanza/BalanzaRenderer`                         | `balanza.ts`                     | `balanza/BalanzaScreen.tsx`                                | ✅     |
 
 Tres detalles de este bloque que sorprenden al leerlo y conviene no volver a
 "arreglar" sin saber lo que hacen:
@@ -91,49 +93,47 @@ Tres detalles de este bloque que sorprenden al leerlo y conviene no volver a
 - `ordenar`, `seriesNumericas` y `vecinosNumero` no conservan su nombre: viven en
   `ordering.ts`, `series.ts` y `vecinos.ts`.
 - `algoritmoVertical` y `restaColumna` tienen núcleo propio pero comparten
-  renderer. Por eso hay 32 motores, 31 ficheros de núcleo para ellos y 30
+  renderer. Por eso hay 34 motores, 33 ficheros de núcleo para ellos y 32
   renderers de actividad.
 
-## Actividades pendientes (30 de 62)
+## Actividades pendientes (28 de 62)
 
 Existe el motor en `electron-reference/Colegio/src/renderer/src/core/engines/`,
 pero no hay ni núcleo ni renderer en la PWA, y el registro los da como `pending`,
 de modo que el catálogo no deja lanzarlas. La prioridad de cada una está en el
 inventario.
 
-| `engineId`              | Motor Electron                                        | Núcleo         | Renderer                        | Estado |
-| :---------------------- | :---------------------------------------------------- | :------------- | :------------------------------ | :----- |
-| `abaco3cifras`          | `abaco3cifras/Abaco3CifrasRenderer`                   | —              | —                               | ⏳     |
-| `algoritmo3cifras`      | `algoritmo3cifras/Algoritmo3CifrasRenderer`           | —              | —                               | ⏳     |
-| `amigos10`              | `amigos10/Amigos10Renderer`                           | —              | —                               | ⏳     |
-| `balanza`               | `balanza/BalanzaRenderer`                             | —              | —                               | ⏳     |
-| `balanzaEquilibra`      | `balanzaEquilibra/BalanzaEquilibraRenderer`           | —              | —                               | ⏳     |
-| `cintaMetrica`          | `cintaMetrica/CintaMetricaRenderer`                   | —              | —                               | ⏳     |
-| `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | —              | —                               | ⏳     |
-| `cuerpos3d`             | `cuerpos3d/Cuerpos3DRenderer`                         | —              | —                               | ⏳     |
-| `datosInnecesarios`     | `datosInnecesarios/DatosInnecesariosRenderer`         | —              | —                               | ⏳     |
-| `dobleYMitad`           | `dobleYMitad/DobleYMitadRenderer`                     | —              | —                               | ⏳     |
-| `graficoBarras`         | `graficoBarras/GraficoBarrasRenderer`                 | —              | —                               | ⏳     |
-| `intervalosTiempo`      | `intervalosTiempo/IntervalosTiempoRenderer`           | —              | —                               | ⏳     |
-| `inventarProblema`      | `inventarProblema/InventarProblemaRenderer`           | —              | —                               | ⏳     |
-| `laberintoMatematico`   | `laberintoMatematico/LaberintoMatematicoRenderer`     | —              | —                               | ⏳     |
-| `lecturaNumeros`        | `lecturaNumeros/LecturaNumerosRenderer`               | —              | —                               | ⏳     |
-| `menuCafeteria`         | `menuCafeteria/MenuCafeteriaRenderer`                 | —              | —                               | ⏳     |
-| `monedasBilletes`       | `monedasBilletes/MonedasRenderer`                     | —              | —                               | ⏳     |
-| `multiplicacion`        | `multiplicacion/MultiplicacionRenderer`               | —              | —                               | ⏳     |
-| `poligonos`             | `poligonos/PoligonosRenderer`                         | `poligonos.ts` | `poligonos/PoligonosScreen.tsx` | ✅     |
-| `posicionesAula`        | `posicionesAula/PosicionesAulaRenderer`               | —              | —                               | ⏳     |
-| `probabilidad`          | `probabilidad/ProbabilidadRenderer`                   | —              | —                               | ⏳     |
-| `problemas2pasos`       | `problemas2pasos/Problemas2PasosRenderer`             | —              | —                               | ⏳     |
-| `redondeo`              | `redondeo/RedondeoRenderer`                           | —              | —                               | ⏳     |
-| `relacionarCantidades`  | `relacionarCantidades/RelacionarCantidadesRenderer`   | —              | —                               | ⏳     |
-| `reloj`                 | `reloj/RelojRenderer`                                 | —              | —                               | ⏳     |
-| `relojPonerHora`        | `relojPonerHora/RelojPonerHoraRenderer`               | —              | —                               | ⏳     |
-| `rutaCuadricula`        | `rutaCuadricula/RutaCuadriculaRenderer`               | —              | —                               | ⏳     |
-| `series3cifras`         | `series3cifras/Series3CifrasRenderer`                 | —              | —                               | ⏳     |
-| `simetria`              | `simetria/SimetriaRenderer`                           | —              | —                               | ⏳     |
-| `laberintoMatematico2`  | comparte renderer con `laberintoMatematico`           | —              | —                               | ⏳     |
+| `engineId`              | Motor Electron                                        | Núcleo | Renderer | Estado |
+| :---------------------- | :---------------------------------------------------- | :----- | :------- | :----- |
+| `abaco3cifras`          | `abaco3cifras/Abaco3CifrasRenderer`                   | —      | —        | ⏳     |
+| `algoritmo3cifras`      | `algoritmo3cifras/Algoritmo3CifrasRenderer`           | —      | —        | ⏳     |
+| `amigos10`              | `amigos10/Amigos10Renderer`                           | —      | —        | ⏳     |
+| `balanzaEquilibra`      | `balanzaEquilibra/BalanzaEquilibraRenderer`           | —      | —        | ⏳     |
+| `cintaMetrica`          | `cintaMetrica/CintaMetricaRenderer`                   | —      | —        | ⏳     |
+| `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | —      | —        | ⏳     |
+| `cuerpos3d`             | `cuerpos3d/Cuerpos3DRenderer`                         | —      | —        | ⏳     |
+| `datosInnecesarios`     | `datosInnecesarios/DatosInnecesariosRenderer`         | —      | —        | ⏳     |
+| `dobleYMitad`           | `dobleYMitad/DobleYMitadRenderer`                     | —      | —        | ⏳     |
+| `graficoBarras`         | `graficoBarras/GraficoBarrasRenderer`                 | —      | —        | ⏳     |
+| `intervalosTiempo`      | `intervalosTiempo/IntervalosTiempoRenderer`           | —      | —        | ⏳     |
+| `inventarProblema`      | `inventarProblema/InventarProblemaRenderer`           | —      | —        | ⏳     |
+| `laberintoMatematico`   | `laberintoMatematico/LaberintoMatematicoRenderer`     | —      | —        | ⏳     |
+| `lecturaNumeros`        | `lecturaNumeros/LecturaNumerosRenderer`               | —      | —        | ⏳     |
+| `menuCafeteria`         | `menuCafeteria/MenuCafeteriaRenderer`                 | —      | —        | ⏳     |
+| `monedasBilletes`       | `monedasBilletes/MonedasRenderer`                     | —      | —        | ⏳     |
+| `multiplicacion`        | `multiplicacion/MultiplicacionRenderer`               | —      | —        | ⏳     |
+| `posicionesAula`        | `posicionesAula/PosicionesAulaRenderer`               | —      | —        | ⏳     |
+| `probabilidad`          | `probabilidad/ProbabilidadRenderer`                   | —      | —        | ⏳     |
+| `problemas2pasos`       | `problemas2pasos/Problemas2PasosRenderer`             | —      | —        | ⏳     |
+| `redondeo`              | `redondeo/RedondeoRenderer`                           | —      | —        | ⏳     |
+| `relacionarCantidades`  | `relacionarCantidades/RelacionarCantidadesRenderer`   | —      | —        | ⏳     |
+| `reloj`                 | `reloj/RelojRenderer`                                 | —      | —        | ⏳     |
+| `relojPonerHora`        | `relojPonerHora/RelojPonerHoraRenderer`               | —      | —        | ⏳     |
+| `rutaCuadricula`        | `rutaCuadricula/RutaCuadriculaRenderer`               | —      | —        | ⏳     |
+| `series3cifras`         | `series3cifras/Series3CifrasRenderer`                 | —      | —        | ⏳     |
+| `simetria`              | `simetria/SimetriaRenderer`                           | —      | —        | ⏳     |
+| `laberintoMatematico2`  | comparte renderer con `laberintoMatematico`           | —      | —        | ⏳     |
 
-Las 30 actividades pendientes salen de 29 carpetas de motor: `laberintoMatematico2`
+Las 28 actividades pendientes salen de 27 carpetas de motor: `laberintoMatematico2`
 no tiene carpeta propia, el registro de Electron lo apunta al mismo
 `laberintoMatematico/LaberintoMatematicoRenderer`, y el inventario lo refleja igual.
