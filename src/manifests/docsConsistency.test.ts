@@ -35,6 +35,15 @@ function raizProyecto(): string {
 const RAIZ = raizProyecto();
 const ENGINES_ELECTRON = join(RAIZ, "electron-reference/Colegio/src/renderer/src/core/engines");
 
+/**
+ * `electron-reference/` está en `.gitignore`: es una copia local del proyecto
+ * Electron y no forma parte del repositorio. Todo lo que necesite mirar dentro
+ * tiene que ser opcional, porque si no este test pasa en el portátil del
+ * profesor y falla en cualquier otro clon y en CI, por un motivo que no tiene
+ * nada que ver con lo que está comprobando.
+ */
+const HAY_REFERENCIA = existsSync(ENGINES_ELECTRON);
+
 const leido = (rel: string): string => readFileSync(join(RAIZ, rel), "utf8");
 
 /** Estado real, derivado del registro. Es la verdad contra la que se mide. */
@@ -79,6 +88,42 @@ function filasDeVerificacion(
     salida.set(id, { nucleo, renderer });
   }
   return salida;
+}
+
+/** Fila de una de las dos tablas de actividades del mapa. */
+interface FilaMapa {
+  engineId: string;
+  /** Ruta del motor en Electron, como `operations/SumaRenderer`. Vacía si no la hay. */
+  motorElectron: string;
+  migrada: boolean;
+}
+
+/**
+ * Filas de las tablas de actividades de MIGRACION_MAP.md, con su estado.
+ *
+ * El orden de las celdas es el que hace que esto sea correcto y no un `find()`
+ * sobre cualquier cosa con barra: la primera celda es el `engineId` y la segunda
+ * es el motor de Electron. Las siguientes son el núcleo y el renderer **de la
+ * PWA**, cuyas carpetas (`ordering/`, `series/`, `algoritmoColumna/`…) no existen
+ * en `engines/` y no deben compararse contra ahí.
+ */
+function filasDeMapa(mapa: string): FilaMapa[] {
+  const filas: FilaMapa[] = [];
+  for (const linea of mapa.split(/\r?\n/)) {
+    if (!linea.startsWith("| `")) continue;
+    const diceMigrada = linea.includes("✅");
+    const dicePendiente = linea.includes("⏳");
+    if (diceMigrada === dicePendiente) continue; // fila de infraestructura
+    const celdas = [...linea.matchAll(/`([^`]+)`/g)].map((m) => m[1]);
+    const engineId = celdas[0];
+    if (!engineId) continue;
+    filas.push({
+      engineId,
+      motorElectron: celdas[1]?.includes("/") ? celdas[1] : "",
+      migrada: diceMigrada,
+    });
+  }
+  return filas;
 }
 
 describe("El estado de la migración está en un solo sitio", () => {
@@ -173,43 +218,40 @@ describe("El estado de la migración está en un solo sitio", () => {
   });
 
   it("MIGRACION_MAP.md cubre las 62 y no se contradice con el registro", () => {
-    const mapa = leido("docs/MIGRACION_MAP.md");
-    const errores: string[] = [];
-    const vistos = new Set<string>();
+    const filas = filasDeMapa(leido("docs/MIGRACION_MAP.md"));
 
-    for (const linea of mapa.split(/\r?\n/)) {
-      if (!linea.startsWith("| `")) continue;
-      const celdas = [...linea.matchAll(/`([^`]+)`/g)].map((m) => m[1]);
-      const diceMigrada = linea.includes("✅");
-      const dicePendiente = linea.includes("⏳");
-      if (diceMigrada === dicePendiente) continue; // fila de infraestructura
-      // La primera celda de las dos tablas de actividades es el `engineId`, no el
-      // nombre de carpeta: `suma` y `resta` viven en `operations/`, y comparar por
-      // carpeta daría un falso positivo.
-      const engineId = celdas[0];
-      if (!engineId) continue;
-      vistos.add(engineId);
-
-      const real = migrados.has(engineId);
-      if (diceMigrada && !real)
-        errores.push(`${engineId}: el mapa dice migrada, el registro no la tiene disponible`);
-      if (dicePendiente && real)
-        errores.push(`${engineId}: el mapa dice pendiente, el registro sí la tiene disponible`);
-
-      // Ninguna fila puede apuntar a una carpeta de motor que no exista. Esta regla
-      // es la que elimina `division/` y `fracciones/`, que el mapa declaraba sin que
-      // hubiera carpeta.
-      const carpeta = celdas.find((c) => /^[A-Za-z0-9]+\/[A-Za-z]/.test(c))?.split("/")[0];
-      if (carpeta && !existsSync(join(ENGINES_ELECTRON, carpeta)))
-        errores.push(`${engineId}: apunta a la carpeta inexistente ${carpeta}/`);
-    }
-
-    const ausentes = idsCatalogo.filter((id) => !vistos.has(id));
+    const ausentes = idsCatalogo.filter((id) => !filas.some((f) => f.engineId === id));
     expect(ausentes, `El mapa no mapea: ${ausentes.join(", ")}`).toEqual([]);
+
+    const errores = filas.flatMap((f) => {
+      const real = migrados.has(f.engineId);
+      if (f.migrada && !real)
+        return [`${f.engineId}: el mapa dice migrada, el registro no la tiene disponible`];
+      if (!f.migrada && real)
+        return [`${f.engineId}: el mapa dice pendiente, el registro sí la tiene disponible`];
+      return [];
+    });
     expect(errores, `MIGRACION_MAP.md contradice al registro:\n  ${errores.join("\n  ")}`).toEqual(
       [],
     );
   });
+
+  it.skipIf(!HAY_REFERENCIA)(
+    "MIGRACION_MAP.md no apunta a motores que no existen en electron-reference/",
+    () => {
+      // Solo tiene sentido con la copia local del proyecto Electron delante. Sin
+      // ella no se puede afirmar nada sobre el lado de Electron, y el test se salta
+      // en vez de dar por inexistente todo lo que no encuentra en disco.
+      const inventadas = filasDeMapa(leido("docs/MIGRACION_MAP.md"))
+        .filter((f) => f.motorElectron !== "" && f.engineId !== "laberintoMatematico2")
+        .filter((f) => !existsSync(join(ENGINES_ELECTRON, f.motorElectron.split("/")[0])))
+        .map((f) => f.motorElectron.split("/")[0]);
+      expect(
+        [...new Set(inventadas)],
+        `MIGRACION_MAP.md apunta a motores inexistentes: ${[...new Set(inventadas)].join(", ")}`,
+      ).toEqual([]);
+    },
+  );
 
   it("los documentos sin estado enlazan al inventario en vez de listar actividades", () => {
     // No se comprueba cuántas actividades nombra cada uno: hablar de un motor

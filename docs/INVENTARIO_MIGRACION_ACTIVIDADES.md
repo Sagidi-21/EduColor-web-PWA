@@ -10,7 +10,7 @@ contradice con esta tabla, la tabla manda y el otro documento está mal.
 - **Auditoría del catálogo:** 2026-09-07. **Estado verificado contra el código:** 2026-09-30.
 - **Total:** 62 actividades activas: 43 compartidas, 4 específicas de 1.º y 15 específicas de 2.º.
 - **Verificado el 2026-09-30:** 62 de 62 con manifiesto, **32 migradas y lanzables**,
-  30 pendientes, 81 ficheros de test y 825 tests en verde.
+  30 pendientes, 81 ficheros de test y 826 tests en verde.
 
 > **El `status` de los manifiestos no dice qué está migrado.** Los 62 JSON de
 > `src/manifests/activities/` llevan `status: "available"` porque describe si la
@@ -125,7 +125,7 @@ mover el código, el test falla.
 ## Verificación de la PWA
 
 Cifras medidas el **2026-09-30** con `npm test` (vitest 5.0.2): **81 ficheros de
-test, 825 tests, todos en verde**. Estas son las cifras de la PWA, distintas de
+test, 826 tests, todos en verde**. Estas son las cifras de la PWA, distintas de
 la columna `Tests actuales` del catálogo, que es la de Electron.
 
 | Actividad             | Núcleo                       | Tests núcleo | Renderer                                                   | Tests renderer |
@@ -167,8 +167,8 @@ Los tests que no aparecen aquí no son de actividades: son de plataforma
 (`src/platform/digit`, `src/platform/serviceWorker`), del servidor del Compañero
 IA (`src/server`), de la transición de vista, de los componentes compartidos
 (`DigitBoxes`, `NoBlankScreen`, `SessionProgress`, `SharedComponents`) y de los
-manifiestos), más los 6 de `docsConsistency.test.ts`, que vigilan esta tabla. Suman
-los 825.
+manifiestos), más los 7 de `docsConsistency.test.ts`, que vigilan esta tabla. Suman
+los 826.
 
 ## Reglas antes de migrar una fila
 
