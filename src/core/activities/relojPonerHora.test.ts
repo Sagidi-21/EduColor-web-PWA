@@ -30,16 +30,19 @@ describe("relojPonerHora — generateSession", () => {
     });
   });
 
-  it("medium, hard y expert llenan los 10 ejercicios", () => {
-    expect(generateSession("medium", 42)).toHaveLength(10);
-    expect(generateSession("hard", 42)).toHaveLength(10);
-    expect(generateSession("expert", 42)).toHaveLength(10);
+  it("las cuatro dificultades llenan los 10 ejercicios", () => {
+    DIFFICULTIES.forEach((diff) => {
+      expect(generateSession(diff, 42)).toHaveLength(10);
+    });
   });
 
-  it("easy se queda en 6: con horas del 1 al 6 y siempre en punto no hay más combinaciones", () => {
-    // Comportamiento del generador original: la deduplicación por hora:minuto
-    // agota las 6 combinaciones posibles antes de llegar a 10.
-    expect(generateSession("easy", 42)).toHaveLength(6);
+  it("easy también llega a 10: el 1 al 12 en punto da 12 combinaciones", () => {
+    // Divergencia del generador de Electron, que limitaba el fácil al rango 1-6
+    // y por eso se quedaba en 6 ejercicios sin llegar a 10. El resto de
+    // dificultades usa las 12 horas, así que el recorte no tenía detrás ninguna
+    // razón didáctica: no se pide una hora más sencilla que otra, se pide la
+    // misma en punto. Decisión del profesor del 2026-10-01.
+    expect(generateSession("easy", 42)).toHaveLength(10);
   });
 
   it("no repite la combinación hora:minuto", () => {
@@ -74,17 +77,24 @@ describe("relojPonerHora — generateSession", () => {
     });
   });
 
-  describe("easy — horas en punto del 1 al 6", () => {
-    it("minutos siempre 0 y horas del 1 al 6", () => {
+  describe("easy — horas en punto del 1 al 12", () => {
+    it("minutos siempre 0 y horas del 1 al 12", () => {
       generateSession("easy", 42).forEach((ex) => {
         expect(ex.minutes).toBe(0);
         expect(ex.hours).toBeGreaterThanOrEqual(1);
-        expect(ex.hours).toBeLessThanOrEqual(6);
+        expect(ex.hours).toBeLessThanOrEqual(12);
       });
     });
 
-    it("el objetivo es siempre una hora en punto del 1 al 6", () => {
-      generateSession("easy", 42).forEach((ex) => expect(ex.target).toMatch(/^[1-6]:00$/));
+    it("llega a las 12 horas, no solo a las 6 que daba el rango antiguo", () => {
+      // Con el rango 1-6 y los minutos siempre en cero no había más de 6
+      // combinaciones, así que la sesión nunca podía llegar a 10.
+      const horas = generateSession("easy", 42).map((ex) => ex.hours);
+      expect(Math.max(...horas)).toBeGreaterThan(6);
+    });
+
+    it("el objetivo es siempre una hora en punto del 1 al 12", () => {
+      generateSession("easy", 42).forEach((ex) => expect(ex.target).toMatch(/^(1[0-2]|[1-9]):00$/));
     });
   });
 

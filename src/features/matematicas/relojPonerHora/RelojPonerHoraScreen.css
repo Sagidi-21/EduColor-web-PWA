@@ -53,6 +53,7 @@
   flex-shrink: 0;
   min-height: 0;
 }
+
 /* Mismo color que la esfera del reloj grande (`fill="#1e1b4b"`) para que la
    etiqueta, la hora digital y la esfera se lean como un solo bloque. */
 .rph__side-label {
@@ -63,47 +64,60 @@
   text-align: center;
 }
 
-/* Ancla del aviso de acierto. `relative` para que `.rph__celebration` se posicione
-   respecto a la etiqueta y no respecto al stage. */
+/* Fila reservada para el aviso de acierto.
+ *
+ * Existe siempre, ocupada o vacía, y por eso el aviso aparece encima de la
+ * etiqueta sin taparla y sin que el panel lateral salte de altura al acertar.
+ * Su alto se fija aquí (no con `min-height` en el aviso) para que sea el mismo
+ * antes y después de acertar. */
 .rph__side-head {
-  position: relative;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rem;
 }
 
-/* "¡Correcto!" encima de "Pon las agujas en".
+.rph__celebration-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: min(2.2rem, 30cqh);
+}
+
+/* "¡Correcto!" en su propia fila, encima de "Pon las agujas en".
  *
  * En `reloj` el aviso va en `.reloj__celebration`, anclado al centro del stage
  * (`left: 50%`), que aquí coincide con la esfera: el texto salía tapando el reloj
- * justo en el momento en que el alumno quiere comprobar su resultado. Aquí se
- * reaprovecha su color y su animación, pero el sitio es la etiqueta del panel. */
+ * justo en el momento en que el alumno quiere comprobar su resultado. Aquí el sitio
+ * es la fila de arriba del panel lateral.
+ *
+ * La animación es propia y no la de `reloj` porque aquella lleva un
+ * `translateX(-50%)` pensado para el `left: 50%`; aquí el centrado lo hace el flex
+ * de la fila y combinarlo desplazaría el texto. */
 .rph__celebration {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: min(2rem, 5cqh);
+  font-size: min(2rem, 10cqh);
   font-weight: 900;
   color: #10b981;
   white-space: nowrap;
+  line-height: 1;
   animation: rph-celebration-pop 0.4s ease;
   pointer-events: none;
 }
 
-/* Misma curva que `reloj-pop` pero sin el `translateX(-50%)`: aquí el centrado lo
- * hace el `transform` de la posición absoluta, y combinarlo con la animación
- * desplazaría el texto. */
 @keyframes rph-celebration-pop {
   0% {
-    transform: translate(-50%, -50%) scale(0);
+    transform: scale(0);
   }
+
   80% {
-    transform: translate(-50%, -50%) scale(1.2);
+    transform: scale(1.2);
   }
+
   100% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
 }
+
 /* Hora pedida, grande y estilo "pantalla digital".
  *
  * El `min()` con `cqh` (altura libre del layout) evita que el panel lateral
@@ -166,14 +180,17 @@
   cursor: grab;
   transition: transform 0.1s;
 }
+
 .rph__knob:active {
   cursor: grabbing;
 }
+
 .rph__knob--hour {
   fill: #ffffff;
   stroke: #6366f1;
   stroke-width: 3;
 }
+
 .rph__knob--min {
   fill: #a78bfa;
   stroke: #6d28d9;
@@ -196,22 +213,26 @@
   color: #2e1065;
   cursor: default;
 }
+
 .rph__legend-item {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   white-space: nowrap;
 }
+
 .rph__dot {
   width: 16px;
   height: 16px;
   border-radius: 50%;
   display: inline-block;
 }
+
 .rph__dot--hour {
   background: #ffffff;
   border: 2px solid #6366f1;
 }
+
 .rph__dot--min {
   background: #a78bfa;
   border: 2px solid #6d28d9;
@@ -231,9 +252,11 @@
     transform 0.1s;
   margin-top: 4px;
 }
+
 .rph__check-btn:hover {
   background: #16a34a;
 }
+
 .rph__check-btn:active {
   transform: scale(0.96);
 }
@@ -258,6 +281,7 @@
   padding: 0;
   width: 100%;
 }
+
 .rph__actions .activity-action {
   min-width: 0;
   width: 100%;

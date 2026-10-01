@@ -174,18 +174,37 @@ describe("RelojPonerHoraScreen smoke", () => {
     expect(container.querySelector(".rph__check-btn")).toBeNull();
   });
 
-  it("acierto: el aviso se pinta sobre 'Pon las agujas en', no sobre la esfera", () => {
+  it("acierto: el aviso sale encima de 'Pon las agujas en', sin taparla ni la esfera", () => {
     // El aviso de `reloj` va anclado al centro del stage, que en este motor cae
-    // justo sobre el reloj; aquí tiene que salir en el panel lateral.
+    // justo sobre el reloj. Y ya se corrigió una versión que lo solapaba con la
+    // etiqueta: tiene que ocupar su propia fila, la de arriba.
     const ex = engine.generateSession("easy", 4242)[0];
     const { container } = render(<RelojPonerHoraScreen {...props("easy")} />);
 
     acertar(container, ex);
 
-    const head = container.querySelector(".rph__side-head");
-    expect(head?.querySelector(".rph__celebration")?.textContent).toContain("¡Correcto!");
-    expect(head?.querySelector(".rph__side-label")?.textContent).toContain("Pon las agujas en");
+    const head = container.querySelector(".rph__side-head")!;
+    const slot = head.querySelector(".rph__celebration-slot")!;
+    const label = head.querySelector(".rph__side-label")!;
+
+    expect(slot.querySelector(".rph__celebration")?.textContent).toContain("¡Correcto!");
+    expect(label.textContent).toContain("Pon las agujas en");
+
+    // Filas distintas y en este orden: el aviso arriba, la frase intacta debajo.
+    // Un `position: absolute` que se solapara con la frase pasaría el `closest`
+    // de arriba, así que se comprueba también que la frase siga siendo hermana
+    // suya y no su contenedor.
+    expect(label.contains(slot)).toBe(false);
+    expect(label.previousElementSibling).toBe(slot);
     expect(container.querySelector(".rph__celebration")?.closest(".rph__clock")).toBeNull();
+  });
+
+  it("la fila del aviso existe antes de acertar, para que el panel no salte", () => {
+    const { container } = render(<RelojPonerHoraScreen {...props("easy")} />);
+
+    const slot = container.querySelector(".rph__side-head .rph__celebration-slot");
+    expect(slot).not.toBeNull();
+    expect(slot?.querySelector(".rph__celebration")).toBeNull();
   });
 
   it("acierto: a los 900 ms las agujas vuelven a las doce en punto", () => {

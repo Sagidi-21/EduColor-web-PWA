@@ -24,7 +24,7 @@
   align-items: center;
   justify-content: center;
   gap: 2rem;
-  padding: 2rem;
+  padding: 8rem;
   position: relative;
   min-height: 0;
   overflow-y: auto;
@@ -55,9 +55,11 @@
   0% {
     transform: translateX(-50%) scale(0);
   }
+
   80% {
     transform: translateX(-50%) scale(1.2);
   }
+
   100% {
     transform: translateX(-50%) scale(1);
   }

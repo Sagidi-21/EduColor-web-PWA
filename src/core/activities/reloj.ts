@@ -95,11 +95,21 @@ function minutePoolFor(difficulty: ActivityDifficulty): RelojMinutes[] {
  * Genera una sesión de 10 ejercicios sin repetir la combinación hora:minuto, con
  * el reparto de tipos y el rango de horas que manda cada dificultad.
  *
- * - easy:   horas del 1 al 6, siempre en punto, siempre `analog_to_digital`.
+ * - easy:   horas del 1 al 12, siempre en punto, siempre `analog_to_digital`.
  * - medium: horas del 1 al 12, en punto o y media, tres tipos mezclados.
  * - hard:   horas del 1 al 12, en punto / y cuarto / y media / menos cuarto,
  *           `match_scene` o `digital_read`.
  * - expert: los doce minutos y los cuatro tipos mezclados.
+ *
+ * **Divergencia respecto a Electron:** allí la dificultad fácil limitaba las
+ * horas al rango 1-6. Con el fácil siempre en punto y siempre del mismo tipo,
+ * eso dejaba 6 combinaciones y la sesión se quedaba en 6 ejercicios en vez de
+ * los 10 de las demás dificultades. El resto usa las 12 horas, de modo que el
+ * recorte no tenía detrás ninguna razón didáctica: no se pide una hora más
+ * sencilla que otra, se pide la misma en punto. Aquí las cuatro dificultades
+ * van del 1 al 12 y el fácil vuelve a tener 10 ejercicios (decisión del
+ * profesor del 2026-10-01, el mismo día y el mismo motivo que en
+ * `relojPonerHora`, que tenía el recorte idéntico).
  */
 export function generateSession(difficulty: ActivityDifficulty, seed = 42): RelojExercise[] {
   const rng = lcg(seed);
@@ -111,7 +121,9 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Relo
   while (out.length < count && tries < 300) {
     tries++;
 
-    const maxHour = difficulty === "easy" ? 6 : 12;
+    // 12 horas en las cuatro dificultades: el fácil se diferencia por pedir la
+    // hora en punto y en un solo tipo, no por tener menos horas que colocar.
+    const maxHour = 12;
     const hours = randInt(rng, 1, maxHour);
     let minutes: RelojMinutes;
     if (difficulty === "easy") {

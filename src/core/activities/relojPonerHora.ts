@@ -64,12 +64,21 @@ function fmt(h: number, m: number): string {
 
 /**
  * Genera una sesión de 10 ejercicios sin repetir la combinación hora:minuto,
- * con el rango de horas y el incremento de minutos que manda cada dificultad.
+ * con el incremento de minutos que manda cada dificultad.
  *
- * - easy:   horas del 1 al 6, siempre en punto.
+ * - easy:   horas del 1 al 12, siempre en punto.
  * - medium: horas del 1 al 12, en punto o y media.
  * - hard:   horas del 1 al 12, en punto / y cuarto / y media / menos cuarto.
  * - expert: horas del 1 al 12, cualquier minuto de 5 en 5.
+ *
+ * **Divergencia respecto a Electron:** allí la dificultad fácil limitaba las
+ * horas al rango 1-6, lo que dejaba solo 6 combinaciones posibles (1:00 a 6:00)
+ * y por tanto una sesión de 6 ejercicios en lugar de los 10 que piden las demás.
+ * El resto de dificultades usa las 12 horas, así que el fácil se quedaba corto
+ * solo por ese recorte, sin una razón didáctica detrás: no se pide una hora más
+ * sencilla que otra, se pide la misma en punto. Aquí las 12 difficulties del 1 al
+ * 12, y el fácil vuelve a tener 10 ejercicios como todos los demás
+ * (decisión del profesor del 2026-10-01).
  */
 export function generateSession(
   difficulty: ActivityDifficulty,
@@ -78,7 +87,9 @@ export function generateSession(
   const rng = lcg(seed);
   const out: RelojPonerHoraExercise[] = [];
   const used = new Set<string>();
-  const maxHour = difficulty === "easy" ? 6 : 12;
+  // 12 horas en las cuatro dificultades: el fácil se diferencia por pedir la hora
+  // en punto, no por tener menos horas que colocar.
+  const maxHour = 12;
   let tries = 0;
 
   while (out.length < 10 && tries < 300) {

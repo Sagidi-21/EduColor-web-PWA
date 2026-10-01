@@ -255,18 +255,21 @@ export function RelojPonerHoraScreen({
         <div className="rph__layout">
           {/* Panel lateral: hora pedida + botón (fuera de donde sale la celebración) */}
           <aside className="rph__side">
-            {/* El aviso de acierto se pinta sobre la etiqueta "Pon las agujas en" y
-                no centrado sobre el stage: ahí caía encima de la esfera, que es la
-                única parte del ejercicio que hay que ver al celebrarlo. Es un
-                `position: absolute` dentro de `.rph__side` (`position: relative`),
-                así que no mueve ni el reloj ni la hora digital. */}
+            {/* El aviso de acierto va ENCIMA de la etiqueta "Pon las agujas en",
+                dentro del panel lateral, y no centrado sobre el stage: ahí caía
+                sobre la esfera, que es la única parte del ejercicio que hay que ver
+                al celebrar. El hueco de arriba está siempre reservado (`.rph__celebration-slot`),
+                así que el texto aparece en esa fila sin tapar la frase y sin que el
+                panel salte al acertar. */}
             <div className="rph__side-head">
+              <div className="rph__celebration-slot">
+                {session.answerState === "correct" && (
+                  <div className="rph__celebration" role="status">
+                    ¡Correcto! ⏰⭐
+                  </div>
+                )}
+              </div>
               <p className="rph__side-label">Pon las agujas en</p>
-              {session.answerState === "correct" && (
-                <div className="rph__celebration" role="status">
-                  ¡Correcto! ⏰⭐
-                </div>
-              )}
             </div>
             <div className="rph__target-big" aria-label={`Reloj digital: ${current.target}`}>
               {current.target}
