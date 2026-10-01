@@ -3,7 +3,7 @@ import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { RelojPonerHoraScreen } from "./RelojPonerHoraScreen";
 import * as engine from "../../../core/activities/relojPonerHora";
 import type { RelojPonerHoraExercise } from "../../../core/activities/relojPonerHora";
-import { timeLabel } from "../../../core/activities/reloj";
+import { timeLabel } from "../../../core/activities/shared/timeLabel";
 import { smokeProps } from "../testing/smoke";
 import type { EngineScreenProps } from "../engine-screens";
 

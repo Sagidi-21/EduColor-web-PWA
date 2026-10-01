@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { generateSession, validateAnswer, type RelojPonerHoraExercise } from "./relojPonerHora";
-import { timeLabel } from "./reloj";
+import { timeLabel } from "./shared/timeLabel";
 
 const DIFFICULTIES = ["easy", "medium", "hard", "expert"] as const;
 const CUARTOS = [0, 15, 30, 45];

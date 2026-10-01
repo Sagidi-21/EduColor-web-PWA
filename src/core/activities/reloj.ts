@@ -1,4 +1,5 @@
 import type { ActivityDifficulty } from "../content/contracts";
+import { timeLabel } from "./shared/timeLabel";
 
 /**
  * Motor "El reloj" (1.º y 2.º de Primaria).
@@ -69,14 +70,11 @@ function formatTime(h: number, m: number): string {
   return m < 10 ? `${h}:0${m}` : `${h}:${m}`;
 }
 
-import { timeLabel } from "./shared/timeLabel";
-
 /**
- * La hora en palabras la dice `shared/timeLabel.ts`, porque la usan dos motores.
- * Se re-exporta para que los tests y los imports existentes sigan apuntando
- * aquí; el día que nadie la importe de este fichero, se quita el re-export.
+ * La hora en palabras la dice `shared/timeLabel.ts` y se importa desde ahí
+ * directamente, también aquí: el módulo `reloj` ya no la re-exporta, para que
+ * la función tenga una sola ruta de acceso y nadie la vuelva a copiar.
  */
-export { timeLabel };
 
 /**
  * El pool de minutos con el que se construyen también las opciones distractoras,

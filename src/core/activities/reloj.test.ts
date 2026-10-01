@@ -1,12 +1,10 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, it, expect } from "vitest";
-import {
-  generateSession,
-  validateAnswer,
-  SCENES,
-  timeLabel,
-  type RelojExercise,
-  type RelojMinutes,
-} from "./reloj";
+import { generateSession, validateAnswer, SCENES } from "./reloj";
+import type { RelojExercise, RelojMinutes } from "./reloj";
+import { timeLabel } from "./shared/timeLabel";
 
 const DIFFICULTIES = ["easy", "medium", "hard", "expert"] as const;
 const EXPERT_MINS: RelojMinutes[] = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
@@ -271,6 +269,19 @@ describe("reloj — validateAnswer", () => {
 });
 
 describe("reloj — timeLabel", () => {
+  it("vive en el módulo compartido y `reloj` no la re-exporta", () => {
+    // La extracción a `shared/timeLabel.ts` se hizo con un re-export en `reloj`
+    // para no romper los imports de golpe, y ese re-export acabó siendo la
+    // razón de que tres imports siguieran apuntando al motor: una función con dos
+    // rutas de acceso es peor que una con una, porque el próximo que la necesite
+    // copiará la que tenga a mano en vez de la compartida. Se vigila en el
+    // código, no en los tipos: un `export` de más no rompe nada hasta que alguien
+    // empieza a usarlo.
+    const fuente = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "reloj.ts"), "utf8");
+    expect(fuente).not.toMatch(/export\s*\{[^}]*\btimeLabel\b/);
+    expect(fuente).not.toMatch(/export\s+(async\s+)?function\s+timeLabel/);
+  });
+
   /**
    * Las doce ramas del enunciado con la hora que DEBE nombrarse. En las nueve
    * primeras coincide con la de la aguja; en las tres de "menos" va una posición

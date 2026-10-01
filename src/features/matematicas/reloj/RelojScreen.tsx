@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { generateSession, timeLabel, validateAnswer } from "../../../core/activities/reloj";
+import { generateSession, validateAnswer } from "../../../core/activities/reloj";
 import type { RelojExercise } from "../../../core/activities/reloj";
+// La hora en palabras viene del módulo compartido, no de `reloj`, que ya no la re-exporta.
+import { timeLabel } from "../../../core/activities/shared/timeLabel";
 import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
 import { ActivityHeader } from "../components/ActivityHeader";

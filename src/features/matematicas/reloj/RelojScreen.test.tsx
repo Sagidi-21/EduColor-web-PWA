@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { RelojScreen } from "./RelojScreen";
 import * as relojEngine from "../../../core/activities/reloj";
 import type { RelojExercise } from "../../../core/activities/reloj";
+import { timeLabel } from "../../../core/activities/shared/timeLabel";
 import { smokeProps } from "../testing/smoke";
 import type { EngineScreenProps } from "../engine-screens";
 
@@ -291,7 +292,7 @@ describe("RelojScreen smoke", () => {
       const [h, m] = ex.options[i].value.split(":").map(Number);
       const nombre = b.getAttribute("aria-label");
       // "las 3 en punto", no "Las 3:00": la hora digital no es un nombre.
-      expect(nombre).toBe(relojEngine.timeLabel(h, m));
+      expect(nombre).toBe(timeLabel(h, m));
       expect(nombre).toMatch(/^la[s]? \d{1,2} /);
       expect(nombre).not.toContain(":");
       expect(nombre).not.toBe(`Las ${ex.options[i].label}`);
@@ -325,7 +326,7 @@ describe("RelojScreen smoke", () => {
     expect(conLaUna.map((b) => b.getAttribute("aria-label"))).toEqual(
       ex.options
         .filter((o) => /^1:/.test(o.value))
-        .map((o) => relojEngine.timeLabel(1, Number(o.value.split(":")[1]))),
+        .map((o) => timeLabel(1, Number(o.value.split(":")[1]))),
     );
   });
 
