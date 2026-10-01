@@ -272,7 +272,7 @@ export function LeftRightScreen({
       alreadyFailed: false,
     });
     setBoxContent(BOX_EMPTY);
-  }, [difficulty]);
+  }, [difficulty, sessionSeed]);
 
   if (finished) {
     return (

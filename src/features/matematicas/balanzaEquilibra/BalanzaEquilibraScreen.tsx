@@ -123,7 +123,7 @@ function BalanzaEquilibraScreen({
     });
     setWeights([]);
     setAnswerState("idle");
-  }, [difficulty]);
+  }, [difficulty, sessionSeed]);
 
   // ── Arrastre ─────────────────────────────────────────────────────────────
 

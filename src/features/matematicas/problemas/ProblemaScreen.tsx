@@ -215,7 +215,7 @@ export function ProblemaScreen({
       theme: session.theme,
       alreadyFailed: false,
     });
-  }, [difficulty, session.theme]);
+  }, [difficulty, sessionSeed, session.theme]);
 
   const startSession = useCallback(
     (t: Theme) => {

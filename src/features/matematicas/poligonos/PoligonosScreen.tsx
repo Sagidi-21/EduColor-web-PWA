@@ -189,7 +189,7 @@ export function PoligonosScreen({
       selectedAnswer: null,
       alreadyFailed: false,
     });
-  }, [difficulty]);
+  }, [difficulty, sessionSeed]);
 
   if (finished) {
     return (

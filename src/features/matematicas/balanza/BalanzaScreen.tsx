@@ -297,7 +297,7 @@ export function BalanzaScreen({
       selectedAnswer: null,
       alreadyFailed: false,
     });
-  }, [difficulty]);
+  }, [difficulty, sessionSeed]);
 
   if (finished) {
     return (
