@@ -171,6 +171,25 @@ describe("PoligonosScreen smoke", () => {
     expect(container.querySelector(".summary__stat-value")?.textContent).toBe(`${total}/${total}`);
   });
 
+  it("pulsar 'Repetir' devuelve la misma figura y enunciado (reutiliza la semilla)", () => {
+    const seed = 4242;
+    const sesion = generateSession("hard", seed);
+    const { container } = render(<PoligonosScreen {...props("hard", seed)} />);
+
+    const firstQuestion = container.querySelector(".pol__question")?.textContent ?? "";
+
+    for (const ex of sesion) {
+      acertar(container, ex.answer);
+      runTimers(AUTOAVANCE_MS);
+    }
+
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+
+    expect(container.querySelector(".summary__stars")).toBeNull();
+    expect(container.querySelector(".pol__question")?.textContent).toBe(firstQuestion);
+  });
+
   it("en expert muestra la rejilla y acepta la única tarjeta correcta", () => {
     const ex = primerEjercicio("expert") as PoligonoSelectExercise;
     const { container } = render(<PoligonosScreen {...props("expert")} />);

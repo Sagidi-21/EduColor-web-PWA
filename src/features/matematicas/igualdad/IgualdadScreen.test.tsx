@@ -1,10 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { EngineScreenProps } from "../engine-screens";
 import { IgualdadScreen } from "./IgualdadScreen";
 import { generateSession } from "../../../core/activities/igualdad";
+import type { IgualdadExercise } from "../../../core/activities/igualdad";
 
 const mockOnExit = vi.fn();
 
@@ -187,5 +188,35 @@ describe("IgualdadScreen smoke", () => {
         /\b(useState|useEffect|useCallback|useMemo|useRef|useLayoutEffect)\s*\(/.test(l),
       );
     expect(hooksAfter).toHaveLength(0);
+  });
+
+  it("pulsar 'Repetir' devuelve el mismo primer ejercicio (reutiliza la semilla)", () => {
+    const seed = 12345;
+    const exercises = generateSession("easy", seed);
+
+    const { container } = render(<IgualdadScreen {...buildProps("easy", seed)} />);
+    const firstStage = container.querySelector(".igl__stage")?.textContent ?? "";
+
+    const correctOption = (ex: IgualdadExercise) =>
+      screen
+        .getAllByRole("button")
+        .find(
+          (b) =>
+            (b as HTMLElement).className.includes("igl__option") &&
+            (b.textContent ?? "").trim() === String(ex.answer),
+        ) as HTMLButtonElement | undefined;
+
+    exercises.forEach((ex) => {
+      fireEvent.click(correctOption(ex)!);
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+    });
+
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+
+    expect(container.querySelector(".summary__stars")).toBeNull();
+    expect(container.querySelector(".igl__stage")?.textContent).toBe(firstStage);
   });
 });

@@ -65,6 +65,7 @@ export function ProblemaScreen({
 
   const [canvasKey, setCanvasKey] = useState(0);
 
+  const [sessionSeed] = useState(() => seed);
   const [session, setSession] = useState<SessionState>(() => ({
     exercises: [],
     currentIndex: 0,
@@ -200,7 +201,7 @@ export function ProblemaScreen({
 
   const handleRestart = useCallback(() => {
     if (!session.theme) return;
-    const exs = generateSession(difficulty, Date.now() % 999983, session.theme);
+    const exs = generateSession(difficulty, sessionSeed, session.theme);
     const firstLen = exs.length > 0 ? slotCount(exs[0].answer) : 1;
     setFinished(null);
     setSession({

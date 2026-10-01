@@ -149,7 +149,7 @@ export function ParImparScreen({
         gradeLabel={gradeTitle || activity.title}
         onRestart={() => {
           setFinished(null);
-          setSession(freshSession(Date.now() % 999983, difficulty));
+          setSession(freshSession(sessionSeed, difficulty));
         }}
         onExit={onExit}
       />

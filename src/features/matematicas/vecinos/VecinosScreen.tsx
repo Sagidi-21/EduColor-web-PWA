@@ -41,7 +41,8 @@ export function VecinosScreen({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps) {
-  const [session, setSession] = useState<SessionState>(() => freshSession(seed, difficulty));
+  const [sessionSeed] = useState(() => seed);
+  const [session, setSession] = useState<SessionState>(() => freshSession(sessionSeed, difficulty));
   const [finished, setFinished] = useState<SessionResult | null>(null);
 
   const current = session.exercises[session.currentIndex];
@@ -99,7 +100,7 @@ export function VecinosScreen({
         gradeLabel={gradeTitle || activity.title}
         onRestart={() => {
           setFinished(null);
-          setSession(freshSession(Date.now() % 999983, difficulty));
+          setSession(freshSession(sessionSeed, difficulty));
         }}
         onExit={onExit}
       />

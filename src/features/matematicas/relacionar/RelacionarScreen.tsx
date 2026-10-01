@@ -81,6 +81,8 @@ export function RelacionarScreen({
   const [rounds, setRounds] = useState<RelacionarSession[]>(() =>
     generateSession(difficulty, seed, TOTAL_ROUNDS),
   );
+  /** Semilla de la tanda en curso: "Repetir" la reutiliza para dar el mismo ejercicio. */
+  const [sessionSeed] = useState(seed);
   const [roundIdx, setRoundIdx] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [roundFailed, setRoundFailed] = useState(false);
@@ -130,7 +132,7 @@ export function RelacionarScreen({
 
   const handleRestart = () => {
     setFinished(null);
-    setRounds(generateSession(difficulty, Date.now() % 999983, TOTAL_ROUNDS));
+    setRounds(generateSession(difficulty, sessionSeed, TOTAL_ROUNDS));
     setRoundIdx(0);
     setCorrectCount(0);
     setRoundFailed(false);

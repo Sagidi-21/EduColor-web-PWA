@@ -66,7 +66,8 @@ export function Numeracion1119Screen({
 }: EngineScreenProps) {
   const isMultiChoice = difficulty === "easy";
 
-  const [session, setSession] = useState<SessionState>(() => freshSession(seed, difficulty));
+  const [sessionSeed] = useState(() => seed);
+  const [session, setSession] = useState<SessionState>(() => freshSession(sessionSeed, difficulty));
   const [finished, setFinished] = useState<SessionResult | null>(null);
   const { mode, toggle } = useInputMode();
   const [canvasKey, setCanvasKey] = useState(0);
@@ -159,7 +160,7 @@ export function Numeracion1119Screen({
         gradeLabel={gradeTitle || activity.title}
         onRestart={() => {
           setFinished(null);
-          setSession(freshSession(Date.now() % 999983, difficulty));
+          setSession(freshSession(sessionSeed, difficulty));
         }}
         onExit={onExit}
       />

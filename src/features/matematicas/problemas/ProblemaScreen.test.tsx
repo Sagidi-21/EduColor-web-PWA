@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { EngineScreenProps } from "../engine-screens";
@@ -153,5 +153,43 @@ describe("ProblemaScreen smoke", () => {
     expect(
       src.includes("literales internos del core") || src.includes("sanitización ya evita XSS"),
     ).toBe(true);
+  });
+
+  it("pulsar 'Repetir' devuelve el mismo primer problema (reutiliza la semilla y el tema)", () => {
+    const seed = 42;
+    const exercises = generateSession("easy", seed, "deportes");
+
+    render(<ProblemaScreen {...buildProps(seed)} />);
+
+    const btnDeportes = screen
+      .getAllByRole("button")
+      .find((b) => (b.textContent ?? "").includes("Deportes")) as HTMLButtonElement;
+    fireEvent.click(btnDeportes);
+
+    const firstQuestion =
+      screen.getByText((_, node) => node?.className === "prob__question", {
+        selector: ".prob__question",
+      })?.textContent ?? "";
+
+    exercises.forEach((ex) => {
+      const digits = String(ex.answer).split("");
+      [...digits].reverse().forEach((d) => {
+        const key = screen.getAllByRole("button").find((b) => b.textContent === d);
+        fireEvent.click(key as HTMLButtonElement);
+      });
+      fireEvent.click(
+        screen.getAllByRole("button").find((b) => b.textContent === "✓") as HTMLButtonElement,
+      );
+      act(() => {
+        vi.advanceTimersByTime(1600);
+      });
+    });
+
+    expect(document.querySelector(".summary__stars")).not.toBeNull();
+    fireEvent.click(document.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+
+    expect(document.querySelector(".summary__stars")).toBeNull();
+    const afterRestartQuestion = document.querySelector(".prob__question")?.textContent ?? "";
+    expect(afterRestartQuestion).toBe(firstQuestion);
   });
 });

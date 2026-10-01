@@ -64,8 +64,9 @@ export function OperationsScreen({
   const { mode, toggle } = useInputMode();
   const [canvasKey, setCanvasKey] = useState(0);
 
+  const [sessionSeed] = useState(() => seed);
   const [session, setSession] = useState<SessionState>(() => {
-    const exercises = generateSession(op, difficulty, seed);
+    const exercises = generateSession(op, difficulty, sessionSeed);
     const firstLen = answerLen(exercises[0].answer);
     return {
       exercises,
@@ -194,7 +195,7 @@ export function OperationsScreen({
       <SummaryScreen
         result={finished}
         onRestart={() => {
-          const exercises = generateSession(op, difficulty, Date.now() % 999983);
+          const exercises = generateSession(op, difficulty, sessionSeed);
           setFinished(null);
           const restartLen = answerLen(exercises[0].answer);
           setSession({

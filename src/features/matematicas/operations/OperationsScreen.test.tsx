@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { OperationsScreen } from "./OperationsScreen";
 import { generateSession } from "../../../core/activities/operations";
 import { smokeProps, typeOnNumpad, switchToCanvas } from "../testing/smoke";
@@ -105,5 +105,27 @@ describe("OperationsScreen smoke (suma y resta)", () => {
     fireEvent.click(boxes[0]);
     expect(vboxes(container)[0].className).toContain("ops__vbox--active");
     expect(vboxes(container)[1].className).not.toContain("ops__vbox--active");
+  });
+
+  it("pulsar 'Repetir' devuelve la misma operación (reutiliza la semilla de sesión)", () => {
+    const seed = 4242;
+    const exercises = generateSession("suma", "easy", seed);
+
+    const { container } = render(<OperationsScreen {...props("easy", seed)} />);
+
+    const firstExercise = container.querySelector(".ops__exercise")?.textContent ?? "";
+
+    exercises.forEach((ex) => {
+      typeOnNumpad(container, ex.answer);
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+    });
+
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+
+    expect(container.querySelector(".summary__stars")).toBeNull();
+    expect(container.querySelector(".ops__exercise")?.textContent).toBe(firstExercise);
   });
 });

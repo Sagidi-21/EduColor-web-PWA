@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { AlgoritmoColumnaScreen } from "./AlgoritmoColumnaScreen";
 import { generateSession as generateAddition } from "../../../core/activities/algoritmoVertical";
 import { generateSession as generateSubtraction } from "../../../core/activities/restaColumna";
@@ -119,5 +119,29 @@ describe("AlgoritmoColumnaScreen smoke (algoritmoVertical y restaColumna)", () =
 
     expect(container.querySelector(".shared-numpad")).toBeNull();
     expect(container.querySelector(".dab--loading")).not.toBeNull();
+  });
+
+  it("pulsar 'Repetir' devuelve el mismo primer ejercicio (reutiliza la semilla)", () => {
+    const seed = 4242;
+    const session = generateAddition("easy", seed);
+
+    const { container } = render(
+      <AlgoritmoColumnaScreen {...props("algoritmoVertical", "easy", seed)} />,
+    );
+
+    const firstStage = container.querySelector(".algcol__stage")?.textContent ?? "";
+
+    session.forEach((ex) => {
+      typeUnitsFirst(container, ex.answer);
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+    });
+
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+
+    expect(container.querySelector(".summary__stars")).toBeNull();
+    expect(container.querySelector(".algcol__stage")?.textContent).toBe(firstStage);
   });
 });

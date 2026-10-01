@@ -13,10 +13,10 @@ const buildProps = (difficulty: EngineScreenProps["difficulty"], seed = 4242) =>
   smokeProps("relacionSumaResta", mockOnExit, difficulty, seed);
 
 /**
- * `initSession` ignora el `seed` que llega por props y genera con
- * `Date.now()`, así que el ejercicio NO es reproducible desde fuera. El test lo
- * lee de lo que el renderer muestra: cada fila expone sus dos operandos, y las
- * tres filas son `total − partA`, `total − partB` y `partA + partB`.
+ * `initSession` usa la `seed` que llega por props, así que el ejercicio es
+ * reproducible. El test lo lee de lo que el renderer muestra: cada fila expone
+ * sus dos operandos, y las tres filas son `total − partA`, `total − partB` y
+ * `partA + partB`.
  */
 const readOperands = (container: HTMLElement) =>
   Array.from(container.querySelectorAll<HTMLElement>(".relsr__equation-row")).map((row) => {
@@ -190,9 +190,8 @@ describe("RelacionSumaRestaScreen smoke", () => {
   });
 
   it("borrar quita la última cifra de la casilla activa", () => {
-    // Ojo: este renderer ignora la seed y genera con `Date.now()`, así que el
-    // número de cifras varía entre ejecuciones. El borrado se comprueba sobre el
-    // propio número en vez de asumir una longitud fija.
+    // Ojo: este renderer usa la `seed` de props, así que el número de cifras
+    // es reproducible.
     const { container } = render(<RelacionSumaRestaScreen {...buildProps("medium")} />);
     const digits = String(answersOf(container)[0]).split("");
 

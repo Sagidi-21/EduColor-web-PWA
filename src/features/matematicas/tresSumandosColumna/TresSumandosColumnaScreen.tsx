@@ -154,7 +154,8 @@ export function TresSumandosColumnaScreen({
     [difficulty],
   );
 
-  const [session, setSession] = useState<SessionState>(() => makeSession(seed));
+  const [sessionSeed] = useState(() => seed);
+  const [session, setSession] = useState<SessionState>(() => makeSession(sessionSeed));
   const [finished, setFinished] = useState<{
     total: number;
     correct: number;
@@ -269,7 +270,7 @@ export function TresSumandosColumnaScreen({
         result={finished}
         onRestart={() => {
           setFinished(null);
-          setSession(makeSession(Date.now() % 999983));
+          setSession(makeSession(sessionSeed));
         }}
         onExit={onExit}
         gradeLabel={gradeTitle ?? "Matemáticas"}

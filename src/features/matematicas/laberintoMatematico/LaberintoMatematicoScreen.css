@@ -1,0 +1,321 @@
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+/* Solo lo propio del laberinto. La cabecera es `ActivityHeader` y los botones
+   son `ActionButtons`, así que ni `.lm-head*` ni `.lm-btn*` viven aquí: sus
+   estilos están en los componentes compartidos y no se duplican. */
+.lm-wrap {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #f8faff;
+  font-family: "Nunito", system-ui, sans-serif;
+  color: #1e1b4b;
+  user-select: none;
+}
+
+/* ── Tablero ─────────────────────────────────────────────────────────────── */
+.lm-canvas {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Base de cada capa */
+.lm-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.lm-bg {
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+}
+
+.lm-svg {
+  pointer-events: none;
+}
+
+/* ── Casillas del laberinto ──────────────────────────────────────────────── */
+.lm-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 8.33%; /* ~100/12 del ancho del tablero */
+  aspect-ratio: 1.78 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: 2px solid #cbd5e1;
+  backdrop-filter: blur(6px);
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.lm-node span {
+  font-size: clamp(0.7rem, 1.4vw, 1.1rem);
+  font-weight: 700;
+  color: inherit;
+  pointer-events: none;
+  min-width: 1ch;
+  text-align: center;
+}
+
+/* Variantes: totalmente opacas para que las flechas del SVG no se transparenten */
+.lm-node-start {
+  background: #fff7ed;
+  border-color: #f97316;
+  color: #c2410c;
+}
+.lm-node-reg {
+  background: #fff;
+  border-color: #cbd5e1;
+  color: #1e293b;
+  cursor: pointer;
+}
+.lm-node-reg:hover {
+  border-color: #94a3b8;
+}
+.lm-node-end {
+  background: #fdf4ff;
+  border-color: #d946ef;
+  color: #a21caf;
+  cursor: pointer;
+}
+.lm-node-end:hover {
+  border-color: #c026d3;
+}
+.lm-node-active {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Estados */
+.lm-ns-ok {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+.lm-ns-err {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+  animation: lm-shake 0.25s linear;
+}
+
+@keyframes lm-shake {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) translateX(0);
+  }
+  25% {
+    transform: translate(-50%, -50%) translateX(-4px);
+  }
+  75% {
+    transform: translate(-50%, -50%) translateX(4px);
+  }
+}
+
+/* ── Círculos de operación ───────────────────────────────────────────────── */
+.lm-op {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 5.8%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid #94a3b8;
+  color: #475569;
+  font-size: clamp(0.8rem, 1.6vw, 1.2rem);
+  font-weight: 800;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+
+/* ── Rótulos ─────────────────────────────────────────────────────────────── */
+.lm-lbl {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: clamp(0.45rem, 1vw, 0.7rem);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.lm-lbl-fin {
+  color: #a21caf;
+  text-shadow: 0 0 6px #fff;
+}
+.lm-lbl-start {
+  color: #c2410c;
+  text-shadow: 0 0 6px #fff;
+}
+
+/* ── Pie ─────────────────────────────────────────────────────────────────── */
+.lm-foot {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: #f8faff;
+  border-top: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 5;
+}
+
+.lm-question {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #4f46e5;
+  flex: 1;
+  min-width: 12rem;
+}
+
+.lm-final-input {
+  width: 7.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 2px solid #cbd5e1;
+  background: #fff;
+  color: #1e293b;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+  -moz-appearance: textfield;
+}
+.lm-final-input::-webkit-inner-spin-button,
+.lm-final-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+.lm-final-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Los estados de la respuesta final reutilizan `lm-ns-*`, igual que las casillas */
+.lm-final-input.lm-ns-ok {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+.lm-final-input.lm-ns-err {
+  border-color: #ef4444 !important;
+}
+
+/* Los dos botones del pie vienen de `ActionButtons`; aquí solo se reparte el
+   espacio que sobra con la pregunta y la respuesta final. */
+.lm-actions {
+  flex-shrink: 0;
+}
+
+/* ── Escritura a mano ────────────────────────────────────────────────────── */
+/* Capa superpuesta sobre el tablero, con el lienzo de las cifras en medio. */
+.lm-canvas-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+.lm-canvas-popup {
+  background: #fff;
+  border: 2px solid #cbd5e1;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  min-width: 16rem;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+.lm-canvas-popup-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.lm-popup-digit-hint {
+  font-size: 0.7rem;
+  color: #4f46e5;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Varias cifras: una casilla por posición, de la mayor a la menor. */
+.lm-multi-digit {
+  display: flex;
+  flex-direction: row;
+  gap: 0.6rem;
+  justify-content: center;
+  align-items: flex-start;
+}
+.lm-digit-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+.lm-digit-place {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #4f46e5;
+}
+
+/* El tamaño del lienzo depende de cuántas cifras hay que escribir. */
+.lm-multi-digit-1 .dab__canvas {
+  width: 200px !important;
+  height: 200px !important;
+}
+.lm-multi-digit-2 .dab__canvas {
+  width: 140px !important;
+  height: 140px !important;
+}
+.lm-multi-digit-3 .dab__canvas,
+.lm-multi-digit-4 .dab__canvas {
+  width: 110px !important;
+  height: 110px !important;
+}
+
+/* Huella cuadrada y uniforme */
+.lm-multi-digit .dab {
+  width: 148px;
+  min-height: 148px;
+  justify-content: center;
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+}
+.lm-multi-digit-1 .dab {
+  width: 208px;
+  min-height: 208px;
+}
+.lm-multi-digit-3 .dab,
+.lm-multi-digit-4 .dab {
+  width: 118px;
+  min-height: 118px;
+}
+
+.lm-multi-digit .dab__digit {
+  font-weight: 600;
+  font-size: clamp(56px, 9vw, 92px);
+  color: #1e293b;
+}

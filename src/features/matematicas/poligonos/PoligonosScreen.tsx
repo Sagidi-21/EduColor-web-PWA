@@ -114,8 +114,9 @@ export function PoligonosScreen({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps) {
+  const [sessionSeed] = useState(() => seed);
   const [session, setSession] = useState<SessionState>(() => ({
-    exercises: generateSession(difficulty, seed),
+    exercises: generateSession(difficulty, sessionSeed),
     currentIndex: 0,
     correctCount: 0,
     startTime: Date.now(),
@@ -180,7 +181,7 @@ export function PoligonosScreen({
   const handleRestart = useCallback(() => {
     setFinished(null);
     setSession({
-      exercises: generateSession(difficulty, Date.now() % 999983),
+      exercises: generateSession(difficulty, sessionSeed),
       currentIndex: 0,
       correctCount: 0,
       startTime: Date.now(),

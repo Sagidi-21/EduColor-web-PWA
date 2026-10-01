@@ -86,7 +86,8 @@ export function IgualdadScreen({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps) {
-  const [session, setSession] = useState(() => freshSession(seed, difficulty));
+  const [sessionSeed] = useState(() => seed);
+  const [session, setSession] = useState(() => freshSession(sessionSeed, difficulty));
   const [finished, setFinished] = useState<{
     total: number;
     correct: number;
@@ -151,7 +152,7 @@ export function IgualdadScreen({
         onRestart={() => {
           setFinished(null);
           setSession({
-            exercises: generateSession(difficulty, Date.now() % 999983),
+            exercises: generateSession(difficulty, sessionSeed),
             currentIndex: 0,
             correctCount: 0,
             startTime: Date.now(),

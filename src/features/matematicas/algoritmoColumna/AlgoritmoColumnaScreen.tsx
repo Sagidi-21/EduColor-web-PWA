@@ -166,7 +166,8 @@ export function AlgoritmoColumnaScreen({
     [op, difficulty],
   );
 
-  const [session, setSession] = useState<SessionState>(() => makeSession(seed));
+  const [sessionSeed] = useState(() => seed);
+  const [session, setSession] = useState<SessionState>(() => makeSession(sessionSeed));
   const [finished, setFinished] = useState<{
     total: number;
     correct: number;
@@ -286,7 +287,7 @@ export function AlgoritmoColumnaScreen({
         result={finished}
         onRestart={() => {
           setFinished(null);
-          setSession(makeSession(Date.now() % 999983));
+          setSession(makeSession(sessionSeed));
         }}
         onExit={onExit}
         gradeLabel={gradeTitle ?? "Matemáticas"}

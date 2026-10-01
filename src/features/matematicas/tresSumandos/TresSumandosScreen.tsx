@@ -42,8 +42,9 @@ export function TresSumandosScreen({
   const { mode, toggle } = useInputMode();
   const [canvasKey, setCanvasKey] = useState(0);
 
+  const [sessionSeed] = useState(() => seed);
   const [session, setSession] = useState(() => {
-    const exercises = generateSession(difficulty, levelId, seed);
+    const exercises = generateSession(difficulty, levelId, sessionSeed);
     const firstLen = answerLen(exercises[0].answer);
     return {
       exercises,
@@ -167,7 +168,7 @@ export function TresSumandosScreen({
 
   const handleRestart = () => {
     setFinished(null);
-    const exercises = generateSession(difficulty, levelId, Date.now() % 999983);
+    const exercises = generateSession(difficulty, levelId, sessionSeed);
     const firstLen = answerLen(exercises[0].answer);
     setSession({
       exercises,

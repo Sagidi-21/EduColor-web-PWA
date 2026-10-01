@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { WeekDaysScreen } from "./WeekDaysScreen";
 import { generateSession, DAYS } from "../../../core/activities/weekDays";
 import { smokeProps } from "../testing/smoke";
@@ -99,5 +99,32 @@ describe("WeekDaysScreen smoke", () => {
 
     expect(container.querySelector(".shared-numpad")).toBeNull();
     expect(container.querySelector(".dab")).toBeNull();
+  });
+
+  it("pulsar 'Repetir' devuelve el mismo primer ejercicio (reutiliza la semilla)", () => {
+    const seed = 4242;
+    const exercises = generateSession("hard", seed);
+
+    const { container } = render(<WeekDaysScreen {...props("hard", seed)} />);
+    const firstQuestion = container.querySelector(".wd__question")?.textContent ?? "";
+
+    const runAutoAdvance = (ms = 900) => {
+      act(() => {
+        vi.advanceTimersByTime(ms);
+      });
+    };
+
+    exercises.forEach((ex) => {
+      fireEvent.click(
+        optionButtons(container).find((b) => (b.textContent ?? "").trim() === ex.answer)!,
+      );
+      runAutoAdvance();
+    });
+
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+
+    expect(container.querySelector(".summary__stars")).toBeNull();
+    expect(container.querySelector(".wd__question")?.textContent).toBe(firstQuestion);
   });
 });

@@ -198,4 +198,28 @@ describe("RelacionarScreen smoke", () => {
     expect(container.querySelector(".activity-header__counter")).toBeNull();
     expect(container.textContent).toContain(String(TOTAL_ROUNDS));
   });
+
+  it("pulsar 'Repetir' devuelve las mismas parejas (reutiliza la semilla de sesión)", () => {
+    const seed = 4242;
+    const rounds = session("easy", seed);
+
+    const { container } = render(<RelacionarScreen {...buildProps("easy", seed)} />);
+    const firstNumbers = Array.from(container.querySelectorAll(".rel__number")).map((n) =>
+      Number(n.textContent),
+    );
+
+    rounds.forEach((round) => {
+      round.leftColumn.forEach((pair) => connectPair(container, round, pair.number));
+      runTimers(ROUND_ADVANCE_MS);
+    });
+
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+
+    expect(container.querySelector(".summary__stars")).toBeNull();
+    const afterRestartNumbers = Array.from(container.querySelectorAll(".rel__number")).map((n) =>
+      Number(n.textContent),
+    );
+    expect(afterRestartNumbers).toEqual(firstNumbers);
+  });
 });

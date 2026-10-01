@@ -36,12 +36,9 @@ interface SessionState {
 // Utilidades de estado
 // ────────────────────────────────────────────────────────────────
 
-function initSession(difficulty: string, _seed = Date.now() % 999983): SessionState {
+function initSession(difficulty: string, seed: number): SessionState {
   return {
-    exercises: generateSession(
-      difficulty as Parameters<typeof generateSession>[0],
-      Date.now() % 999983,
-    ),
+    exercises: generateSession(difficulty as Parameters<typeof generateSession>[0], seed),
     currentIndex: 0,
     correctCount: 0,
     startTime: Date.now(),

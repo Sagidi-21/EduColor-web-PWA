@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { ShapesScreen } from "./ShapesScreen";
 import { generateSession, SHAPES } from "../../../core/activities/shapes";
 import { smokeProps } from "../testing/smoke";
@@ -94,5 +94,30 @@ describe("ShapesScreen smoke", () => {
 
     expect(container.querySelector(".shared-numpad")).toBeNull();
     expect(container.querySelector(".dab")).toBeNull();
+  });
+
+  it("pulsar 'Repetir' devuelve la misma figura (reutiliza la semilla de sesión)", () => {
+    const seed = 4242;
+    const exercises = generateSession("hard", seed);
+
+    const { container } = render(<ShapesScreen {...props("hard", seed)} />);
+    const firstQuestion = container.querySelector(".shp__question")?.textContent ?? "";
+
+    const runAutoAdvance = (ms = 900) => {
+      act(() => {
+        vi.advanceTimersByTime(ms);
+      });
+    };
+
+    exercises.forEach((ex) => {
+      fireEvent.click(container.querySelector(`#shp-option-${ex.correctAnswer}`)!);
+      runAutoAdvance();
+    });
+
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+
+    expect(container.querySelector(".summary__stars")).toBeNull();
+    expect(container.querySelector(".shp__question")?.textContent).toBe(firstQuestion);
   });
 });

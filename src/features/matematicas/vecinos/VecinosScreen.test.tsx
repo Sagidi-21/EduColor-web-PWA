@@ -204,4 +204,26 @@ describe("VecinosScreen smoke", () => {
     expect(container.querySelector(".activity-header__counter")).toBeNull();
     expect(container.textContent).toContain(String(exercises.length));
   });
+
+  it("pulsar 'Repetir' devuelve los mismos ejercicios (reutiliza la semilla de sesión)", () => {
+    const seed = 4242;
+    const exercises = session("easy", seed);
+
+    const { container } = render(<VecinosScreen {...buildProps("easy", seed)} />);
+    const firstQuestion = questionOf(container);
+
+    exercises.forEach((ex) => {
+      clickOption(container, ex, ex.correctAnswer);
+      runAutoAdvance();
+    });
+
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+
+    expect(container.querySelector(".summary__stars")).toBeNull();
+    expect(questionOf(container)).toBe(firstQuestion);
+    expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
+      `1/${exercises.length}`,
+    );
+  });
 });

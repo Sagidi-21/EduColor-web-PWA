@@ -1,0 +1,269 @@
+/* Motor "Pon la hora" — solo lo propio del motor.
+ *
+ * Todo lo que comparte con el motor `reloj` (`.reloj`, `.reloj__stage`,
+ * `.reloj__celebration`, `.reloj__stage--correct/--wrong`) viene de
+ * `../reloj/RelojScreen.css`, que es el equivalente PWA del
+ * `../reloj/RelojRenderer.css` que importaba el renderer de Electron.
+ */
+
+/* El stage ya no reserva `padding-top` para la leyenda: esta vive ahora dentro del
+   panel lateral (`.rph__side`), así que el reloj usa toda la altura del hueco que
+   deja la cabecera y no hay scroll vertical en ninguna combinación. */
+.rph__stage {
+  justify-content: flex-start !important;
+  /* El `padding: 2rem` que viene de `.reloj__stage` se come 4rem de alto; en
+     pantallas bajas eso ya es parte del scroll. Se deja el lateral (que no
+     afecta al alto) y el vertical se reduce en proporción.
+     Aquí no se puede usar `cqh`: el stage cuelga directo de `.reloj`, que no es
+     contenedor de consulta, así que la unidad caería a la ventana. */
+  padding-block: min(2rem, 4vh) !important;
+}
+
+/* Layout horizontal: panel lateral (hora + botón) a la izquierda, reloj a la derecha.
+ *
+ * `align-items: stretch` (no `center`) es lo que permite que `.rph__board` mida la
+ * altura real que le queda al stage. Con `center` la altura del board la marcaba su
+ * propio contenido —el SVG—, que es justo lo que hay que poder encoger. */
+.rph__layout {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  gap: clamp(1rem, 4vw, 3rem);
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  /* Contenedor de tamaño para que el panel lateral pueda escalar también su
+     tipografía con la altura libre (`cqh`). Sin esto, en pantallas bajas la hora
+     digital y los botones apilados se salen del stage y aparece el scroll. */
+  container-type: size;
+}
+
+.rph__side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Con el layout en `stretch` el panel llega a la altura completa del stage, así
+     que se centra él mismo el contenido en vez de confiar en `align-items`. */
+  justify-content: center;
+  /* El hueco también se encoge: son cinco bloques apilados (etiqueta, hora,
+     botón, pista, botones de acción, leyenda) y con el `gap` fijo la suma se
+     salía del stage en pantallas bajas. */
+  gap: min(1.2rem, 3.5cqh);
+  flex-shrink: 0;
+  min-height: 0;
+}
+/* Mismo color que la esfera del reloj grande (`fill="#1e1b4b"`) para que la
+   etiqueta, la hora digital y la esfera se lean como un solo bloque. */
+.rph__side-label {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin: 0;
+  text-align: center;
+}
+
+/* Ancla del aviso de acierto. `relative` para que `.rph__celebration` se posicione
+   respecto a la etiqueta y no respecto al stage. */
+.rph__side-head {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+/* "¡Correcto!" encima de "Pon las agujas en".
+ *
+ * En `reloj` el aviso va en `.reloj__celebration`, anclado al centro del stage
+ * (`left: 50%`), que aquí coincide con la esfera: el texto salía tapando el reloj
+ * justo en el momento en que el alumno quiere comprobar su resultado. Aquí se
+ * reaprovecha su color y su animación, pero el sitio es la etiqueta del panel. */
+.rph__celebration {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: min(2rem, 5cqh);
+  font-weight: 900;
+  color: #10b981;
+  white-space: nowrap;
+  animation: rph-celebration-pop 0.4s ease;
+  pointer-events: none;
+}
+
+/* Misma curva que `reloj-pop` pero sin el `translateX(-50%)`: aquí el centrado lo
+ * hace el `transform` de la posición absoluta, y combinarlo con la animación
+ * desplazaría el texto. */
+@keyframes rph-celebration-pop {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  80% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+/* Hora pedida, grande y estilo "pantalla digital".
+ *
+ * El `min()` con `cqh` (altura libre del layout) evita que el panel lateral
+ * desborde en pantallas bajas: por debajo de cierto hueco la hora y los dos
+ * botones apilados no caben, y como el stage es `overflow-y: auto` eso salía
+ * como scroll vertical. */
+.rph__target-big {
+  font-family: "Courier New", monospace;
+  font-size: min(clamp(2.6rem, 6vw, 4.5rem), 18cqh);
+  font-weight: 900;
+  color: #fbbf24;
+  background: #1e1b4b;
+  border: 3px solid rgba(251, 191, 36, 0.5);
+  border-radius: 1rem;
+  padding: 0.6rem 1.6rem;
+  letter-spacing: 0.08em;
+  box-shadow: 0 0 24px rgba(251, 191, 36, 0.25);
+}
+
+/* El reloj se mide contra el hueco real que le queda, no contra la ventana.
+ *
+ * Antes era `width: min(64vh, 52vw)`, que no sabe cuánto se le ha comido la
+ * cabecera: en pantallas bajas el `64vh` era mayor que el hueco disponible y el
+ * stage, que es `overflow-y: auto`, se ponía a scroll. Con `.rph__board` como
+ * contenedor de tamaño (`container-type: size`), `100cqh` es justo la altura
+ * libre y `100cqw` el ancho libre, así que el SVG es siempre un cuadrado que
+ * cabe en los dos ejes sin desbordar en ninguna combinación. */
+.rph__board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  container-type: size;
+}
+
+/* El reloj ocupa el mayor cuadrado que cabe en el hueco disponible, para que el
+ * arrastre del minutero sea cómodo en pizarra táctil sin provocar scroll.
+ *
+ * `min(100cqw, 100cqh)` lo limita por los dos ejes a la vez (el ancho y el alto
+ * libres del board) y `560px` lo topa para que no se haga enorme en una pizarra
+ * grande. Es el `width` el que manda y el `height` se empareja con `aspect-ratio`
+ * en vez de con un segundo `min()`, para que el SVG no pueda quedar más alto que
+ * ancho (que es lo que rompía el arrastre: la esfera se salía del stage). */
+.rph__clock {
+  width: min(100cqw, 100cqh, 560px);
+  height: auto;
+  aspect-ratio: 1;
+  max-width: 100%;
+  max-height: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Tiradores de las agujas: círculos grandes para el dedo */
+.rph__knob {
+  cursor: grab;
+  transition: transform 0.1s;
+}
+.rph__knob:active {
+  cursor: grabbing;
+}
+.rph__knob--hour {
+  fill: #ffffff;
+  stroke: #6366f1;
+  stroke-width: 3;
+}
+.rph__knob--min {
+  fill: #a78bfa;
+  stroke: #6d28d9;
+  stroke-width: 3;
+}
+
+/* Leyenda de las agujas, al pie del panel lateral como `label` propio.
+ *
+ * Ya no es `position: absolute`: al bajar dentro del panel deja de invadir la
+ * franja superior del stage y por eso se puede quitar el `padding-top` de
+ * reserva que provocaba el scroll vertical. */
+.rph__legend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 0.4rem;
+  font-size: clamp(12px, 0.95vw, 15px);
+  font-weight: 700;
+  color: #2e1065;
+  cursor: default;
+}
+.rph__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.rph__dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.rph__dot--hour {
+  background: #ffffff;
+  border: 2px solid #6366f1;
+}
+.rph__dot--min {
+  background: #a78bfa;
+  border: 2px solid #6d28d9;
+}
+
+.rph__check-btn {
+  padding: 14px 40px;
+  border: none;
+  border-radius: 14px;
+  background: #22c55e;
+  color: #fff;
+  font-size: min(20px, 4cqh);
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.1s;
+  margin-top: 4px;
+}
+.rph__check-btn:hover {
+  background: #16a34a;
+}
+.rph__check-btn:active {
+  transform: scale(0.96);
+}
+
+.rph__hint {
+  font-size: 17px;
+  font-weight: 700;
+  color: #fca5a5;
+  margin: 2px 0 0;
+}
+
+/* Reintentar y Siguiente, dentro del panel lateral.
+ *
+ * El componente compartido pone los dos en horizontal con 160 px de ancho mínimo
+ * cada uno y 20 de separación: 388 px con el padding, que no caben en el panel.
+ * Aquí se apilan y ocupan el ancho del panel. Solo cambia el `flex-direction` y
+ * el ancho; siguen siendo los mismos botones del resto de la app (D-018). */
+.rph__actions {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 0;
+  width: 100%;
+}
+.rph__actions .activity-action {
+  min-width: 0;
+  width: 100%;
+  /* Se encogen con la altura libre para que los dos botones + la hora + la
+     leyenda quepan sin que el stage tenga que hacer scroll. */
+  min-height: min(52px, 11cqh);
+  padding: 0 16px;
+  font-size: min(17px, 3.6cqh);
+}

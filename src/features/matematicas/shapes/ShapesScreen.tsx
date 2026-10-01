@@ -161,8 +161,9 @@ export function ShapesScreen({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps) {
+  const [sessionSeed] = useState(() => seed);
   const [session, setSession] = useState<SessionState>(() => ({
-    exercises: generateSession(difficulty, seed, SHAPES_REAL_IMAGES),
+    exercises: generateSession(difficulty, sessionSeed, SHAPES_REAL_IMAGES),
     currentIndex: 0,
     correctCount: 0,
     startTime: Date.now(),
@@ -227,7 +228,7 @@ export function ShapesScreen({
   const handleRestart = () => {
     setFinished(null);
     setSession({
-      exercises: generateSession(difficulty, Date.now() % 999983, SHAPES_REAL_IMAGES),
+      exercises: generateSession(difficulty, sessionSeed, SHAPES_REAL_IMAGES),
       currentIndex: 0,
       correctCount: 0,
       startTime: Date.now(),

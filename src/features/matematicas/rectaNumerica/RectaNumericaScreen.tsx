@@ -35,6 +35,8 @@ export function RectaNumericaScreen({
 }: EngineScreenProps) {
   const [session, setSession] = useState(() => ({
     exercises: generateSession(difficulty, seed),
+    /** Semilla de la tanda en curso: "Repetir" la reutiliza para dar el mismo ejercicio. */
+    seed,
     currentIndex: 0,
     correctCount: 0,
     startTime: Date.now(),
@@ -105,7 +107,8 @@ export function RectaNumericaScreen({
   const handleRestart = () => {
     setFinished(null);
     setSession({
-      exercises: generateSession(difficulty, Date.now() % 999983),
+      exercises: generateSession(difficulty, session.seed),
+      seed: session.seed,
       currentIndex: 0,
       correctCount: 0,
       startTime: Date.now(),

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { ParImparScreen } from "./ParImparScreen";
 import { generateSession, requiresWriting } from "../../../core/activities/parImpar";
 import type { ParImparExercise } from "../../../core/activities/parImpar";
@@ -138,5 +138,32 @@ describe("ParImparScreen smoke", () => {
     expect(container.querySelector(".dab")).toBeNull();
     expect(optionButtons(container).length).toBe(0);
     expect(questionOf(container)).toBe(session[writeIndex].question);
+  });
+
+  it("pulsar 'Repetir' devuelve el mismo primer ejercicio (reutiliza la semilla)", () => {
+    const seed = 4242;
+    const session = generateSession("easy", seed);
+
+    const { container } = render(<ParImparScreen {...buildProps("easy", seed)} />);
+    const firstQuestion = questionOf(container);
+
+    const runAutoAdvance = () => {
+      act(() => {
+        vi.advanceTimersByTime(900);
+      });
+    };
+
+    // Se contesta siempre la correcta: al acertar esta pantalla hace autoavance a
+    // los 900 ms, y si se fallara se quedarían a la espera del botón "Siguiente".
+    session.forEach((ex) => {
+      clickOptionWithValue(container, ex, ex.answer);
+      runAutoAdvance();
+    });
+
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+
+    expect(container.querySelector(".summary__stars")).toBeNull();
+    expect(questionOf(container)).toBe(firstQuestion);
   });
 });

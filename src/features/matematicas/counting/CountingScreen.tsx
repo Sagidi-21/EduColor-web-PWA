@@ -65,8 +65,11 @@ export function CountingScreen({
   const cfg = getLevelConfig(difficulty, levelId);
   const useCurriculum = !!levelId && !!CURRICULUM_LEVELS[levelId];
 
+  const [sessionSeed] = useState(() => seed);
   const [session, setSession] = useState<SessionState>(() => ({
-    exercises: useCurriculum ? generateSessionForLevel(levelId!, seed) : generateSession(cfg, seed),
+    exercises: useCurriculum
+      ? generateSessionForLevel(levelId!, sessionSeed)
+      : generateSession(cfg, sessionSeed),
     currentIndex: 0,
     currentStepIndex: 0,
     correctCount: 0,
@@ -203,8 +206,8 @@ export function CountingScreen({
     setFinished(null);
     setSession({
       exercises: useCurriculum
-        ? generateSessionForLevel(levelId!, Date.now() % 999983)
-        : generateSession(cfg, Date.now() % 999983),
+        ? generateSessionForLevel(levelId!, sessionSeed)
+        : generateSession(cfg, sessionSeed),
       currentIndex: 0,
       currentStepIndex: 0,
       correctCount: 0,

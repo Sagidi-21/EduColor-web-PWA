@@ -127,11 +127,11 @@ function filasDeMapa(mapa: string): FilaMapa[] {
 }
 
 describe("El estado de la migración está en un solo sitio", () => {
-  it("el registro y los manifiestos dan 34 de 62", () => {
+  it("el registro y los manifiestos dan 39 de 62", () => {
     // Cifra que repiten la cabecera del inventario y ESTADO_DEL_PROYECTO. Si
     // cambia, hay que actualizar esos dos sitios y este test avisa de que lo hagas.
     expect(activityManifests).toHaveLength(62);
-    expect(migrados.size).toBe(35);
+    expect(migrados.size).toBe(39);
   });
 
   it("el inventario marca migrada exactamente lo que el registro da como lanzable", () => {
@@ -242,8 +242,12 @@ describe("El estado de la migración está en un solo sitio", () => {
       // Solo tiene sentido con la copia local del proyecto Electron delante. Sin
       // ella no se puede afirmar nada sobre el lado de Electron, y el test se salta
       // en vez de dar por inexistente todo lo que no encuentra en disco.
+      // La excepción que hubo para `laberintoMatematico2` ya no hace falta: su
+      // celda de motor dice "comparte renderer con `laberintoMatematico`", que no
+      // lleva barra, así que `motorElectron` queda vacía y esta comprobación no lo
+      // mira. Una fila que sí nombre una carpeta debe nombrarla de verdad.
       const inventadas = filasDeMapa(leido("docs/MIGRACION_MAP.md"))
-        .filter((f) => f.motorElectron !== "" && f.engineId !== "laberintoMatematico2")
+        .filter((f) => f.motorElectron !== "")
         .filter((f) => !existsSync(join(ENGINES_ELECTRON, f.motorElectron.split("/")[0])))
         .map((f) => f.motorElectron.split("/")[0]);
       expect(

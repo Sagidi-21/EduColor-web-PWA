@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { SumaLlevandoScreen } from "./SumaLlevandoScreen";
 import { generateSession } from "../../../core/activities/sumaLlevando";
 import { smokeProps, typeOnNumpad, carryOf, switchToCanvas } from "../testing/smoke";
@@ -126,5 +126,28 @@ describe("SumaLlevandoScreen smoke", () => {
 
     expect(container.querySelector(".shared-numpad")).toBeNull();
     expect(container.querySelector(".dab--loading")).not.toBeNull();
+  });
+
+  it("pulsar 'Repetir' devuelve el mismo primer ejercicio (reutiliza la semilla)", () => {
+    const seed = 4242;
+    const session = generateSession("easy", seed);
+
+    const { container } = render(<SumaLlevandoScreen {...props("easy", seed)} />);
+
+    const firstStage = container.querySelector(".sumall__stage")?.textContent ?? "";
+
+    session.forEach((ex) => {
+      answerByHand(container, ex);
+      // Su autoavance tras acertar es de 1200 ms, no los 900 unificados de otras.
+      act(() => {
+        vi.advanceTimersByTime(1200);
+      });
+    });
+
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+
+    expect(container.querySelector(".summary__stars")).toBeNull();
+    expect(container.querySelector(".sumall__stage")?.textContent).toBe(firstStage);
   });
 });

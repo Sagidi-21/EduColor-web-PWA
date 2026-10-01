@@ -142,6 +142,22 @@ const BalanzaEquilibraScreen = lazy(() =>
   })),
 );
 
+const RelojScreen = lazy(() =>
+  import("./reloj/RelojScreen").then((module) => ({ default: module.RelojScreen })),
+);
+
+const RelojPonerHoraScreen = lazy(() =>
+  import("./relojPonerHora/RelojPonerHoraScreen").then((module) => ({
+    default: module.RelojPonerHoraScreen,
+  })),
+);
+
+const LaberintoMatematicoScreen = lazy(() =>
+  import("./laberintoMatematico/LaberintoMatematicoScreen").then((module) => ({
+    default: module.LaberintoMatematicoScreen,
+  })),
+);
+
 export interface EngineScreenProps {
   activity: ActivityManifest;
   difficulty: ActivityDifficulty;
@@ -409,6 +425,32 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <BalanzaEquilibraScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "reloj") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <RelojScreen {...props} />
+      </Suspense>
+    );
+  }
+
+  if (props.activity.engineId === "relojPonerHora") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <RelojPonerHoraScreen {...props} />
+      </Suspense>
+    );
+  }
+
+  if (
+    props.activity.engineId === "laberintoMatematico" ||
+    props.activity.engineId === "laberintoMatematico2"
+  ) {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <LaberintoMatematicoScreen {...props} />
       </Suspense>
     );
   }

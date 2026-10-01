@@ -202,6 +202,28 @@ describe("ElKiloScreen smoke", () => {
     expect(stats[0]).toBe("10/10");
     expect(stats[1]).toBe("100%");
   });
+
+  it("pulsar 'Repetir' devuelve los mismos ejercicios (reutiliza la semilla de sesión)", () => {
+    const seed = 4242;
+    const exercises = generateSession("easy", seed);
+
+    const { container } = render(<ElKiloScreen {...buildProps("easy", seed)} />);
+    const firstQuestion = questionOf(container);
+
+    exercises.forEach((ex) => {
+      fireEvent.click(optionButton(container, ex.answer));
+      runAutoAdvance();
+    });
+
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+
+    expect(container.querySelector(".summary__stars")).toBeNull();
+    expect(questionOf(container)).toBe(firstQuestion);
+    expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
+      `1/${exercises.length}`,
+    );
+  });
 });
 
 describe("ElKiloScreen recursos de imagen", () => {
