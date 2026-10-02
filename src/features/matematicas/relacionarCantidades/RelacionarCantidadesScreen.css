@@ -42,7 +42,10 @@
   align-items: flex-start;
   gap: 3rem;
   width: 100%;
-  max-width: 560px;
+  /* Antes 560 px, que era el ancho quelassen. Medida en pizarra, sobraba hueco
+     a los lados y el enunciado se partía en dos líneas, así que el ancho útil
+     se ha subido hasta donde entra el texto entero de `expert`. */
+  max-width: 1180px;
 }
 
 .rel2__svg {
@@ -68,6 +71,11 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  /* A partes iguales el ancho disponible. Antes cada columna medía lo que
+     ocupaba su contenido, de modo que una con enunciado corto se quedaba
+     estrecha y no aprovechaba el hueco que sobra en pizarra. */
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .rel2__col--left {
@@ -88,6 +96,9 @@
   background: #fff;
   cursor: pointer;
   user-select: none;
+  /* La tarjeta ocupa el ancho de su columna, para que las dos mitades de la
+     pantalla se vean iguales aunque una solo lleve texto. */
+  width: 100%;
   transition:
     border-color 0.15s ease,
     background 0.15s ease;
@@ -126,7 +137,9 @@
   font-size: 0.95rem;
   font-weight: 700;
   color: #1e3a8a;
-  max-width: 210px;
+  /* Sin tope fijo: antes se paraba en 210 px y partía el enunciado de `expert`
+     en dos líneas. Ahora usa el ancho de la tarjeta, que es más ancha. */
+  max-width: 100%;
 }
 
 .rel2__text-box--result {
@@ -154,54 +167,64 @@
   color: #475569;
 }
 
+/* Cajas y unidades van en la misma fila, pero en dos grupos independientes: cada
+ * uno se envuelve por dentro, de modo que las unidades que no caben siguen a la
+ * derecha y caen debajo de las otras unidades, nunca debajo de una caja de ×10 o
+ * ×100. `flex-start` los alinea arriba, así que un grupo con dos alturas no
+ * empuja al otro de sitio. */
 .rel2__figuras {
   display: flex;
+  flex-direction: row;
+  align-items: flex-start;
   flex-wrap: wrap;
-  align-items: center;
+  gap: 0.4rem;
+}
+
+.rel2__cajas,
+.rel2__unidades {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
   gap: 3px;
 }
 
 .rel2__img {
-  width: 18px;
-  height: 18px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
 }
 
-/* Las unidades sueltas van en fila, sin marco: el bloque ya lo lleva. */
+/* Las unidades sueltas van en fila, sin marco: la caja ya lo lleva. Mismo tamaño
+ * que la figura de dentro de una caja, para que todas las figuras se lean igual
+ * de lejos; lo que las distingue es el marco y el rótulo, no un tamaño menor. */
 .rel2__img--suelta {
-  width: 16px;
-  height: 16px;
+  width: 28px;
+  height: 28px;
 }
 
-/* El bloque de diez lleva una caja: es lo que distingue «diez» de «diez
- * unidades», que es justo lo que la actividad quiere que se vea. */
+/* Cada caja lleva una sola figura y su rótulo debajo: la caja es el objeto de
+ * las bases diez y el rótulo dice cuánto vale. Se distinguen por el marco y por
+ * el tamaño de la figura, no por tener cien o diez figuras dibujadas. */
 .rel2__bloque {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 3px;
+  padding: 4px;
   border: 1.5px solid rgba(37, 99, 235, 0.45);
   border-radius: 6px;
   background: rgba(37, 99, 235, 0.06);
 }
 
-.rel2__bloque-figuras {
-  display: grid;
-  grid-template-columns: repeat(5, auto);
-  gap: 2px;
+.rel2__bloque--cien {
+  border-color: rgba(37, 99, 235, 0.7);
+  background: rgba(37, 99, 235, 0.12);
 }
 
 .rel2__bloque-rotulo {
   font-size: 0.7rem;
   font-weight: 800;
   color: #1d4ed8;
-}
-
-.rel2__oculto {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #475569;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -217,13 +240,9 @@
     gap: 1rem;
   }
 
-  .rel2__img {
-    width: 16px;
-    height: 16px;
-  }
-
+  .rel2__img,
   .rel2__img--suelta {
-    width: 14px;
-    height: 14px;
+    width: 20px;
+    height: 20px;
   }
 }

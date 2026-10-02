@@ -23,46 +23,66 @@ import { pickCategory, pickImage } from "../../platform/objectImages";
  *    `leftCountA` y `leftCountB`, pero el renderer solo pintaba el primero, así
  *    que «Grupo A: 30 · Grupo B: 8» mostraba el grupo B únicamente en el texto.
  *    Aquí la izquierda es una lista y el nivel de grupos trae las dos.
+ * 4. **La tarjeta de la derecha ya no dibuja, solo lleva el texto.** Decisión
+ *    del profesor de Matemáticas tras el pase en pizarra: con el enunciado
+ *    entero más el dibujo, la columna derecha no cabía y competía por el
+ *    espacio con la izquierda. `derecha.total` se sigue calculando y se sigue
+ *    comprobando aquí, porque es el número que anuncia el texto, pero ya no se
+ *    pinta; el dibujo queda solo en la columna que sitúa la cantidad.
  *
  * ## Cómo se dibuja una cantidad
  *
- * Un bloque por decena, rotulado `×10`, más las unidades sueltas: 14 son diez
- * figuras marcadas `×10` y cuatro figuras. Es la representación de la base
- * decimal que se usa en la pizarra, y evita el problema contrario —dibujar
- * catorce veces una y otra— sin dejar de teach la cantidad entera.
+ * Una caja por cada cien, una caja por cada diez y las unidades sueltas: 347 son
+ * tres cajas de cien, cuatro de diez y siete figuras. Es la representación de la
+ * base decimal que se usa en la pizarra, y evita el problema contrario —dibujar
+ * catorce veces una y otra— sin dejar de dibujar la cantidad entera.
  *
- * Dibujar de verdad hasta 999 no cabe en una tarjeta, así que a partir de
- * `MAX_BLOQUES` bloques el resto se declara en una etiqueta (`+N × 10`) en vez de
- * dibujarse. En `easy`, `medium` y `hard` no llega a ocurrir: los números se
- * quedan en 45, con cuatro bloques. Solo en `expert`, que llega a 999, y por eso
- * la tarjeta lo dice en alto en lugar de dar por hecho un dibujo que no está.
+ * Las cajas llevan su rótulo porque una caja de cien no es cien veces una figura
+ * suelta: es otro orden de unidad, y de eso va la actividad.
  */
-
-/** Cuántos bloques de diez se dibujan como mucho antes de declarar el resto. */
-export const MAX_BLOQUES = 5;
 
 /** Parejas por pantalla. El original lo fijaba en 4, por claridad en pizarra. */
 export const PAREJAS_POR_PANTALLA = 4;
 
-/** Qué se dibuja y qué se declara, para una cantidad dada. */
-export interface Representacion {
-  /** Bloques de diez que se dibujan. */
-  bloques: number;
-  /** Figuras sueltas, de 0 a 9. */
-  unidades: number;
-  /**
-   * Decenas que se declaran en la etiqueta en vez de dibujarse.
-   *
-   * Cero en todos los niveles menos `expert`.
-   */
-  decenasOcultas: number;
+/**
+ * Parejas por pantalla en `expert`.
+ *
+ * Bajado de 4 a 3 a petición del profesor de Matemáticas tras verlo en pizarra:
+ * los enunciados de la descomposición C-D-U («Descomponer 457» / «4 C + 5 D + 7
+ * U») no caben en la tarjeta cuando hay cuatro por pantalla. Los otros tres
+ * niveles conservan 4, donde sí caben.
+ */
+export const PAREJAS_POR_PANTALLA_EXPERT = 3;
+
+/** Cuántas parejas pinta una pantalla según la dificultad. */
+export function parejasPorPantalla(difficulty: ActivityDifficulty): number {
+  return difficulty === "expert" ? PAREJAS_POR_PANTALLA_EXPERT : PAREJAS_POR_PANTALLA;
 }
 
-/** Cómo se descompone una cantidad para dibujarla. */
+/** Qué se dibuja y qué se declara, para una cantidad dada. */
+export interface Representacion {
+  /** Cajas de cien que se dibujan. De 0 a 9. */
+  centenas: number;
+  /** Cajas de diez que se dibujan. De 0 a 9. */
+  decenas: number;
+  /** Figuras sueltas, de 0 a 9. */
+  unidades: number;
+}
+
+/**
+ * Cómo se descompone una cantidad para dibujarla.
+ *
+ * Toda cantidad se dibuja entera, en los tres tramos de la base decimal, sin
+ * declarar nada «en alto»: una caja por cien, una caja por diez y las unidades
+ * sueltas. Antes las decenas que no cabían se agrupaban en una etiqueta del
+ * tipo «+34 × 10», que es una cuenta, no una cantidad, y no se entendía.
+ */
 export function representacion(total: number): Representacion {
-  const decenas = Math.floor(total / 10);
-  const bloques = Math.min(decenas, MAX_BLOQUES);
-  return { bloques, unidades: total % 10, decenasOcultas: decenas - bloques };
+  return {
+    centenas: Math.floor(total / 100),
+    decenas: Math.floor(total / 10) % 10,
+    unidades: total % 10,
+  };
 }
 
 /** Una cantidad que aparece dibujada en una tarjeta. */
@@ -243,7 +263,7 @@ export function generateRound(
   const generar = GENERADORES[difficulty];
 
   const pairs: RelacionarCantidadesPair[] = Array.from(
-    { length: PAREJAS_POR_PANTALLA },
+    { length: parejasPorPantalla(difficulty) },
     (_, i) => ({ id: i, ...generar(rng), imageUrl, objectLabel: cat.name }),
   );
 
@@ -274,7 +294,7 @@ export function isCorrectPair(
   return left.id === right.id;
 }
 
-/** Cuántas figuras sueltas tiene una cantidad, para la lista de dibijos. */
+/** Cuántas figuras tiene una cantidad, contando las de las cajas. */
 export function figurasDe(representacion: Representacion): number {
-  return representacion.bloques * 10 + representacion.unidades;
+  return representacion.centenas * 100 + representacion.decenas * 10 + representacion.unidades;
 }

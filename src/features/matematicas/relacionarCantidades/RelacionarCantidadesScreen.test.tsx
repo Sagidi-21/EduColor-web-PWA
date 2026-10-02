@@ -89,43 +89,46 @@ describe("relacionarCantidades — la pantalla", () => {
   });
 });
 
-describe("relacionarCantidades — cada tarjeta dibuja lo que dice", () => {
-  it("la tarjeta derecha dibuja la cantidad que anuncia su texto", () => {
+describe("relacionarCantidades — la tarjeta derecha ya no dibuja", () => {
+  it("la tarjeta derecha se pinta solo con el texto, sin figuras", () => {
     // El original pintaba lo añadido o quitado debajo de un texto que hablaba
-    // del total: «Ahora tengo 21» con cinco objetos dibujados.
+    // del total: «Ahora tengo 21» con cinco objetos dibujados. Y en el pase en
+    // pizarra el dibujo se retiró del todo de la columna derecha para que el
+    // enunciado cupiera entero.
     const pantalla = pantallas("medium", 4242)[0]!;
     const { container } = render(<RelacionarCantidadesScreen {...props("medium")} />);
 
     for (const [i, par] of pantalla.rightColumn.entries()) {
       const tarjeta = derecha(container)[i]!;
-      const { bloques, unidades } = representacion(par.derecha.total);
-      expect(tarjeta.querySelectorAll(".rel2__bloque"), par.rightText).toHaveLength(bloques);
-      expect(tarjeta.querySelectorAll(".rel2__img--suelta"), par.rightText).toHaveLength(unidades);
+      expect(tarjeta.querySelectorAll(".rel2__cantidad"), par.rightText).toHaveLength(0);
+      expect(tarjeta.querySelectorAll("img"), par.rightText).toHaveLength(0);
+      expect(tarjeta.querySelector(".rel2__text-box")?.textContent).toBe(par.rightText);
     }
   });
 
-  it("cada bloque de diez va rotulado como ×10", () => {
-    // Un grupo de diez figuras no es «diez unidades»: es la base decimal, y
-    // confundirlos es justo lo que la actividad quiere evitar.
+  it("cada caja lleva una sola figura y su rótulo debajo: ×100 o ×10", () => {
+    // Una caja de cien no es cien veces una figura suelta, ni una de diez es
+    // diez veces: son los tres órdenes de la base decimal, y confundirlos es
+    // justo lo que la actividad quiere evitar. Por eso la caja lleva el rótulo
+    // y no las cien figuras que representa.
     const { container } = render(<RelacionarCantidadesScreen {...props("medium")} />);
 
-    const bloques = container.querySelectorAll(".rel2__bloque");
-    expect(bloques.length).toBeGreaterThan(0);
-    for (const bloque of bloques) {
-      expect(bloque.querySelectorAll(".rel2__img")).toHaveLength(10);
-      expect(bloque.querySelector(".rel2__bloque-rotulo")?.textContent).toBe("×10");
+    const cajas = container.querySelectorAll(".rel2__bloque");
+    expect(cajas.length).toBeGreaterThan(0);
+    for (const caja of cajas) {
+      const esCien = caja.classList.contains("rel2__bloque--cien");
+      expect(caja.querySelectorAll("img"), esCien ? "×100" : "×10").toHaveLength(1);
+      expect(caja.querySelector(".rel2__bloque-rotulo")?.textContent).toBe(esCien ? "×100" : "×10");
     }
   });
 
-  it("catorce son diez figuras marcadas y cuatro sueltas", () => {
-    const caso = (total: number) => {
-      const { bloques, unidades } = representacion(total);
-      return { bloques, unidades };
-    };
-    expect(caso(14)).toEqual({ bloques: 1, unidades: 4 });
-    expect(caso(10)).toEqual({ bloques: 1, unidades: 0 });
-    expect(caso(7)).toEqual({ bloques: 0, unidades: 7 });
-    expect(caso(30)).toEqual({ bloques: 3, unidades: 0 });
+  it("catorce son una caja de diez y cuatro sueltas; 347, tres de cien y cuatro de diez", () => {
+    expect(representacion(14)).toEqual({ centenas: 0, decenas: 1, unidades: 4 });
+    expect(representacion(10)).toEqual({ centenas: 0, decenas: 1, unidades: 0 });
+    expect(representacion(7)).toEqual({ centenas: 0, decenas: 0, unidades: 7 });
+    expect(representacion(30)).toEqual({ centenas: 0, decenas: 3, unidades: 0 });
+    expect(representacion(347)).toEqual({ centenas: 3, decenas: 4, unidades: 7 });
+    expect(representacion(999)).toEqual({ centenas: 9, decenas: 9, unidades: 9 });
   });
 
   it("la tarjeta izquierda dibuja entero lo que dice, sin quedarse en diez", () => {
@@ -135,8 +138,11 @@ describe("relacionarCantidades — cada tarjeta dibuja lo que dice", () => {
 
     for (const [i, par] of pantalla.leftColumn.entries()) {
       const tarjeta = izquierda(container)[i]!;
-      const { bloques, unidades } = representacion(par.izquierda[0]!.total);
-      expect(tarjeta.querySelectorAll(".rel2__bloque"), par.leftText).toHaveLength(bloques);
+      const { decenas, unidades } = representacion(par.izquierda[0]!.total);
+      expect(
+        tarjeta.querySelectorAll(".rel2__cajas .rel2__bloque:not(.rel2__bloque--cien)").length,
+        par.leftText,
+      ).toBe(decenas);
       expect(tarjeta.querySelectorAll(".rel2__img--suelta"), par.leftText).toHaveLength(unidades);
     }
   });
@@ -167,34 +173,67 @@ describe("relacionarCantidades — cada tarjeta dibuja lo que dice", () => {
     expect(conDos).toBeGreaterThan(0);
   });
 
-  it("en experto, cuando no cabe entero, la tarjeta declara lo que no dibuja", () => {
-    // Dibujar 34 bloques de diez no cabe en una tarjeta, así que el resto se
-    // declara en alto en vez de darse por dibujado.
+  it("en experto la cantidad entera sale en cajas de cien, de diez y sueltas", () => {
+    // Ya no existe la etiqueta «+N × 10»: todo se dibuja. 457 son cuatro cajas
+    // de cien, cinco de diez y siete figuras sueltas.
     for (const semilla of [777, 4242, 999983]) {
       const pantalla = pantallas("expert", semilla)[0]!;
       const { container } = render(<RelacionarCantidadesScreen {...props("expert", semilla)} />);
 
-      // Una etiqueta por tarjeta con decenas que no caben, no una por decena:
-      // el rótulo dice "+N × 10" de una vez.
-      const esperados = pantalla.pairs.filter(
-        (par) => representacion(par.izquierda[0]!.total).decenasOcultas > 0,
-      ).length;
-      const etiquetas = Array.from(container.querySelectorAll(".rel2__oculto")).map(
-        (n) => n.textContent,
-      );
-      expect(etiquetas).toHaveLength(esperados);
-      // Y lo que se declara más lo que se dibuja sigue siendo la cantidad entera.
+      // La etiqueta antigua no debe reaparecer por ningún lado.
+      expect(container.querySelectorAll(".rel2__oculto")).toHaveLength(0);
+
       for (const [i, par] of pantalla.leftColumn.entries()) {
         const r = representacion(par.izquierda[0]!.total);
         const tarjeta = izquierda(container)[i]!;
-        const dibujado =
-          tarjeta.querySelectorAll(".rel2__bloque").length * 10 +
-          tarjeta.querySelectorAll(".rel2__img--suelta").length;
-        const declarado = r.decenasOcultas * 10;
-        expect(dibujado + declarado, par.leftText).toBe(par.izquierda[0]!.total);
+
+        const cajasDeCien = tarjeta.querySelectorAll(".rel2__bloque--cien");
+        expect(cajasDeCien.length, par.leftText).toBe(r.centenas);
+        for (const caja of cajasDeCien) {
+          expect(caja.querySelectorAll("img")).toHaveLength(1);
+          expect(caja.querySelector(".rel2__bloque-rotulo")?.textContent).toBe("×100");
+        }
+
+        const cajasDeDiez = tarjeta.querySelectorAll(
+          ".rel2__cajas .rel2__bloque:not(.rel2__bloque--cien)",
+        );
+        expect(cajasDeDiez.length, par.leftText).toBe(r.decenas);
+        for (const caja of cajasDeDiez) {
+          expect(caja.querySelectorAll("img")).toHaveLength(1);
+          expect(caja.querySelector(".rel2__bloque-rotulo")?.textContent).toBe("×10");
+        }
+
+        expect(tarjeta.querySelectorAll(".rel2__img--suelta").length, par.leftText).toBe(
+          r.unidades,
+        );
+
+        // Y la suma de lo dibujado es la cantidad entera, sin nada declarado.
+        const dibujado = r.centenas * 100 + r.decenas * 10 + r.unidades;
+        expect(dibujado, par.leftText).toBe(par.izquierda[0]!.total);
       }
       container.remove();
     }
+  });
+
+  it("las unidades van en su propio grupo, aparte de las cajas", () => {
+    // Si compartieran envoltorio, las unidades que no cabían caían debajo de una
+    // caja de ×10 o ×100 y se leían como si fueran parte de ella.
+    const pantalla = pantallas("expert", 777)[0]!;
+    const { container } = render(<RelacionarCantidadesScreen {...props("expert", 777)} />);
+
+    for (const tarjeta of izquierda(container)) {
+      const cajas = tarjeta.querySelector(".rel2__cajas");
+      const unidades = tarjeta.querySelector(".rel2__unidades");
+      // Ninguno de los dos grupos contiene elementos del otro.
+      expect(cajas?.querySelectorAll(".rel2__img--suelta")).toHaveLength(0);
+      expect(unidades?.querySelectorAll(".rel2__bloque")).toHaveLength(0);
+      // Y los dos están dentro del mismo contenedor de figuras.
+      expect(tarjeta.querySelectorAll(".rel2__figuras")).toHaveLength(1);
+      expect(cajas, "grupo de cajas").not.toBeNull();
+      if (unidades) expect(unidades, "grupo de unidades").not.toBeNull();
+    }
+
+    expect(pantalla.leftColumn.length).toBeGreaterThan(0);
   });
 });
 

@@ -124,7 +124,7 @@ export function RelacionarCantidadesScreen({
             <Tarjeta par={par} texto={par.leftText} cantidades={par.izquierda} resultado={false} />
           )}
           renderRight={(par) => (
-            <Tarjeta par={par} texto={par.rightText} cantidades={[par.derecha]} resultado />
+            <Tarjeta par={par} texto={par.rightText} cantidades={[]} resultado />
           )}
           onComplete={handleComplete}
         />
@@ -133,7 +133,15 @@ export function RelacionarCantidadesScreen({
   );
 }
 
-/** Una tarjeta: el texto arriba y debajo lo que dice, dibujado. */
+/**
+ * Una tarjeta: el texto arriba y debajo lo que dice, dibujado.
+ *
+ * La de la derecha se pinta solo con el texto: por decisión del profesor de
+ * Matemáticas tras el pase en pizarra, el dibujo va únicamente en la columna
+ * izquierda, que es la que sitúa la cantidad. Así el emparejamiento se lee
+ * entre una tarjeta dibujada y su enunciado, sin dos bloques de figuras
+ * compitiendo por el espacio.
+ */
 function Tarjeta({
   par,
   texto,
@@ -149,20 +157,26 @@ function Tarjeta({
   return (
     <>
       <div className={`rel2__text-box${resultado ? " rel2__text-box--result" : ""}`}>{texto}</div>
-      <div className="rel2__visual">
-        {cantidades.map((cantidad, i) => (
-          <CantidadDibujo key={`${cantidad.total}-${i}`} cantidad={cantidad} par={par} />
-        ))}
-      </div>
+      {cantidades.length > 0 && (
+        <div className="rel2__visual">
+          {cantidades.map((cantidad, i) => (
+            <CantidadDibujo key={`${cantidad.total}-${i}`} cantidad={cantidad} par={par} />
+          ))}
+        </div>
+      )}
     </>
   );
 }
 
 /**
- * Dibuja una cantidad: un bloque por decena, rotulado `×10`, y las unidades sueltas.
+ * Dibuja una cantidad: una caja por cada cien, una por cada diez y las unidades
+ * sueltas.
  *
- * Un bloque de diez lleva su rótulo porque un grupo de diez figuras no es diez
- * veces una figura suelta: es la base decimal, y de eso va la actividad.
+ * Cada caja lleva **una sola figura** y su rótulo debajo, no las cien ni las diez
+ * figuras que representa: dibujar 100 figuras para decir «cien» es lo que
+ * dejaba la tarjeta sin sitio. La caja es el objeto —la plancha y la barra de las
+ * bases diez— y el rótulo dice cuánto vale, de modo que la diferencia entre cien
+ * y diez se ve en el tamaño de la caja y no en tener que contar figuras.
  */
 function CantidadDibujo({
   cantidad,
@@ -171,39 +185,47 @@ function CantidadDibujo({
   cantidad: CantidadVisual;
   par: RelacionarCantidadesPair;
 }) {
-  const { bloques, unidades, decenasOcultas } = representacion(cantidad.total);
+  const { centenas, decenas, unidades } = representacion(cantidad.total);
 
   return (
     <div className="rel2__cantidad">
       {cantidad.rotulo && <span className="rel2__rotulo">{cantidad.rotulo}</span>}
 
+      {/* Las cajas y las unidades comparten fila pero no envoltorio: si compartieran
+          el mismo, las unidades que no cabían caían debajo de las cajas de ×10 o
+          ×100 y se leían como si fueran parte de ellas. */}
       <div className="rel2__figuras">
-        {Array.from({ length: bloques }, (_, b) => (
-          <div key={`bloque-${b}`} className="rel2__bloque">
-            <div className="rel2__bloque-figuras">
-              {Array.from({ length: 10 }, (_, f) => (
-                <img key={f} src={par.imageUrl} className="rel2__img" alt="" />
-              ))}
-            </div>
-            <span className="rel2__bloque-rotulo">×10</span>
+        {(centenas > 0 || decenas > 0) && (
+          <div className="rel2__cajas">
+            {Array.from({ length: centenas }, (_, c) => (
+              <div key={`cien-${c}`} className="rel2__bloque rel2__bloque--cien">
+                <img src={par.imageUrl} className="rel2__img" alt="" />
+                <span className="rel2__bloque-rotulo">×100</span>
+              </div>
+            ))}
+
+            {Array.from({ length: decenas }, (_, d) => (
+              <div key={`diez-${d}`} className="rel2__bloque">
+                <img src={par.imageUrl} className="rel2__img" alt="" />
+                <span className="rel2__bloque-rotulo">×10</span>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
 
-        {Array.from({ length: unidades }, (_, u) => (
-          <img
-            key={`suelta-${u}`}
-            src={par.imageUrl}
-            className="rel2__img rel2__img--suelta"
-            alt=""
-          />
-        ))}
+        {unidades > 0 && (
+          <div className="rel2__unidades">
+            {Array.from({ length: unidades }, (_, u) => (
+              <img
+                key={`suelta-${u}`}
+                src={par.imageUrl}
+                className="rel2__img rel2__img--suelta"
+                alt=""
+              />
+            ))}
+          </div>
+        )}
       </div>
-
-      {decenasOcultas > 0 && (
-        // Solo llega en `expert`, con números de tres cifras: dibujar 34 bloques
-        // no cabe en una tarjeta, así que se declara lo que no se dibuja.
-        <span className="rel2__oculto">+{decenasOcultas} × 10</span>
-      )}
     </div>
   );
 }

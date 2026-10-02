@@ -4,8 +4,9 @@ import {
   generateRound,
   generateSession,
   isCorrectPair,
-  MAX_BLOQUES,
   PAREJAS_POR_PANTALLA,
+  PAREJAS_POR_PANTALLA_EXPERT,
+  parejasPorPantalla,
   representacion,
 } from "./relacionarCantidades";
 import type { ActivityDifficulty } from "../content/contracts";
@@ -21,41 +22,46 @@ const parejas = (dificultad: ActivityDifficulty, semilla = 42) =>
 const numeros = (texto: string): number[] => (texto.match(/\d+/g) ?? []).map(Number);
 
 describe("relacionarCantidades — representacion", () => {
-  it("un bloque por decena y las unidades sueltas", () => {
-    expect(representacion(0)).toEqual({ bloques: 0, unidades: 0, decenasOcultas: 0 });
-    expect(representacion(7)).toEqual({ bloques: 0, unidades: 7, decenasOcultas: 0 });
-    expect(representacion(10)).toEqual({ bloques: 1, unidades: 0, decenasOcultas: 0 });
-    // El ejemplo del enunciado: 14 son diez figuras marcadas ×10 y cuatro.
-    expect(representacion(14)).toEqual({ bloques: 1, unidades: 4, decenasOcultas: 0 });
+  it("una caja por cien, una por diez y las unidades sueltas", () => {
+    expect(representacion(0)).toEqual({ centenas: 0, decenas: 0, unidades: 0 });
+    expect(representacion(7)).toEqual({ centenas: 0, decenas: 0, unidades: 7 });
+    expect(representacion(10)).toEqual({ centenas: 0, decenas: 1, unidades: 0 });
+    // El ejemplo del enunciado: 14 son una caja de diez y cuatro figuras.
+    expect(representacion(14)).toEqual({ centenas: 0, decenas: 1, unidades: 4 });
+    // Y 347, que es donde entra la caja de cien: tres de cien, cuatro de diez
+    // y siete sueltas. Antes esto se resolvía con un «+34 × 10» que no se
+    // entendía, y el profesor pidió las tres cajas dibujadas.
+    expect(representacion(347)).toEqual({ centenas: 3, decenas: 4, unidades: 7 });
+    expect(representacion(999)).toEqual({ centenas: 9, decenas: 9, unidades: 9 });
   });
 
-  it("las unidades nunca pasan de nueve, para que no se confundan con un bloque", () => {
-    for (let total = 0; total <= 300; total++) {
+  it("ni las unidades ni las decenas pasan de nueve, para que no se confundan con una caja", () => {
+    for (let total = 0; total <= 999; total++) {
       const r = representacion(total);
       expect(r.unidades, `total ${total}`).toBeGreaterThanOrEqual(0);
       expect(r.unidades, `total ${total}`).toBeLessThanOrEqual(9);
+      expect(r.decenas, `total ${total}`).toBeGreaterThanOrEqual(0);
+      expect(r.decenas, `total ${total}`).toBeLessThanOrEqual(9);
+      expect(r.centenas, `total ${total}`).toBeGreaterThanOrEqual(0);
+      expect(r.centenas, `total ${total}`).toBeLessThanOrEqual(9);
     }
   });
 
-  it("lo dibujado más lo declarado reconstruye la cantidad", () => {
+  it("las cajas y las sueltas reconstruyen la cantidad exacta", () => {
     for (let total = 0; total <= 999; total++) {
       const r = representacion(total);
-      const dibujado = r.bloques * 10 + r.unidades;
-      const declarado = r.decenasOcultas * 10;
-      expect(dibujado + declarado, `total ${total}`).toBe(total);
-      expect(figurasDe(r), `total ${total}`).toBe(dibujado);
+      expect(figurasDe(r), `total ${total}`).toBe(total);
     }
   });
 
-  it("nunca dibuja más de MAX_BLOQUES bloques", () => {
+  it("dibuja la cantidad entera: no queda nada por declarar", () => {
+    // La etiqueta «+N × 10» ya no existe, así que no hay ningún tramo de la
+    // cantidad que quede solo escrito. Si esto falla, alguien ha reintroducido
+    // una forma de «declarar en alto» en vez de dibujar.
     for (let total = 0; total <= 999; total++) {
-      expect(representacion(total).bloques, `total ${total}`).toBeLessThanOrEqual(MAX_BLOQUES);
-    }
-  });
-
-  it("hasta 59 no hay nada que declarar, así que la tarjeta lo enseña entero", () => {
-    for (let total = 0; total <= 59; total++) {
-      expect(representacion(total).decenasOcultas, `total ${total}`).toBe(0);
+      const r = representacion(total);
+      const dibujado = r.centenas * 100 + r.decenas * 10 + r.unidades;
+      expect(dibujado, `total ${total}`).toBe(total);
     }
   });
 });
@@ -87,16 +93,15 @@ describe("relacionarCantidades — cada tarjeta dibuja lo que dice", () => {
 
   it("la izquierda dibuja entero lo que dice, sin recortarlo a diez figuras", () => {
     // El original pintaba `Math.min(10, cantidad)`, y «Tengo 25» salía con diez.
-    // En `expert` los números llegan a 999, así que se excluye: ahí sí puede
-    // haber decenas que la tarjeta declara en vez de dibujar.
-    for (const dificultad of ["easy", "medium", "hard"] as const) {
+    // Ahora entra también `expert`: con las cajas de cien y de diez dibujadas,
+    // hasta 999 sale entero y no queda nada por declarar.
+    for (const dificultad of DIFICULTADES) {
       for (const semilla of SEMILLAS) {
         for (const par of parejas(dificultad, semilla)) {
           for (const cantidad of par.izquierda) {
             expect(cantidad.total, `${dificultad}: ${par.leftText}`).toBeGreaterThan(0);
             const r = representacion(cantidad.total);
-            // En estos tres niveles no hay nada que declarar: sale entero.
-            expect(r.decenasOcultas, `${dificultad}: ${par.leftText}`).toBe(0);
+            // Nada queda sin dibujar: sale entero en los cuatro niveles.
             expect(figurasDe(r), `${dificultad}: ${par.leftText}`).toBe(cantidad.total);
           }
           if (par.izquierda.length === 1) {
@@ -139,16 +144,26 @@ describe("relacionarCantidades — cada tarjeta dibuja lo que dice", () => {
 });
 
 describe("relacionarCantidades — pantallas", () => {
-  it("trae cuatro parejas por pantalla", () => {
+  it("trae tres parejas por pantalla en expert y cuatro en los demás niveles", () => {
+    // En `expert` el enunciado entero no cabía con cuatro tarjetas, así que se
+    // Bajaron a tres. Los otros niveles conservan las cuatro del original.
     for (const dificultad of DIFICULTADES) {
+      const esperado = dificultad === "expert" ? PAREJAS_POR_PANTALLA_EXPERT : PAREJAS_POR_PANTALLA;
       for (const semilla of SEMILLAS) {
         for (const pantalla of generateSession(dificultad, semilla, 3)) {
-          expect(pantalla.pairs, `${dificultad}/${semilla}`).toHaveLength(PAREJAS_POR_PANTALLA);
-          expect(pantalla.leftColumn).toHaveLength(PAREJAS_POR_PANTALLA);
-          expect(pantalla.rightColumn).toHaveLength(PAREJAS_POR_PANTALLA);
+          expect(pantalla.pairs, `${dificultad}/${semilla}`).toHaveLength(esperado);
+          expect(pantalla.leftColumn).toHaveLength(esperado);
+          expect(pantalla.rightColumn).toHaveLength(esperado);
         }
       }
     }
+  });
+
+  it("el número de parejas por pantalla es 3 solo en expert", () => {
+    expect(parejasPorPantalla("expert")).toBe(3);
+    expect(parejasPorPantalla("easy")).toBe(4);
+    expect(parejasPorPantalla("medium")).toBe(4);
+    expect(parejasPorPantalla("hard")).toBe(4);
   });
 
   it("las dos columnas tienen las mismas parejas, barajadas por separado", () => {
@@ -231,7 +246,6 @@ describe("relacionarCantidades — rangos de cada dificultad", () => {
   });
 
   it("experto llega hasta 999 y la derecha son las unidades", () => {
-    let conDecenasOcultas = 0;
     for (const semilla of SEMILLAS) {
       for (const par of parejas("expert", semilla)) {
         const [total] = numeros(par.leftText);
@@ -245,11 +259,24 @@ describe("relacionarCantidades — rangos de cada dificultad", () => {
         expect(total!, par.rightText).toBe(esperado);
         // La derecha dibuja las unidades, que es la parte que se ve.
         expect(par.derecha.total).toBe(partes.at(-1));
-        if (representacion(total!).decenasOcultas > 0) conDecenasOcultas++;
       }
     }
-    // Y cuando no cabe entero, la tarjeta lo declara en alto.
-    expect(conDecenasOcultas).toBeGreaterThan(0);
+  });
+
+  it("en experto la cantidad de tres cifras sale entera en cajas de cien y de diez", () => {
+    // Antes, a partir de cinco cajas de diez, el resto se declaraba con un
+    // «+N × 10». Ahora no hay nada que declarar: 457 son cuatro cajas de cien,
+    // cinco de diez y siete figuras sueltas.
+    let conCajaDeCien = 0;
+    for (const semilla of SEMILLAS) {
+      for (const par of parejas("expert", semilla)) {
+        const [total] = numeros(par.leftText);
+        const r = representacion(total!);
+        expect(figurasDe(r), par.leftText).toBe(total);
+        if (r.centenas > 0) conCajaDeCien++;
+      }
+    }
+    expect(conCajaDeCien).toBeGreaterThan(0);
   });
 });
 
