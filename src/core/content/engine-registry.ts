@@ -37,6 +37,7 @@ const migratedEngines: ReadonlySet<EngineId> = new Set([
   "relacionSumaResta",
   "repartoIgual",
   "multiplicacion",
+  "dobleYMitad",
   "reloj",
   "relojPonerHora",
   "sumaLlevando",

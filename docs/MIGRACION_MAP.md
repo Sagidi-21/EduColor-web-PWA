@@ -128,7 +128,7 @@ inventario.
 | `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | —                     | —                                         | ⏳     |
 | `cuerpos3d`             | `cuerpos3d/Cuerpos3DRenderer`                         | —                     | —                                         | ⏳     |
 | `datosInnecesarios`     | `datosInnecesarios/DatosInnecesariosRenderer`         | —                     | —                                         | ⏳     |
-| `dobleYMitad`           | `dobleYMitad/DobleYMitadRenderer`                     | —                     | —                                         | ⏳     |
+| `dobleYMitad`           | `dobleYMitad/DobleYMitadRenderer`                     | `dobleYMitad.ts`      | `dobleYMitad/DobleYMitadScreen.tsx`       | ✅     |
 | `graficoBarras`         | `graficoBarras/GraficoBarrasRenderer`                 | —                     | —                                         | ⏳     |
 | `intervalosTiempo`      | `intervalosTiempo/IntervalosTiempoRenderer`           | `intervalosTiempo.ts` | `intervalosTiempo/IntervalosTiempoScreen` | ✅     |
 | `inventarProblema`      | `inventarProblema/InventarProblemaRenderer`           | —                     | —                                         | ⏳     |

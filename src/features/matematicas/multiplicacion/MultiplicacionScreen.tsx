@@ -56,6 +56,15 @@ function MatchMode(props: ModoProps & { sesion: MatchSession }) {
   const { activity, onExit, gradeTitle, className, mascotUrl, difficultyStars } = props;
   const { sesion, sessionSeed, difficulty } = props;
   const [regenerado, setRegenerado] = useState(() => sesion);
+  /**
+   * Cuántas veces se ha repetido, para que la hoja se remonten.
+   *
+   * El `key` del emparejador no puede basta con los `id` de las parejas: al
+   * repetir se regenera la hoja con la misma semilla, así que los ids son los
+   * mismos y React no lo remontaría. Sin remontar, el emparejador conserva el
+   * aviso de "ya completada" y la segunda hoja nunca llegaría al resumen.
+   */
+  const [repeticiones, setRepeticiones] = useState(0);
   const [finished, setFinished] = useState<SessionResult | null>(null);
   const [startTime] = useState(() => Date.now());
 
@@ -75,6 +84,7 @@ function MatchMode(props: ModoProps & { sesion: MatchSession }) {
 
   const handleRestart = useCallback(() => {
     setFinished(null);
+    setRepeticiones((n) => n + 1);
     setRegenerado(generateMatchSession(difficulty, sessionSeed));
   }, [difficulty, sessionSeed]);
 
@@ -106,7 +116,7 @@ function MatchMode(props: ModoProps & { sesion: MatchSession }) {
         </p>
 
         <MatchColumns<MatchPair>
-          key={regenerado.pairs.map((p) => p.id).join("-")}
+          key={`${repeticiones}-${regenerado.pairs.map((p) => p.id).join("-")}`}
           prefix="mul"
           leftClass="mul__item--op"
           rightClass="mul__item--res"

@@ -201,6 +201,26 @@ describe("multiplicacion modo unir", () => {
       sesion.leftColumn.map((p) => `${p.table} × ${p.factor}`),
     );
   });
+
+  it("se puede completar también la hoja repetida", () => {
+    // El `key` del emparejador no puede dependerse solo de los `id` de las
+    // parejas: al repetir se usa la misma semilla, los ids son los mismos y el
+    // componente no se remonta. Entonces conserva el aviso de "ya completada" y
+    // la segunda hoja se queda sin resumen, sin avisar de nada.
+    const sesion = generateMatchSession("easy", 4242);
+    const { container } = render(<MultiplicacionScreen {...props("easy")} />);
+
+    unirTodas(container, sesion);
+    runTimers(CELEBRACION_MS);
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+
+    fireEvent.click(container.querySelector<HTMLButtonElement>(".summary__btn--primary")!);
+    unirTodas(container, sesion);
+    runTimers(CELEBRACION_MS);
+
+    expect(container.querySelector(".summary__stars")).not.toBeNull();
+    expect(container.textContent).toContain(`${sesion.pairs.length}/${sesion.pairs.length}`);
+  });
 });
 
 // ── Modo opción múltiple ──────────────────────────────────────────────────────

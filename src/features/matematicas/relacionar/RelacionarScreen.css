@@ -53,6 +53,10 @@
 }
 
 .rel__col {
+  /* Posicionadas para que las pinten por encima del SVG: un elemento con
+     `position: absolute` se dibuja sobre los static, y el trazo de la línea se
+     metía sobre las tarjetas en vez de pasar por detrás. */
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 12px;

@@ -36,10 +36,14 @@
 
 .mul__columns {
   position: relative;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: start;
-  gap: 0 3.5rem;
+  /* Las dos columnas van juntas y centradas, no una pegada al borde izquierdo y
+     otra al derecho. Con una rejilla de `auto 1fr auto` la columna central se
+     comía el hueco y las separaba de más, que es lo que las dejaba torcidas
+     hacia el borde en pantallas anchas. */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 3.5rem;
   width: 100%;
   max-width: 520px;
 }
@@ -60,6 +64,10 @@
 }
 
 .mul__col {
+  /* Posicionadas para que las pinten por encima del SVG: un elemento con
+     `position: absolute` se dibuja sobre losstatic, y el trazo de la línea se
+     metía sobre las tarjetas en vez de pasar por detrás. */
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
