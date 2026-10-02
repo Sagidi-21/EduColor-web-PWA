@@ -52,6 +52,7 @@ const migratedEngines: ReadonlySet<EngineId> = new Set([
   "balanza",
   "balanzaEquilibra",
   "intervalosTiempo",
+  "abaco3cifras",
 ]);
 
 export function getEngineRegistration(engineId: EngineId): EngineRegistration {

@@ -152,6 +152,12 @@ const RelojPonerHoraScreen = lazy(() =>
   })),
 );
 
+const Abaco3CifrasScreen = lazy(() =>
+  import("./abaco3cifras/Abaco3CifrasScreen").then((module) => ({
+    default: module.Abaco3CifrasScreen,
+  })),
+);
+
 const IntervalosTiempoScreen = lazy(() =>
   import("./intervalosTiempo/IntervalosTiempoScreen").then((module) => ({
     default: module.IntervalosTiempoScreen,
@@ -446,6 +452,14 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <RelojPonerHoraScreen {...props} />
+      </Suspense>
+    );
+  }
+
+  if (props.activity.engineId === "abaco3cifras") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <Abaco3CifrasScreen {...props} />
       </Suspense>
     );
   }

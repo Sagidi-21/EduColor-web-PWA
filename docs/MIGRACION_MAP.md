@@ -42,7 +42,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `features/splash/SplashScreen.tsx`                            | `src/features/splash/SplashScreen.tsx`                                    | Migrado                                       |
 | `features/home/HomeScreen.tsx`                                | `src/features/home/HomeScreen.tsx`                                        | Migrado                                       |
 
-## Actividades migradas (40 de 62)
+## Actividades migradas (41 de 62)
 
 `Estado` refleja `getEngineRegistration()` en `src/core/content/engine-registry.ts`.
 
@@ -109,7 +109,7 @@ Tres detalles de este bloque que sorprenden al leerlo y conviene no volver a
   y reutiliza `timeLabel` de `reloj.ts` para nombrar el reloj a los lectores de
   pantalla.
 
-Con los cinco motores de las tandas 1 y 2 son 40 actividades lanzables sobre 38
+Con los seis motores de las tandas 1 y 2 son 41 actividades lanzables sobre 38
 carpetas de motor, porque `laberintoMatematico2` no aporta núcleo propio.
 
 ## Actividades pendientes (23 de 62)
@@ -121,7 +121,7 @@ inventario.
 
 | `engineId`              | Motor Electron                                        | Núcleo                | Renderer                                  | Estado |
 | :---------------------- | :---------------------------------------------------- | :-------------------- | :---------------------------------------- | :----- |
-| `abaco3cifras`          | `abaco3cifras/Abaco3CifrasRenderer`                   | —                     | —                                         | ⏳     |
+| `abaco3cifras`          | `abaco3cifras/Abaco3CifrasRenderer`                   | `abaco3cifras.ts`     | `abaco3cifras/Abaco3CifrasScreen`         | ✅     |
 | `algoritmo3cifras`      | `algoritmo3cifras/Algoritmo3CifrasRenderer`           | —                     | —                                         | ⏳     |
 | `amigos10`              | `amigos10/Amigos10Renderer`                           | —                     | —                                         | ⏳     |
 | `cintaMetrica`          | `cintaMetrica/CintaMetricaRenderer`                   | —                     | —                                         | ⏳     |
