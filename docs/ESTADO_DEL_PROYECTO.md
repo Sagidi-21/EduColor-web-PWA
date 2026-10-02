@@ -26,7 +26,7 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 - **Fase activa:** 2 — Migración del catálogo matemático V1. La Fase 1 (modelo de
   contenido) está cerrada: 62 manifiestos, selector de actividades y el motor
   `comparison` como extra no acoplado al conteo.
-- **Estado de la Fase 2:** 42 de 62 actividades migradas y lanzables; 20
+- **Estado de la Fase 2:** 43 de 62 actividades migradas y lanzables; 19
   pendientes. El detalle por actividad, con núcleo, renderer y tests, está en el
   [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md); no se repite aquí.
 - **Siguiente motor:** `monedasBilletes`, la primera fila sin ✅ del inventario. La

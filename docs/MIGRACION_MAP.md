@@ -135,7 +135,7 @@ inventario.
 | `lecturaNumeros`        | `lecturaNumeros/LecturaNumerosRenderer`               | —                     | —                                         | ⏳     |
 | `menuCafeteria`         | `menuCafeteria/MenuCafeteriaRenderer`                 | —                     | —                                         | ⏳     |
 | `monedasBilletes`       | `monedasBilletes/MonedasRenderer`                     | —                     | —                                         | ⏳     |
-| `multiplicacion`        | `multiplicacion/MultiplicacionRenderer`               | —                     | —                                         | ⏳     |
+| `multiplicacion`        | `multiplicacion/MultiplicacionRenderer`               | `multiplicacion.ts`   | `multiplicacion/MultiplicacionScreen.tsx` | ✅     |
 | `posicionesAula`        | `posicionesAula/PosicionesAulaRenderer`               | —                     | —                                         | ⏳     |
 | `probabilidad`          | `probabilidad/ProbabilidadRenderer`                   | —                     | —                                         | ⏳     |
 | `problemas2pasos`       | `problemas2pasos/Problemas2PasosRenderer`             | —                     | —                                         | ⏳     |

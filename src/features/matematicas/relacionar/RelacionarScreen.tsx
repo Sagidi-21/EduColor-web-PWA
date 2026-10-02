@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   generateSession,
   type RelacionarPair,
   type RelacionarSession,
 } from "../../../core/activities/relacionar";
-import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
-import { ActivityHeader } from "../components/ActivityHeader";
+import { MatchColumns, type MatchReport } from "../components/MatchColumns";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
+import { ActivityHeader } from "../components/ActivityHeader";
 import "./RelacionarScreen.css";
 
 const TOTAL_ROUNDS = 10;
@@ -40,7 +40,7 @@ function ScatteredImages({ pair }: { pair: RelacionarPair }) {
   if (!pair.scattered) {
     return (
       <>
-        {Array.from({ length: pair.number }, (_, i) => (
+        {Array.from({ length: pair.number }).map((_, i) => (
           <img key={i} src={pair.imageUrl} className="rel__obj-img" alt="" />
         ))}
       </>
@@ -66,8 +66,13 @@ function ScatteredImages({ pair }: { pair: RelacionarPair }) {
   );
 }
 
-type Line = { id: number; x1: number; y1: number; x2: number; y2: number };
-
+/**
+ * "Relacionamos" — número ↔ grupo de imágenes.
+ *
+ * El emparejamiento en sí lo pone `MatchColumns`, el componente compartido con
+ * `multiplicacion`: aquí solo se decide qué se pinta en cada columna y cómo se
+ * cuentan las rondas sin fallos.
+ */
 export function RelacionarScreen({
   activity,
   difficulty,
@@ -85,125 +90,38 @@ export function RelacionarScreen({
   const [sessionSeed] = useState(seed);
   const [roundIdx, setRoundIdx] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
-  const [roundFailed, setRoundFailed] = useState(false);
   const [startTime, setStartTime] = useState(() => Date.now());
   const [finished, setFinished] = useState<SessionResult | null>(null);
 
-  const [selectedLeft, setSelectedLeft] = useState<number | null>(null);
-  const [connections, setConnections] = useState<Map<number, number>>(new Map());
-  const [wrongPair, setWrongPair] = useState<[number, number] | null>(null);
-  const [celebrating, setCelebrating] = useState(false);
-
-  const containerRef = useRef<HTMLDivElement>(null);
-  const leftRefs = useRef<Map<number, HTMLDivElement>>(new Map());
-  const rightRefs = useRef<Map<number, HTMLDivElement>>(new Map());
-
-  const [lines, setLines] = useState<Line[]>([]);
-
-  const computeLines = useCallback(() => {
-    const cr = containerRef.current?.getBoundingClientRect();
-    if (!cr) return;
-    const next: Line[] = [];
-    connections.forEach((rightId, leftId) => {
-      const lEl = leftRefs.current.get(leftId);
-      const rEl = rightRefs.current.get(rightId);
-      if (!lEl || !rEl) return;
-      const lr = lEl.getBoundingClientRect();
-      const rr = rEl.getBoundingClientRect();
-      next.push({
-        id: leftId,
-        x1: lr.right - cr.left,
-        y1: lr.top + lr.height / 2 - cr.top,
-        x2: rr.left - cr.left,
-        y2: rr.top + rr.height / 2 - cr.top,
-      });
-    });
-    setLines(next);
-  }, [connections]);
-
-  useEffect(() => {
-    computeLines();
-  }, [computeLines]);
-
-  useEffect(() => {
-    window.addEventListener("resize", computeLines);
-    return () => window.removeEventListener("resize", computeLines);
-  }, [computeLines]);
-
-  const handleRestart = () => {
+  const handleRestart = useCallback(() => {
     setFinished(null);
     setRounds(generateSession(difficulty, sessionSeed, TOTAL_ROUNDS));
     setRoundIdx(0);
     setCorrectCount(0);
-    setRoundFailed(false);
     setStartTime(Date.now());
-    setSelectedLeft(null);
-    setConnections(new Map());
-    setWrongPair(null);
-    setCelebrating(false);
-    leftRefs.current.clear();
-    rightRefs.current.clear();
-    setLines([]);
-  };
+  }, [difficulty, sessionSeed]);
 
-  const handleLeftClick = (pair: RelacionarPair) => {
-    if (celebrating || wrongPair) return;
-    if (connections.has(pair.id)) return;
-    setSelectedLeft((prev) => (prev === pair.id ? null : pair.id));
-  };
-
-  const handleRightClick = (pair: RelacionarPair) => {
-    if (celebrating || wrongPair || selectedLeft === null) return;
-    const alreadyUsed = Array.from(connections.values()).includes(pair.id);
-    if (alreadyUsed) return;
-
-    const isCorrect = selectedLeft === pair.id;
-
-    if (isCorrect) {
-      const next = new Map(connections);
-      next.set(selectedLeft, pair.id);
-      setConnections(next);
-      setSelectedLeft(null);
-      playFeedback(true);
-
-      if (next.size === currentRound.pairs.length) {
-        setCelebrating(true);
-        const isPerfectRound = !roundFailed;
-        const updatedCorrect = isPerfectRound ? correctCount + 1 : correctCount;
-        if (isPerfectRound) {
-          setCorrectCount((c) => c + 1);
-        }
-
-        setTimeout(() => {
-          const nextIdx = roundIdx + 1;
-          if (nextIdx >= rounds.length) {
-            setFinished({
-              total: rounds.length,
-              correct: updatedCorrect,
-              duration: Date.now() - startTime,
-            });
-          } else {
-            setRoundIdx(nextIdx);
-            setSelectedLeft(null);
-            setConnections(new Map());
-            setWrongPair(null);
-            setCelebrating(false);
-            setRoundFailed(false);
-            leftRefs.current.clear();
-            rightRefs.current.clear();
-            setLines([]);
-          }
-        }, 1500);
+  /** Una ronda cuenta solo si se completó sin fallar ninguna unión. */
+  const handleComplete = useCallback(
+    (report: MatchReport) => {
+      const perfecta = report.completa && report.fallos === 0;
+      const nextIdx = roundIdx + 1;
+      if (nextIdx >= TOTAL_ROUNDS) {
+        setFinished({
+          total: TOTAL_ROUNDS,
+          // El acierto de esta última ronda aún no está en el estado.
+          correct: perfecta ? correctCount + 1 : correctCount,
+          duration: Date.now() - startTime,
+        });
+      } else {
+        if (perfecta) setCorrectCount((c) => c + 1);
+        setRoundIdx(nextIdx);
       }
-    } else {
-      setRoundFailed(true);
-      setWrongPair([selectedLeft, pair.id]);
-      setTimeout(() => {
-        setWrongPair(null);
-        setSelectedLeft(null);
-      }, 700);
-    }
-  };
+    },
+    [roundIdx, correctCount, startTime],
+  );
+
+  const currentRound = rounds[roundIdx];
 
   if (finished) {
     return (
@@ -216,10 +134,7 @@ export function RelacionarScreen({
     );
   }
 
-  const currentRound = rounds[roundIdx];
   if (!currentRound) return null;
-
-  const { leftColumn, rightColumn } = currentRound;
 
   return (
     <div className="rel">
@@ -237,70 +152,22 @@ export function RelacionarScreen({
       <main className="rel__main">
         <p className="rel__instruction">Toca un número y luego el grupo que le corresponde</p>
 
-        <div className="rel__columns" ref={containerRef}>
-          <svg className="rel__svg" aria-hidden="true">
-            {lines.map((l) => (
-              <line key={l.id} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} className="rel__line" />
-            ))}
-          </svg>
-
-          <div className="rel__col rel__col--left">
-            {leftColumn.map((pair) => {
-              const isSelected = selectedLeft === pair.id;
-              const isConnected = connections.has(pair.id);
-              const isWrong = wrongPair?.[0] === pair.id;
-              return (
-                <div
-                  key={pair.id}
-                  ref={(el) => {
-                    if (el) leftRefs.current.set(pair.id, el);
-                  }}
-                  className={[
-                    "rel__item rel__item--num",
-                    isSelected && "rel__item--selected",
-                    isConnected && "rel__item--connected",
-                    isWrong && "rel__item--wrong",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  onClick={() => handleLeftClick(pair)}
-                >
-                  <span className="rel__number">{pair.number}</span>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="rel__col rel__col--right">
-            {rightColumn.map((pair) => {
-              const isConnected = Array.from(connections.values()).includes(pair.id);
-              const isWrong = wrongPair?.[1] === pair.id;
-              const isHintable = selectedLeft !== null && !isConnected && !isWrong;
-              return (
-                <div
-                  key={pair.id}
-                  ref={(el) => {
-                    if (el) rightRefs.current.set(pair.id, el);
-                  }}
-                  className={[
-                    "rel__item rel__item--imgs",
-                    pair.scattered && "rel__item--imgs-scattered",
-                    isConnected && "rel__item--connected",
-                    isWrong && "rel__item--wrong",
-                    isHintable && "rel__item--hintable",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  onClick={() => handleRightClick(pair)}
-                >
-                  <ScatteredImages pair={pair} />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {celebrating && <div className="rel__celebrate">¡Muy bien! 🎉</div>}
+        <MatchColumns
+          key={roundIdx}
+          prefix="rel"
+          leftClass="rel__item--num"
+          rightClass={(pair) =>
+            pair.scattered ? "rel__item--imgs rel__item--imgs-scattered" : "rel__item--imgs"
+          }
+          left={currentRound.leftColumn}
+          right={currentRound.rightColumn}
+          renderLeft={(pair) => <span className="rel__number">{pair.number}</span>}
+          renderRight={(pair) => <ScatteredImages pair={pair} />}
+          onPair={() => {
+            /* El sonido y el error los pone el propio emparejador. */
+          }}
+          onComplete={handleComplete}
+        />
       </main>
     </div>
   );

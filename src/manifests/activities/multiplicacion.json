@@ -7,7 +7,7 @@
   "gradeIds": ["grade-2"],
   "curriculumBlockIds": ["mathematics-grade-2-unit-14"],
   "title": "Multiplicación",
-  "description": "Aprende las tablas del 2, 5 y 10 con grupos de objetos",
+  "description": "Aprende las tablas del 2, 5 y 10 uniendo operaciones con sus productos",
   "status": "available",
   "parameters": [],
   "boardCard": {
@@ -15,8 +15,8 @@
     "unit": 14,
     "unitLabel": "Multiplicamos",
     "difficultyDescriptions": {
-      "easy": "Tabla del 2 (resultados hasta 20)",
-      "medium": "Tablas del 2 y del 5",
+      "easy": "Une cada operación con su producto: la tabla del 2 completa",
+      "medium": "Une las tablas del 2 y del 5 con sus productos",
       "hard": "Tablas del 2, 5 y 10 con factor desconocido",
       "expert": "Tablas del 2 al 5 y del 10 con todos los tipos"
     }
