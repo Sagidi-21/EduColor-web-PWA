@@ -25,13 +25,6 @@ const modes: readonly {
     icon: "📄",
     color: "#16a34a",
   },
-  {
-    id: "configuration",
-    label: "Configuración",
-    description: "Temas, clases y ajustes",
-    icon: "⚙️",
-    color: "#64748b",
-  },
 ];
 const gradeMetadata = {
   1: { color: "#2563eb", light: "#dbeafe", emoji: "⭐", age: "6-7 años" },
@@ -58,6 +51,17 @@ export function HomeScreen({ onNavigate }: { onNavigate: (view: AppView) => void
         </div>
         <div className="home__header-right">
           <span className="home__badge">PWA · Desarrollo</span>
+          <div className="home__settings">
+            <button
+              type="button"
+              className="home__settings-gear"
+              aria-label="Configuración"
+              onClick={() => onNavigate("configuration")}
+            >
+              ⚙️
+            </button>
+            <div className="home__settings-tooltip">Temas, clases y ajustes</div>
+          </div>
         </div>
       </header>
       <main className="home__main">
@@ -96,8 +100,8 @@ export function HomeScreen({ onNavigate }: { onNavigate: (view: AppView) => void
           </h2>
           <div className="home__mode-grid">
             {modes.map((mode) => {
-              const isMigrated = mode.id === "configuration" || mode.id === "mathematics";
-              const blocked = !isMigrated || (!selected && mode.id !== "configuration");
+              const isMigrated = mode.id === "mathematics";
+              const blocked = !isMigrated || !selected;
               return (
                 <button
                   key={mode.id}
