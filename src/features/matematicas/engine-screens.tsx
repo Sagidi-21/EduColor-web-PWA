@@ -122,6 +122,11 @@ const MonedasBilletesScreen = lazy(() =>
     default: module.MonedasBilletesScreen,
   })),
 );
+const DatosInnecesariosScreen = lazy(() =>
+  import("./datosInnecesarios/DatosInnecesariosScreen").then((module) => ({
+    default: module.DatosInnecesariosScreen,
+  })),
+);
 const WeekDaysScreen = lazy(() =>
   import("./weekDays/WeekDaysScreen").then((module) => ({
     default: module.WeekDaysScreen,
@@ -419,6 +424,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <MonedasBilletesScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "datosInnecesarios") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <DatosInnecesariosScreen {...props} />
       </Suspense>
     );
   }

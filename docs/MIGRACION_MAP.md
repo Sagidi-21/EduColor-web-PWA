@@ -12,7 +12,7 @@ nueva arquitectura PWA.
   lo deriva de `src/core/content/engine-registry.ts`. Aquí la columna `Estado` se
   copia de ese registro y no se calcula aparte.
 
-Este documento se editó por última vez el **2026-10-01**. La revisión anterior
+Este documento se editó por última vez el **2026-10-02**. La revisión anterior
 (2026-09-30) arrastraba 30 filas que decían "Pendiente (Fase 2)" para motores ya
 migrados, y daba de existentes dos motores que no están en
 `electron-reference/Colegio/src/renderer/src/core/engines/` (`division/` y
@@ -42,7 +42,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `features/splash/SplashScreen.tsx`                            | `src/features/splash/SplashScreen.tsx`                                    | Migrado                                       |
 | `features/home/HomeScreen.tsx`                                | `src/features/home/HomeScreen.tsx`                                        | Migrado                                       |
 
-## Actividades migradas (42 de 62)
+## Actividades migradas (43 de 62)
 
 `Estado` refleja `getEngineRegistration()` en `src/core/content/engine-registry.ts`.
 
@@ -87,6 +87,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `relojPonerHora`       | `relojPonerHora/RelojPonerHoraRenderer`           | `relojPonerHora.ts`                   | `relojPonerHora/RelojPonerHoraScreen.tsx`                        | ✅     |
 | `laberintoMatematico`  | `laberintoMatematico/LaberintoMatematicoRenderer` | `laberintoMatematico.ts`              | `laberintoMatematico/LaberintoMatematicoScreen.tsx`              | ✅     |
 | `laberintoMatematico2` | comparte renderer con `laberintoMatematico`       | `laberintoMatematico.ts` (compartido) | `laberintoMatematico/LaberintoMatematicoScreen.tsx` (compartido) | ✅     |
+| `datosInnecesarios`    | `datosInnecesarios/DatosInnecesariosRenderer`     | `datosInnecesarios.ts`                | `datosInnecesarios/DatosInnecesariosScreen.tsx`                  | ✅     |
 
 Tres detalles de este bloque que sorprenden al leerlo y conviene no volver a
 "arreglar" sin saber lo que hacen:
@@ -112,7 +113,7 @@ Tres detalles de este bloque que sorprenden al leerlo y conviene no volver a
 Con los siete motores de las tandas 1 y 2 son 42 actividades lanzables sobre 38
 carpetas de motor, porque `laberintoMatematico2` no aporta núcleo propio.
 
-## Actividades pendientes (23 de 62)
+## Actividades pendientes (22 de 62)
 
 Existe el motor en `electron-reference/Colegio/src/renderer/src/core/engines/`,
 pero no hay ni núcleo ni renderer en la PWA, y el registro los da como `pending`,
@@ -127,7 +128,7 @@ inventario.
 | `cintaMetrica`          | `cintaMetrica/CintaMetricaRenderer`                   | —                         | —                                                     | ⏳     |
 | `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | —                         | —                                                     | ⏳     |
 | `cuerpos3d`             | `cuerpos3d/Cuerpos3DRenderer`                         | —                         | —                                                     | ⏳     |
-| `datosInnecesarios`     | `datosInnecesarios/DatosInnecesariosRenderer`         | —                         | —                                                     | ⏳     |
+| `datosInnecesarios`     | `datosInnecesarios/DatosInnecesariosRenderer`         | `datosInnecesarios.ts`    | `datosInnecesarios/DatosInnecesariosScreen.tsx`       | ✅     |
 | `dobleYMitad`           | `dobleYMitad/DobleYMitadRenderer`                     | `dobleYMitad.ts`          | `dobleYMitad/DobleYMitadScreen.tsx`                   | ✅     |
 | `graficoBarras`         | `graficoBarras/GraficoBarrasRenderer`                 | `graficoBarras.ts`        | `graficoBarras/GraficoBarrasScreen`                   | ✅     |
 | `intervalosTiempo`      | `intervalosTiempo/IntervalosTiempoRenderer`           | `intervalosTiempo.ts`     | `intervalosTiempo/IntervalosTiempoScreen`             | ✅     |
@@ -145,6 +146,7 @@ inventario.
 | `series3cifras`         | `series3cifras/Series3CifrasRenderer`                 | —                         | —                                                     | ⏳     |
 | `simetria`              | `simetria/SimetriaRenderer`                           | —                         | —                                                     | ⏳     |
 
-Las 23 actividades pendientes salen de 23 carpetas de motor distintas. Ninguna de
+Las 22 actividades pendientes salen de 22 carpetas de motor distintas. Ninguna de
 las que se migraron en la tanda 1 (`reloj`, `relojPonerHora`,
-`laberintoMatematico` y `laberintoMatematico2`) aparece ya en esta tabla.
+`laberintoMatematico` y `laberintoMatematico2`) ni la primera de la tanda 3
+(`datosInnecesarios`) aparece ya en esta tabla.
