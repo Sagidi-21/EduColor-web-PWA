@@ -1,0 +1,217 @@
+/* Motor "Leemos el gráfico" — solo lo propio del motor.
+ *
+ * Lo común con la familia de operaciones (`.ops`, `.ops__stage`, `.ops__footer`,
+ * `.ops__celebration` y los `.ops__option-btn`) viene de
+ * `../operations/OperationsScreen.css`, que ya deja los botones de opción
+ * preparados para este motor. Aquí solo el gráfico.
+ *
+ * ## La geometría
+ *
+ * Todo el alto del gráfico sale de tres variables, y las barras y las marcas se
+ * miden en la misma caja, `.gb__zona` y `.gb__rejilla`, que miden lo mismo:
+ * `--gb-alto`. Por eso la línea de una marca y el borde superior de la barra
+ * no pueden separarse, que era el fallo del renderer de Electron: allí las
+ * marcas se posicionaban con `bottom: 20 + pct * 1.6` y las barras con
+ * `valor / maxVal * 140`, dos fórmulas distintas para la misma altura, y la
+ * barra más alta no llegaba ni a la marca que decía su valor.
+ *
+ * La altura de la barra es `valor / escalaMax`, con `escalaMax` del nivel: por
+ * eso hay un `--gb-alto` fijo y el porcentaje es lo único que cambia de un
+ * ejercicio a otro. */
+
+.gb__titulo {
+  margin: 0;
+  font-size: clamp(1rem, 2.4vw, 1.3rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #4338ca;
+}
+
+.gb__enunciado {
+  margin: 0;
+  max-width: 46rem;
+  font-size: clamp(1.1rem, 2.8vw, 1.5rem);
+  font-weight: 800;
+  text-align: center;
+  color: #1e293b;
+}
+
+.gb__opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* ── El gráfico ─────────────────────────────────────────────────────────────── */
+
+.gb__grafico {
+  /* Alto de la zona de dibujo, alto reservado a los nombres y ancho del eje. */
+  --gb-alto: 190px;
+  --gb-pie: 3.4rem;
+  --gb-eje: 2.4rem;
+
+  display: flex;
+  gap: 0.5rem;
+  width: min(100%, 44rem);
+  box-sizing: border-box;
+  /* El hueco de arriba es para el número que se dibuja sobre la barra más alta,
+   * que llega justo al tope de la zona. */
+  padding: 1.9rem 1rem 0.4rem;
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 18px;
+}
+
+/* -- Eje vertical: los números de las marcas -- */
+
+.gb__marcas {
+  position: relative;
+  flex: 0 0 var(--gb-eje);
+  height: var(--gb-alto);
+}
+
+.gb__marca {
+  position: absolute;
+  right: 0.35rem;
+  /* Centrada en su línea, que es lo que hace legible la altura de la barra. */
+  transform: translateY(50%);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+}
+
+/* -- Zona de dibujo: rejilla de marcas y columnas -- */
+
+.gb__lienzo {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+/* La rejilla es la capa que dibuja el eje y las líneas de las marcas. Mide
+ * exactamente lo mismo que una `.gb__zona`, así que sus líneas y los bordes
+ * superiores de las barras caen en la misma altura. */
+.gb__rejilla {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--gb-alto);
+  border-left: 3px solid #94a3b8;
+  border-bottom: 3px solid #94a3b8;
+  pointer-events: none;
+}
+
+.gb__linea {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 2px dashed #cbd5e1;
+}
+
+.gb__columna {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gb__zona {
+  position: relative;
+  height: var(--gb-alto);
+}
+
+/* El número va sobre el borde superior de su barra, y no pegado al tope de la
+ * zona: si fuera fijo, en la barra más alta se saldría del gráfico. */
+.gb__valor {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1e293b;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.gb__valor--hueco {
+  color: #b45309;
+}
+
+.gb__barra {
+  position: absolute;
+  bottom: 0;
+  left: 12%;
+  right: 12%;
+  box-sizing: border-box;
+  border: 2px solid rgba(15, 23, 42, 0.12);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  min-height: 4px;
+}
+
+/* La barra sin datos conserva su altura —de ahí se lee la respuesta— pero se
+ * dibuja hueca, para que se vea que ese dato falta. */
+.gb__barra--hueca {
+  background: repeating-linear-gradient(45deg, rgba(180, 83, 9, 0.12) 0 6px, transparent 6px 12px);
+  border: 3px dashed #b45309;
+}
+
+/* -- Nombre de la barra -- */
+
+.gb__pie {
+  height: var(--gb-pie);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding-top: 0.35rem;
+  box-sizing: border-box;
+}
+
+.gb__emoji {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.gb__etiqueta {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+  color: #334155;
+}
+
+.gb__columna--hueco .gb__etiqueta {
+  color: #b45309;
+}
+
+/* ── Pantallas estrechas ────────────────────────────────────────────────────── */
+
+@media (max-width: 560px) {
+  .gb__grafico {
+    --gb-alto: 140px;
+    --gb-pie: 3rem;
+    --gb-eje: 1.8rem;
+    padding: 1.6rem 0.5rem 0.3rem;
+  }
+
+  .gb__valor {
+    font-size: 0.9rem;
+  }
+
+  .gb__emoji {
+    font-size: 1.15rem;
+  }
+
+  .gb__etiqueta,
+  .gb__marca {
+    font-size: 0.7rem;
+  }
+}

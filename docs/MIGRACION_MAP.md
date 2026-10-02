@@ -129,7 +129,7 @@ inventario.
 | `cuerpos3d`             | `cuerpos3d/Cuerpos3DRenderer`                         | —                         | —                                                     | ⏳     |
 | `datosInnecesarios`     | `datosInnecesarios/DatosInnecesariosRenderer`         | —                         | —                                                     | ⏳     |
 | `dobleYMitad`           | `dobleYMitad/DobleYMitadRenderer`                     | `dobleYMitad.ts`          | `dobleYMitad/DobleYMitadScreen.tsx`                   | ✅     |
-| `graficoBarras`         | `graficoBarras/GraficoBarrasRenderer`                 | —                         | —                                                     | ⏳     |
+| `graficoBarras`         | `graficoBarras/GraficoBarrasRenderer`                 | `graficoBarras.ts`        | `graficoBarras/GraficoBarrasScreen`                   | ✅     |
 | `intervalosTiempo`      | `intervalosTiempo/IntervalosTiempoRenderer`           | `intervalosTiempo.ts`     | `intervalosTiempo/IntervalosTiempoScreen`             | ✅     |
 | `inventarProblema`      | `inventarProblema/InventarProblemaRenderer`           | —                         | —                                                     | ⏳     |
 | `lecturaNumeros`        | `lecturaNumeros/LecturaNumerosRenderer`               | —                         | —                                                     | ⏳     |

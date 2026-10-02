@@ -112,6 +112,11 @@ const RelacionarCantidadesScreen = lazy(() =>
     default: module.RelacionarCantidadesScreen,
   })),
 );
+const GraficoBarrasScreen = lazy(() =>
+  import("./graficoBarras/GraficoBarrasScreen").then((module) => ({
+    default: module.GraficoBarrasScreen,
+  })),
+);
 const WeekDaysScreen = lazy(() =>
   import("./weekDays/WeekDaysScreen").then((module) => ({
     default: module.WeekDaysScreen,
@@ -395,6 +400,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <RelacionarCantidadesScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "graficoBarras") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <GraficoBarrasScreen {...props} />
       </Suspense>
     );
   }
