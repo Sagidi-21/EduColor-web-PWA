@@ -138,7 +138,10 @@ export function SeriesScreen({
         {session.answerState === "correct" && <div className="ser__cheer">¡Correcto! ⭐</div>}
 
         <p className="ser__question">
-          ¿Qué número falta? <span className="ser__dir">({dir})</span>
+          ¿Qué número falta?{" "}
+          {difficulty !== "hard" && difficulty !== "expert" && (
+            <span className="ser__dir">({dir})</span>
+          )}
         </p>
 
         <div className="ser__sequence">
