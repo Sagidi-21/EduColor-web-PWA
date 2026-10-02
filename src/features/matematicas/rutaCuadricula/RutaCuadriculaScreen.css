@@ -1,0 +1,145 @@
+/* Motor "Taller de programación" — solo lo propio del motor.
+ *
+ * Lo común con la familia de operaciones (`.ops`, `.ops__stage`, `.ops__footer`,
+ * `.ops__celebration` y los botones de acción) viene de
+ * `../operations/OperationsScreen.css`. Aquí solo el tablero de la ruta.
+ */
+
+.rutac__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  margin: 1rem auto;
+  font-family: "Fredoka", "Nunito", sans-serif;
+  color: var(--text-color, #333);
+  max-width: 42rem;
+  width: 100%;
+}
+
+.rutac__grid {
+  display: grid;
+  gap: 4px;
+  background-color: #e1e1e1;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.rutac__cell {
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border-radius: 4px;
+  position: relative;
+}
+
+.rutac__cell--start {
+  background-color: #f1fcf0;
+}
+
+.rutac__cell--end {
+  background-color: #fff5f5;
+}
+
+.rutac__obstacle {
+  font-size: 1.8rem;
+}
+
+.rutac__avatar {
+  font-size: 1.8rem;
+  position: absolute;
+  transition: all 0.3s ease-in-out;
+  z-index: 10;
+}
+
+.rutac__sequence {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  min-height: 50px;
+  padding: 1rem;
+  background: #f4fafe;
+  border: 3px dashed #a0d8ff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  align-items: center;
+  justify-content: center;
+}
+
+.rutac__seq-vacio {
+  color: #aaa;
+  font-size: 1.2rem;
+}
+
+.rutac__seq-item {
+  width: 36px;
+  height: 36px;
+  background: white;
+  border: 2px solid #0097ff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #0097ff;
+  font-weight: bold;
+}
+
+.rutac__controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.rutac__btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  border: none;
+  background: #a0d8ff;
+  color: #0073cc;
+  font-size: 1.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #73bfff;
+  transition: all 0.1s;
+}
+
+.rutac__btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 #73bfff;
+}
+
+.rutac__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 0 #73bfff;
+}
+
+.rutac__btn--delete {
+  background: #ffb8b8;
+  color: #c0392b;
+  box-shadow: 0 4px 0 #ff8f8f;
+}
+
+.rutac__btn--delete:active {
+  box-shadow: 0 0 0 #ff8f8f;
+}
+
+.rutac__btn--play {
+  background: #b8e994;
+  color: #27ae60;
+  box-shadow: 0 4px 0 #78e08f;
+}
+
+.rutac__btn--play:active {
+  box-shadow: 0 0 0 #78e08f;
+}

@@ -60,6 +60,7 @@ const migratedEngines: ReadonlySet<EngineId> = new Set([
   "abaco3cifras",
   "algoritmo3cifras",
   "datosInnecesarios",
+  "rutaCuadricula",
 ]);
 
 export function getEngineRegistration(engineId: EngineId): EngineRegistration {

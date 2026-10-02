@@ -42,7 +42,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `features/splash/SplashScreen.tsx`                            | `src/features/splash/SplashScreen.tsx`                                    | Migrado                                       |
 | `features/home/HomeScreen.tsx`                                | `src/features/home/HomeScreen.tsx`                                        | Migrado                                       |
 
-## Actividades migradas (43 de 62)
+## Actividades migradas (49 de 62)
 
 `Estado` refleja `getEngineRegistration()` en `src/core/content/engine-registry.ts`.
 
@@ -113,7 +113,7 @@ Tres detalles de este bloque que sorprenden al leerlo y conviene no volver a
 Con los siete motores de las tandas 1 y 2 son 42 actividades lanzables sobre 38
 carpetas de motor, porque `laberintoMatematico2` no aporta núcleo propio.
 
-## Actividades pendientes (22 de 62)
+## Actividades pendientes (13 de 62)
 
 Existe el motor en `electron-reference/Colegio/src/renderer/src/core/engines/`,
 pero no hay ni núcleo ni renderer en la PWA, y el registro los da como `pending`,
@@ -142,11 +142,11 @@ inventario.
 | `problemas2pasos`       | `problemas2pasos/Problemas2PasosRenderer`             | —                         | —                                                     | ⏳     |
 | `redondeo`              | `redondeo/RedondeoRenderer`                           | —                         | —                                                     | ⏳     |
 | `relacionarCantidades`  | `relacionarCantidades/RelacionarCantidadesRenderer`   | `relacionarCantidades.ts` | `relacionarCantidades/RelacionarCantidadesScreen.tsx` | ✅     |
-| `rutaCuadricula`        | `rutaCuadricula/RutaCuadriculaRenderer`               | —                         | —                                                     | ⏳     |
+| `rutaCuadricula`        | `rutaCuadricula/RutaCuadriculaRenderer`               | `rutaCuadricula.ts`       | `rutaCuadricula/RutaCuadriculaScreen.tsx`             | ✅     |
 | `series3cifras`         | `series3cifras/Series3CifrasRenderer`                 | —                         | —                                                     | ⏳     |
 | `simetria`              | `simetria/SimetriaRenderer`                           | —                         | —                                                     | ⏳     |
 
-Las 22 actividades pendientes salen de 22 carpetas de motor distintas. Ninguna de
+Las 13 actividades pendientes salen de 13 carpetas de motor distintas. Ninguna de
 las que se migraron en la tanda 1 (`reloj`, `relojPonerHora`,
 `laberintoMatematico` y `laberintoMatematico2`) ni la primera de la tanda 3
 (`datosInnecesarios`) aparece ya en esta tabla.

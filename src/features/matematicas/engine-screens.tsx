@@ -206,6 +206,12 @@ const LaberintoMatematicoScreen = lazy(() =>
   })),
 );
 
+const RutaCuadriculaScreen = lazy(() =>
+  import("./rutaCuadricula/RutaCuadriculaScreen").then((module) => ({
+    default: module.RutaCuadriculaScreen,
+  })),
+);
+
 export interface EngineScreenProps {
   activity: ActivityManifest;
   difficulty: ActivityDifficulty;
@@ -565,6 +571,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <LaberintoMatematicoScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "rutaCuadricula") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <RutaCuadriculaScreen {...props} />
       </Suspense>
     );
   }
