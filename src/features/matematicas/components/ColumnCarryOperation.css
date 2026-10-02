@@ -1,0 +1,318 @@
+/*
+ * ColumnCarryOperation: la operación en columnas con casillas de llevar.
+ *
+ * Es un componente compartido, así que todos sus selectores están bajo `cco` y no
+ * tocan nada de fuera: otra actividad puede montarlo en su pantalla sin que este
+ * CSS le cambie el aspecto.
+ */
+
+.cco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.cco__area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.cco__grid {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 1rem 1.4rem;
+  border: 2px solid rgba(99, 102, 241, 0.25);
+  border-radius: 18px;
+  background: rgba(99, 102, 241, 0.07);
+  font-variant-numeric: tabular-nums;
+}
+
+.cco__row {
+  display: flex;
+  align-items: center;
+}
+
+.cco__hueco {
+  width: 2.4rem;
+  flex: 0 0 2.4rem;
+}
+
+.cco__hueco--op {
+  width: 2.8rem;
+  flex: 0 0 2.8rem;
+}
+
+.cco__hueco-casilla {
+  width: 2.4rem;
+  flex: 0 0 2.4rem;
+}
+
+.cco__op-symbol {
+  width: 2rem;
+  flex: 0 0 2rem;
+  margin-right: 0.8rem;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #4f46e5;
+  text-align: right;
+}
+
+.cco__col-label {
+  width: 2.4rem;
+  flex: 0 0 2.4rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #4f46e5;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.cco__digit {
+  width: 2.4rem;
+  flex: 0 0 2.4rem;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #1e1b4b;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.cco__divider {
+  width: 100%;
+  height: 3px;
+  margin: 0.4rem 0;
+  border-radius: 2px;
+  background: rgba(99, 102, 241, 0.35);
+}
+
+/* ── Casillas de llevar ──────────────────────────────────────────────────
+   Son pequeñas a propósito: son un apoyo para el cálculo manual, no el centro
+   de la actividad. Pulsada, la casilla sale de la fila y aterriza en la bandeja
+   de al lado. */
+
+.cco__row--carry {
+  min-height: 2.1rem;
+}
+
+.cco__carry-label {
+  width: 2.8rem;
+  flex: 0 0 2.8rem;
+  margin-right: 0.8rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #a8a29e;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.cco__carry-slot {
+  width: 2.4rem;
+  flex: 0 0 2.4rem;
+  height: 1.8rem;
+  padding: 0;
+  border: 2px dashed rgba(217, 119, 6, 0.5);
+  border-radius: 8px;
+  background: rgba(251, 191, 36, 0.14);
+  color: #b45309;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cco__carry-slot:hover:not(:disabled) {
+  border-color: #d97706;
+  background: rgba(251, 191, 36, 0.28);
+}
+
+.cco__carry-slot:disabled {
+  cursor: default;
+}
+
+.cco__carry-slot--aside {
+  border-style: solid;
+  border-color: #d97706;
+  background: rgba(251, 191, 36, 0.3);
+}
+
+.cco__cursor {
+  color: rgba(99, 102, 241, 0.55);
+}
+
+/* ── Casillas principales: las tres cifras del resultado ─────────────── */
+
+.cco__result-cell {
+  width: 2.4rem;
+  flex: 0 0 2.4rem;
+  height: 2.6rem;
+  padding: 0;
+  border: 2px solid rgba(99, 102, 241, 0.3);
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.09);
+  color: #1e1b4b;
+  font-family: inherit;
+  font-size: 2rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  text-align: center;
+  cursor: pointer;
+}
+
+.cco__result-cell:hover:not(:disabled) {
+  border-color: #4f46e5;
+}
+
+.cco__result-cell:disabled {
+  cursor: default;
+}
+
+.cco__result-cell--active {
+  border-color: #4f46e5;
+  border-width: 3px;
+  background: rgba(99, 102, 241, 0.2);
+}
+
+/*
+ * El veredicto es del ejercicio entero, así que el color va en la rejilla
+ * completa. No hay ninguna casilla marcada por separado: corregir por partes
+ * sería justo lo que este componente evita.
+ */
+.cco--correct .cco__grid {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.cco--wrong .cco__grid {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* ── La bandeja: la casilla de llevar traída a un lado ───────────────── */
+
+.cco__bandeja {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.1rem;
+  border: 3px solid #d97706;
+  border-radius: 18px;
+  background: rgba(254, 249, 195, 0.9);
+  box-shadow: 0 8px 20px rgba(120, 53, 15, 0.12);
+  animation: ccoBandejaEntra 0.18s ease-out;
+}
+
+@keyframes ccoBandejaEntra {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.cco__bandeja-titulo {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #b45309;
+  text-align: center;
+}
+
+.cco__bandeja-celda {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border: 3px dashed #d97706;
+  border-radius: 14px;
+  background: #fff;
+  color: #1e1b4b;
+  font-size: 3rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.cco__bandeja-volver {
+  padding: 0.35rem 0.9rem;
+  border: 2px solid #d97706;
+  border-radius: 10px;
+  background: transparent;
+  color: #b45309;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cco__bandeja-volver:hover {
+  background: rgba(251, 191, 36, 0.25);
+}
+
+/* ── Pie: numpad, lienzo y comprobar ──────────────────────────────────── */
+
+.cco__pie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: min(30rem, 100%);
+}
+
+.cco__pista {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #3730a3;
+  text-align: center;
+}
+
+.cco__lienzo {
+  display: flex;
+  justify-content: center;
+}
+
+.cco__comprobar {
+  min-width: 12rem;
+  padding: 0.7rem 1.6rem;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #818cf8, #4f46e5);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity 0.16s;
+}
+
+.cco__comprobar:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.cco__comprobar:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cco__bandeja {
+    animation: none;
+  }
+  .cco__comprobar {
+    transition: none;
+  }
+}
