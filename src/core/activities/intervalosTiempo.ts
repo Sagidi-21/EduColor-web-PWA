@@ -83,8 +83,48 @@ export interface IntervalosTiempoExercise {
 /** Ejercicios por sesión, el mismo número en las cuatro dificultades. */
 export const SESSION_SIZE = 10;
 
+/**
+ * Cuántos ejercicios de cada tipo tienen que aparecer sí o sí en `hard` y
+ * `expert`, los dos niveles que mezclan comparaciones y clasificaciones.
+ *
+ * Sin este mínimo, una semilla puede llenar los diez huecos enteros de
+ * clasificaciones y dejar el nivel sin ninguna comparación, que es justo lo que
+ * su descripción promete. Pasó con la semilla 4242 en `expert`: como el filtro
+ * de cercanía deja solo 15 parejas válidas de 153 posibles, el azar puede agotar
+ * los huecos antes de encontrar una.
+ *
+ * Va como cantidad y no como proporción porque es una garantía de que la sesión
+ * ejercita los dos tipos, no una distribución que haya que ajustar.
+ */
+export const MINIMO_POR_TIPO = { comparaciones: 2, clasificaciones: 2 };
+
 /** Una hora, el umbral con el que se clasifican las duraciones. */
 export const ONE_HOUR_SECONDS = 3600;
+
+/**
+ * Qué cocientes admite cada dificultad al comparar dos duraciones, medido como
+ * **la más larga dividida por la más corta**.
+ *
+ * Es un rango y no un mínimo porque los niveles se distinguen en direcciones
+ * opuestas: `easy` descarta lo que se parece (para que la respuesta no dependa de
+ * medir con precisión) y `expert` descarta lo que se aleja (para que exija
+ * razonar en lugar de reconocer). Con un solo umbral solo se podría expresar uno
+ * de los dos, y el otro nivel salía con el contenido del primero.
+ *
+ * Un niño de 1.º no puede razonar "8 horas contra 3 horas", pero sí "1 hora contra
+ * 45 minutos", porque las dos se leen en la misma unidad. De ahí el ×2.
+ *
+ * Los extremos sin límite van en `Infinity` para que se lea "sin límite" en el
+ * propio dato, en vez de tener que deducirlo de un `if` aparte.
+ */
+export const RANGO_CERCANIA: Record<ActivityDifficulty, { min: number; max: number }> = {
+  /** Diferencia muy clara: tres veces o más, como en Electron. */
+  easy: { min: 3, max: Infinity },
+  medium: { min: 1, max: Infinity },
+  hard: { min: 1, max: Infinity },
+  /** Duraciones muy parecidas: la más larga es como mucho el doble. */
+  expert: { min: 1, max: 2 },
+};
 
 // ── LCG determinista ────────────────────────────────────────────────────────
 
@@ -109,14 +149,16 @@ function cap(s: string): string {
 /**
  * Genera una sesión sin repetir ni actividad ni pareja de actividades.
  *
- * - easy:   solo comparaciones, y siempre entre actividades cuya duración se
- *           diferencia en un factor de 3 o más, para que la respuesta no dependa
- *           de medir con precisión. Barras siempre visibles.
- * - medium: comparaciones sin filtro de diferencia. Barras siempre visibles.
- * - hard:   comparaciones y, con probabilidad aproximada del 40 %, ejercicios de
- *           `classify-hour`. Las barras se alternan por intento.
- * - expert: como `hard`, pero nunca con barras: la única pista es el rótulo de
- *           cada actividad.
+ * - easy:   comparaciones de diferencia muy clara, cociente 3 o más.
+ * - medium: comparaciones sin filtro de cercanía. Barras siempre visibles.
+ * - hard:   comparaciones sin filtro y, con probabilidad aproximada del 40 %,
+ *           ejercicios de `classify-hour`. Las barras se alternan por intento.
+ * - expert: duraciones muy parecidas, con la más larga como mucho el doble que
+ *           la más corta, más `classify-hour`. Nunca con barras.
+ *
+ * La diferencia entre `medium` y `expert` es el único filtro de cercanía: hasta
+ * el 2026-10-02 las dos lo eran idénticas y las dos descripciones prometían
+ * duraciones próximas, que es lo que se corrigió. Ver `RANGO_CERCANIA`.
  *
  * **Sobre las barras en `hard`:** el contador alterna en cada intento del
  * generador, no en cada ejercicio emitido, así que un duplicado descartado
@@ -133,6 +175,7 @@ export function generateSession(
   const used = new Set<string>();
   let tries = 0;
   let hardBarCount = 0;
+  const cuenta = { comparaciones: 0, clasificaciones: 0 };
 
   while (out.length < SESSION_SIZE && tries < 400) {
     tries++;
@@ -144,13 +187,21 @@ export function generateSession(
           ? hardBarCount++ % 2 === 0
           : false;
 
-    const useClassify = (difficulty === "hard" || difficulty === "expert") && rng() > 0.6;
+    // Hasta que los dos tipos estén cubiertos, no se deja el azar decidir cuál
+    // sale primero: si faltara uno por azar, la sesión podría no tener ninguna
+    // comparación y su descripción estaría mintiendo otra vez.
+    const faltaClasificacion = cuenta.clasificaciones < MINIMO_POR_TIPO.clasificaciones;
+    const faltaComparacion = cuenta.comparaciones < MINIMO_POR_TIPO.comparaciones;
+    const useClassify =
+      (difficulty === "hard" || difficulty === "expert") &&
+      (faltaClasificacion || (!faltaComparacion && rng() > 0.6));
 
     if (useClassify) {
       const act = INTERVALOS[randInt(rng, 0, INTERVALOS.length - 1)];
       const key = `cls-${act.name}`;
       if (used.has(key)) continue;
       used.add(key);
+      cuenta.clasificaciones++;
       out.push({
         type: "classify-hour",
         activities: [act],
@@ -169,16 +220,17 @@ export function generateSession(
     const b = INTERVALOS[i2];
     if (a.seconds === b.seconds) continue;
 
-    // En fácil solo se aceptan parejas claramente distintas.
-    if (
-      difficulty === "easy" &&
-      Math.max(a.seconds, b.seconds) / Math.min(a.seconds, b.seconds) < 3
-    )
-      continue;
+    // Cada dificultad solo acepta las parejas que su enunciado promete. El rango
+    // va en `RANGO_CERCANIA`, junto a lo que dice el texto del nivel, para que el
+    // filtro y su descripción no puedan separarse.
+    const rango = RANGO_CERCANIA[difficulty];
+    const razon = Math.max(a.seconds, b.seconds) / Math.min(a.seconds, b.seconds);
+    if (razon < rango.min || razon > rango.max) continue;
 
     const key = [a.name, b.name].sort().join("|");
     if (used.has(key)) continue;
     used.add(key);
+    cuenta.comparaciones++;
 
     const isLonger = rng() > 0.5;
     const longer = a.seconds > b.seconds ? a : b;

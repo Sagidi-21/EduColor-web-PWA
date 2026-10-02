@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   generateSession,
   INTERVALOS,
+  MINIMO_POR_TIPO,
   ONE_HOUR_SECONDS,
+  RANGO_CERCANIA,
   SESSION_SIZE,
   validateAnswer,
 } from "./intervalosTiempo";
@@ -14,6 +16,13 @@ const SEMILLAS = [1, 42, 777, 4242, 999983];
 /** Cuántos ejercicios de `classify-hour` hay en la sesión de una semilla. */
 const clasifican = (dificultad: ActivityDifficulty, semilla: number) =>
   generateSession(dificultad, semilla).filter((ex) => ex.type === "classify-hour").length;
+
+/** Cuánto dura la más larga de las dos comparadas respecto a la más corta. */
+const cociente = (ex: ReturnType<typeof generateSession>[number]): number | null => {
+  if (ex.type === "classify-hour") return null;
+  const [a, b] = ex.activities;
+  return Math.max(a.seconds, b.seconds) / Math.min(a.seconds, b.seconds);
+};
 
 describe("intervalosTiempo — catálogo", () => {
   it("mantiene las 18 actividades de Electron con nombres únicos", () => {
@@ -80,14 +89,20 @@ describe("intervalosTiempo — generateSession", () => {
     }
   });
 
-  it("en fácil la diferencia entre las dos actividades es de 3x o más", () => {
+  it("en easy la diferencia entre las dos actividades es de 3x o más", () => {
     for (const semilla of SEMILLAS) {
       for (const ex of generateSession("easy", semilla)) {
-        const [a, b] = ex.activities;
-        expect(
-          Math.max(a.seconds, b.seconds) / Math.min(a.seconds, b.seconds),
-          ex.question,
-        ).toBeGreaterThanOrEqual(3);
+        expect(cociente(ex), ex.question).toBeGreaterThanOrEqual(3);
+      }
+    }
+  });
+
+  it("en expert las dos duraciones son parecidas: la larga es como mucho el doble", () => {
+    for (const semilla of SEMILLAS) {
+      for (const ex of generateSession("expert", semilla)) {
+        const q = cociente(ex);
+        if (q === null) continue;
+        expect(q, ex.question).toBeLessThanOrEqual(2);
       }
     }
   });
@@ -192,6 +207,86 @@ describe("intervalosTiempo — enunciados y opciones", () => {
           if (ex.type === "which-shorter") expect(ex.question, ex.question).toContain("dura menos");
           if (ex.type === "classify-hour") expect(ex.question, ex.question).toContain("1 hora");
         }
+      }
+    }
+  });
+});
+
+describe("intervalosTiempo — lo que promete el enunciado del nivel", () => {
+  /**
+   * Estas comprobaciones existen por un defecto concreto: las descripciones de
+   * `medium` y `expert` prometían duraciones próximas y el motor no filtraba
+   * nada, de modo que el profesor elegía un nivel por un texto que mentía. Aquí
+   * se ata cada nivel a su descripción.
+   */
+  it("cada nivel solo emite comparaciones dentro de su rango de cercanía", () => {
+    for (const dificultad of DIFFICULTIES) {
+      const { min, max } = RANGO_CERCANIA[dificultad];
+      for (const semilla of SEMILLAS) {
+        for (const ex of generateSession(dificultad, semilla)) {
+          const q = cociente(ex);
+          if (q === null) continue;
+          expect(q, `${dificultad}/${semilla}: ${ex.question}`).toBeGreaterThanOrEqual(min);
+          expect(q, `${dificultad}/${semilla}: ${ex.question}`).toBeLessThanOrEqual(max);
+        }
+      }
+    }
+  });
+
+  it("easy y expert descartan en direcciones opuestas", () => {
+    // Los dos niveles con filtro, pero cada uno al revés: easy se libra de lo que
+    // se parece y expert se libra de lo que se aleja. Por eso hace falta un rango
+    // y no un umbral suelto.
+    expect(RANGO_CERCANIA.easy.min).toBe(3);
+    expect(RANGO_CERCANIA.expert.max).toBe(2);
+  });
+
+  it("medium y hard no prometen cercanía, así que no filtran", () => {
+    expect(RANGO_CERCANIA.medium).toEqual({ min: 1, max: Infinity });
+    expect(RANGO_CERCANIA.hard).toEqual({ min: 1, max: Infinity });
+  });
+
+  it("expert se distingue de medium en la práctica, no solo en la constante", () => {
+    const maximo = (d: ActivityDifficulty) =>
+      Math.max(
+        ...generateSession(d, 42)
+          .map(cociente)
+          .filter((q): q is number => q !== null),
+      );
+    expect(maximo("expert")).toBeLessThanOrEqual(2);
+    expect(maximo("medium")).toBeGreaterThan(2);
+    // Y al revés: medium no es solo "expert con barra", trae parejas alejadas.
+    expect(maximo("easy")).toBeGreaterThanOrEqual(3);
+  });
+
+  it("el filtro de expert deja parejas de verdad y no se queda sin sesión", () => {
+    for (const semilla of SEMILLAS) {
+      const comparaciones = generateSession("expert", semilla).filter(
+        (ex) => ex.type !== "classify-hour",
+      );
+      expect(comparaciones.length, `expert/${semilla}`).toBeGreaterThan(0);
+    }
+  });
+
+  it("hard y expert mezclan siempre los dos tipos, y fácil y medio no mezclan", () => {
+    // El mínimo está porque con solo 15 parejas válidas el azar puede llenar los
+    // diez huecos de clasificaciones y dejar el nivel sin una sola comparación,
+    // que es justo lo que su descripción promete. Pasaba con la semilla 4242.
+    for (const dificultad of ["hard", "expert"] as ActivityDifficulty[]) {
+      for (const semilla of SEMILLAS) {
+        const sesion = generateSession(dificultad, semilla);
+        const clasificaciones = sesion.filter((ex) => ex.type === "classify-hour").length;
+        expect(clasificaciones, `${dificultad}/${semilla}`).toBeGreaterThanOrEqual(
+          MINIMO_POR_TIPO.clasificaciones,
+        );
+        expect(sesion.length - clasificaciones, `${dificultad}/${semilla}`).toBeGreaterThanOrEqual(
+          MINIMO_POR_TIPO.comparaciones,
+        );
+      }
+    }
+    for (const dificultad of ["easy", "medium"] as ActivityDifficulty[]) {
+      for (const semilla of SEMILLAS) {
+        expect(clasifican(dificultad, semilla), `${dificultad}/${semilla}`).toBe(0);
       }
     }
   });
