@@ -84,16 +84,12 @@ describe("generateSession", () => {
     }
   });
 
-  it("uses the same image for all pairs in non-expert difficulties", () => {
-    const rounds = generateSession("easy", 42, 1);
-    const urls = new Set(rounds[0].pairs.map((p) => p.imageUrl));
-    expect(urls.size).toBe(1);
-  });
-
-  it("uses different images for pairs in expert mode", () => {
-    const rounds = generateSession("expert", 42, 1);
-    const urls = new Set(rounds[0].pairs.map((p) => p.imageUrl));
-    expect(urls.size).toBeGreaterThan(1);
+  it("uses different images for pairs in all difficulties", () => {
+    for (const diff of ["easy", "medium", "hard", "expert"] as const) {
+      const rounds = generateSession(diff, 42, 1);
+      const urls = new Set(rounds[0].pairs.map((p) => p.imageUrl));
+      expect(urls.size).toBeGreaterThan(1);
+    }
   });
 
   it("leftColumn and rightColumn are shuffled independently", () => {

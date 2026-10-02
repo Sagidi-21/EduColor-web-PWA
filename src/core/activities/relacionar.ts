@@ -64,7 +64,7 @@ function generateSingleRound(difficulty: ActivityDifficulty, rng: () => number):
         number: num,
         imageUrl: pickImage(cat, rng),
         objectLabel: cat.name,
-        scattered: true,
+        scattered: cfg.scattered,
       };
     });
   } else {

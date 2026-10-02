@@ -30,7 +30,7 @@ export interface ComparisonExercise {
 const difficultyLimits: Record<ComparisonDifficulty, { maximum: number; allowEqual: boolean }> = {
   easy: { maximum: 5, allowEqual: false },
   medium: { maximum: 10, allowEqual: false },
-  hard: { maximum: 19, allowEqual: true },
+  hard: { maximum: 15, allowEqual: true },
   expert: { maximum: 20, allowEqual: true },
 };
 
