@@ -29,7 +29,7 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 - **Estado de la Fase 2:** 49 de 62 actividades migradas y lanzables; 13
   pendientes. El detalle por actividad, con núcleo, renderer y tests, está en el
   [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md); no se repite aquí.
-- **Siguiente motor:** `monedasBilletes`, la primera fila sin ✅ del inventario. La
+- **Siguiente motor:** `inventarProblema`, la primera fila sin ✅ del inventario. La
   regla para elegirlo está en la sección "Siguiente motor a migrar" de ese
   documento, y su prioridad la confirma el profesor de Matemáticas.
 - **Fase 5 (escritura de dígitos y reconocimiento local):** adelantada y
@@ -40,8 +40,9 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
   el dataset de evaluación, la matriz de confusión y el resto del bloque. Este
   documento decía antes que la Fase 5 estaba "completada", y no lo estaba.
 - **Lo que bloquea el cierre de la fase:** la validación pedagógica en pizarra. Las
-  35 actividades están técnicamente terminadas, pero eso no es lo mismo que
-  aprobadas: ninguna está cerrada pedagógicamente todavía.
+  49 actividades migradas están técnicamente terminadas, pero eso no es lo mismo que
+  aprobadas: la única cerrada pedagógicamente es `ordenar`, validada en pizarra el
+  2026-10-02 para 1.º y 2.º. Las 13 pendientes ni siquiera han llegado a ese punto.
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
 

@@ -114,8 +114,8 @@ contradice con esta tabla, la tabla manda y el otro documento está mal.
 
 La primera fila **sin ✅** del catálogo, en orden de prioridad, es
 `inventarProblema` (P3). Las dos últimas P2 se han cerrado con
-`monedasBilletes` y `graficoBarras`, y la primera P3 con `datosInnecesarios`. La
-segunda P3 con `rutaCuadricula`. A continuación vienen `cintaMetrica`, `redondeo`,
+`monedasBilletes` y `graficoBarras`, y la primera P3 con `datosInnecesarios` y la
+segunda con `rutaCuadricula`. A continuación vienen `cintaMetrica`, `redondeo`,
 `series3cifras`, `cuerpos3d`, `simetria`, `circuloCircunferencia`, `probabilidad`,
 `problemas2pasos` y `posicionesAula`, todas P3, más `amigos10` y
 `lecturaNumeros`, cuya prioridad todavía no está decidida.
