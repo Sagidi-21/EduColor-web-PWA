@@ -743,3 +743,238 @@
     transform: scale(0.98);
   }
 }
+
+/* ==========================================================================
+   FILL_TABLE (Nivel Experto) Redesign
+   ========================================================================== */
+
+/* ── Caja Flotante en Stage ── */
+.counting__ft-float {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border-radius: 24px;
+  padding: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 100;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.counting__ft-float--right {
+  right: 15%;
+}
+
+.counting__ft-float--left {
+  left: 15%;
+}
+
+.counting__ft-float--correct {
+  animation: correctPulse 0.5s ease;
+  background: #f0fdf4;
+  border: 4px solid #22c55e;
+}
+
+.counting__ft-float--wrong {
+  animation: wrongShake 0.4s ease;
+  background: #fef2f2;
+  border: 4px solid #ef4444;
+}
+
+.counting__ft-float-label {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #3b82f6;
+  background: #eff6ff;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+/* ── Footer Secuencial ── */
+.counting__ft-footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 32px;
+  height: 110px;       /* altura fija: el stage nunca se encoge */
+  flex-shrink: 0;
+  overflow: visible;   /* los badges pueden sobresalir si son muchos */
+}
+
+.counting__ft-question {
+  flex: 1;
+  text-align: left;
+}
+
+.counting__ft-question .counting__question {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+/* Badges de progreso */
+.counting__ft-badges {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
+.counting__ft-badge {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 100px;
+  padding: 8px 16px 8px 8px;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.counting__ft-badge--appear {
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.counting__ft-badge-label {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.counting__ft-badge--c .counting__ft-badge-label { background: #10b981; }
+.counting__ft-badge--d .counting__ft-badge-label { background: #ef4444; }
+.counting__ft-badge--u .counting__ft-badge-label { background: #3b82f6; }
+.counting__ft-badge--total .counting__ft-badge-label { background: #8b5cf6; }
+
+.counting__ft-badge-num {
+  color: #1e293b;
+}
+
+/* Numpad Panel */
+.counting__ft-numpad-panel {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 24px;
+  border: 2px solid #e2e8f0;
+}
+
+.counting__ft-numcells {
+  display: flex;
+  flex-direction: row;   /* lado a lado */
+  gap: 12px;
+  align-items: center;
+}
+
+.counting__ft-numcell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 8px 16px;
+  min-width: 120px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.counting__ft-numcell--active {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px #eff6ff;
+  transform: scale(1.05);
+}
+
+.counting__ft-numcell-label {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #64748b;
+}
+
+.counting__ft-numcell--c .counting__ft-numcell-label { color: #10b981; }
+.counting__ft-numcell--d .counting__ft-numcell-label { color: #ef4444; }
+.counting__ft-numcell--u .counting__ft-numcell-label { color: #3b82f6; }
+
+.counting__ft-numcell-val {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-left: auto;
+}
+
+/* ── Numpad flotante ── */
+.counting__ft-numpad-float {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border-radius: 24px;
+  padding: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              right 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.counting__ft-numpad-float--right {
+  right: 5%;
+  left: auto;
+}
+
+.counting__ft-numpad-float--left {
+  left: 5%;
+  right: auto;
+}
+
+.counting__ft-numpad-float--correct {
+  animation: correctPulse 0.5s ease;
+  background: #f0fdf4;
+  border: 4px solid #22c55e;
+}
+
+.counting__ft-numpad-float--wrong {
+  animation: wrongShake 0.4s ease;
+  background: #fef2f2;
+  border: 4px solid #ef4444;
+}
+
+/* ── Botón Siguiente (paso final FILL_TABLE) ── */
+.counting__ft-next-btn {
+  padding: 14px 36px;
+  border-radius: 100px;
+  border: none;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.counting__ft-next-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.5);
+}
+
+.counting__ft-next-btn:active {
+  transform: scale(0.97);
+}

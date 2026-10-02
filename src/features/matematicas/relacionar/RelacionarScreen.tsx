@@ -16,8 +16,9 @@ const TOTAL_ROUNDS = 10;
 // Cada imagen ocupa una celda de un grid, pero el orden de las celdas se baraja.
 function useScatteredSlots(count: number, seed: number): number[] {
   return useMemo(() => {
-    const cols = Math.ceil(Math.sqrt(count));
-    const rows = Math.ceil(count / cols);
+    // Cada fila contendrá hasta 10 imágenes
+    const cols = Math.min(10, count);
+    const rows = Math.ceil(count / 10);
     const total = cols * rows;
     let s = seed;
     const rng = () => {
@@ -34,7 +35,7 @@ function useScatteredSlots(count: number, seed: number): number[] {
 }
 
 function ScatteredImages({ pair }: { pair: RelacionarPair }) {
-  const cols = Math.ceil(Math.sqrt(pair.number));
+  const cols = Math.min(10, pair.number);
   const slots = useScatteredSlots(pair.number, pair.id * 7919 + pair.number * 997);
 
   if (!pair.scattered) {

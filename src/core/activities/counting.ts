@@ -451,7 +451,9 @@ function buildSteps(
   objectLabel: string,
   rng: () => number,
 ): ExerciseStep[] {
-  const obj = objectLabel;
+  const obj = objectLabel === "pajaros" ? "pájaros" : objectLabel;
+  const q = ["flores", "manzanas"].includes(objectLabel) ? "Cuántas" : "Cuántos";
+
   const tens = Math.floor(count / 10);
   const units = count % 10;
   const hundreds = Math.floor(count / 100);
@@ -463,7 +465,7 @@ function buildSteps(
       return [
         {
           answerType: "COUNT_TOTAL",
-          prompt: `¿Cuántos ${obj} hay?`,
+          prompt: `¿${q} ${obj} hay?`,
           correctAnswer: count,
           options: makeOptions(count, "COUNT_TOTAL", count, rng),
           persistent: false,
@@ -488,7 +490,7 @@ function buildSteps(
         },
         {
           answerType: "COUNT_TOTAL",
-          prompt: `¿Cuántos ${obj} hay?`,
+          prompt: `¿${q} ${obj} hay?`,
           correctAnswer: count,
           options: makeOptions(count, "COUNT_TOTAL", count, rng),
           persistent: false,
@@ -513,7 +515,7 @@ function buildSteps(
         },
         {
           answerType: "COUNT_TOTAL",
-          prompt: `¿Cuántos ${obj} hay en total?`,
+          prompt: `¿${q} ${obj} hay en total?`,
           correctAnswer: count,
           options: makeOptions(count, "COUNT_TOTAL", count, rng),
           persistent: false,
@@ -538,7 +540,7 @@ function buildSteps(
         },
         {
           answerType: "COMPOSE_NUMBER",
-          prompt: `¿Cuántos ${obj} hay en total?`,
+          prompt: `¿${q} ${obj} hay en total?`,
           correctAnswer: count,
           options: makeOptions(count, "COMPOSE_NUMBER", count, rng),
           persistent: false,
@@ -549,7 +551,7 @@ function buildSteps(
       return [
         {
           answerType: "COUNT_TOTAL",
-          prompt: `¿Cuántos ${obj} hay en total?`,
+          prompt: `¿${q} ${obj} hay en total?`,
           correctAnswer: count,
           options: makeOptions(count, "COUNT_TOTAL", count, rng),
           persistent: false,
@@ -603,7 +605,7 @@ function buildSteps(
       return [
         {
           answerType: "COUNT_TOTAL",
-          prompt: `¿Cuántos ${obj} hay en total?`,
+          prompt: `¿${q} ${obj} hay en total?`,
           correctAnswer: count,
           options: makeOptions(count, "COUNT_TOTAL", count, rng),
           persistent: false,

@@ -42,6 +42,7 @@ interface DragState {
   startY: number;
   currentX: number;
   currentY: number;
+  zoom: number;
 }
 
 function getLevelConfig(difficulty: string, levelId?: CurriculumLevelId) {
@@ -126,7 +127,7 @@ export function CountingScreen({
         : current?.interactionType === "DRAG"
           ? session.filledGroupIndices.length === (current.groupFrames?.length || 0)
           : current?.interactionType === "FILL_TABLE"
-            ? session.posTableInput.tens !== "" && session.posTableInput.units !== ""
+            ? true
             : true; // Para SELECT, SLIDER, etc, siempre pueden responder
 
   const handleAnswer = useCallback(
@@ -145,14 +146,43 @@ export function CountingScreen({
     [session.answerState, allTouched, currentStep],
   );
 
+  const submitTableAnswer = useCallback(() => {
+    if (session.answerState !== "idle" || !currentStep) return;
+    const ans =
+      currentStep.answerType === "COUNT_TENS"
+        ? session.posTableInput.tens
+        : currentStep.answerType === "COUNT_UNITS"
+          ? session.posTableInput.units
+          : currentStep.answerType === "COUNT_HUNDREDS"
+            ? session.posTableInput.hundreds || ""
+            : (session.posTableInput.hundreds || "") +
+              session.posTableInput.tens +
+              session.posTableInput.units;
+    if (ans !== "") {
+      handleAnswer(parseInt(ans, 10));
+    }
+  }, [session.answerState, currentStep, session.posTableInput, handleAnswer]);
+
   const handleRetry = useCallback(() => {
+    const field =
+      currentStep?.answerType === "COUNT_TENS"
+        ? "tens"
+        : currentStep?.answerType === "COUNT_UNITS"
+          ? "units"
+          : currentStep?.answerType === "COUNT_HUNDREDS"
+            ? "hundreds"
+            : null;
     setSession((s) => ({
       ...s,
       answerState: "idle",
       selectedOption: null,
       alreadyFailed: true,
+      ...(field ? { posTableInput: { ...s.posTableInput, [field]: "" } } : {}),
     }));
-  }, []);
+    if (field === "tens") setCanvasKeys((k) => ({ ...k, tens: k.tens + 1 }));
+    else if (field === "units") setCanvasKeys((k) => ({ ...k, units: k.units + 1 }));
+    else if (field === "hundreds") setCanvasKeys((k) => ({ ...k, hundreds: k.hundreds + 1 }));
+  }, [currentStep]);
 
   const handleNext = useCallback(() => {
     const isLastStep = session.currentStepIndex >= current.steps.length - 1;
@@ -195,12 +225,47 @@ export function CountingScreen({
     }
   }, [session, current.steps.length, total, isLevel2]);
 
-  // Avance automático tras respuesta correcta (1.2s para que se vea bien la respuesta)
+  // Avance automático tras respuesta correcta (solo pasos intermedios de FILL_TABLE y otros modos)
   useEffect(() => {
     if (session.answerState !== "correct") return;
+    // COMPOSE_NUMBER en FILL_TABLE: el niño avanza manualmente con el botón "Siguiente"
+    const isTotal =
+      current?.interactionType === "FILL_TABLE" && currentStep?.answerType === "COMPOSE_NUMBER";
+    if (isTotal) return;
     const t = setTimeout(handleNext, 900);
     return () => clearTimeout(t);
-  }, [session.answerState, handleNext]);
+  }, [session.answerState, handleNext, current?.interactionType, currentStep?.answerType]);
+
+  // Auto-respuesta del total en FILL_TABLE (paso COMPOSE_NUMBER)
+  useEffect(() => {
+    if (current?.interactionType !== "FILL_TABLE") return;
+    if (currentStep?.answerType !== "COMPOSE_NUMBER") return;
+    if (session.answerState !== "idle") return;
+    const t = setTimeout(submitTableAnswer, 400);
+    return () => clearTimeout(t);
+  }, [current?.interactionType, currentStep?.answerType, session.answerState, submitTableAnswer]);
+
+  // Celda activa efectiva: en numpad+FILL_TABLE+idle siempre se deriva del paso actual
+  // (evita setState dentro de un effect — react-hooks/set-state-in-effect)
+  const resolvedActiveCell = useMemo(() => {
+    if (
+      current?.interactionType === "FILL_TABLE" &&
+      mode === "numpad" &&
+      session.answerState === "idle"
+    ) {
+      if (currentStep?.answerType === "COUNT_TENS") return "tens" as const;
+      if (currentStep?.answerType === "COUNT_UNITS") return "units" as const;
+      if (currentStep?.answerType === "COUNT_HUNDREDS") return "hundreds" as const;
+      return null;
+    }
+    return activeInputCell;
+  }, [
+    current?.interactionType,
+    currentStep?.answerType,
+    mode,
+    session.answerState,
+    activeInputCell,
+  ]);
 
   const handleRestart = () => {
     setFinished(null);
@@ -420,7 +485,7 @@ export function CountingScreen({
                     top: `${pos.y}%`,
                     transform: `translate(-50%, -50%) rotate(${pos.rotation}deg) ${
                       isDragging
-                        ? `translate(${dragState.currentX - dragState.startX}px, ${dragState.currentY - dragState.startY}px) scale(1.05)`
+                        ? `translate(${(dragState.currentX - dragState.startX) / dragState.zoom}px, ${(dragState.currentY - dragState.startY) / dragState.zoom}px) scale(1.05)`
                         : ""
                     }`,
                     zIndex: isDragging ? 100 : 3,
@@ -434,6 +499,7 @@ export function CountingScreen({
                       startY: e.clientY,
                       currentX: e.clientX,
                       currentY: e.clientY,
+                      zoom: parseFloat(document.body.style.getPropertyValue("--zoom") || "1"),
                     });
                   }}
                 >
@@ -476,7 +542,7 @@ export function CountingScreen({
                     width: `${Math.min(100, maxX - minX + 6)}%`,
                     height: `${Math.min(100, maxY - minY + 8)}%`,
                     transform: isDragging
-                      ? `translate(${dragState.currentX - dragState.startX}px, ${dragState.currentY - dragState.startY}px) scale(0.95)`
+                      ? `translate(${(dragState.currentX - dragState.startX) / dragState.zoom}px, ${(dragState.currentY - dragState.startY) / dragState.zoom}px) scale(0.95)`
                       : "none",
                     zIndex: isDragging ? 100 : 3,
                   }}
@@ -489,6 +555,7 @@ export function CountingScreen({
                       startY: e.clientY,
                       currentX: e.clientX,
                       currentY: e.clientY,
+                      zoom: parseFloat(document.body.style.getPropertyValue("--zoom") || "1"),
                     });
                   }}
                 />
@@ -524,7 +591,7 @@ export function CountingScreen({
                   width: `${Math.min(100, maxX - minX + paddingX * 2)}%`,
                   height: `${Math.min(100, maxY - minY + paddingY * 2)}%`,
                   transform: isDragging
-                    ? `translate(${dragState.currentX - dragState.startX}px, ${dragState.currentY - dragState.startY}px) scale(0.95)`
+                    ? `translate(${(dragState.currentX - dragState.startX) / dragState.zoom}px, ${(dragState.currentY - dragState.startY) / dragState.zoom}px) scale(0.95)`
                     : "none",
                   zIndex: isDragging ? 100 : isDraggable ? 3 : 1,
                   pointerEvents: isDraggable ? "auto" : "none",
@@ -539,6 +606,7 @@ export function CountingScreen({
                     startY: e.clientY,
                     currentX: e.clientX,
                     currentY: e.clientY,
+                    zoom: parseFloat(document.body.style.getPropertyValue("--zoom") || "1"),
                   });
                 }}
               >
@@ -631,377 +699,308 @@ export function CountingScreen({
               );
             })}
           </div>
-          {/* Tabla Posicional para FILL_TABLE mechanic (1-L4, 2-L3, 2-L4) en el Canvas */}
-          {current.interactionType === "FILL_TABLE" && mode !== "numpad" && (
-            <div className="counting__positional-table">
-              {/* Celda CENTENAS (Solo Nivel 2) */}
-              {isLevel2 && (
-                <div
-                  className={`counting__positional-col counting__positional-col--hundreds ${
-                    activeInputCell === "hundreds" ? "counting__positional-col--active" : ""
-                  }`}
-                  onClick={() => {
-                    setActiveInputCell("hundreds");
-                    if (mode === "canvas" && session.posTableInput.hundreds !== "") {
-                      setSession((s) => ({
-                        ...s,
-                        posTableInput: { ...s.posTableInput, hundreds: "" },
-                      }));
-                    }
-                  }}
-                >
-                  <div className="counting__positional-header">C</div>
-                  <div className="counting__positional-body">
-                    {mode === "canvas" && activeInputCell === "hundreds" ? (
-                      <LazyDigitCell
-                        key={canvasKeys.hundreds}
-                        isActive={true}
-                        onActivate={() => {}}
-                        onConfirm={(digit) => {
-                          setSession((s) => ({
-                            ...s,
-                            posTableInput: { ...s.posTableInput, hundreds: digit },
-                          }));
-                          setCanvasKeys((k) => ({ ...k, hundreds: k.hundreds + 1 }));
-                          setActiveInputCell(
-                            session.posTableInput.tens === ""
-                              ? "tens"
-                              : session.posTableInput.units === ""
-                                ? "units"
-                                : null,
-                          );
-                        }}
-                        onClear={() =>
-                          setSession((s) => ({
-                            ...s,
-                            posTableInput: { ...s.posTableInput, hundreds: "" },
-                          }))
-                        }
-                        state={"idle"}
-                        value={""}
-                      />
-                    ) : (
-                      <span
-                        className={`counting__positional-value ${
-                          session.posTableInput.hundreds
-                            ? "counting__positional-value--filled"
-                            : "counting__positional-value--empty"
-                        }`}
-                      >
-                        {session.posTableInput.hundreds || "?"}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Celda DECENAS */}
+          {/* ── Caja flotante de escritura (FILL_TABLE canvas mode) ─────── */}
+          {current.interactionType === "FILL_TABLE" &&
+            mode !== "numpad" &&
+            currentStep?.answerType !== "COMPOSE_NUMBER" && (
               <div
-                className={`counting__positional-col counting__positional-col--tens ${
-                  activeInputCell === "tens" ? "counting__positional-col--active" : ""
+                className={`counting__ft-float ${
+                  currentStep.answerType === "COUNT_UNITS"
+                    ? "counting__ft-float--left"
+                    : "counting__ft-float--right"
+                } ${
+                  session.answerState !== "idle" ? `counting__ft-float--${session.answerState}` : ""
                 }`}
-                onClick={() => {
-                  setActiveInputCell("tens");
-                  if (mode === "canvas" && session.posTableInput.tens !== "") {
-                    setSession((s) => ({ ...s, posTableInput: { ...s.posTableInput, tens: "" } }));
-                  }
-                }}
               >
-                <div className="counting__positional-header">D</div>
-                <div className="counting__positional-body">
-                  {mode === "canvas" && activeInputCell === "tens" ? (
-                    <LazyDigitCell
-                      key={canvasKeys.tens}
-                      isActive={true}
-                      onActivate={() => {}}
-                      onConfirm={(digit) => {
-                        setSession((s) => ({
-                          ...s,
-                          posTableInput: { ...s.posTableInput, tens: digit },
-                        }));
-                        setCanvasKeys((k) => ({ ...k, tens: k.tens + 1 }));
-                        setActiveInputCell(session.posTableInput.units === "" ? "units" : null);
-                      }}
-                      onClear={() =>
-                        setSession((s) => ({
-                          ...s,
-                          posTableInput: { ...s.posTableInput, tens: "" },
-                        }))
-                      }
-                      state={"idle"}
-                      value={""}
-                    />
-                  ) : (
-                    <span
-                      className={`counting__positional-value ${
-                        session.posTableInput.tens
-                          ? "counting__positional-value--filled"
-                          : "counting__positional-value--empty"
-                      }`}
-                    >
-                      {session.posTableInput.tens || "?"}
-                    </span>
-                  )}
+                <div className="counting__ft-float-label">
+                  {currentStep.answerType === "COUNT_HUNDREDS"
+                    ? "C"
+                    : currentStep.answerType === "COUNT_TENS"
+                      ? "D"
+                      : "U"}
                 </div>
-              </div>
-              {/* Celda UNIDADES */}
-              <div
-                className={`counting__positional-col counting__positional-col--units ${
-                  activeInputCell === "units" ? "counting__positional-col--active" : ""
-                }`}
-                onClick={() => {
-                  setActiveInputCell("units");
-                  if (mode === "canvas" && session.posTableInput.units !== "") {
-                    setSession((s) => ({ ...s, posTableInput: { ...s.posTableInput, units: "" } }));
-                  }
-                }}
-              >
-                <div className="counting__positional-header">U</div>
-                <div className="counting__positional-body">
-                  {mode === "canvas" && activeInputCell === "units" ? (
-                    <LazyDigitCell
-                      key={canvasKeys.units}
-                      isActive={true}
-                      onActivate={() => {}}
-                      onConfirm={(digit) => {
-                        setSession((s) => ({
-                          ...s,
-                          posTableInput: { ...s.posTableInput, units: digit },
-                        }));
-                        setCanvasKeys((k) => ({ ...k, units: k.units + 1 }));
-                        setActiveInputCell(session.posTableInput.tens === "" ? "tens" : null);
-                      }}
-                      onClear={() =>
-                        setSession((s) => ({
-                          ...s,
-                          posTableInput: { ...s.posTableInput, units: "" },
-                        }))
-                      }
-                      state={"idle"}
-                      value={""}
-                    />
-                  ) : (
-                    <span
-                      className={`counting__positional-value ${
-                        session.posTableInput.units
-                          ? "counting__positional-value--filled"
-                          : "counting__positional-value--empty"
-                      }`}
-                    >
-                      {session.posTableInput.units || "?"}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <footer className="counting__footer">
-          {current.interactionType === "TOUCH" && !allTouched && (
-            <p className="counting__instruction">Toca todos los objetos contando en voz alta.</p>
-          )}
-          {current.interactionType === "GROUP" && !allTouched && (
-            <p className="counting__instruction">
-              Arrastra las decenas completas a los contenedores.
-            </p>
-          )}
-          {current.interactionType === "DRAG" && !allTouched && (
-            <p className="counting__instruction">Arrastra las decenas y unidades a su columna.</p>
-          )}
-          {current.interactionType === "FILL_TABLE" && !allTouched && mode === "numpad" && (
-            <div
-              className="counting__numpad-wrapper"
-              style={{
-                display: "flex",
-                gap: "32px",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-                marginBottom: "16px",
-              }}
-            >
-              <div
-                className="counting__positional-table counting__positional-table--footer"
-                style={{ position: "relative", bottom: "auto", left: "auto", transform: "none" }}
-              >
-                {/* Celda CENTENAS (Solo Nivel 2) */}
-                {isLevel2 && (
-                  <div
-                    className={`counting__positional-col counting__positional-col--hundreds ${
-                      activeInputCell === "hundreds" ? "counting__positional-col--active" : ""
-                    }`}
-                    onClick={() => setActiveInputCell("hundreds")}
-                  >
-                    <div className="counting__positional-header">C</div>
-                    <div className="counting__positional-body">
-                      <span
-                        className={`counting__positional-value ${
-                          session.posTableInput.hundreds
-                            ? "counting__positional-value--filled"
-                            : "counting__positional-value--empty"
-                        }`}
-                      >
-                        {session.posTableInput.hundreds || "?"}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Celda DECENAS */}
-                <div
-                  className={`counting__positional-col counting__positional-col--tens ${
-                    activeInputCell === "tens" ? "counting__positional-col--active" : ""
-                  }`}
-                  onClick={() => setActiveInputCell("tens")}
-                >
-                  <div className="counting__positional-header">D</div>
-                  <div className="counting__positional-body">
-                    <span
-                      className={`counting__positional-value ${
-                        session.posTableInput.tens
-                          ? "counting__positional-value--filled"
-                          : "counting__positional-value--empty"
-                      }`}
-                    >
-                      {session.posTableInput.tens || "?"}
-                    </span>
-                  </div>
-                </div>
-                {/* Celda UNIDADES */}
-                <div
-                  className={`counting__positional-col counting__positional-col--units ${
-                    activeInputCell === "units" ? "counting__positional-col--active" : ""
-                  }`}
-                  onClick={() => setActiveInputCell("units")}
-                >
-                  <div className="counting__positional-header">U</div>
-                  <div className="counting__positional-body">
-                    <span
-                      className={`counting__positional-value ${
-                        session.posTableInput.units
-                          ? "counting__positional-value--filled"
-                          : "counting__positional-value--empty"
-                      }`}
-                    >
-                      {session.posTableInput.units || "?"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <Numpad
-                layout="horizontal"
-                onDigit={(d) => {
-                  if (session.answerState !== "idle" || !activeInputCell) return;
-                  setSession((s) => {
-                    const newState = {
-                      ...s,
-                      posTableInput: { ...s.posTableInput, [activeInputCell]: d },
-                    };
-                    // Pasar automáticamente a la siguiente celda vacía
-                    if (activeInputCell === "hundreds") {
-                      setActiveInputCell(
-                        s.posTableInput.tens === ""
+                <LazyDigitCell
+                  key={`ft-${session.currentStepIndex}-${
+                    canvasKeys[
+                      currentStep.answerType === "COUNT_HUNDREDS"
+                        ? "hundreds"
+                        : currentStep.answerType === "COUNT_TENS"
                           ? "tens"
-                          : s.posTableInput.units === ""
-                            ? "units"
-                            : null,
-                      );
-                    } else if (activeInputCell === "tens") {
-                      setActiveInputCell(
-                        s.posTableInput.units === ""
-                          ? "units"
-                          : isLevel2 && s.posTableInput.hundreds === ""
-                            ? "hundreds"
-                            : null,
-                      );
-                    } else if (activeInputCell === "units") {
-                      setActiveInputCell(
-                        isLevel2 && s.posTableInput.hundreds === ""
-                          ? "hundreds"
-                          : s.posTableInput.tens === ""
-                            ? "tens"
-                            : null,
-                      );
-                    }
-                    return newState;
-                  });
-                }}
-                onDelete={() => {
-                  if (session.answerState !== "idle") return;
-                  // Si no hay celda activa, borramos la última en jerarquía (unidades)
-                  if (!activeInputCell) {
-                    setActiveInputCell("units");
-                    setSession((s) => ({ ...s, posTableInput: { ...s.posTableInput, units: "" } }));
-                  } else {
+                          : "units"
+                    ]
+                  }`}
+                  isActive={session.answerState === "idle"}
+                  onActivate={() => {}}
+                  onConfirm={(digit) => {
+                    const field =
+                      currentStep.answerType === "COUNT_HUNDREDS"
+                        ? "hundreds"
+                        : currentStep.answerType === "COUNT_TENS"
+                          ? "tens"
+                          : "units";
                     setSession((s) => ({
                       ...s,
-                      posTableInput: { ...s.posTableInput, [activeInputCell]: "" },
+                      posTableInput: { ...s.posTableInput, [field]: digit },
                     }));
+                    handleAnswer(parseInt(digit, 10));
+                  }}
+                  onClear={() => {
+                    const field =
+                      currentStep.answerType === "COUNT_HUNDREDS"
+                        ? "hundreds"
+                        : currentStep.answerType === "COUNT_TENS"
+                          ? "tens"
+                          : "units";
+                    setSession((s) => ({
+                      ...s,
+                      posTableInput: { ...s.posTableInput, [field]: "" },
+                    }));
+                  }}
+                  state={
+                    session.answerState === "idle"
+                      ? "idle"
+                      : session.answerState === "correct"
+                        ? "correct"
+                        : "wrong"
                   }
-                }}
-                onConfirm={() => {
-                  /* La validación ocurre al seleccionar opción */
-                }}
-                disabled={session.answerState !== "idle"}
-              />
+                  value={
+                    currentStep.answerType === "COUNT_HUNDREDS"
+                      ? session.posTableInput.hundreds || ""
+                      : currentStep.answerType === "COUNT_TENS"
+                        ? session.posTableInput.tens
+                        : session.posTableInput.units
+                  }
+                />
+              </div>
+            )}
+
+          {/* ── Numpad flotante: derecha para decenas, izquierda para unidades ── */}
+          {current.interactionType === "FILL_TABLE" &&
+            mode === "numpad" &&
+            currentStep?.answerType !== "COMPOSE_NUMBER" && (
+              <div
+                className={`counting__ft-numpad-float ${
+                  currentStep.answerType === "COUNT_UNITS"
+                    ? "counting__ft-numpad-float--left"
+                    : "counting__ft-numpad-float--right"
+                } ${
+                  session.answerState !== "idle"
+                    ? `counting__ft-numpad-float--${session.answerState}`
+                    : ""
+                }`}
+              >
+                <Numpad
+                  layout="grid"
+                  onDigit={(d) => {
+                    if (session.answerState !== "idle" || !resolvedActiveCell) return;
+                    setSession((s) => ({
+                      ...s,
+                      posTableInput: { ...s.posTableInput, [resolvedActiveCell]: d },
+                    }));
+                  }}
+                  onDelete={() => {
+                    if (session.answerState !== "idle" || !resolvedActiveCell) return;
+                    setSession((s) => ({
+                      ...s,
+                      posTableInput: { ...s.posTableInput, [resolvedActiveCell]: "" },
+                    }));
+                  }}
+                  onConfirm={submitTableAnswer}
+                  disabled={session.answerState !== "idle"}
+                />
+              </div>
+            )}
+        </div>
+
+        {current.interactionType === "FILL_TABLE" ? (
+          /* ── FILL_TABLE: faldón secuencial con badges ─────────────────── */
+          <footer className="counting__footer counting__ft-footer">
+            {/* Pregunta a la izquierda */}
+            <div className="counting__ft-question">
+              <p className="counting__question">{currentStep?.prompt}</p>
             </div>
-          )}
 
-          <div
-            className="counting__steps-container"
-            style={{ opacity: allTouched ? 1 : 0.3, pointerEvents: allTouched ? "auto" : "none" }}
-          >
-            {visibleSteps.map((step, idx) => {
-              const isCurrentStep = idx === visibleSteps.length - 1;
-
-              return (
-                <div
-                  key={idx}
-                  className={`counting__step ${isCurrentStep ? "counting__step--active" : "counting__step--past"}`}
-                >
-                  <p className="counting__question">{step.prompt}</p>
-
-                  <div className="counting__options">
-                    {isCurrentStep ? (
-                      // Opciones interactivas para el paso actual
-                      step.options.map((option) => {
-                        const isSelected = session.selectedOption === option;
-                        const isOptionCorrect = option === step.correctAnswer;
-                        let btnClass = "counting__option";
-                        if (session.answerState === "correct" && isOptionCorrect) {
-                          btnClass += " counting__option--correct";
-                        } else if (session.answerState === "wrong" && isSelected) {
-                          btnClass += " counting__option--wrong";
-                        }
-                        return (
-                          <button
-                            key={option}
-                            className={btnClass}
-                            onClick={() => handleAnswer(option)}
-                            disabled={session.answerState !== "idle"}
-                          >
-                            {option}
-                          </button>
-                        );
-                      })
-                    ) : (
-                      // Respuesta fijada para pasos anteriores
-                      <div className="counting__option counting__option--correct counting__option--fixed">
-                        {step.correctAnswer}
-                      </div>
-                    )}
+            {/* Badges confirmados de pasos anteriores + paso actual si es correct */}
+            <div className="counting__ft-badges">
+              {current.steps.slice(0, session.currentStepIndex).map((step, i) => {
+                const label =
+                  step.answerType === "COUNT_HUNDREDS"
+                    ? "C"
+                    : step.answerType === "COUNT_TENS"
+                      ? "D"
+                      : step.answerType === "COUNT_UNITS"
+                        ? "U"
+                        : "N";
+                return (
+                  <div
+                    key={i}
+                    className={`counting__ft-badge counting__ft-badge--${label.toLowerCase()}`}
+                  >
+                    <span className="counting__ft-badge-label">{label}</span>
+                    <span className="counting__ft-badge-num">{step.correctAnswer}</span>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
 
-          {session.answerState === "wrong" && (
-            <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-          )}
-        </footer>
+              {session.answerState === "correct" &&
+                currentStep?.answerType !== "COMPOSE_NUMBER" &&
+                (() => {
+                  const label =
+                    currentStep?.answerType === "COUNT_HUNDREDS"
+                      ? "C"
+                      : currentStep?.answerType === "COUNT_TENS"
+                        ? "D"
+                        : currentStep?.answerType === "COUNT_UNITS"
+                          ? "U"
+                          : "N";
+                  return (
+                    <div
+                      className={`counting__ft-badge counting__ft-badge--${label.toLowerCase()} counting__ft-badge--appear`}
+                    >
+                      <span className="counting__ft-badge-label">{label}</span>
+                      <span className="counting__ft-badge-num">{currentStep?.correctAnswer}</span>
+                    </div>
+                  );
+                })()}
+
+              {currentStep?.answerType === "COMPOSE_NUMBER" &&
+                session.answerState === "correct" && (
+                  <div className="counting__ft-badge counting__ft-badge--total counting__ft-badge--appear">
+                    <span className="counting__ft-badge-label">=</span>
+                    <span className="counting__ft-badge-num">{currentStep.correctAnswer}</span>
+                  </div>
+                )}
+            </div>
+
+            {/* Panel numpad (solo en modo numpad, no durante COMPOSE_NUMBER) */}
+            {mode === "numpad" && currentStep?.answerType !== "COMPOSE_NUMBER" && (
+              <div className="counting__ft-numpad-panel">
+                <div className="counting__ft-numcells">
+                  {current.steps
+                    .filter((s) => s.answerType !== "COMPOSE_NUMBER")
+                    .map((step, i) => {
+                      const label =
+                        step.answerType === "COUNT_HUNDREDS"
+                          ? "C"
+                          : step.answerType === "COUNT_TENS"
+                            ? "D"
+                            : step.answerType === "COUNT_UNITS"
+                              ? "U"
+                              : "N";
+                      const field =
+                        step.answerType === "COUNT_HUNDREDS"
+                          ? "hundreds"
+                          : step.answerType === "COUNT_TENS"
+                            ? "tens"
+                            : "units";
+                      const isConfirmed = i < session.currentStepIndex;
+                      const isCurrent = i === session.currentStepIndex;
+                      return (
+                        <div
+                          key={i}
+                          className={`counting__ft-numcell counting__ft-numcell--${label.toLowerCase()} ${
+                            isCurrent && resolvedActiveCell === field
+                              ? "counting__ft-numcell--active"
+                              : ""
+                          }`}
+                          onClick={() => {
+                            if (session.answerState === "idle" && isCurrent)
+                              setActiveInputCell(field as "hundreds" | "tens" | "units");
+                          }}
+                        >
+                          <span className="counting__ft-numcell-label">{label}</span>
+                          <span className="counting__ft-numcell-val">
+                            {isConfirmed
+                              ? step.correctAnswer
+                              : session.posTableInput[
+                                  field as keyof typeof session.posTableInput
+                                ] || "?"}
+                          </span>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
+
+            {/* Botón "Siguiente" tras completar el total */}
+            {session.answerState === "correct" && currentStep?.answerType === "COMPOSE_NUMBER" && (
+              <button className="counting__ft-next-btn" onClick={handleNext}>
+                Siguiente →
+              </button>
+            )}
+
+            {/* Botones de error */}
+            {session.answerState === "wrong" && (
+              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+            )}
+          </footer>
+        ) : (
+          /* ── Otros modos: faldón original ───────────────────────────── */
+          <footer className="counting__footer">
+            {current.interactionType === "TOUCH" && !allTouched && (
+              <p className="counting__instruction">Toca todos los objetos contando en voz alta.</p>
+            )}
+            {current.interactionType === "GROUP" && !allTouched && (
+              <p className="counting__instruction">
+                Arrastra las decenas completas a los contenedores.
+              </p>
+            )}
+            {current.interactionType === "DRAG" && !allTouched && (
+              <p className="counting__instruction">Arrastra las decenas y unidades a su columna.</p>
+            )}
+
+            <div
+              className="counting__steps-container"
+              style={{ pointerEvents: allTouched ? "auto" : "none" }}
+            >
+              {visibleSteps.map((step, idx) => {
+                const isCurrentStep = idx === visibleSteps.length - 1;
+                return (
+                  <div
+                    key={idx}
+                    className={`counting__step ${
+                      isCurrentStep ? "counting__step--active" : "counting__step--past"
+                    }`}
+                  >
+                    <p className="counting__question">{step.prompt}</p>
+                    <div className="counting__options" style={{ opacity: allTouched ? 1 : 0.5 }}>
+                      {isCurrentStep ? (
+                        step.options.map((option) => {
+                          const isSelected = session.selectedOption === option;
+                          const isOptionCorrect = option === step.correctAnswer;
+                          let btnClass = "counting__option";
+                          if (session.answerState === "correct" && isOptionCorrect)
+                            btnClass += " counting__option--correct";
+                          else if (session.answerState === "wrong" && isSelected)
+                            btnClass += " counting__option--wrong";
+                          return (
+                            <button
+                              key={option}
+                              className={btnClass}
+                              onClick={() => handleAnswer(option)}
+                              disabled={session.answerState !== "idle"}
+                            >
+                              {option}
+                            </button>
+                          );
+                        })
+                      ) : (
+                        <div className="counting__option counting__option--correct counting__option--fixed">
+                          {step.correctAnswer}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {session.answerState === "wrong" && (
+              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+            )}
+          </footer>
+        )}
       </div>
     </div>
   );

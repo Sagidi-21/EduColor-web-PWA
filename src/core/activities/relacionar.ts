@@ -24,9 +24,9 @@ type DifficultyConfig = {
 };
 
 const CONFIGS: Record<ActivityDifficulty, DifficultyConfig> = {
-  easy: { count: 3, min: 1, max: 5, scattered: false, multiImage: false },
-  medium: { count: 4, min: 1, max: 9, scattered: false, multiImage: false },
-  hard: { count: 5, min: 1, max: 9, scattered: false, multiImage: false },
+  easy: { count: 3, min: 1, max: 5, scattered: false, multiImage: true },
+  medium: { count: 4, min: 1, max: 9, scattered: false, multiImage: true },
+  hard: { count: 5, min: 1, max: 9, scattered: false, multiImage: true },
   expert: { count: 5, min: 5, max: 15, scattered: true, multiImage: true },
 };
 
