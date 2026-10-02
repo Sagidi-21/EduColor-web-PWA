@@ -16,9 +16,9 @@
     "unitLabel": "Nos vamos de viaje",
     "difficultyDescriptions": {
       "easy": "Compara dos actividades con diferencia muy clara",
-      "medium": "Duraciones más parecidas, mismas unidades",
-      "hard": "Mezcla unidades (minutos y horas) + clasifica si dura más o menos de 1 hora",
-      "expert": "Todas las variantes con duraciones próximas"
+      "medium": "Compara dos actividades cualesquiera; las barras siempre visibles",
+      "hard": "También pregunta si una actividad dura más o menos de 1 hora; las barras van apareciendo y desapareciendo",
+      "expert": "Duraciones muy parecidas entre sí, sin barras y con la pregunta de la hora"
     }
   },
   "order": 54
