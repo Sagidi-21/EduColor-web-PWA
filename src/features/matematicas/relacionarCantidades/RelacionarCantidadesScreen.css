@@ -39,7 +39,7 @@
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 3rem;
   width: 100%;
   /* Antes 560 px, que era el ancho quelassen. Medida en pizarra, sobraba hueco
@@ -70,6 +70,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
   gap: 0.6rem;
   /* A partes iguales el ancho disponible. Antes cada columna medía lo que
      ocupaba su contenido, de modo que una con enunciado corto se quedaba

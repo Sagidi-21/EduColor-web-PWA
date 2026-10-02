@@ -108,6 +108,7 @@ export function MatchColumns<T extends MatchItem>({
   /** Parejas de la izquierda que alguna vez se equivocaron de pareja. */
   const [failed, setFailed] = useState<Set<number>>(new Set());
   const [lines, setLines] = useState<Line[]>([]);
+  const [svgSize, setSvgSize] = useState({ w: 0, h: 0 });
 
   const containerRef = useRef<HTMLDivElement>(null);
   const leftRefs = useRef<Map<number, HTMLDivElement>>(new Map());
@@ -141,6 +142,11 @@ export function MatchColumns<T extends MatchItem>({
   const computeLines = useCallback(() => {
     const cr = containerRef.current?.getBoundingClientRect();
     if (!cr) return;
+    // Sincronizar el sistema de coordenadas del SVG con los px reales del DOM.
+    // Sin width/height explícitos el navegador usa 300×150 como viewport interno
+    // del SVG, por lo que las coordenadas calculadas con getBoundingClientRect
+    // (que son px reales) quedaban desescaladas y las líneas aparecían torcidas.
+    setSvgSize({ w: cr.width, h: cr.height });
     const next: Line[] = [];
     connections.forEach((rightId, leftId) => {
       const lEl = leftRefs.current.get(leftId);
@@ -162,6 +168,40 @@ export function MatchColumns<T extends MatchItem>({
   useEffect(() => {
     computeLines();
   }, [computeLines]);
+
+  /**
+   * Las líneas se vuelven a medir con un `ResizeObserver` estable (creado una
+   * sola vez al montar). Antes el efecto dependía de `connections` y se
+   * desconectaba/reconectaba en cada emparejamiento, dejando un hueco donde los
+   * cambios de layout —imágenes que cargan, fuentes que cambian el alto de un
+   * texto— no se detectaban. Ahora el observer vive toda la vida del componente
+   * y apunta siempre a la versión más reciente de `computeLines` a través de un
+   * ref; las tarjetas nuevas se añaden al mismo observer sin desconectarlo.
+   */
+  const computeLinesRef = useRef(computeLines);
+  useEffect(() => {
+    computeLinesRef.current = computeLines;
+  }, [computeLines]);
+
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+
+  // Montar el observer una sola vez sobre el contenedor.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const obs = new ResizeObserver(() => computeLinesRef.current());
+    resizeObserverRef.current = obs;
+    obs.observe(container);
+    return () => obs.disconnect();
+  }, []);
+
+  // Añadir las tarjetas nuevas al observer existente (sin desconectarlo).
+  useEffect(() => {
+    const obs = resizeObserverRef.current;
+    if (!obs) return;
+    for (const el of leftRefs.current.values()) obs.observe(el);
+    for (const el of rightRefs.current.values()) obs.observe(el);
+  }, [connections]);
 
   useEffect(() => {
     window.addEventListener("resize", computeLines);
@@ -228,7 +268,13 @@ export function MatchColumns<T extends MatchItem>({
   return (
     <>
       <div className={`${prefix}__columns`} ref={containerRef}>
-        <svg className={`${prefix}__svg`} aria-hidden="true">
+        <svg
+          className={`${prefix}__svg`}
+          aria-hidden="true"
+          viewBox={svgSize.w > 0 ? `0 0 ${svgSize.w} ${svgSize.h}` : undefined}
+          preserveAspectRatio="none"
+          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+        >
           {lines.map((l) => (
             <line
               key={l.id}

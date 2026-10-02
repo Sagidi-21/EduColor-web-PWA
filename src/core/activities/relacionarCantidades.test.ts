@@ -186,6 +186,26 @@ describe("relacionarCantidades — pantallas", () => {
     }
   });
 
+  it("todas las parejas de una pantalla tienen opciones únicas", () => {
+    // Tras la modificación, comprobamos que el texto izquierdo y derecho no
+    // se repita dentro de la misma pantalla para evitar ambigüedades.
+    for (const dificultad of DIFICULTADES) {
+      for (const semilla of SEMILLAS) {
+        const pantallas = generateSession(dificultad, semilla, 3);
+        for (const pantalla of pantallas) {
+          const textosIzquierda = new Set(pantalla.pairs.map((p) => p.leftText));
+          const textosDerecha = new Set(pantalla.pairs.map((p) => p.rightText));
+          expect(textosIzquierda.size, `Textos izquierda únicos en ${dificultad}`).toBe(
+            pantalla.pairs.length,
+          );
+          expect(textosDerecha.size, `Textos derecha únicos en ${dificultad}`).toBe(
+            pantalla.pairs.length,
+          );
+        }
+      }
+    }
+  });
+
   it("es determinista con la misma semilla", () => {
     expect(generateSession("medium", 42)).toEqual(generateSession("medium", 42));
     expect(generateSession("hard", 42)).not.toEqual(generateSession("hard", 43));

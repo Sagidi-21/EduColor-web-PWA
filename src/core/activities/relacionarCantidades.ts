@@ -262,10 +262,28 @@ export function generateRound(
   const imageUrl = pickImage(cat, rng);
   const generar = GENERADORES[difficulty];
 
-  const pairs: RelacionarCantidadesPair[] = Array.from(
-    { length: parejasPorPantalla(difficulty) },
-    (_, i) => ({ id: i, ...generar(rng), imageUrl, objectLabel: cat.name }),
-  );
+  const pairs: RelacionarCantidadesPair[] = [];
+  const targetLength = parejasPorPantalla(difficulty);
+  const seenLeft = new Set<string>();
+  const seenRight = new Set<string>();
+  let attempts = 0;
+
+  while (pairs.length < targetLength) {
+    const pairData = generar(rng);
+    const isUnique = !seenLeft.has(pairData.leftText) && !seenRight.has(pairData.rightText);
+
+    // Si la pareja es única la aceptamos. Si llevamos muchos intentos fallidos,
+    // es que nos hemos quedado sin combinaciones posibles: la aceptamos igual
+    // para no colgar el juego en un bucle infinito.
+    if (isUnique || attempts > 50) {
+      seenLeft.add(pairData.leftText);
+      seenRight.add(pairData.rightText);
+      pairs.push({ id: pairs.length, ...pairData, imageUrl, objectLabel: cat.name });
+      attempts = 0;
+    } else {
+      attempts++;
+    }
+  }
 
   // Barajadas por separado: si compartieran orden, unir sería mirar a la misma
   // altura y no habría nada que emparejar.
