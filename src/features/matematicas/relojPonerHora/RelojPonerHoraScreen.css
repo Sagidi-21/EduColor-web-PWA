@@ -23,14 +23,24 @@
  *
  * `align-items: stretch` (no `center`) es lo que permite que `.rph__board` mida la
  * altura real que le queda al stage. Con `center` la altura del board la marcaba su
- * propio contenido —el SVG—, que es justo lo que hay que poder encoger. */
+ * propio contenido —el SVG—, que es justo lo que hay que poder encoger.
+ *
+ * El desplazamiento a la derecha se hace con `padding-left` y no con
+ * `justify-content`: `.rph__board` lleva `flex: 1`, así que se queda con todo el
+ * ancho libre y `justify-content` no llega a mover nada. Reservar el hueco por la
+ * izquierda empuja el panel y la esfera juntos, que es lo que se pedía.
+ *
+ * Solo es horizontal a propósito: nada de esto toca la altura, así que no puede
+ * devolver el scroll vertical en pantallas bajas. */
 .rph__layout {
   display: flex;
   flex-direction: row;
   align-items: stretch;
   justify-content: center;
+  padding-left: clamp(1.5rem, 9vw, 11rem);
   gap: clamp(1rem, 4vw, 3rem);
   width: 100%;
+  box-sizing: border-box;
   flex: 1;
   min-height: 0;
   /* Contenedor de tamaño para que el panel lateral pueda escalar también su

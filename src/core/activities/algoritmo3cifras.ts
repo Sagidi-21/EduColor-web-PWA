@@ -3,25 +3,37 @@ import type { ActivityDifficulty } from "../content/contracts";
 /**
  * Motor "Algoritmo de tres cifras" (2.º de Primaria).
  *
- * Migración 1:1 de
- * `electron-reference/Colegio/src/renderer/src/core/engines/algoritmo3cifras/engine.ts`.
+ * Migración de
+ * `electron-reference/Colegio/src/renderer/src/core/engines/algoritmo3cifras/engine.ts`,
+ * **con la mecánica del renderer cambiada por indicación del profesorado**
+ * (2026-10-02). La parte aritmética es 1:1; lo que cambia es cómo se contesta.
  *
- * El niño ve una operación planteada encolumnada, con la fila de llevadas ya
- * resuelta, y elige el resultado entre cuatro opciones. La mecánica es de
- * opción múltiple: no se teclea el resultado, se elige.
+ * ## Lo que hace el generador
  *
- * Lo que cambia con la dificultad es **qué clase de llevadas** aparece, no la
- * cantidad de cifras:
+ * Una operación planteada encolumnada, con la fila de llevadas ya resuelta en el
+ * enunciado, para 2.º de Primaria. Lo que cambia con la dificultad no es la
+ * cantidad de cifras sino **qué clase de llevadas** aparece:
  *
  * - easy:   suma sin ninguna llamada, con el resultado por debajo de 1000.
  * - medium: suma con llamada de unidades a decenas, y solo esa.
  * - hard:   suma con llamada de decenas a centenas, y solo esa.
  * - expert: suma con las dos llamadas, o resta con los dos prestamos.
  *
- * No cambia ninguna regla de generación ni validación: solo el tipo de
- * dificultad (`Difficulty` de Electron → `ActivityDifficulty` de la PWA) y la
- * semilla como parámetro en lugar de `Date.now() % 999983` calculado en el
- * renderer.
+ * ## Lo que cambia respecto a Electron
+ *
+ * En Electron la respuesta era de opción múltiple: el niño elegía entre cuatro
+ * resultados y, además, se le revelaba la fila de llevadas ya resuelta. Aquí la
+ * respuesta **se escribe**, casilla a casilla, y se comprueba **una sola vez**
+ * contra el resultado entero. Es una decisión del profesorado, no una limpieza:
+ * la idea es que el niño no salga sabiendo en qué cifra se ha equivocado, porque
+ * si lo sabe el error ya no le sirve de nada y el profesor pierde su intervención.
+ * Por eso el núcleo ya no genera opciones: la única pregunta que tiene respuesta
+ * correcta es "¿cuál es el resultado?".
+ *
+ * ElRenderer es lo único que cambia; las reglas de generación, los rangos, las
+ * listas de tipos de llamada y la aritmética son las de Electron. También lo es
+ * el paso a `ActivityDifficulty` y la semilla como parámetro en lugar de
+ * `Date.now() % 999983` calculado en el renderer.
  */
 
 export type AlgoritmoOperacion = "+" | "-";
@@ -42,15 +54,20 @@ export interface Algoritmo3Exercise {
   /** Hay que pasar una centena hacia la izquierda: Decenas→Centenas. */
   carryDC: boolean;
   question: string;
-  correctAnswer: string;
-  options: string[];
 }
 
 /** Ejercicios por sesión, el mismo número en las cuatro dificultades. */
 export const SESSION_SIZE = 10;
 
-/** Cuánto puede alejarse una opción incorrecta del resultado correcto. */
-const DESVIO_MAXIMO = 15;
+/**
+ * Las columnas que tienen casilla de "llevar", por su posición desde la
+ * izquierda: la de las centenas es la 0 y la de las decenas la 1.
+ *
+ * La columna de las unidades nunca recibe nada de la derecha, así que no tiene
+ * casilla. Se expone porque el renderer dibuja las casillas y las decide quien
+ * lleva la pantalla, no el núcleo.
+ */
+export const CARRY_SLOTS = [0, 1] as const;
 
 /** Intentos por ejercicio antes de descartarlo y probar con otro. */
 const INTENTOS_POR_EJERCICIO = 50;
@@ -196,14 +213,6 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Algo
     const db = dec(b);
     const { carryUD, carryDC } = llamadas(op, a, b);
 
-    const correctAnswer = String(result);
-    const wrongs = new Set<string>([correctAnswer]);
-    while (wrongs.size < 4) {
-      const w = result + randInt(rng, 1, DESVIO_MAXIMO) * (rng() > 0.5 ? 1 : -1);
-      if (w > 0 && w <= 999) wrongs.add(String(w));
-    }
-    const options = Array.from(wrongs).sort((a, b) => Number(a) - Number(b));
-
     out.push({
       op,
       a,
@@ -218,14 +227,35 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Algo
       carryUD,
       carryDC,
       question: op === "+" ? `Suma: ${a} + ${b} = ___` : `Resta: ${a} − ${b} = ___`,
-      correctAnswer,
-      options,
     });
   }
   return out;
 }
 
-/** La respuesta es exactamente la opción correcta; el enunciado ya la da hecha. */
-export function validateAnswer(ex: Algoritmo3Exercise, answer: string): boolean {
-  return ex.correctAnswer === answer;
+/** Las tres cifras del resultado, como las ve el niño en las casillas. */
+export function resultDigits(ex: Algoritmo3Exercise): string[] {
+  return [
+    String(Math.floor(ex.result / 100)),
+    String(Math.floor((ex.result % 100) / 10)),
+    String(ex.result % 10),
+  ];
+}
+
+/**
+ * La única validación del ejercicio.
+ *
+ * Se compara **el resultado entero**, no cifra a cifra, y por eso devuelve un
+ * solo booleano: el ejercicio se acierta o se falla entero. No hay ninguna vía
+ * para que quien llama sepa en qué posición estaba el error, que es justo lo que
+ * se busca: si se le dijera, sabría qué corregir solo y no necesitaría al
+ * profesor.
+ *
+ * Con cualquiera de las tres casillas vacía devuelve `false`: el niño todavía no
+ * ha terminado y no se comprueba nada.
+ */
+export function validateDigits(ex: Algoritmo3Exercise, digits: readonly string[]): boolean {
+  if (digits.length !== 3 || digits.some((d) => d === "")) return false;
+  const escrito = Number(digits.join(""));
+  if (!Number.isInteger(escrito)) return false;
+  return escrito === ex.result;
 }

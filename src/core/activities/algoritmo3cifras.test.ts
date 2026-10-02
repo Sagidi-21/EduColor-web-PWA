@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { llamadas, generateSession, SESSION_SIZE, validateAnswer } from "./algoritmo3cifras";
+import {
+  CARRY_SLOTS,
+  llamadas,
+  generateSession,
+  resultDigits,
+  SESSION_SIZE,
+  validateDigits,
+} from "./algoritmo3cifras";
 import type { ActivityDifficulty } from "../content/contracts";
 
 const DIFFICULTIES: ActivityDifficulty[] = ["easy", "medium", "hard", "expert"];
@@ -168,48 +175,80 @@ describe("algoritmo3cifras — lo que cambia con la dificultad", () => {
   });
 });
 
-describe("algoritmo3cifras — opciones y validateAnswer", () => {
-  it("ofrece cuatro resultados distintos, el correcto entre ellos", () => {
+describe("algoritmo3cifras — validateDigits", () => {
+  it("acepta las tres cifras que forman el resultado", () => {
     for (const dificultad of DIFFICULTIES) {
       for (const sesion of sesiones(dificultad)) {
         for (const ex of sesion) {
-          expect(ex.options, ex.question).toHaveLength(4);
-          expect(new Set(ex.options).size, ex.question).toBe(4);
-          expect(ex.options).toContain(ex.correctAnswer);
-          expect(ex.options.map(Number).sort((x, y) => x - y)).toEqual(ex.options.map(Number));
+          expect(validateDigits(ex, resultDigits(ex)), ex.question).toBe(true);
         }
       }
     }
   });
 
-  it("las opciones erróneas están cerca del resultado y caben en tres cifras", () => {
+  it("falla entero si una sola cifra está mal, sin decir cuál", () => {
     for (const dificultad of DIFFICULTIES) {
       for (const sesion of sesiones(dificultad)) {
         for (const ex of sesion) {
-          for (const opcion of ex.options) {
-            const n = Number(opcion);
-            expect(n, opcion).toBeGreaterThan(0);
-            expect(n, opcion).toBeLessThanOrEqual(999);
-            expect(Math.abs(n - ex.result), `${ex.question} / ${opcion}`).toBeLessThanOrEqual(15);
+          for (let i = 0; i < 3; i++) {
+            const cifras = resultDigits(ex);
+            cifras[i] = String((Number(cifras[i]) + 1) % 10);
+            expect(validateDigits(ex, cifras), `${ex.question} Fallando la ${i}`).toBe(false);
           }
         }
       }
     }
   });
 
-  it("acepta solo la respuesta correcta", () => {
-    for (const dificultad of DIFFICULTIES) {
-      for (const sesion of sesiones(dificultad)) {
-        for (const ex of sesion) {
-          expect(validateAnswer(ex, ex.correctAnswer), ex.question).toBe(true);
-          for (const otra of ex.options) {
-            if (otra === ex.correctAnswer) continue;
-            expect(validateAnswer(ex, otra), `${ex.question} / ${otra}`).toBe(false);
-          }
-          expect(validateAnswer(ex, ""), ex.question).toBe(false);
-          expect(validateAnswer(ex, `${ex.correctAnswer} `), ex.question).toBe(false);
-        }
+  it("no comprueba nada mientras falte una casilla por rellenar", () => {
+    for (const ex of generateSession("easy", 42)) {
+      const cifras = resultDigits(ex);
+      for (let i = 0; i < 3; i++) {
+        const aMedias = [...cifras];
+        aMedias[i] = "";
+        expect(validateDigits(ex, aMedias), `Sin la casilla ${i} de ${ex.question}`).toBe(false);
       }
+    }
+  });
+
+  it("rechaza lo que no son tres casillas, o cifras que no son números", () => {
+    const ex = generateSession("easy", 42)[0];
+    const cifras = resultDigits(ex);
+
+    expect(validateDigits(ex, [])).toBe(false);
+    expect(validateDigits(ex, [cifras[0], cifras[1]])).toBe(false);
+    expect(validateDigits(ex, [cifras[0], cifras[1], cifras[2], "9"])).toBe(false);
+    expect(validateDigits(ex, ["x", cifras[1], cifras[2]])).toBe(false);
+    expect(validateDigits(ex, ["1", "", cifras[2]])).toBe(false);
+  });
+
+  it("un resultado con ceros a la izquierda se acepta con el cero escrito", () => {
+    // El núcleo no genera resultados de menos de tres cifras, pero la validación
+    // tiene que ser correcta si algún día los hubiera.
+    const ex = { ...generateSession("easy", 42)[0], result: 85 };
+    expect(validateDigits(ex, ["0", "8", "5"])).toBe(true);
+    expect(validateDigits(ex, ["0", "8", "6"])).toBe(false);
+  });
+});
+
+describe("algoritmo3cifras — casillas de llevar", () => {
+  it("hay dos casillas, sobre las centenas y las decenas", () => {
+    expect(CARRY_SLOTS).toEqual([0, 1]);
+    expect(CARRY_SLOTS).not.toContain(2);
+  });
+});
+
+describe("algoritmo3cifras — resultDigits", () => {
+  it("parte el resultado en las tres cifras que ve el niño", () => {
+    const ex = { ...generateSession("easy", 42)[0], result: 452 };
+    expect(resultDigits(ex)).toEqual(["4", "5", "2"]);
+  });
+
+  it("cada cifra está en su sitio y juntas vuelven a ser el resultado", () => {
+    for (const ex of generateSession("expert", 42)) {
+      const cifras = resultDigits(ex);
+      expect(cifras, ex.question).toHaveLength(3);
+      expect(cifras.join(""), ex.question).toBe(String(ex.result));
     }
   });
 });

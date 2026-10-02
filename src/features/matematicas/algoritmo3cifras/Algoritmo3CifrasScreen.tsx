@@ -1,11 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
-import { generateSession, validateAnswer } from "../../../core/activities/algoritmo3cifras";
+import {
+  CARRY_SLOTS,
+  generateSession,
+  validateDigits,
+} from "../../../core/activities/algoritmo3cifras";
 import type { Algoritmo3Exercise } from "../../../core/activities/algoritmo3cifras";
 import type { EngineScreenProps } from "../engine-screens";
 import { playFeedback } from "../../shared/audioFeedback";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { ActionButtons } from "../components/ActivityActionButtons";
+import { ColumnCarryOperation } from "../components/ColumnCarryOperation";
+import InputModeToggle from "../../shared/components/InputModeToggle";
+import { useInputMode } from "../../shared/hooks/useInputMode";
 import "./Algoritmo3CifrasScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -16,112 +23,36 @@ interface SessionState {
   correctCount: number;
   startTime: number;
   answerState: AnswerState;
-  selectedAnswer: string | null;
   /** Ya se falló este ejercicio: acertar después ya no suma a la cuenta. */
   alreadyFailed: boolean;
+  /**
+   * Número de intento dentro del ejercicio actual.
+   *
+   * Es lo único que limpia la operación, junto al índice del ejercicio. El
+   * veredicto no puede formar parte de la limpieza: si se borrara la operación
+   * al comprobar, el niño vería desaparecer lo que acaba de escribir.
+   */
+  attempt: number;
 }
 
 /** Espera antes de pasar al siguiente ejercicio cuando el alumno acierta. */
 const AUTOAVANCE_MS = 900;
 
-/** Una cifra del algoritmo. El cero se escribe, no se deja en blanco. */
-function DigitCell({ value }: { value: number }): JSX.Element {
-  return <span className="a3c__cell">{value}</span>;
-}
-
 /**
- * La operación escrita en columnas, con la fila de llevadas ya resuelta.
+ * "Algoritmo de tres cifras".
  *
- * `revealed` muestra el resultado en la rejilla en cuanto el niño contesta, lo
- * haya acertado o no. Es lo mismo que hacía Electron: la fila de llevadas ya
- * venía resuelta de fábrica, así que la única información que el niño tiene que
- * deducir es la última cifra, y mostrarla al fallar sirve de corrección. Como
- * los botones quedan bloqueados hasta que se pulse "Reintentar", y reintentar
- * marca `alreadyFailed`, ver el resultado no permite sacar buena nota después.
- */
-function AlgoritmoDisplay({
-  exercise,
-  revealed,
-}: {
-  exercise: Algoritmo3Exercise;
-  revealed: boolean;
-}): JSX.Element {
-  const cifrasA = [exercise.aC, exercise.aD, exercise.aU];
-  const cifrasB = [exercise.bC, exercise.bD, exercise.bU];
-  const cifrasR: (number | null)[] = revealed
-    ? [
-        Math.floor(exercise.result / 100),
-        Math.floor((exercise.result % 100) / 10),
-        exercise.result % 10,
-      ]
-    : [null, null, null];
-
-  return (
-    <div className="a3c__algo">
-      <div className="a3c__header-row">
-        <span className="a3c__hueco" />
-        {["C", "D", "U"].map((c) => (
-          <span key={c} className="a3c__cell a3c__cell--label">
-            {c}
-          </span>
-        ))}
-      </div>
-
-      {/* La fila de llevadas solo tiene sentido sumando: restar no "lleva", sino
-          que se presta, y Electron no lo dibujaba. */}
-      {exercise.op === "+" && (
-        <div className="a3c__row" data-testid="a3c-fila-llevadas">
-          <span className="a3c__hueco a3c__hueco--op" />
-          <span className="a3c__carry">{exercise.carryDC ? "1" : ""}</span>
-          <span className="a3c__carry">{exercise.carryUD ? "1" : ""}</span>
-          <span className="a3c__carry" />
-        </div>
-      )}
-
-      <div className="a3c__row">
-        <span className="a3c__hueco a3c__hueco--op" />
-        {cifrasA.map((v, i) => (
-          <DigitCell key={`a-${i}`} value={v} />
-        ))}
-      </div>
-
-      <div className="a3c__row">
-        <span className="a3c__op-symbol">{exercise.op === "+" ? "+" : "−"}</span>
-        {cifrasB.map((v, i) => (
-          <DigitCell key={`b-${i}`} value={v} />
-        ))}
-      </div>
-
-      <div className="a3c__divider" />
-
-      <div className="a3c__row">
-        <span className="a3c__hueco a3c__hueco--op" />
-        {cifrasR.map((v, i) => (
-          <span
-            key={`r-${i}`}
-            className={`a3c__result-cell ${v === null ? "a3c__result-cell--blank" : ""}`}
-          >
-            {v !== null ? v : "?"}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/**
- * Migra 1:1 de
- * `electron-reference/Colegio/src/renderer/src/core/engines/algoritmo3cifras/Algoritmo3CifrasRenderer.tsx`.
+ * La aritmética es la de `electron-reference/Colegio/src/renderer/src/core/engines/algoritmo3cifras/`,
+ * pero la respuesta ya no se elige entre cuatro opciones: se escribe, casilla a
+ * casilla, y se comprueba **una sola vez** contra el resultado entero, sin decir
+ * en qué cifra se ha equivocado. Es una decisión del profesorado (2026-10-02),
+ * y la mecánica entera vive en el componente compartido `ColumnCarryOperation`,
+ * para que cualquier ejercicio de cálculo encolumnado de cursos posteriores la
+ * reutilice sin volver a escribirla.
  *
- * La mecánica es la de Electron: **opción múltiple**, no tecleo. Se elige entre
- * cuatro resultados, así que no monta Numpad ni casillas; añadir un teclado
- * numérico sería cambiar la actividad, no migrarla. El hueco del signo y el de
- * las llamadas pasan a ser clases de CSS en vez de estilos en línea, para que el
- * ancho de columna no se pueda desincronizar del resto de la rejilla.
- *
- * El resto de diferencias son las de siempre: la semilla llega por props y
- * "Repetir" la reutiliza, el autoavance baja de 1300 ms a los 900 ms
- * unificados, y cabecera, resumen y acciones son los componentes compartidos.
+ * Esta pantalla solo compone: cabecera, la operación compartida, el resumen y
+ * los botones de reintentar o pasar. Lo único que decide es si el ejercicio se
+ * acierta o se falla, y eso lo hace el núcleo con `validateDigits`, sobre las
+ * tres cifras enteras.
  */
 export function Algoritmo3CifrasScreen({
   activity,
@@ -133,6 +64,7 @@ export function Algoritmo3CifrasScreen({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps) {
+  const { mode, toggle } = useInputMode();
   const [sessionSeed] = useState(() => seed);
   const [session, setSession] = useState<SessionState>(() => ({
     exercises: generateSession(difficulty, sessionSeed),
@@ -140,13 +72,33 @@ export function Algoritmo3CifrasScreen({
     correctCount: 0,
     startTime: Date.now(),
     answerState: "idle",
-    selectedAnswer: null,
     alreadyFailed: false,
+    attempt: 0,
   }));
   const [finished, setFinished] = useState<SessionResult | null>(null);
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
+
+  /**
+   * El momento único de comprobación.
+   *
+   * No recibe las casillas de llevar: no se corrigen. Solo las tres cifras del
+   * resultado, y enteras: si una falla, el ejercicio falla, y no se sabe cuál.
+   */
+  const comprobar = useCallback(
+    (digits: string[]) => {
+      if (session.answerState !== "idle" || !current) return;
+      const isCorrect = validateDigits(current, digits);
+      playFeedback(isCorrect);
+      setSession((s) => ({
+        ...s,
+        answerState: isCorrect ? "correct" : "wrong",
+        correctCount: isCorrect && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+      }));
+    },
+    [session.answerState, current],
+  );
 
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
@@ -161,35 +113,22 @@ export function Algoritmo3CifrasScreen({
         ...s,
         currentIndex: next,
         answerState: "idle",
-        selectedAnswer: null,
         alreadyFailed: false,
+        attempt: 0,
       }));
     }
   }, [session, total]);
 
   const handleRetry = useCallback(() => {
+    // Subir el intento es lo que deja la operación limpia: la caja del número
+    // anterior no puede quedarse ahí al volver a contestar.
     setSession((s) => ({
       ...s,
       answerState: "idle",
-      selectedAnswer: null,
       alreadyFailed: true,
+      attempt: s.attempt + 1,
     }));
   }, []);
-
-  const handleAnswer = useCallback(
-    (value: string) => {
-      if (session.answerState !== "idle" || !current) return;
-      const isCorrect = validateAnswer(current, value);
-      playFeedback(isCorrect);
-      setSession((s) => ({
-        ...s,
-        answerState: isCorrect ? "correct" : "wrong",
-        selectedAnswer: value,
-        correctCount: isCorrect && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
-      }));
-    },
-    [session.answerState, current],
-  );
 
   useEffect(() => {
     if (session.answerState !== "correct") return;
@@ -205,8 +144,8 @@ export function Algoritmo3CifrasScreen({
       correctCount: 0,
       startTime: Date.now(),
       answerState: "idle",
-      selectedAnswer: null,
       alreadyFailed: false,
+      attempt: 0,
     });
   }, [difficulty, sessionSeed]);
 
@@ -234,13 +173,6 @@ export function Algoritmo3CifrasScreen({
     );
   }
 
-  /** Estado visual de una opción: correcto, fallado o sin tocar. */
-  const estado = (opcion: string): "idle" | "correct" | "wrong" => {
-    if (session.answerState === "correct" && opcion === current.correctAnswer) return "correct";
-    if (session.answerState === "wrong" && opcion === session.selectedAnswer) return "wrong";
-    return "idle";
-  };
-
   return (
     <div className={`a3c ${className || ""}`}>
       <ActivityHeader
@@ -251,30 +183,31 @@ export function Algoritmo3CifrasScreen({
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}
         progress={`${session.currentIndex + 1} / ${total}`}
-      />
+      >
+        <InputModeToggle mode={mode} onToggle={toggle} />
+      </ActivityHeader>
 
       <div className={`a3c__stage a3c__stage--${session.answerState}`}>
         {session.answerState === "correct" && <div className="a3c__cheer">¡Correcto! ⭐</div>}
 
-        <AlgoritmoDisplay exercise={current} revealed={session.answerState !== "idle"} />
-
         <p className="a3c__question">{current.question}</p>
 
-        <div className="a3c__options">
-          {current.options.map((opcion) => (
-            <button
-              key={opcion}
-              type="button"
-              id={`a3c-opt-${opcion}`}
-              data-value={opcion}
-              className={`a3c__opt a3c__opt--${estado(opcion)}`}
-              onClick={() => handleAnswer(opcion)}
-              disabled={session.answerState !== "idle"}
-            >
-              {opcion}
-            </button>
-          ))}
-        </div>
+        <ColumnCarryOperation
+          op={current.op}
+          aDigits={[String(current.aC), String(current.aD), String(current.aU)]}
+          bDigits={[String(current.bC), String(current.bD), String(current.bU)]}
+          carrySlots={CARRY_SLOTS}
+          carryLabel={current.op === "+" ? "llevar" : "prestar"}
+          mode={mode}
+          verdict={session.answerState}
+          // Identifica el intento, y con él lo que hay que limpiar de la
+          // operación: cambia al pasar de ejercicio y al reintentar, pero **no**
+          // al dar el veredicto. Si el veredicto fuera parte del token, la
+          // operación se borraría en cuanto se pulsara comprobar y el niño
+          // perdería lo que acaba de escribir justo cuando más le sirve verlo.
+          resetToken={`${session.currentIndex}-${session.attempt}`}
+          onCheck={comprobar}
+        />
 
         {session.answerState === "wrong" && (
           <ActionButtons onRetry={handleRetry} onNext={handleNext} />
