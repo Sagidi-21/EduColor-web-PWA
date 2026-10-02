@@ -1,4 +1,4 @@
-# Estado del proyecto
+﻿# Estado del proyecto
 
 **Verificado contra el código el 2026-09-30.** Este documento es una página de
 estado: dice en qué punto va el proyecto y **enlaza** a quien tiene el detalle. No
@@ -26,7 +26,7 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 - **Fase activa:** 2 — Migración del catálogo matemático V1. La Fase 1 (modelo de
   contenido) está cerrada: 62 manifiestos, selector de actividades y el motor
   `comparison` como extra no acoplado al conteo.
-- **Estado de la Fase 2:** 39 de 62 actividades migradas y lanzables; 23
+- **Estado de la Fase 2:** 40 de 62 actividades migradas y lanzables; 22
   pendientes. El detalle por actividad, con núcleo, renderer y tests, está en el
   [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md); no se repite aquí.
 - **Siguiente motor:** `monedasBilletes`, la primera fila sin ✅ del inventario. La

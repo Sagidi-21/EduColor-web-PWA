@@ -152,6 +152,12 @@ const RelojPonerHoraScreen = lazy(() =>
   })),
 );
 
+const IntervalosTiempoScreen = lazy(() =>
+  import("./intervalosTiempo/IntervalosTiempoScreen").then((module) => ({
+    default: module.IntervalosTiempoScreen,
+  })),
+);
+
 const LaberintoMatematicoScreen = lazy(() =>
   import("./laberintoMatematico/LaberintoMatematicoScreen").then((module) => ({
     default: module.LaberintoMatematicoScreen,
@@ -440,6 +446,14 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <RelojPonerHoraScreen {...props} />
+      </Suspense>
+    );
+  }
+
+  if (props.activity.engineId === "intervalosTiempo") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <IntervalosTiempoScreen {...props} />
       </Suspense>
     );
   }
