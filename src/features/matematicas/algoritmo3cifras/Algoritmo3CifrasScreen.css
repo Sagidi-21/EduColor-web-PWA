@@ -1,0 +1,252 @@
+/* Motor "Algoritmo de tres cifras" */
+
+.a3c {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  overflow-y: auto;
+  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+  color: #1e1b4b;
+}
+
+.a3c__stage {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1.5rem 1rem 2rem;
+  transition: background 0.3s;
+}
+
+.a3c__stage--correct {
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.a3c__stage--wrong {
+  background: rgba(239, 68, 68, 0.07);
+}
+
+.a3c__cheer {
+  position: absolute;
+  top: 1rem;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #10b981;
+  pointer-events: none;
+  animation: a3cPop 0.4s ease;
+}
+
+@keyframes a3cPop {
+  0% {
+    transform: scale(0);
+  }
+  80% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.a3c__question {
+  margin: 0;
+  font-size: clamp(1.15rem, 2.6vw, 1.6rem);
+  font-weight: 800;
+  color: #1e1b4b;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* La operación escrita en columnas */
+
+.a3c__algo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 1.2rem 1.8rem;
+  border: 2px solid rgba(99, 102, 241, 0.25);
+  border-radius: 18px;
+  background: rgba(99, 102, 241, 0.07);
+  font-variant-numeric: tabular-nums;
+}
+
+.a3c__row {
+  display: flex;
+  align-items: center;
+}
+
+/*
+ * El hueco del signo. En Electron era un `style={{ width: "2.8rem" }}` en cada
+ * fila, y el signo era otro `width: 2rem` con margen: los dos anchos no tenían
+ * por qué coincidir, así que las filas se descuadraban. Aquí una sola clase.
+ */
+.a3c__hueco {
+  width: 2.4rem;
+  flex: 0 0 2.4rem;
+}
+
+.a3c__hueco--op {
+  width: 2.8rem;
+  flex: 0 0 2.8rem;
+}
+
+.a3c__op-symbol {
+  width: 2rem;
+  flex: 0 0 2rem;
+  margin-right: 0.8rem;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #4f46e5;
+  text-align: right;
+}
+
+.a3c__cell {
+  width: 2.4rem;
+  flex: 0 0 2.4rem;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #1e1b4b;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.a3c__cell--label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #4f46e5;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.a3c__header-row {
+  display: flex;
+  margin-bottom: 0.2rem;
+}
+
+.a3c__divider {
+  width: 100%;
+  height: 3px;
+  margin: 0.4rem 0;
+  border-radius: 2px;
+  background: rgba(99, 102, 241, 0.35);
+}
+
+.a3c__result-cell {
+  width: 2.4rem;
+  flex: 0 0 2.4rem;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #4f46e5;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.a3c__result-cell--blank {
+  font-size: 2rem;
+  color: rgba(99, 102, 241, 0.45);
+}
+
+/* La fila de llevadas: un 1 sobre la columna a la que llega. */
+
+.a3c__carry {
+  width: 2.4rem;
+  flex: 0 0 2.4rem;
+  height: 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #d97706;
+  line-height: 1;
+  text-align: center;
+}
+
+/* Opciones */
+
+.a3c__options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: min(30rem, 100%);
+}
+
+.a3c__opt {
+  min-width: 0;
+  min-height: 3.25rem;
+  padding: 0.75rem 0.5rem;
+  border: 2px solid rgba(99, 102, 241, 0.3);
+  border-radius: 14px;
+  background: rgba(99, 102, 241, 0.09);
+  color: #1e1b4b;
+  font-family: inherit;
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    border-color 0.16s,
+    background 0.16s,
+    transform 0.16s;
+}
+
+.a3c__opt:hover:not(:disabled) {
+  border-color: #4f46e5;
+  background: rgba(99, 102, 241, 0.18);
+  transform: translateY(-2px);
+}
+
+.a3c__opt:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.a3c__opt--correct {
+  border-color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #065f46 !important;
+}
+
+.a3c__opt--wrong {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #991b1b !important;
+}
+
+/* Sesión vacía */
+
+.a3c--vacio {
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.a3c__vacio-texto {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e1b4b;
+}
+
+.a3c__btn {
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(135deg, #818cf8, #4f46e5);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a3c__cheer,
+  .a3c__opt,
+  .a3c__opt:hover:not(:disabled) {
+    animation: none;
+    transition: none;
+  }
+}
