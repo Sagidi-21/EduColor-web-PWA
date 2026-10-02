@@ -15,7 +15,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: blur(2px);
+  filter: blur(1px);
   transform: scale(1.05);
   z-index: 0;
 }
@@ -204,6 +204,7 @@
   cursor: not-allowed;
   filter: grayscale(0.4);
 }
+
 .grade-card--soon:hover {
   transform: none;
   border-color: var(--color-border);
@@ -408,6 +409,7 @@
   text-align: center;
   transition: all 0.15s ease;
 }
+
 .home__popup-option:hover {
   border-color: #2563eb;
   background: #dbeafe;
@@ -425,6 +427,7 @@
   text-align: center;
   transition: color 0.15s;
 }
+
 .home__popup-cancel:hover {
   color: var(--color-text);
 }
