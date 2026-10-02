@@ -1,0 +1,273 @@
+/* Motor "Intervalos de tiempo" */
+
+.itm {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  overflow-y: auto;
+}
+
+.itm__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 1.5rem;
+  flex: 1;
+}
+
+.itm__stage--correct {
+  background: #f0fdf4;
+}
+
+.itm__cheer {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #22c55e;
+}
+
+.itm__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.itm__question {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-align: center;
+}
+
+/* Tarjetas pulsables (comparación) */
+
+.itm__compare {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.itm__activity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(236, 72, 153, 0.06);
+  border: 3px solid #f9a8d4;
+  border-radius: 1.2rem;
+  padding: 1.2rem 1.8rem;
+  min-width: 150px;
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    transform 0.1s;
+}
+
+.itm__activity:hover:not(:disabled) {
+  border-color: #ec4899;
+  transform: scale(1.03);
+}
+
+.itm__activity:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.itm__activity:disabled {
+  cursor: default;
+}
+
+.itm__activity--correct {
+  border-color: #22c55e !important;
+  background: rgba(34, 197, 94, 0.12) !important;
+}
+
+.itm__activity--wrong {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.12) !important;
+}
+
+.itm__activity-emoji {
+  font-size: 3rem;
+}
+
+.itm__single-emoji {
+  font-size: 3.5rem;
+}
+
+.itm__activity-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-align: center;
+  color: #1e293b;
+}
+
+.itm__activity-time {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* Tarjeta única (classify-hour) */
+
+.itm__single {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(236, 72, 153, 0.06);
+  border: 3px solid #f9a8d4;
+  border-radius: 1.2rem;
+  padding: 1.4rem 2.4rem;
+}
+
+.itm__single-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* Botones classify-hour */
+
+.itm__classify-opts {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.itm__classify-btn {
+  min-width: 140px;
+  padding: 0.7rem 1.4rem;
+  background: transparent;
+  border: 3px solid #cbd5e1;
+  border-radius: 0.85rem;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    color 0.15s,
+    transform 0.1s;
+}
+
+.itm__classify-btn:hover:not(:disabled) {
+  border-color: #ec4899;
+  color: #ec4899;
+  transform: scale(1.03);
+}
+
+.itm__classify-btn:disabled {
+  cursor: default;
+}
+
+.itm__classify-btn--correct {
+  border-color: #22c55e !important;
+  background: #22c55e !important;
+  color: #fff !important;
+}
+
+.itm__classify-btn--wrong {
+  border-color: #ef4444 !important;
+  background: #ef4444 !important;
+  color: #fff !important;
+}
+
+/* Barras de duración proporcionales */
+
+.itm__bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: min(500px, 85%);
+  padding: 0.2rem 0;
+}
+
+.itm__bars--single {
+  align-items: stretch;
+}
+
+.itm__bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.itm__bar-icon {
+  flex-shrink: 0;
+  width: 2rem;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.itm__bar {
+  height: 22px;
+  min-width: 6px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #ec4899, #f472b6);
+  transition: width 0.4s ease;
+}
+
+.itm__bar--ref {
+  height: 16px;
+  background: linear-gradient(90deg, #94a3b8, #cbd5e1);
+  opacity: 0.6;
+}
+
+.itm__bar-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* Sesión vacía */
+
+.itm--vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.itm__vacio-texto {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.itm__btn {
+  padding: 0.7rem 1.5rem;
+  background: var(--color-primary-dark, #1e3a8a);
+  border: none;
+  border-radius: 0.85rem;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .itm__activity,
+  .itm__activity:hover:not(:disabled),
+  .itm__classify-btn,
+  .itm__classify-btn:hover:not(:disabled),
+  .itm__bar {
+    animation: none;
+    transition: none;
+  }
+}

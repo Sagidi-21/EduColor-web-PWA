@@ -152,6 +152,24 @@ const RelojPonerHoraScreen = lazy(() =>
   })),
 );
 
+const Algoritmo3CifrasScreen = lazy(() =>
+  import("./algoritmo3cifras/Algoritmo3CifrasScreen").then((module) => ({
+    default: module.Algoritmo3CifrasScreen,
+  })),
+);
+
+const Abaco3CifrasScreen = lazy(() =>
+  import("./abaco3cifras/Abaco3CifrasScreen").then((module) => ({
+    default: module.Abaco3CifrasScreen,
+  })),
+);
+
+const IntervalosTiempoScreen = lazy(() =>
+  import("./intervalosTiempo/IntervalosTiempoScreen").then((module) => ({
+    default: module.IntervalosTiempoScreen,
+  })),
+);
+
 const LaberintoMatematicoScreen = lazy(() =>
   import("./laberintoMatematico/LaberintoMatematicoScreen").then((module) => ({
     default: module.LaberintoMatematicoScreen,
@@ -440,6 +458,30 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <RelojPonerHoraScreen {...props} />
+      </Suspense>
+    );
+  }
+
+  if (props.activity.engineId === "algoritmo3cifras") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <Algoritmo3CifrasScreen {...props} />
+      </Suspense>
+    );
+  }
+
+  if (props.activity.engineId === "abaco3cifras") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <Abaco3CifrasScreen {...props} />
+      </Suspense>
+    );
+  }
+
+  if (props.activity.engineId === "intervalosTiempo") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <IntervalosTiempoScreen {...props} />
       </Suspense>
     );
   }
