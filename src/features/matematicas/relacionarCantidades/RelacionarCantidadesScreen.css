@@ -1,0 +1,229 @@
+/* Motor "Relacionar cantidades" — solo lo propio del motor.
+ *
+ * El emparejamiento (selección, línea, error y celebración) lo pinta
+ * `MatchColumns` con el prefijo `rel2__`; aquí solo se da forma a las tarjetas y,
+ * sobre todo, a la representación de las cantidades: un bloque por decena
+ * rotulado `×10` y las unidades sueltas.
+ *
+ * En Electron esta hoja se llamaba `rel2__*` y no chocaba con nada; aquí el
+ * prefijo se conserva para que las dos actividades se distinguan al leer el
+ * DOM. */
+
+.rel2 {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.rel2__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  gap: 0.75rem;
+}
+
+.rel2__instruction {
+  /* Gris oscuro, no el gris pálido que se perdía sobre el fondo claro. */
+  color: #334155;
+  font-size: 1rem;
+  text-align: center;
+  margin: 0;
+}
+
+/* ── Las dos columnas ───────────────────────────────────────────────────────── */
+
+.rel2__columns {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 3rem;
+  width: 100%;
+  max-width: 560px;
+}
+
+.rel2__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.rel2__line {
+  stroke: #16a34a;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.rel2__col {
+  /* Posicionadas para que las pinten por encima del SVG: un elemento con
+     `position: absolute` se dibuja sobre los static, y el trazo de la línea se
+     metía encima de las tarjetas en vez de pasar por detrás. */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.rel2__col--left {
+  align-items: flex-end;
+}
+
+.rel2__col--right {
+  align-items: flex-start;
+}
+
+.rel2__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 12px;
+  border: 2px solid rgba(37, 99, 235, 0.28);
+  background: #fff;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.rel2__item--selected {
+  border-color: #2563eb;
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.rel2__item--hintable {
+  border-color: rgba(37, 99, 235, 0.55);
+}
+
+.rel2__item--connected {
+  border-color: #16a34a;
+  background: rgba(22, 163, 74, 0.07);
+  cursor: default;
+}
+
+.rel2__item--wrong {
+  border-color: #dc2626;
+  background: rgba(220, 38, 38, 0.12);
+}
+
+.rel2__celebrate {
+  margin-top: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #15803d;
+}
+
+/* ── El texto de la tarjeta ─────────────────────────────────────────────────── */
+
+.rel2__text-box {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  max-width: 210px;
+}
+
+.rel2__text-box--result {
+  color: #166534;
+}
+
+/* ── Las cantidades ─────────────────────────────────────────────────────────── */
+
+.rel2__visual {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.rel2__cantidad {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.rel2__rotulo {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.rel2__figuras {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+}
+
+.rel2__img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+/* Las unidades sueltas van en fila, sin marco: el bloque ya lo lleva. */
+.rel2__img--suelta {
+  width: 16px;
+  height: 16px;
+}
+
+/* El bloque de diez lleva una caja: es lo que distingue «diez» de «diez
+ * unidades», que es justo lo que la actividad quiere que se vea. */
+.rel2__bloque {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1.5px solid rgba(37, 99, 235, 0.45);
+  border-radius: 6px;
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.rel2__bloque-figuras {
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  gap: 2px;
+}
+
+.rel2__bloque-rotulo {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #1d4ed8;
+}
+
+.rel2__oculto {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rel2__item {
+    transition: none;
+  }
+}
+
+/* ── Pantallas estrechas ────────────────────────────────────────────────────── */
+
+@media (max-width: 460px) {
+  .rel2__columns {
+    gap: 1rem;
+  }
+
+  .rel2__img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .rel2__img--suelta {
+    width: 14px;
+    height: 14px;
+  }
+}

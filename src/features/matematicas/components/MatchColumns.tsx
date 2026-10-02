@@ -79,6 +79,8 @@ interface MatchColumnsProps<T extends MatchItem> {
   celebrateMs?: number;
   /** Cuánto parpadea el error antes de soltar la selección. */
   wrongFlashMs?: number;
+  /** Texto de la celebración. Cada actividad lo pone como le suena a ella. */
+  celebrateText?: string;
 }
 
 type Line = { id: number; x1: number; y1: number; x2: number; y2: number };
@@ -96,6 +98,7 @@ export function MatchColumns<T extends MatchItem>({
   resetKey,
   celebrateMs = 1500,
   wrongFlashMs = 700,
+  celebrateText = "¡Muy bien! 🎉",
 }: MatchColumnsProps<T>) {
   const [selectedLeft, setSelectedLeft] = useState<number | null>(null);
   /** De la izquierda emparejada a la derecha emparejada. */
@@ -296,7 +299,7 @@ export function MatchColumns<T extends MatchItem>({
         </div>
       </div>
 
-      {celebrating && <div className={`${prefix}__celebrate`}>¡Muy bien! 🎉</div>}
+      {celebrating && <div className={`${prefix}__celebrate`}>{celebrateText}</div>}
     </>
   );
 }

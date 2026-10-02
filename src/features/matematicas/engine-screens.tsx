@@ -107,6 +107,11 @@ const DobleYMitadScreen = lazy(() =>
     default: module.DobleYMitadScreen,
   })),
 );
+const RelacionarCantidadesScreen = lazy(() =>
+  import("./relacionarCantidades/RelacionarCantidadesScreen").then((module) => ({
+    default: module.RelacionarCantidadesScreen,
+  })),
+);
 const WeekDaysScreen = lazy(() =>
   import("./weekDays/WeekDaysScreen").then((module) => ({
     default: module.WeekDaysScreen,
@@ -383,6 +388,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <DobleYMitadScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "relacionarCantidades") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <RelacionarCantidadesScreen {...props} />
       </Suspense>
     );
   }

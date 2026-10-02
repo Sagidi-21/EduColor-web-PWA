@@ -119,31 +119,31 @@ pero no hay ni núcleo ni renderer en la PWA, y el registro los da como `pending
 de modo que el catálogo no deja lanzarlas. La prioridad de cada una está en el
 inventario.
 
-| `engineId`              | Motor Electron                                        | Núcleo                | Renderer                                  | Estado |
-| :---------------------- | :---------------------------------------------------- | :-------------------- | :---------------------------------------- | :----- |
-| `abaco3cifras`          | `abaco3cifras/Abaco3CifrasRenderer`                   | `abaco3cifras.ts`     | `abaco3cifras/Abaco3CifrasScreen`         | ✅     |
-| `algoritmo3cifras`      | `algoritmo3cifras/Algoritmo3CifrasRenderer`           | `algoritmo3cifras.ts` | `algoritmo3cifras/Algoritmo3CifrasScreen` | ✅     |
-| `amigos10`              | `amigos10/Amigos10Renderer`                           | —                     | —                                         | ⏳     |
-| `cintaMetrica`          | `cintaMetrica/CintaMetricaRenderer`                   | —                     | —                                         | ⏳     |
-| `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | —                     | —                                         | ⏳     |
-| `cuerpos3d`             | `cuerpos3d/Cuerpos3DRenderer`                         | —                     | —                                         | ⏳     |
-| `datosInnecesarios`     | `datosInnecesarios/DatosInnecesariosRenderer`         | —                     | —                                         | ⏳     |
-| `dobleYMitad`           | `dobleYMitad/DobleYMitadRenderer`                     | `dobleYMitad.ts`      | `dobleYMitad/DobleYMitadScreen.tsx`       | ✅     |
-| `graficoBarras`         | `graficoBarras/GraficoBarrasRenderer`                 | —                     | —                                         | ⏳     |
-| `intervalosTiempo`      | `intervalosTiempo/IntervalosTiempoRenderer`           | `intervalosTiempo.ts` | `intervalosTiempo/IntervalosTiempoScreen` | ✅     |
-| `inventarProblema`      | `inventarProblema/InventarProblemaRenderer`           | —                     | —                                         | ⏳     |
-| `lecturaNumeros`        | `lecturaNumeros/LecturaNumerosRenderer`               | —                     | —                                         | ⏳     |
-| `menuCafeteria`         | `menuCafeteria/MenuCafeteriaRenderer`                 | —                     | —                                         | ⏳     |
-| `monedasBilletes`       | `monedasBilletes/MonedasRenderer`                     | —                     | —                                         | ⏳     |
-| `multiplicacion`        | `multiplicacion/MultiplicacionRenderer`               | `multiplicacion.ts`   | `multiplicacion/MultiplicacionScreen.tsx` | ✅     |
-| `posicionesAula`        | `posicionesAula/PosicionesAulaRenderer`               | —                     | —                                         | ⏳     |
-| `probabilidad`          | `probabilidad/ProbabilidadRenderer`                   | —                     | —                                         | ⏳     |
-| `problemas2pasos`       | `problemas2pasos/Problemas2PasosRenderer`             | —                     | —                                         | ⏳     |
-| `redondeo`              | `redondeo/RedondeoRenderer`                           | —                     | —                                         | ⏳     |
-| `relacionarCantidades`  | `relacionarCantidades/RelacionarCantidadesRenderer`   | —                     | —                                         | ⏳     |
-| `rutaCuadricula`        | `rutaCuadricula/RutaCuadriculaRenderer`               | —                     | —                                         | ⏳     |
-| `series3cifras`         | `series3cifras/Series3CifrasRenderer`                 | —                     | —                                         | ⏳     |
-| `simetria`              | `simetria/SimetriaRenderer`                           | —                     | —                                         | ⏳     |
+| `engineId`              | Motor Electron                                        | Núcleo                    | Renderer                                              | Estado |
+| :---------------------- | :---------------------------------------------------- | :------------------------ | :---------------------------------------------------- | :----- |
+| `abaco3cifras`          | `abaco3cifras/Abaco3CifrasRenderer`                   | `abaco3cifras.ts`         | `abaco3cifras/Abaco3CifrasScreen`                     | ✅     |
+| `algoritmo3cifras`      | `algoritmo3cifras/Algoritmo3CifrasRenderer`           | `algoritmo3cifras.ts`     | `algoritmo3cifras/Algoritmo3CifrasScreen`             | ✅     |
+| `amigos10`              | `amigos10/Amigos10Renderer`                           | —                         | —                                                     | ⏳     |
+| `cintaMetrica`          | `cintaMetrica/CintaMetricaRenderer`                   | —                         | —                                                     | ⏳     |
+| `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | —                         | —                                                     | ⏳     |
+| `cuerpos3d`             | `cuerpos3d/Cuerpos3DRenderer`                         | —                         | —                                                     | ⏳     |
+| `datosInnecesarios`     | `datosInnecesarios/DatosInnecesariosRenderer`         | —                         | —                                                     | ⏳     |
+| `dobleYMitad`           | `dobleYMitad/DobleYMitadRenderer`                     | `dobleYMitad.ts`          | `dobleYMitad/DobleYMitadScreen.tsx`                   | ✅     |
+| `graficoBarras`         | `graficoBarras/GraficoBarrasRenderer`                 | —                         | —                                                     | ⏳     |
+| `intervalosTiempo`      | `intervalosTiempo/IntervalosTiempoRenderer`           | `intervalosTiempo.ts`     | `intervalosTiempo/IntervalosTiempoScreen`             | ✅     |
+| `inventarProblema`      | `inventarProblema/InventarProblemaRenderer`           | —                         | —                                                     | ⏳     |
+| `lecturaNumeros`        | `lecturaNumeros/LecturaNumerosRenderer`               | —                         | —                                                     | ⏳     |
+| `menuCafeteria`         | `menuCafeteria/MenuCafeteriaRenderer`                 | —                         | —                                                     | ⏳     |
+| `monedasBilletes`       | `monedasBilletes/MonedasRenderer`                     | —                         | —                                                     | ⏳     |
+| `multiplicacion`        | `multiplicacion/MultiplicacionRenderer`               | `multiplicacion.ts`       | `multiplicacion/MultiplicacionScreen.tsx`             | ✅     |
+| `posicionesAula`        | `posicionesAula/PosicionesAulaRenderer`               | —                         | —                                                     | ⏳     |
+| `probabilidad`          | `probabilidad/ProbabilidadRenderer`                   | —                         | —                                                     | ⏳     |
+| `problemas2pasos`       | `problemas2pasos/Problemas2PasosRenderer`             | —                         | —                                                     | ⏳     |
+| `redondeo`              | `redondeo/RedondeoRenderer`                           | —                         | —                                                     | ⏳     |
+| `relacionarCantidades`  | `relacionarCantidades/RelacionarCantidadesRenderer`   | `relacionarCantidades.ts` | `relacionarCantidades/RelacionarCantidadesScreen.tsx` | ✅     |
+| `rutaCuadricula`        | `rutaCuadricula/RutaCuadriculaRenderer`               | —                         | —                                                     | ⏳     |
+| `series3cifras`         | `series3cifras/Series3CifrasRenderer`                 | —                         | —                                                     | ⏳     |
+| `simetria`              | `simetria/SimetriaRenderer`                           | —                         | —                                                     | ⏳     |
 
 Las 23 actividades pendientes salen de 23 carpetas de motor distintas. Ninguna de
 las que se migraron en la tanda 1 (`reloj`, `relojPonerHora`,
