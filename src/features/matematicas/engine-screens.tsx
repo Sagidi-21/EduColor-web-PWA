@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+﻿import { lazy, Suspense } from "react";
 import { ActivityErrorBoundary } from "./components/ActivityErrorBoundary";
 import type {
   ActivityDifficulty,
@@ -115,6 +115,16 @@ const RelacionarCantidadesScreen = lazy(() =>
 const GraficoBarrasScreen = lazy(() =>
   import("./graficoBarras/GraficoBarrasScreen").then((module) => ({
     default: module.GraficoBarrasScreen,
+  })),
+);
+const MonedasBilletesScreen = lazy(() =>
+  import("./monedasBilletes/MonedasBilletesScreen").then((module) => ({
+    default: module.MonedasBilletesScreen,
+  })),
+);
+const DatosInnecesariosScreen = lazy(() =>
+  import("./datosInnecesarios/DatosInnecesariosScreen").then((module) => ({
+    default: module.DatosInnecesariosScreen,
   })),
 );
 const WeekDaysScreen = lazy(() =>
@@ -407,6 +417,20 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <GraficoBarrasScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "monedasBilletes") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <MonedasBilletesScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "datosInnecesarios") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <DatosInnecesariosScreen {...props} />
       </Suspense>
     );
   }

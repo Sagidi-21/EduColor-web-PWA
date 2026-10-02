@@ -1,4 +1,4 @@
-import type { ActivityManifest, EngineId } from "./contracts";
+﻿import type { ActivityManifest, EngineId } from "./contracts";
 
 export type EngineMigrationStatus = "available" | "pending";
 
@@ -40,6 +40,7 @@ const migratedEngines: ReadonlySet<EngineId> = new Set([
   "dobleYMitad",
   "relacionarCantidades",
   "graficoBarras",
+  "monedasBilletes",
   "reloj",
   "relojPonerHora",
   "sumaLlevando",
@@ -58,6 +59,7 @@ const migratedEngines: ReadonlySet<EngineId> = new Set([
   "intervalosTiempo",
   "abaco3cifras",
   "algoritmo3cifras",
+  "datosInnecesarios",
 ]);
 
 export function getEngineRegistration(engineId: EngineId): EngineRegistration {
