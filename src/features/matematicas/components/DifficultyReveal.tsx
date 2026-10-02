@@ -233,8 +233,19 @@ export function DifficultyReveal({
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ duration: 0.25 }}
       >
-        <button className="diff-reveal__close" onClick={onClose} aria-label="Cerrar">
-          ×
+        <button className="diff-reveal__close" onClick={onClose} aria-label="uthiar">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
 
         <div className="diff-reveal__header">
@@ -394,22 +405,19 @@ export function DifficultyReveal({
             </div>
           </div>
 
-          {/* Botón de inicio volando el último desde la mochila */}
+          {/* Botón de Empezar que aparece aumentando de tamaño desde su posición final */}
           <motion.button
             className="diff-reveal__start-btn diff-reveal__start-btn--chalk"
             onClick={onStart}
-            initial={
-              animStep !== "ready" ? { x: 0, y: -380, scale: 0.05, opacity: 0, rotate: -5 } : false
-            }
+            initial={animStep !== "ready" ? { opacity: 0, scale: 0.3 } : false}
             animate={
               animStep === "cards_burst" || animStep === "ready"
-                ? { x: 0, y: 0, scale: 1, opacity: 1, rotate: 0 }
-                : { x: 0, y: -380, scale: 0.05, opacity: 0, rotate: -5 }
+                ? { opacity: 1, scale: 1 }
+                : { opacity: 0, scale: 0.3 }
             }
             transition={{
-              type: "spring" as const,
-              stiffness: 140,
-              damping: 14,
+              duration: 0.8,
+              ease: "easeOut",
               delay: 1.28,
             }}
           >
