@@ -1,4 +1,4 @@
-﻿import { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { ActivityErrorBoundary } from "./components/ActivityErrorBoundary";
 import type {
   ActivityDifficulty,
@@ -209,6 +209,12 @@ const LaberintoMatematicoScreen = lazy(() =>
 const RutaCuadriculaScreen = lazy(() =>
   import("./rutaCuadricula/RutaCuadriculaScreen").then((module) => ({
     default: module.RutaCuadriculaScreen,
+  })),
+);
+
+const Amigos10Screen = lazy(() =>
+  import("./amigos10/Amigos10Screen").then((module) => ({
+    default: module.Amigos10Screen,
   })),
 );
 
@@ -578,6 +584,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <RutaCuadriculaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "amigos10") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <Amigos10Screen {...props} />
       </Suspense>
     );
   }

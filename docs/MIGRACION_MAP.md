@@ -1,4 +1,4 @@
-﻿# Mapa de Migración
+# Mapa de Migración
 
 Registro de dónde acaba cada componente de la aplicación original (Electron) en la
 nueva arquitectura PWA.
@@ -124,7 +124,7 @@ inventario.
 | :---------------------- | :---------------------------------------------------- | :------------------------ | :---------------------------------------------------- | :----- |
 | `abaco3cifras`          | `abaco3cifras/Abaco3CifrasRenderer`                   | `abaco3cifras.ts`         | `abaco3cifras/Abaco3CifrasScreen`                     | ✅     |
 | `algoritmo3cifras`      | `algoritmo3cifras/Algoritmo3CifrasRenderer`           | `algoritmo3cifras.ts`     | `algoritmo3cifras/Algoritmo3CifrasScreen`             | ✅     |
-| `amigos10`              | `amigos10/Amigos10Renderer`                           | —                         | —                                                     | ⏳     |
+| `amigos10`              | `amigos10/Amigos10Renderer`                           | `amigos10.ts`             | `amigos10/Amigos10Screen.tsx`                         | ✅     |
 | `cintaMetrica`          | `cintaMetrica/CintaMetricaRenderer`                   | —                         | —                                                     | ⏳     |
 | `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | —                         | —                                                     | ⏳     |
 | `cuerpos3d`             | `cuerpos3d/Cuerpos3DRenderer`                         | —                         | —                                                     | ⏳     |
