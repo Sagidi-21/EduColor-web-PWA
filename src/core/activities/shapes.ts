@@ -38,7 +38,7 @@ const CONFIGS: Record<
   easy: { shapes: SHAPES.slice(0, 3), optionCount: 3, rotationMax: 0, quantity: 10 },
   medium: { shapes: SHAPES.slice(0, 4), optionCount: 4, rotationMax: 30, quantity: 10 },
   hard: { shapes: SHAPES.slice(0, 5), optionCount: 5, rotationMax: 60, quantity: 10 },
-  expert: { shapes: SHAPES, optionCount: 5, rotationMax: 0, quantity: 12 },
+  expert: { shapes: SHAPES, optionCount: 5, rotationMax: 0, quantity: 10 },
 };
 
 export interface ShapesExercise {
