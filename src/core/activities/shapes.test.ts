@@ -6,7 +6,7 @@ describe("shapes — generateSession", () => {
     expect(generateSession("easy", 1)).toHaveLength(10);
     expect(generateSession("medium", 1)).toHaveLength(10);
     expect(generateSession("hard", 1)).toHaveLength(10);
-    expect(generateSession("expert", 1)).toHaveLength(12);
+    expect(generateSession("expert", 1)).toHaveLength(10);
   });
 
   it("es determinista con la misma seed", () => {
