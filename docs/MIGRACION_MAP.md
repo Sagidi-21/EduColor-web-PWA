@@ -140,7 +140,7 @@ inventario.
 | `posicionesAula`        | `posicionesAula/PosicionesAulaRenderer`               | —                         | —                                                     | ⏳     |
 | `probabilidad`          | `probabilidad/ProbabilidadRenderer`                   | —                         | —                                                     | ⏳     |
 | `problemas2pasos`       | `problemas2pasos/Problemas2PasosRenderer`             | —                         | —                                                     | ⏳     |
-| `redondeo`              | `redondeo/RedondeoRenderer`                           | —                         | —                                                     | ⏳     |
+| `redondeo`              | `redondeo/RedondeoRenderer`                           | `redondeo.ts`             | `redondeo/RedondeoScreen.tsx`                         | ✅     |
 | `relacionarCantidades`  | `relacionarCantidades/RelacionarCantidadesRenderer`   | `relacionarCantidades.ts` | `relacionarCantidades/RelacionarCantidadesScreen.tsx` | ✅     |
 | `rutaCuadricula`        | `rutaCuadricula/RutaCuadriculaRenderer`               | `rutaCuadricula.ts`       | `rutaCuadricula/RutaCuadriculaScreen.tsx`             | ✅     |
 | `series3cifras`         | `series3cifras/Series3CifrasRenderer`                 | —                         | —                                                     | ⏳     |

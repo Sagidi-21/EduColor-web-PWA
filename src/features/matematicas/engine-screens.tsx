@@ -236,6 +236,12 @@ const CintaMetricaScreen = lazy(() =>
   })),
 );
 
+const RedondeoScreen = lazy(() =>
+  import("./redondeo/RedondeoScreen").then((module) => ({
+    default: module.RedondeoScreen,
+  })),
+);
+
 export interface EngineScreenProps {
   activity: ActivityManifest;
   difficulty: ActivityDifficulty;
@@ -630,6 +636,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <CintaMetricaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "redondeo") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <RedondeoScreen {...props} />
       </Suspense>
     );
   }

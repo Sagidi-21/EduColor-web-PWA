@@ -127,11 +127,11 @@ function filasDeMapa(mapa: string): FilaMapa[] {
 }
 
 describe("El estado de la migración está en un solo sitio", () => {
-  it("el registro y los manifiestos dan 53 de 62", () => {
+  it("el registro y los manifiestos dan 54 de 62", () => {
     // Cifra que repiten la cabecera del inventario y ESTADO_DEL_PROYECTO. Si
     // cambia, hay que actualizar esos dos sitios y este test avisa de que lo hagas.
     expect(activityManifests).toHaveLength(62);
-    expect(migrados.size).toBe(53);
+    expect(migrados.size).toBe(54);
   });
 
   it("el inventario marca migrada exactamente lo que el registro da como lanzable", () => {
@@ -164,7 +164,7 @@ describe("El estado de la migración está en un solo sitio", () => {
     ).toEqual([]);
   });
 
-  it("la tabla de verificación cubre las 49 migradas y sus ficheros existen", () => {
+  it("la tabla de verificación cubre las 54 migradas y sus ficheros existen", () => {
     const verificacion = filasDeVerificacion(leido("docs/INVENTARIO_MIGRACION_ACTIVIDADES.md"));
 
     const fuera = [...verificacion.keys()].filter((id) => !migrados.has(id)).sort();
