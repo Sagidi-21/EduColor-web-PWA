@@ -132,7 +132,7 @@ inventario.
 | `dobleYMitad`           | `dobleYMitad/DobleYMitadRenderer`                     | `dobleYMitad.ts`          | `dobleYMitad/DobleYMitadScreen.tsx`                   | ✅     |
 | `graficoBarras`         | `graficoBarras/GraficoBarrasRenderer`                 | `graficoBarras.ts`        | `graficoBarras/GraficoBarrasScreen`                   | ✅     |
 | `intervalosTiempo`      | `intervalosTiempo/IntervalosTiempoRenderer`           | `intervalosTiempo.ts`     | `intervalosTiempo/IntervalosTiempoScreen`             | ✅     |
-| `inventarProblema`      | `inventarProblema/InventarProblemaRenderer`           | —                         | —                                                     | ⏳     |
+| `inventarProblema`      | `inventarProblema/InventarProblemaRenderer`           | `inventarProblema.ts`     | `inventarProblema/InventarProblemaScreen.tsx`         | ✅     |
 | `lecturaNumeros`        | `lecturaNumeros/LecturaNumerosRenderer`               | `lecturaNumeros.ts`       | `lecturaNumeros/LecturaNumerosScreen.tsx`             | ✅     |
 | `menuCafeteria`         | `menuCafeteria/MenuCafeteriaRenderer`                 | —                         | —                                                     | ⏳     |
 | `monedasBilletes`       | `monedasBilletes/MonedasRenderer`                     | `monedasBilletes.ts`      | `monedasBilletes/MonedasBilletesScreen`               | ✅     |

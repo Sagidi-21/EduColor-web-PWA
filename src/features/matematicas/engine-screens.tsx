@@ -224,6 +224,12 @@ const LecturaNumerosScreen = lazy(() =>
   })),
 );
 
+const InventarProblemaScreen = lazy(() =>
+  import("./inventarProblema/InventarProblemaScreen").then((module) => ({
+    default: module.InventarProblemaScreen,
+  })),
+);
+
 export interface EngineScreenProps {
   activity: ActivityManifest;
   difficulty: ActivityDifficulty;
@@ -604,6 +610,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <LecturaNumerosScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "inventarProblema") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <InventarProblemaScreen {...props} />
       </Suspense>
     );
   }
