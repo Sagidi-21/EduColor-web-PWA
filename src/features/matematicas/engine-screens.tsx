@@ -218,6 +218,12 @@ const Amigos10Screen = lazy(() =>
   })),
 );
 
+const LecturaNumerosScreen = lazy(() =>
+  import("./lecturaNumeros/LecturaNumerosScreen").then((module) => ({
+    default: module.LecturaNumerosScreen,
+  })),
+);
+
 export interface EngineScreenProps {
   activity: ActivityManifest;
   difficulty: ActivityDifficulty;
@@ -591,6 +597,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <Amigos10Screen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "lecturaNumeros") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <LecturaNumerosScreen {...props} />
       </Suspense>
     );
   }

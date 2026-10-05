@@ -133,7 +133,7 @@ inventario.
 | `graficoBarras`         | `graficoBarras/GraficoBarrasRenderer`                 | `graficoBarras.ts`        | `graficoBarras/GraficoBarrasScreen`                   | ✅     |
 | `intervalosTiempo`      | `intervalosTiempo/IntervalosTiempoRenderer`           | `intervalosTiempo.ts`     | `intervalosTiempo/IntervalosTiempoScreen`             | ✅     |
 | `inventarProblema`      | `inventarProblema/InventarProblemaRenderer`           | —                         | —                                                     | ⏳     |
-| `lecturaNumeros`        | `lecturaNumeros/LecturaNumerosRenderer`               | —                         | —                                                     | ⏳     |
+| `lecturaNumeros`        | `lecturaNumeros/LecturaNumerosRenderer`               | `lecturaNumeros.ts`       | `lecturaNumeros/LecturaNumerosScreen.tsx`             | ✅     |
 | `menuCafeteria`         | `menuCafeteria/MenuCafeteriaRenderer`                 | —                         | —                                                     | ⏳     |
 | `monedasBilletes`       | `monedasBilletes/MonedasRenderer`                     | `monedasBilletes.ts`      | `monedasBilletes/MonedasBilletesScreen`               | ✅     |
 | `multiplicacion`        | `multiplicacion/MultiplicacionRenderer`               | `multiplicacion.ts`       | `multiplicacion/MultiplicacionScreen.tsx`             | ✅     |
