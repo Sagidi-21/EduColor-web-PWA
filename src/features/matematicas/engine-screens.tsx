@@ -230,6 +230,12 @@ const InventarProblemaScreen = lazy(() =>
   })),
 );
 
+const CintaMetricaScreen = lazy(() =>
+  import("./cintaMetrica/CintaMetricaScreen").then((module) => ({
+    default: module.CintaMetricaScreen,
+  })),
+);
+
 export interface EngineScreenProps {
   activity: ActivityManifest;
   difficulty: ActivityDifficulty;
@@ -617,6 +623,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <InventarProblemaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "cintaMetrica") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <CintaMetricaScreen {...props} />
       </Suspense>
     );
   }

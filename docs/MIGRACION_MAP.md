@@ -125,7 +125,7 @@ inventario.
 | `abaco3cifras`          | `abaco3cifras/Abaco3CifrasRenderer`                   | `abaco3cifras.ts`         | `abaco3cifras/Abaco3CifrasScreen`                     | ✅     |
 | `algoritmo3cifras`      | `algoritmo3cifras/Algoritmo3CifrasRenderer`           | `algoritmo3cifras.ts`     | `algoritmo3cifras/Algoritmo3CifrasScreen`             | ✅     |
 | `amigos10`              | `amigos10/Amigos10Renderer`                           | `amigos10.ts`             | `amigos10/Amigos10Screen.tsx`                         | ✅     |
-| `cintaMetrica`          | `cintaMetrica/CintaMetricaRenderer`                   | —                         | —                                                     | ⏳     |
+| `cintaMetrica`          | `cintaMetrica/CintaMetricaRenderer`                   | `cintaMetrica.ts`         | `cintaMetrica/CintaMetricaScreen.tsx`                 | ✅     |
 | `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | —                         | —                                                     | ⏳     |
 | `cuerpos3d`             | `cuerpos3d/Cuerpos3DRenderer`                         | —                         | —                                                     | ⏳     |
 | `datosInnecesarios`     | `datosInnecesarios/DatosInnecesariosRenderer`         | `datosInnecesarios.ts`    | `datosInnecesarios/DatosInnecesariosScreen.tsx`       | ✅     |
