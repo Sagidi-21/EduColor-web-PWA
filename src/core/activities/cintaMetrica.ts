@@ -1,4 +1,4 @@
-import type { Difficulty } from "../registry/types";
+import type { ActivityDifficulty } from "../content/contracts";
 
 export type CintaType = "choose-unit" | "estimate";
 
@@ -63,7 +63,7 @@ function cap(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-export function generateSession(difficulty: Difficulty, seed = 42): CintaExercise[] {
+export function generateSession(difficulty: ActivityDifficulty, seed = 42): CintaExercise[] {
   const rng = lcg(seed);
   const count = 10;
   const out: CintaExercise[] = [];
@@ -102,19 +102,14 @@ export function generateSession(difficulty: Difficulty, seed = 42): CintaExercis
 
       const opts = [correct, wrong1, wrong2].sort(() => rng() - 0.5);
 
-      // Deduplicate options just in case delta logic created a duplicate
-      // Wait, delta != 0 since randInt(1,3), wrongSize !== item.size unless max(1, x) kicks in.
-      const uniqueOpts = Array.from(new Set(opts));
-      if (uniqueOpts.length === 3) {
-        out.push({
-          type,
-          item,
-          question: `¿Cuánto mide aproximadamente ${item.name}?`,
-          options: opts,
-          correctAnswer: correct,
-        });
-        usedNames.add(item.name);
-      }
+      out.push({
+        type,
+        item,
+        question: `¿Cuánto mide aproximadamente ${item.name}?`,
+        options: opts,
+        correctAnswer: correct,
+      });
+      usedNames.add(item.name);
     }
   }
   return out;
