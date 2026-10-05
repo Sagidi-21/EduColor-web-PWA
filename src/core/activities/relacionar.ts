@@ -1,5 +1,5 @@
 import type { ActivityDifficulty } from "../content/contracts";
-import { IMAGE_CATEGORIES, pickCategory, pickImage } from "../../platform/objectImages";
+import { IMAGE_CATEGORIES, pickImage } from "../../platform/objectImages";
 
 export type RelacionarPair = {
   id: number;
@@ -20,14 +20,13 @@ type DifficultyConfig = {
   min: number;
   max: number;
   scattered: boolean;
-  multiImage: boolean;
 };
 
 const CONFIGS: Record<ActivityDifficulty, DifficultyConfig> = {
-  easy: { count: 3, min: 1, max: 5, scattered: false, multiImage: true },
-  medium: { count: 4, min: 1, max: 9, scattered: false, multiImage: true },
-  hard: { count: 5, min: 1, max: 9, scattered: false, multiImage: true },
-  expert: { count: 5, min: 5, max: 15, scattered: true, multiImage: true },
+  easy: { count: 3, min: 1, max: 5, scattered: false },
+  medium: { count: 4, min: 1, max: 9, scattered: false },
+  hard: { count: 5, min: 1, max: 9, scattered: false },
+  expert: { count: 5, min: 5, max: 15, scattered: true },
 };
 
 function makeRng(seed: number) {
@@ -53,31 +52,17 @@ function generateSingleRound(difficulty: ActivityDifficulty, rng: () => number):
   const pool = Array.from({ length: cfg.max - cfg.min + 1 }, (_, i) => i + cfg.min);
   const numbers = shuffle(pool, rng).slice(0, cfg.count);
 
-  let pairs: RelacionarPair[];
-
-  if (cfg.multiImage) {
-    const cats = shuffle([...IMAGE_CATEGORIES], rng);
-    pairs = numbers.map((num, i) => {
-      const cat = cats[i % cats.length];
-      return {
-        id: i,
-        number: num,
-        imageUrl: pickImage(cat, rng),
-        objectLabel: cat.name,
-        scattered: cfg.scattered,
-      };
-    });
-  } else {
-    const cat = pickCategory(rng);
-    const imageUrl = pickImage(cat, rng);
-    pairs = numbers.map((num, i) => ({
+  const cats = shuffle([...IMAGE_CATEGORIES], rng);
+  const pairs = numbers.map((num, i) => {
+    const cat = cats[i % cats.length];
+    return {
       id: i,
       number: num,
-      imageUrl,
+      imageUrl: pickImage(cat, rng),
       objectLabel: cat.name,
-      scattered: false,
-    }));
-  }
+      scattered: cfg.scattered,
+    };
+  });
 
   const leftColumn = shuffle([...pairs], rng);
   const rightColumn = shuffle([...pairs], rng);
