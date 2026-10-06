@@ -127,11 +127,11 @@ function filasDeMapa(mapa: string): FilaMapa[] {
 }
 
 describe("El estado de la migración está en un solo sitio", () => {
-  it("el registro y los manifiestos dan 54 de 62", () => {
+  it("el registro y los manifiestos dan 55 de 62", () => {
     // Cifra que repiten la cabecera del inventario y ESTADO_DEL_PROYECTO. Si
-    // cambia, hay que actualizar esos dos sitios y este test avisa de que lo hagas.
+    // cambia, hay que actualizar esos dos lugares y este test avisa de que lo hagas.
     expect(activityManifests).toHaveLength(62);
-    expect(migrados.size).toBe(54);
+    expect(migrados.size).toBe(55);
   });
 
   it("el inventario marca migrada exactamente lo que el registro da como lanzable", () => {

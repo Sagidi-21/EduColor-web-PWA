@@ -15,6 +15,11 @@ const OrderingScreen = lazy(() =>
 const SeriesScreen = lazy(() =>
   import("./series/SeriesScreen").then((module) => ({ default: module.SeriesScreen })),
 );
+const Series3CifrasScreen = lazy(() =>
+  import("./series3cifras/Series3CifrasScreen").then((module) => ({
+    default: module.Series3CifrasScreen,
+  })),
+);
 const VecinosScreen = lazy(() =>
   import("./vecinos/VecinosScreen").then((module) => ({ default: module.VecinosScreen })),
 );
@@ -237,8 +242,11 @@ const CintaMetricaScreen = lazy(() =>
 );
 
 const RedondeoScreen = lazy(() =>
-  import("./redondeo/RedondeoScreen").then((module) => ({
-    default: module.RedondeoScreen,
+  import("./redondeo/RedondeoScreen").then((module) => ({ default: module.RedondeoScreen })),
+);
+const Series3CifrasScreen = lazy(() =>
+  import("./series3cifras/Series3CifrasScreen").then((module) => ({
+    default: module.Series3CifrasScreen,
   })),
 );
 
@@ -289,6 +297,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <SeriesScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "series3cifras") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <Series3CifrasScreen {...props} />
       </Suspense>
     );
   }
@@ -643,6 +658,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <RedondeoScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "series3cifras") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <Series3CifrasScreen {...props} />
       </Suspense>
     );
   }

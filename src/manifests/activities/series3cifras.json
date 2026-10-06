@@ -15,10 +15,10 @@
     "unit": 10,
     "unitLabel": "Los números hasta el 999",
     "difficultyDescriptions": {
-      "easy": "Series de 10 en 10 entre 100 y 200",
-      "medium": "Series de 10 en 10 y de 100 en 100",
-      "hard": "Ascendentes y descendentes, paso variable",
-      "expert": "Todos los pasos (10, 50, 100) mezclados"
+      "easy": "Series de paso 1, 2 o 5, siempre subiendo",
+      "medium": "Series de paso 2, 5 o 10, siempre subiendo",
+      "hard": "Series de paso 5, 10, 20 o 50, subiendo o bajando",
+      "expert": "Series de paso 10, 20, 50 o 100, subiendo o bajando"
     }
   },
   "order": 57

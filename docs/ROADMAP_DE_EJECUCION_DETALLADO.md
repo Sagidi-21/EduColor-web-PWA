@@ -147,8 +147,8 @@ Trasladar gradualmente las actividades con mayor valor pedagógico, sin una migr
 **El detalle de qué está migrado está en
 [INVENTARIO_MIGRACION_ACTIVIDADES.md](INVENTARIO_MIGRACION_ACTIVIDADES.md),** que
 es la fuente de verdad y se verifica contra `src/core/content/engine-registry.ts`.
-Verificado el 2026-09-30: **32 de 62 actividades migradas y lanzables**, con
-núcleo, renderer y tests, y 30 pendientes.
+Verificado el 2026-10-06: **55 de 62 actividades migradas y lanzables**, con
+núcleo, renderer y tests, y 7 pendientes.
 
 Lo que sí pertenece a este documento es el cierre de la fase, no el recuento:
 
