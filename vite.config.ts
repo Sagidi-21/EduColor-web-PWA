@@ -6,6 +6,14 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: "happy-dom",
+    // `pool: "vmThreads"` en vez del fork por defecto: en Windows los workers
+    // de Vitest (forks de Node) se cuelgan con el código 0xC0000045 cuando la
+    // suite es grande (126 archivos de test), aunque todos los tests pasen.
+    // vmThreads ejecuta los workers en el mismo proceso, sin forks, y evita
+    // ese crash. Mantiene el aislamiento por archivo (cada test文件 tiene su
+    // propio entorno) pero sin el coste de arrancar un Node por archivo.
+    // Decisión D-025.
+    pool: "vmThreads",
     setupFiles: ["./src/test-setup.ts"],
     globals: true,
     exclude: [

@@ -1,6 +1,6 @@
 ﻿# Estado del proyecto
 
-**Verificado contra el código el 2026-09-30.** Este documento es una página de
+**Verificado contra el código el 2026-10-06.** Este documento es una página de
 estado: dice en qué punto va el proyecto y **enlaza** a quien tiene el detalle. No
 mantiene su propia lista de actividades migradas ni sus propias cifras, porque
 esa duplicación es lo que hacía que los documentos de `docs/` se contradijeran
