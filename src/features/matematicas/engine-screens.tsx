@@ -244,11 +244,6 @@ const CintaMetricaScreen = lazy(() =>
 const RedondeoScreen = lazy(() =>
   import("./redondeo/RedondeoScreen").then((module) => ({ default: module.RedondeoScreen })),
 );
-const Series3CifrasScreen = lazy(() =>
-  import("./series3cifras/Series3CifrasScreen").then((module) => ({
-    default: module.Series3CifrasScreen,
-  })),
-);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
