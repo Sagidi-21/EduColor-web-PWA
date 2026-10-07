@@ -42,7 +42,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `features/splash/SplashScreen.tsx`                            | `src/features/splash/SplashScreen.tsx`                                    | Migrado                                       |
 | `features/home/HomeScreen.tsx`                                | `src/features/home/HomeScreen.tsx`                                        | Migrado                                       |
 
-## Actividades migradas (60 de 62)
+## Actividades migradas (61 de 62)
 
 `Estado` refleja `getEngineRegistration()` en `src/core/content/engine-registry.ts`.
 
@@ -108,6 +108,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `posicionesAula`        | `posicionesAula/PosicionesAulaRenderer`               | `posicionesAula.ts`                   | `posicionesAula/PosicionesAulaScreen.tsx`                        | ✅     |
 | `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | `circuloCircunferencia.ts`            | `circuloCircunferencia/CirculoCircunferenciaScreen.tsx`          | ✅     |
 | `probabilidad`          | `probabilidad/ProbabilidadRenderer`                   | `probabilidad.ts`                     | `probabilidad/ProbabilidadScreen.tsx`                            | ✅     |
+| `simetria`              | `simetria/SimetriaRenderer`                           | `simetria.ts`                         | `simetria/SimetriaScreen.tsx`                                    | ✅     |
 
 Seis detalles de este bloque que sorprenden al leerlo y conviene no volver a
 "arreglar" sin saber lo que hacen:
@@ -130,11 +131,11 @@ Seis detalles de este bloque que sorprenden al leerlo y conviene no volver a
   y reutiliza `timeLabel` de `reloj.ts` para nombrar el reloj a los lectores de
   pantalla.
 
-Son 60 actividades lanzables sobre 58 ficheros de núcleo, porque
+Son 61 actividades lanzables sobre 59 ficheros de núcleo, porque
 `laberintoMatematico2` no aporta núcleo propio, `suma` y `resta` comparten
-`operations.ts` y `posicionesAula` y `probabilidad` añaden nuevos motores.
+`operations.ts` y `posicionesAula`, `probabilidad` y `simetria` añaden nuevos motores.
 
-## Actividades pendientes (2 de 62)
+## Actividades pendientes (1 de 62)
 
 Existe el motor en `electron-reference/Colegio/src/renderer/src/core/engines/`,
 pero no hay ni núcleo ni renderer en la PWA, y el registro los da como `pending`,
@@ -143,11 +144,10 @@ inventario.
 
 | `engineId`        | Motor Electron                            | Núcleo | Renderer | Estado |
 | :---------------- | :---------------------------------------- | :----- | :------- | :----- |
-| `simetria`        | `simetria/SimetriaRenderer`               | —      | —        | ⏳     |
 | `problemas2pasos` | `problemas2pasos/Problemas2PasosRenderer` | —      | —        | ⏳     |
 
-Las 2 actividades pendientes salen de 2 carpetas de motor distintas. Ninguna de
+La 1 actividad pendiente sale de 1 carpeta de motor distinta. Ninguna de
 las que se migraron en la tanda 1 (`reloj`, `relojPonerHora`,
 `laberintoMatematico` y `laberintoMatematico2`) ni la primera de la tanda 3
 (`datosInnecesarios`), `circuloCircunferencia`, `cuerpos3d`, `menuCafeteria`,
-`posicionesAula`, `probabilidad` ni `menuCafeteria` aparece ya en esta tabla.
+`posicionesAula`, `probabilidad`, `simetria` ni `menuCafeteria` aparece ya en esta tabla.

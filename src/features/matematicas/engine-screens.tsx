@@ -269,6 +269,11 @@ const ProbabilidadScreen = lazy(() =>
     default: module.default,
   })),
 );
+const SimetriaScreen = lazy(() =>
+  import("./simetria/SimetriaScreen").then((module) => ({
+    default: module.default,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -720,6 +725,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <ProbabilidadScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "simetria") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <SimetriaScreen {...props} />
       </Suspense>
     );
   }
