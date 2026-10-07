@@ -60,6 +60,7 @@ const migratedEngines: ReadonlySet<EngineId> = new Set([
   "abaco3cifras",
   "algoritmo3cifras",
   "cuerpos3d",
+  "menuCafeteria",
   "datosInnecesarios",
   "rutaCuadricula",
   "amigos10",

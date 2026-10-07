@@ -42,7 +42,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `features/splash/SplashScreen.tsx`                            | `src/features/splash/SplashScreen.tsx`                                    | Migrado                                       |
 | `features/home/HomeScreen.tsx`                                | `src/features/home/HomeScreen.tsx`                                        | Migrado                                       |
 
-## Actividades migradas (57 de 62)
+## Actividades migradas (58 de 62)
 
 `Estado` refleja `getEngineRegistration()` en `src/core/content/engine-registry.ts`.
 
@@ -104,6 +104,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `rutaCuadricula`        | `rutaCuadricula/RutaCuadriculaRenderer`               | `rutaCuadricula.ts`                   | `rutaCuadricula/RutaCuadriculaScreen.tsx`                        | ✅     |
 | `series3cifras`         | `series3cifras/Series3CifrasRenderer`                 | `series3cifras.ts`                    | `series3cifras/Series3CifrasScreen.tsx`                          | ✅     |
 | `cuerpos3d`             | `cuerpos3d/Cuerpos3DRenderer`                         | `cuerpos3d.ts`                        | `cuerpos3d/Cuerpos3DScreen.tsx`                                  | ✅     |
+| `menuCafeteria`         | `menuCafeteria/MenuCafeteriaRenderer`                 | `menuCafeteria.ts`                    | `menuCafeteria/MenuCafeteriaScreen.tsx`                          | ✅     |
 | `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | `circuloCircunferencia.ts`            | `circuloCircunferencia/CirculoCircunferenciaScreen.tsx`          | ✅     |
 
 Cinco detalles de este bloque que sorprenden al leerlo y conviene no volver a
@@ -116,7 +117,7 @@ Cinco detalles de este bloque que sorprenden al leerlo y conviene no volver a
 - `ordenar`, `seriesNumericas` y `vecinosNumero` no conservan su nombre: viven en
   `ordering.ts`, `series.ts` y `vecinos.ts`.
 - `algoritmoVertical` y `restaColumna` tienen núcleo propio pero comparten
-  renderer. Por eso hay 57 motores, 55 ficheros de núcleo para ellos y 55
+  renderer. Por eso hay 58 motores, 56 ficheros de núcleo para ellos y 56
   renderers de actividad.
 - `laberintoMatematico2` comparte núcleo, renderer y ficheros de test con
   `laberintoMatematico`, igual que `laberintoMatematico2` no tiene carpeta de
@@ -127,11 +128,11 @@ Cinco detalles de este bloque que sorprenden al leerlo y conviene no volver a
   y reutiliza `timeLabel` de `reloj.ts` para nombrar el reloj a los lectores de
   pantalla.
 
-Son 57 actividades lanzables sobre 55 ficheros de núcleo, porque
+Son 58 actividades lanzables sobre 56 ficheros de núcleo, porque
 `laberintoMatematico2` no aporta núcleo propio, `suma` y `resta` comparten
-`operations.ts` y `cuerpos3d` añade un nuevo motor.
+`operations.ts` y `menuCafeteria` añade un nuevo motor.
 
-## Actividades pendientes (5 de 62)
+## Actividades pendientes (4 de 62)
 
 Existe el motor en `electron-reference/Colegio/src/renderer/src/core/engines/`,
 pero no hay ni núcleo ni renderer en la PWA, y el registro los da como `pending`,
@@ -140,13 +141,12 @@ inventario.
 
 | `engineId`        | Motor Electron                            | Núcleo | Renderer | Estado |
 | :---------------- | :---------------------------------------- | :----- | :------- | :----- |
-| `menuCafeteria`   | `menuCafeteria/MenuCafeteriaRenderer`     | —      | —        | ⏳     |
 | `posicionesAula`  | `posicionesAula/PosicionesAulaRenderer`   | —      | —        | ⏳     |
 | `probabilidad`    | `probabilidad/ProbabilidadRenderer`       | —      | —        | ⏳     |
 | `problemas2pasos` | `problemas2pasos/Problemas2PasosRenderer` | —      | —        | ⏳     |
 | `simetria`        | `simetria/SimetriaRenderer`               | —      | —        | ⏳     |
 
-Las 5 actividades pendientes salen de 5 carpetas de motor distintas. Ninguna de
+Las 4 actividades pendientes salen de 4 carpetas de motor distintas. Ninguna de
 las que se migraron en la tanda 1 (`reloj`, `relojPonerHora`,
 `laberintoMatematico` y `laberintoMatematico2`) ni la primera de la tanda 3
-(`datosInnecesarios`), `circuloCircunferencia` ni `cuerpos3d` aparece ya en esta tabla.
+(`datosInnecesarios`), `circuloCircunferencia`, `cuerpos3d` ni `menuCafeteria` aparece ya en esta tabla.

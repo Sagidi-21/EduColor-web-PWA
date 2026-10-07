@@ -254,6 +254,11 @@ const Cuerpos3DScreen = lazy(() =>
     default: module.default,
   })),
 );
+const MenuCafeteriaScreen = lazy(() =>
+  import("./menuCafeteria/MenuCafeteriaScreen").then((module) => ({
+    default: module.default,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -684,6 +689,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <Cuerpos3DScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "menuCafeteria") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <MenuCafeteriaScreen {...props} />
       </Suspense>
     );
   }
