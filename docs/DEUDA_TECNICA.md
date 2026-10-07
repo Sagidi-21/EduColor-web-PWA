@@ -6,10 +6,9 @@ documento y los archivos que haya tocado el cambio actual.
 
 **Qué es este registro:** la deuda técnica y las reservas de recursos, una fila
 por asunto. **Qué no es:** el estado de la migración de actividades, que está en
-[INVENTARIO_MIGRACION_ACTIVIDADES.md](INVENTARIO_MIGRACION_ACTIVIDADES.md). Las
-cifras de suite que aparecen en la columna de evidencia son la medición del día
-en que se cerró cada fila y no se actualizan al migrar una actividad nueva; la
-medición vigente está en el inventario.
+[INVENTARIO_MIGRACION_ACTIVIDADES.md]. Las cifras de suite que aparecen en la columna
+de evidencia son la medición del día en que se cerró cada fila y no se actualizan
+al migrar una actividad nueva; la medición vigente está en el inventario.
 
 ## Estados
 
