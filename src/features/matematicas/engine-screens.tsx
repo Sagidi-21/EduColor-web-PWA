@@ -249,6 +249,11 @@ const CirculoCircunferenciaScreen = lazy(() =>
     default: module.CirculoCircunferenciaScreen,
   })),
 );
+const Cuerpos3DScreen = lazy(() =>
+  import("./cuerpos3d/Cuerpos3DScreen").then((module) => ({
+    default: module.default,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -672,6 +677,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <CirculoCircunferenciaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "cuerpos3d") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <Cuerpos3DScreen {...props} />
       </Suspense>
     );
   }
