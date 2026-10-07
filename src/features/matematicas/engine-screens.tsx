@@ -264,6 +264,11 @@ const PosicionesAulaScreen = lazy(() =>
     default: module.default,
   })),
 );
+const ProbabilidadScreen = lazy(() =>
+  import("./probabilidad/ProbabilidadScreen").then((module) => ({
+    default: module.default,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -708,6 +713,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <PosicionesAulaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "probabilidad") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <ProbabilidadScreen {...props} />
       </Suspense>
     );
   }

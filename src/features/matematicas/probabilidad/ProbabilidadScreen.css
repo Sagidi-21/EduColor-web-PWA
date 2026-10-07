@@ -1,0 +1,238 @@
+.prb {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  background: var(--color-bg);
+  font-family: var(--font-family-base);
+}
+
+.prb__stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  transition: background-color 0.2s ease;
+}
+
+.prb__stage--correct {
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.prb__stage--wrong {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.prb__cheer {
+  position: absolute;
+  top: var(--spacing-md);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-success);
+  animation: prb__pop 0.3s ease-out;
+  z-index: 10;
+}
+
+@keyframes prb__pop {
+  0% {
+    transform: translateX(-50%) scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.prb__event-card {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+.prb__context {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-sm);
+}
+
+.prb__question {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.prb__bag {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: var(--radius-lg);
+  max-width: 100%;
+}
+
+.prb__ball {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  box-shadow:
+    inset -3px -3px 6px rgba(0, 0, 0, 0.2),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+}
+
+.prb__options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-md);
+  max-width: 100%;
+  margin-top: var(--spacing-sm);
+}
+
+.prb__opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-width: 110px;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease,
+    box-shadow 0.15s ease;
+}
+
+.prb__opt:hover:not(:disabled) {
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.prb__opt:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.prb__opt:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.prb__opt:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.prb__opt-icon {
+  font-size: var(--font-size-xl);
+}
+
+.prb__opt--seguro {
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.prb__opt--posible {
+  border-color: #eab308;
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.prb__opt--imposible {
+  border-color: var(--color-error);
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+}
+
+.prb__opt--correct {
+  animation: prb__pulse 0.5s ease-out;
+}
+
+.prb__opt--wrong {
+  animation: prb__shake 0.4s ease-out;
+}
+
+@keyframes prb__pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes prb__shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-8px);
+  }
+  40%,
+  80% {
+    transform: translateX(8px);
+  }
+}
+
+.prb__wrong-feedback {
+  margin-top: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.prb__wrong-feedback .actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* Responsive: en móvil los botones a ancho completo */
+@media (max-width: 480px) {
+  .prb__opt {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+}
+
+/* Accesibilidad: reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .prb__cheer,
+  .prb__opt--correct,
+  .prb__opt--wrong {
+    animation: none;
+  }
+}
