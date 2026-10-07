@@ -259,6 +259,11 @@ const MenuCafeteriaScreen = lazy(() =>
     default: module.default,
   })),
 );
+const PosicionesAulaScreen = lazy(() =>
+  import("./posicionesAula/PosicionesAulaScreen").then((module) => ({
+    default: module.default,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -696,6 +701,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <MenuCafeteriaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "posicionesAula") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <PosicionesAulaScreen {...props} />
       </Suspense>
     );
   }
