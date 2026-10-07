@@ -131,7 +131,7 @@ describe("El estado de la migración está en un solo sitio", () => {
     // Cifra que repiten la cabecera del inventario y ESTADO_DEL_PROYECTO. Si
     // cambia, hay que actualizar esos dos lugares y este test avisa de que lo hagas.
     expect(activityManifests).toHaveLength(62);
-    expect(migrados.size).toBe(55);
+    expect(migrados.size).toBe(56);
   });
 
   it("el inventario marca migrada exactamente lo que el registro da como lanzable", () => {

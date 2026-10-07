@@ -26,10 +26,10 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 - **Fase activa:** 2 — Migración del catálogo matemático V1. La Fase 1 (modelo de
   contenido) está cerrada: 62 manifiestos, selector de actividades y el motor
   `comparison` como extra no acoplado al conteo.
-- **Estado de la Fase 2:** 55 de 62 actividades migradas y lanzables; 7
+- **Estado de la Fase 2:** 56 de 62 actividades migradas y lanzables; 6
   pendientes. El detalle por actividad, con núcleo, renderer y tests, está en el
   [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md); no se repite aquí.
-- **Siguiente motor:** `circuloCircunferencia`, la primera fila sin ✅ del inventario. La
+- **Siguiente motor:** `cuerpos3d`, la primera fila sin ✅ del inventario. La
   regla para elegirlo está en la sección "Siguiente motor a migrar" de ese
   documento, y su prioridad la confirma el profesor de Matemáticas.
 - **Fase 5 (escritura de dígitos y reconocimiento local):** adelantada y

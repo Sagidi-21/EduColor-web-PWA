@@ -67,6 +67,7 @@ const migratedEngines: ReadonlySet<EngineId> = new Set([
   "cintaMetrica",
   "redondeo",
   "series3cifras",
+  "circuloCircunferencia",
 ]);
 
 export function getEngineRegistration(engineId: EngineId): EngineRegistration {

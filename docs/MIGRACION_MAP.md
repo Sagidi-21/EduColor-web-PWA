@@ -46,63 +46,64 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 
 `Estado` refleja `getEngineRegistration()` en `src/core/content/engine-registry.ts`.
 
-| `engineId`             | Motor Electron                                      | Núcleo en `src/core/activities/`      | Renderer en `src/features/matematicas/`                          | Estado |
-| :--------------------- | :-------------------------------------------------- | :------------------------------------ | :--------------------------------------------------------------- | :----- |
-| `comparison`           | `comparison/ComparisonRenderer`                     | `comparison.ts`                       | `comparison/ComparisonScreen.tsx`                                | ✅     |
-| `ordenar`              | `ordenar/OrdenarRenderer`                           | `ordering.ts`                         | `ordering/OrderingScreen.tsx`                                    | ✅     |
-| `seriesNumericas`      | `seriesNumericas/SeriesNumericasRenderer`           | `series.ts`                           | `series/SeriesScreen.tsx`                                        | ✅     |
-| `vecinosNumero`        | `vecinosNumero/VecinosNumeroRenderer`               | `vecinos.ts`                          | `vecinos/VecinosScreen.tsx`                                      | ✅     |
-| `numeracion1119`       | `numeracion1119/Numeracion1119Renderer`             | `numeracion1119.ts`                   | `numeracion1119/Numeracion1119Screen.tsx`                        | ✅     |
-| `numeracion4059`       | `numeracion4059/Numeracion4059Renderer`             | `numeracion4059.ts`                   | `numeracion4059/Numeracion4059Renderer.tsx`                      | ✅     |
-| `numeracion6099`       | `numeracion6099/Numeracion6099Renderer`             | `numeracion6099.ts`                   | `numeracion6099/Numeracion6099Renderer.tsx`                      | ✅     |
-| `numeracion999`        | `numeracion999/Numeracion999Renderer`               | `numeracion999.ts`                    | `numeracion999/Numeracion999Renderer.tsx`                        | ✅     |
-| `suma`                 | `operations/SumaRenderer`                           | `operations.ts` (compartido)          | `operations/SumaScreen.tsx`                                      | ✅     |
-| `resta`                | `operations/RestaRenderer`                          | `operations.ts` (compartido)          | `operations/RestaScreen.tsx`                                     | ✅     |
-| `igualdad`             | `igualdad/IgualdadRenderer`                         | `igualdad.ts`                         | `igualdad/IgualdadScreen.tsx`                                    | ✅     |
-| `counting`             | `counting/CountingRenderer`                         | `counting.ts`                         | `counting/CountingScreen.tsx`                                    | ✅     |
-| `problemas`            | `problemas/ProblemaRenderer`                        | `problemas.ts`                        | `problemas/ProblemaScreen.tsx`                                   | ✅     |
-| `relacionar`           | `relacionar/RelacionarRenderer`                     | `relacionar.ts`                       | `relacionar/RelacionarScreen.tsx`                                | ✅     |
-| `rectaNumerica`        | `rectaNumerica/RectaNumericaRenderer`               | `rectaNumerica.ts`                    | `rectaNumerica/RectaNumericaScreen.tsx`                          | ✅     |
-| `tresSumandos`         | `tresSumandos/TresSumandosRenderer`                 | `tresSumandos.ts`                     | `tresSumandos/TresSumandosScreen.tsx`                            | ✅     |
-| `leftRight`            | `leftRight/LeftRightRenderer`                       | `leftRight.ts`                        | `leftRight/LeftRightScreen.tsx`                                  | ✅     |
-| `algoritmoVertical`    | `algoritmoVertical/AlgoritmoRenderer`               | `algoritmoVertical.ts`                | `algoritmoColumna/AlgoritmoColumnaScreen.tsx` (compartido)       | ✅     |
-| `restaColumna`         | `restaColumna/RestaColumnaRenderer`                 | `restaColumna.ts`                     | `algoritmoColumna/AlgoritmoColumnaScreen.tsx` (compartido)       | ✅     |
-| `tresSumandosColumna`  | `tresSumandosColumna/TresSumandosColumnaRenderer`   | `tresSumandosColumna.ts`              | `tresSumandosColumna/TresSumandosColumnaScreen.tsx`              | ✅     |
-| `sumaLlevando`         | `sumaLlevando/SumaLlevandoRenderer`                 | `sumaLlevando.ts`                     | `sumaLlevando/SumaLlevandoScreen.tsx`                            | ✅     |
-| `relacionSumaResta`    | `relacionSumaResta/RelacionSumaRestaRenderer`       | `relacionSumaResta.ts`                | `relacionSumaResta/RelacionSumaRestaScreen.tsx`                  | ✅     |
-| `repartoIgual`         | `repartoIgual/RepartoIgualRenderer`                 | `repartoIgual.ts`                     | `repartoIgual/RepartoIgualScreen.tsx`                            | ✅     |
-| `weekDays`             | `weekDays/WeekDaysRenderer`                         | `weekDays.ts`                         | `weekDays/WeekDaysScreen.tsx`                                    | ✅     |
-| `shapes`               | `shapes/ShapesRenderer`                             | `shapes.ts`                           | `shapes/ShapesScreen.tsx`                                        | ✅     |
-| `tablaNumerica`        | `tablaNumerica/TablaNumericaRenderer`               | `tablaNumerica.ts`                    | `tablaNumerica/TablaNumericaScreen.tsx`                          | ✅     |
-| `lineTypes`            | `lineTypes/LineTypesRenderer`                       | `lineTypes.ts`                        | `lineTypes/LineTypesScreen.tsx`                                  | ✅     |
-| `capacidad`            | `capacidad/CapacidadRenderer`                       | `capacidad.ts`                        | `capacidad/CapacidadScreen.tsx`                                  | ✅     |
-| `ordinales`            | `ordinales/OrdinalesRenderer`                       | `ordinales.ts`                        | `ordinales/OrdinalesScreen.tsx`                                  | ✅     |
-| `parImpar`             | `parImpar/ParImparRenderer`                         | `parImpar.ts`                         | `parImpar/ParImparScreen.tsx`                                    | ✅     |
-| `elLitro`              | `elLitro/ElLitroRenderer`                           | `elLitro.ts`                          | `elLitro/ElLitroScreen.tsx`                                      | ✅     |
-| `elKilo`               | `elKilo/ElKiloRenderer`                             | `elKilo.ts`                           | `elKilo/ElKiloScreen.tsx`                                        | ✅     |
-| `poligonos`            | `poligonos/PoligonosRenderer`                       | `poligonos.ts`                        | `poligonos/PoligonosScreen.tsx`                                  | ✅     |
-| `balanza`              | `balanza/BalanzaRenderer`                           | `balanza.ts`                          | `balanza/BalanzaScreen.tsx`                                      | ✅     |
-| `balanzaEquilibra`     | `balanzaEquilibra/BalanzaEquilibraRenderer`         | `balanzaEquilibra.ts`                 | `balanzaEquilibra/BalanzaEquilibraScreen.tsx`                    | ✅     |
-| `reloj`                | `reloj/RelojRenderer`                               | `reloj.ts`                            | `reloj/RelojScreen.tsx`                                          | ✅     |
-| `relojPonerHora`       | `relojPonerHora/RelojPonerHoraRenderer`             | `relojPonerHora.ts`                   | `relojPonerHora/RelojPonerHoraScreen.tsx`                        | ✅     |
-| `laberintoMatematico`  | `laberintoMatematico/LaberintoMatematicoRenderer`   | `laberintoMatematico.ts`              | `laberintoMatematico/LaberintoMatematicoScreen.tsx`              | ✅     |
-| `laberintoMatematico2` | comparte renderer con `laberintoMatematico`         | `laberintoMatematico.ts` (compartido) | `laberintoMatematico/LaberintoMatematicoScreen.tsx` (compartido) | ✅     |
-| `datosInnecesarios`    | `datosInnecesarios/DatosInnecesariosRenderer`       | `datosInnecesarios.ts`                | `datosInnecesarios/DatosInnecesariosScreen.tsx`                  | ✅     |
-| `abaco3cifras`         | `abaco3cifras/Abaco3CifrasRenderer`                 | `abaco3cifras.ts`                     | `abaco3cifras/Abaco3CifrasScreen.tsx`                            | ✅     |
-| `algoritmo3cifras`     | `algoritmo3cifras/Algoritmo3CifrasRenderer`         | `algoritmo3cifras.ts`                 | `algoritmo3cifras/Algoritmo3CifrasScreen.tsx`                    | ✅     |
-| `amigos10`             | `amigos10/Amigos10Renderer`                         | `amigos10.ts`                         | `amigos10/Amigos10Screen.tsx`                                    | ✅     |
-| `cintaMetrica`         | `cintaMetrica/CintaMetricaRenderer`                 | `cintaMetrica.ts`                     | `cintaMetrica/CintaMetricaScreen.tsx`                            | ✅     |
-| `dobleYMitad`          | `dobleYMitad/DobleYMitadRenderer`                   | `dobleYMitad.ts`                      | `dobleYMitad/DobleYMitadScreen.tsx`                              | ✅     |
-| `graficoBarras`        | `graficoBarras/GraficoBarrasRenderer`               | `graficoBarras.ts`                    | `graficoBarras/GraficoBarrasScreen.tsx`                          | ✅     |
-| `intervalosTiempo`     | `intervalosTiempo/IntervalosTiempoRenderer`         | `intervalosTiempo.ts`                 | `intervalosTiempo/IntervalosTiempoScreen.tsx`                    | ✅     |
-| `inventarProblema`     | `inventarProblema/InventarProblemaRenderer`         | `inventarProblema.ts`                 | `inventarProblema/InventarProblemaScreen.tsx`                    | ✅     |
-| `lecturaNumeros`       | `lecturaNumeros/LecturaNumerosRenderer`             | `lecturaNumeros.ts`                   | `lecturaNumeros/LecturaNumerosScreen.tsx`                        | ✅     |
-| `monedasBilletes`      | `monedasBilletes/MonedasRenderer`                   | `monedasBilletes.ts`                  | `monedasBilletes/MonedasBilletesScreen.tsx`                      | ✅     |
-| `multiplicacion`       | `multiplicacion/MultiplicacionRenderer`             | `multiplicacion.ts`                   | `multiplicacion/MultiplicacionScreen.tsx`                        | ✅     |
-| `redondeo`             | `redondeo/RedondeoRenderer`                         | `redondeo.ts`                         | `redondeo/RedondeoScreen.tsx`                                    | ✅     |
-| `relacionarCantidades` | `relacionarCantidades/RelacionarCantidadesRenderer` | `relacionarCantidades.ts`             | `relacionarCantidades/RelacionarCantidadesScreen.tsx`            | ✅     |
-| `rutaCuadricula`       | `rutaCuadricula/RutaCuadriculaRenderer`             | `rutaCuadricula.ts`                   | `rutaCuadricula/RutaCuadriculaScreen.tsx`                        | ✅     |
-| `series3cifras`        | `series3cifras/Series3CifrasRenderer`               | `series3cifras.ts`                    | `series3cifras/Series3CifrasScreen.tsx`                          | ✅     |
+| `engineId`              | Motor Electron                                        | Núcleo en `src/core/activities/`      | Renderer en `src/features/matematicas/`                          | Estado |
+| :---------------------- | :---------------------------------------------------- | :------------------------------------ | :--------------------------------------------------------------- | :----- |
+| `comparison`            | `comparison/ComparisonRenderer`                       | `comparison.ts`                       | `comparison/ComparisonScreen.tsx`                                | ✅     |
+| `ordenar`               | `ordenar/OrdenarRenderer`                             | `ordering.ts`                         | `ordering/OrderingScreen.tsx`                                    | ✅     |
+| `seriesNumericas`       | `seriesNumericas/SeriesNumericasRenderer`             | `series.ts`                           | `series/SeriesScreen.tsx`                                        | ✅     |
+| `vecinosNumero`         | `vecinosNumero/VecinosNumeroRenderer`                 | `vecinos.ts`                          | `vecinos/VecinosScreen.tsx`                                      | ✅     |
+| `numeracion1119`        | `numeracion1119/Numeracion1119Renderer`               | `numeracion1119.ts`                   | `numeracion1119/Numeracion1119Screen.tsx`                        | ✅     |
+| `numeracion4059`        | `numeracion4059/Numeracion4059Renderer`               | `numeracion4059.ts`                   | `numeracion4059/Numeracion4059Renderer.tsx`                      | ✅     |
+| `numeracion6099`        | `numeracion6099/Numeracion6099Renderer`               | `numeracion6099.ts`                   | `numeracion6099/Numeracion6099Renderer.tsx`                      | ✅     |
+| `numeracion999`         | `numeracion999/Numeracion999Renderer`                 | `numeracion999.ts`                    | `numeracion999/Numeracion999Renderer.tsx`                        | ✅     |
+| `suma`                  | `operations/SumaRenderer`                             | `operations.ts` (compartido)          | `operations/SumaScreen.tsx`                                      | ✅     |
+| `resta`                 | `operations/RestaRenderer`                            | `operations.ts` (compartido)          | `operations/RestaScreen.tsx`                                     | ✅     |
+| `igualdad`              | `igualdad/IgualdadRenderer`                           | `igualdad.ts`                         | `igualdad/IgualdadScreen.tsx`                                    | ✅     |
+| `counting`              | `counting/CountingRenderer`                           | `counting.ts`                         | `counting/CountingScreen.tsx`                                    | ✅     |
+| `problemas`             | `problemas/ProblemaRenderer`                          | `problemas.ts`                        | `problemas/ProblemaScreen.tsx`                                   | ✅     |
+| `relacionar`            | `relacionar/RelacionarRenderer`                       | `relacionar.ts`                       | `relacionar/RelacionarScreen.tsx`                                | ✅     |
+| `rectaNumerica`         | `rectaNumerica/RectaNumericaRenderer`                 | `rectaNumerica.ts`                    | `rectaNumerica/RectaNumericaScreen.tsx`                          | ✅     |
+| `tresSumandos`          | `tresSumandos/TresSumandosRenderer`                   | `tresSumandos.ts`                     | `tresSumandos/TresSumandosScreen.tsx`                            | ✅     |
+| `leftRight`             | `leftRight/LeftRightRenderer`                         | `leftRight.ts`                        | `leftRight/LeftRightScreen.tsx`                                  | ✅     |
+| `algoritmoVertical`     | `algoritmoVertical/AlgoritmoRenderer`                 | `algoritmoVertical.ts`                | `algoritmoColumna/AlgoritmoColumnaScreen.tsx` (compartido)       | ✅     |
+| `restaColumna`          | `restaColumna/RestaColumnaRenderer`                   | `restaColumna.ts`                     | `algoritmoColumna/AlgoritmoColumnaScreen.tsx` (compartido)       | ✅     |
+| `tresSumandosColumna`   | `tresSumandosColumna/TresSumandosColumnaRenderer`     | `tresSumandosColumna.ts`              | `tresSumandosColumna/TresSumandosColumnaScreen.tsx`              | ✅     |
+| `sumaLlevando`          | `sumaLlevando/SumaLlevandoRenderer`                   | `sumaLlevando.ts`                     | `sumaLlevando/SumaLlevandoScreen.tsx`                            | ✅     |
+| `relacionSumaResta`     | `relacionSumaResta/RelacionSumaRestaRenderer`         | `relacionSumaResta.ts`                | `relacionSumaResta/RelacionSumaRestaScreen.tsx`                  | ✅     |
+| `repartoIgual`          | `repartoIgual/RepartoIgualRenderer`                   | `repartoIgual.ts`                     | `repartoIgual/RepartoIgualScreen.tsx`                            | ✅     |
+| `weekDays`              | `weekDays/WeekDaysRenderer`                           | `weekDays.ts`                         | `weekDays/WeekDaysScreen.tsx`                                    | ✅     |
+| `shapes`                | `shapes/ShapesRenderer`                               | `shapes.ts`                           | `shapes/ShapesScreen.tsx`                                        | ✅     |
+| `tablaNumerica`         | `tablaNumerica/TablaNumericaRenderer`                 | `tablaNumerica.ts`                    | `tablaNumerica/TablaNumericaScreen.tsx`                          | ✅     |
+| `lineTypes`             | `lineTypes/LineTypesRenderer`                         | `lineTypes.ts`                        | `lineTypes/LineTypesScreen.tsx`                                  | ✅     |
+| `capacidad`             | `capacidad/CapacidadRenderer`                         | `capacidad.ts`                        | `capacidad/CapacidadScreen.tsx`                                  | ✅     |
+| `ordinales`             | `ordinales/OrdinalesRenderer`                         | `ordinales.ts`                        | `ordinales/OrdinalesScreen.tsx`                                  | ✅     |
+| `parImpar`              | `parImpar/ParImparRenderer`                           | `parImpar.ts`                         | `parImpar/ParImparScreen.tsx`                                    | ✅     |
+| `elLitro`               | `elLitro/ElLitroRenderer`                             | `elLitro.ts`                          | `elLitro/ElLitroScreen.tsx`                                      | ✅     |
+| `elKilo`                | `elKilo/ElKiloRenderer`                               | `elKilo.ts`                           | `elKilo/ElKiloScreen.tsx`                                        | ✅     |
+| `poligonos`             | `poligonos/PoligonosRenderer`                         | `poligonos.ts`                        | `poligonos/PoligonosScreen.tsx`                                  | ✅     |
+| `balanza`               | `balanza/BalanzaRenderer`                             | `balanza.ts`                          | `balanza/BalanzaScreen.tsx`                                      | ✅     |
+| `balanzaEquilibra`      | `balanzaEquilibra/BalanzaEquilibraRenderer`           | `balanzaEquilibra.ts`                 | `balanzaEquilibra/BalanzaEquilibraScreen.tsx`                    | ✅     |
+| `reloj`                 | `reloj/RelojRenderer`                                 | `reloj.ts`                            | `reloj/RelojScreen.tsx`                                          | ✅     |
+| `relojPonerHora`        | `relojPonerHora/RelojPonerHoraRenderer`               | `relojPonerHora.ts`                   | `relojPonerHora/RelojPonerHoraScreen.tsx`                        | ✅     |
+| `laberintoMatematico`   | `laberintoMatematico/LaberintoMatematicoRenderer`     | `laberintoMatematico.ts`              | `laberintoMatematico/LaberintoMatematicoScreen.tsx`              | ✅     |
+| `laberintoMatematico2`  | comparte renderer con `laberintoMatematico`           | `laberintoMatematico.ts` (compartido) | `laberintoMatematico/LaberintoMatematicoScreen.tsx` (compartido) | ✅     |
+| `datosInnecesarios`     | `datosInnecesarios/DatosInnecesariosRenderer`         | `datosInnecesarios.ts`                | `datosInnecesarios/DatosInnecesariosScreen.tsx`                  | ✅     |
+| `abaco3cifras`          | `abaco3cifras/Abaco3CifrasRenderer`                   | `abaco3cifras.ts`                     | `abaco3cifras/Abaco3CifrasScreen.tsx`                            | ✅     |
+| `algoritmo3cifras`      | `algoritmo3cifras/Algoritmo3CifrasRenderer`           | `algoritmo3cifras.ts`                 | `algoritmo3cifras/Algoritmo3CifrasScreen.tsx`                    | ✅     |
+| `amigos10`              | `amigos10/Amigos10Renderer`                           | `amigos10.ts`                         | `amigos10/Amigos10Screen.tsx`                                    | ✅     |
+| `cintaMetrica`          | `cintaMetrica/CintaMetricaRenderer`                   | `cintaMetrica.ts`                     | `cintaMetrica/CintaMetricaScreen.tsx`                            | ✅     |
+| `dobleYMitad`           | `dobleYMitad/DobleYMitadRenderer`                     | `dobleYMitad.ts`                      | `dobleYMitad/DobleYMitadScreen.tsx`                              | ✅     |
+| `graficoBarras`         | `graficoBarras/GraficoBarrasRenderer`                 | `graficoBarras.ts`                    | `graficoBarras/GraficoBarrasScreen.tsx`                          | ✅     |
+| `intervalosTiempo`      | `intervalosTiempo/IntervalosTiempoRenderer`           | `intervalosTiempo.ts`                 | `intervalosTiempo/IntervalosTiempoScreen.tsx`                    | ✅     |
+| `inventarProblema`      | `inventarProblema/InventarProblemaRenderer`           | `inventarProblema.ts`                 | `inventarProblema/InventarProblemaScreen.tsx`                    | ✅     |
+| `lecturaNumeros`        | `lecturaNumeros/LecturaNumerosRenderer`               | `lecturaNumeros.ts`                   | `lecturaNumeros/LecturaNumerosScreen.tsx`                        | ✅     |
+| `monedasBilletes`       | `monedasBilletes/MonedasRenderer`                     | `monedasBilletes.ts`                  | `monedasBilletes/MonedasBilletesScreen.tsx`                      | ✅     |
+| `multiplicacion`        | `multiplicacion/MultiplicacionRenderer`               | `multiplicacion.ts`                   | `multiplicacion/MultiplicacionScreen.tsx`                        | ✅     |
+| `redondeo`              | `redondeo/RedondeoRenderer`                           | `redondeo.ts`                         | `redondeo/RedondeoScreen.tsx`                                    | ✅     |
+| `relacionarCantidades`  | `relacionarCantidades/RelacionarCantidadesRenderer`   | `relacionarCantidades.ts`             | `relacionarCantidades/RelacionarCantidadesScreen.tsx`            | ✅     |
+| `rutaCuadricula`        | `rutaCuadricula/RutaCuadriculaRenderer`               | `rutaCuadricula.ts`                   | `rutaCuadricula/RutaCuadriculaScreen.tsx`                        | ✅     |
+| `series3cifras`         | `series3cifras/Series3CifrasRenderer`                 | `series3cifras.ts`                    | `series3cifras/Series3CifrasScreen.tsx`                          | ✅     |
+| `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | `circuloCircunferencia.ts`            | `circuloCircunferencia/CirculoCircunferenciaScreen.tsx`          | ✅     |
 
 Tres detalles de este bloque que sorprenden al leerlo y conviene no volver a
 "arreglar" sin saber lo que hacen:
@@ -135,15 +136,14 @@ pero no hay ni núcleo ni renderer en la PWA, y el registro los da como `pending
 de modo que el catálogo no deja lanzarlas. La prioridad de cada una está en el
 inventario.
 
-| `engineId`              | Motor Electron                                        | Núcleo | Renderer | Estado |
-| :---------------------- | :---------------------------------------------------- | :----- | :------- | :----- |
-| `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | —      | —        | ⏳     |
-| `cuerpos3d`             | `cuerpos3d/Cuerpos3DRenderer`                         | —      | —        | ⏳     |
-| `menuCafeteria`         | `menuCafeteria/MenuCafeteriaRenderer`                 | —      | —        | ⏳     |
-| `posicionesAula`        | `posicionesAula/PosicionesAulaRenderer`               | —      | —        | ⏳     |
-| `probabilidad`          | `probabilidad/ProbabilidadRenderer`                   | —      | —        | ⏳     |
-| `problemas2pasos`       | `problemas2pasos/Problemas2PasosRenderer`             | —      | —        | ⏳     |
-| `simetria`              | `simetria/SimetriaRenderer`                           | —      | —        | ⏳     |
+| `engineId`        | Motor Electron                            | Núcleo | Renderer | Estado |
+| :---------------- | :---------------------------------------- | :----- | :------- | :----- |
+| `cuerpos3d`       | `cuerpos3d/Cuerpos3DRenderer`             | —      | —        | ⏳     |
+| `menuCafeteria`   | `menuCafeteria/MenuCafeteriaRenderer`     | —      | —        | ⏳     |
+| `posicionesAula`  | `posicionesAula/PosicionesAulaRenderer`   | —      | —        | ⏳     |
+| `probabilidad`    | `probabilidad/ProbabilidadRenderer`       | —      | —        | ⏳     |
+| `problemas2pasos` | `problemas2pasos/Problemas2PasosRenderer` | —      | —        | ⏳     |
+| `simetria`        | `simetria/SimetriaRenderer`               | —      | —        | ⏳     |
 
 Las 7 actividades pendientes salen de 7 carpetas de motor distintas. Ninguna de
 las que se migraron en la tanda 1 (`reloj`, `relojPonerHora`,

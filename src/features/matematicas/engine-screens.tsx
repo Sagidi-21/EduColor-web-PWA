@@ -244,6 +244,11 @@ const CintaMetricaScreen = lazy(() =>
 const RedondeoScreen = lazy(() =>
   import("./redondeo/RedondeoScreen").then((module) => ({ default: module.RedondeoScreen })),
 );
+const CirculoCircunferenciaScreen = lazy(() =>
+  import("./circuloCircunferencia/CirculoCircunferenciaScreen").then((module) => ({
+    default: module.CirculoCircunferenciaScreen,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -660,6 +665,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <Series3CifrasScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "circuloCircunferencia") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <CirculoCircunferenciaScreen {...props} />
       </Suspense>
     );
   }
