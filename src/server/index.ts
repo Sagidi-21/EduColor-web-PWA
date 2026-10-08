@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import { config } from "dotenv";
 import mascotRoutes from "./routes/mascot.routes.ts";
 import { errorHandler } from "./middleware/error.middleware.ts";
@@ -9,12 +10,26 @@ config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+app.disable("x-powered-by");
+
 app.use(
   cors({
     origin: process.env.FRONTEND_ORIGIN || "http://localhost:5173",
     credentials: true,
   }),
 );
+
+// Headers de seguridad básicos.
+// contentSecurityPolicy se habilita más adelante cuando el frontend esté
+// consolidado (fase 6+). Por ahora solo se envían headers que no requieren
+// una política CSP ajustada: X-Content-Type-Options, X-Frame-Options,
+// Referrer-Policy, entre otros.
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  }),
+);
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 

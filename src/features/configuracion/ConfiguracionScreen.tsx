@@ -108,11 +108,13 @@ export function ConfiguracionScreen({
               ))}
             </div>
             <button
-              className="cfg__mascota-btn"
+              className="cfg__mascota-btn cfg__mascota-btn--disabled"
+              disabled
               onClick={() => onNavigate && onNavigate("mascota")}
             >
               🎨 Configurar mascota
             </button>
+            <span className="cfg__mascota-badge">Desarrollando actualización</span>
           </div>
           <div className="cfg__profile-layout">
             <div className="cfg__mascot-col">

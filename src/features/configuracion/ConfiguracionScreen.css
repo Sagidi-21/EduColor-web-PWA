@@ -502,6 +502,27 @@
   background: #ede9fe;
   transform: translateY(-1px);
 }
+.cfg__mascota-btn--disabled {
+  background: #f8fafc;
+  color: #94a3b8;
+  border-color: #cbd5e1;
+  cursor: not-allowed;
+}
+.cfg__mascota-btn--disabled:hover {
+  background: #f8fafc;
+  transform: none;
+}
+.cfg__mascota-badge {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e40af;
+  background: #dbeafe;
+  border-radius: 20px;
+  vertical-align: middle;
+}
 
 /* ── Tema de transición ─────────────────────────── */
 .cfg__theme-grid {

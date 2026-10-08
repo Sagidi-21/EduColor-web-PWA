@@ -3,11 +3,10 @@ import { ClassProfileProvider } from "./core/context/ClassProfileContext";
 import { useClassProfile } from "./core/context/ClassProfileContext";
 import { ViewTransition } from "./core/transition/ViewTransition";
 import { ConfiguracionScreen } from "./features/configuracion/ConfiguracionScreen";
-import { MascotaScreen } from "./features/mascota/MascotaScreen";
-import { HomeScreen } from "./features/home/HomeScreen";
-import { MatematicasCatalogScreen } from "./features/matematicas/MatematicasCatalogScreen";
 import { ExerciseSessionProvider } from "./features/matematicas/ExerciseSessionContext";
 import { ExerciseView } from "./features/matematicas/ExerciseView";
+import { HomeScreen } from "./features/home/HomeScreen";
+import { MatematicasCatalogScreen } from "./features/matematicas/MatematicasCatalogScreen";
 import { SplashScreen } from "./features/splash/SplashScreen";
 import { WelcomeScreen } from "./features/splash/WelcomeScreen";
 
@@ -57,14 +56,11 @@ function AppShell() {
         views={{
           home: ({ navigate }) => <HomeScreen onNavigate={navigate} />,
           configuration: ({ navigate }) => (
-            <ConfiguracionScreen
-              onBack={() => navigate("home", "left")}
-              onNavigate={(view) => navigate(view)}
-            />
+            <ConfiguracionScreen onBack={() => navigate("home", "left")} />
           ),
-          mascota: ({ navigate }) => (
-            <MascotaScreen onBack={() => navigate("configuration", "left")} />
-          ),
+          // mascota: ({ navigate }) => (
+          //   <MascotaScreen onBack={() => navigate("configuration", "left")} />
+          // ),
           mathematics: ({ navigate }) => (
             <MatematicasCatalogScreen
               initialGradeId={initialGradeId}
