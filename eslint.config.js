@@ -5,7 +5,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", "node_modules", ".kilo/worktrees"] },
+  { ignores: ["dist", "dev-dist", "node_modules", ".kilo/worktrees"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -76,4 +76,37 @@ export default tseslint.config(
     },
   },
   prettier,
+  {
+    files: ["*.mjs", "vite.config.js"],
+    languageOptions: {
+      globals: {
+        process: "readonly",
+        console: "readonly",
+        caches: "readonly",
+        fetch: "readonly",
+        self: "readonly",
+        URL: "readonly",
+        Response: "readonly",
+        Request: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        navigator: "readonly",
+        document: "readonly",
+        location: "readonly",
+        importScripts: "readonly",
+        define: "readonly",
+        Headers: "readonly",
+        ExtendableEvent: "readonly",
+        FetchEvent: "readonly",
+        indexedDB: "readonly",
+        IDBDatabase: "readonly",
+        IDBObjectStore: "readonly",
+        IDBIndex: "readonly",
+        IDBCursor: "readonly",
+        IDBTransaction: "readonly",
+        IDBRequest: "readonly",
+        DOMException: "readonly",
+      },
+    },
+  },
 );

@@ -1,286 +1,329 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Benchmark Digit Recognition (TF.js)</title>
-  <style>
-    body { font-family: system-ui; max-width: 800px; margin: 2rem auto; padding: 1rem; }
-    button { padding: 0.5rem 1rem; font-size: 1rem; margin: 0.5rem 0; cursor: pointer; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    pre { background: #f5f5f5; padding: 1rem; overflow: auto; }
-    .metric { display: inline-block; margin: 0.5rem 1rem; padding: 0.5rem; background: #e8f5e9; border-radius: 4px; }
-    .metric.warn { background: #fff3e0; }
-    .metric.error { background: #ffebee; }
-  </style>
-</head>
-<body>
-  <h1>📊 Benchmark Reconocimiento Dígitos (TF.js WASM)</h1>
-  <p>Ejecuta en el dispositivo objetivo (portátil profe / pizarra). Abre DevTools → Console para logs detallados.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Benchmark Digit Recognition (TF.js)</title>
+    <style>
+      body {
+        font-family: system-ui;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 1rem;
+      }
+      button {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        margin: 0.5rem 0;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      pre {
+        background: #f5f5f5;
+        padding: 1rem;
+        overflow: auto;
+      }
+      .metric {
+        display: inline-block;
+        margin: 0.5rem 1rem;
+        padding: 0.5rem;
+        background: #e8f5e9;
+        border-radius: 4px;
+      }
+      .metric.warn {
+        background: #fff3e0;
+      }
+      .metric.error {
+        background: #ffebee;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>📊 Benchmark Reconocimiento Dígitos (TF.js WASM)</h1>
+    <p>
+      Ejecuta en el dispositivo objetivo (portátil profe / pizarra). Abre DevTools → Console para
+      logs detallados.
+    </p>
 
-  <button id="btnRun">▶ Ejecutar benchmark completo</button>
-  <button id="btnWarm" disabled>🔥 Solo warm-up (primera inferencia)</button>
-  <button id="btnLoop" disabled>🔁 50 inferencias (latencia)</button>
+    <button id="btnRun">▶ Ejecutar benchmark completo</button>
+    <button id="btnWarm" disabled>🔥 Solo warm-up (primera inferencia)</button>
+    <button id="btnLoop" disabled>🔁 50 inferencias (latencia)</button>
 
-  <h2>Resultados</h2>
-  <div id="results"></div>
-  <pre id="log"></pre>
+    <h2>Resultados</h2>
+    <div id="results"></div>
+    <pre id="log"></pre>
 
-  <script>
-    // Desregistrar Service Worker para esta página (evita interferencias)
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(regs => {
-        regs.forEach(reg => reg.unregister());
-      });
-    }
+    <script>
+      // Desregistrar Service Worker para esta página (evita interferencias)
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then((regs) => {
+          regs.forEach((reg) => reg.unregister());
+        });
+      }
 
-    const logEl = document.getElementById('log');
-    const resultsEl = document.getElementById('results');
-    const btnRun = document.getElementById('btnRun');
-    const btnWarm = document.getElementById('btnWarm');
-    const btnLoop = document.getElementById('btnLoop');
+      const logEl = document.getElementById("log");
+      const resultsEl = document.getElementById("results");
+      const btnRun = document.getElementById("btnRun");
+      const btnWarm = document.getElementById("btnWarm");
+      const btnLoop = document.getElementById("btnLoop");
 
-    function log(msg) {
-      const t = new Date().toISOString().split('T')[1].slice(0, -1);
-      logEl.textContent += `[${t}] ${msg}\n`;
-      logEl.scrollTop = logEl.scrollHeight;
-      console.log(msg);
-    }
+      function log(msg) {
+        const t = new Date().toISOString().split("T")[1].slice(0, -1);
+        logEl.textContent += `[${t}] ${msg}\n`;
+        logEl.scrollTop = logEl.scrollHeight;
+        console.log(msg);
+      }
 
-    function addMetric(label, value, unit, warnThreshold, errorThreshold) {
-      const div = document.createElement('div');
-      div.className = 'metric';
-      let cls = '';
-      if (errorThreshold && value > errorThreshold) cls = 'error';
-      else if (warnThreshold && value > warnThreshold) cls = 'warn';
-      div.className += ' ' + cls;
-      div.textContent = `${label}: ${value.toFixed(1)} ${unit}`;
-      resultsEl.appendChild(div);
-    }
+      function addMetric(label, value, unit, warnThreshold, errorThreshold) {
+        const div = document.createElement("div");
+        div.className = "metric";
+        let cls = "";
+        if (errorThreshold && value > errorThreshold) cls = "error";
+        else if (warnThreshold && value > warnThreshold) cls = "warn";
+        div.className += " " + cls;
+        div.textContent = `${label}: ${value.toFixed(1)} ${unit}`;
+        resultsEl.appendChild(div);
+      }
 
-    // ── Config ──────────────────────────────────────────────────────
-    const MODEL_URL = '/model/model.json';
-    const CANVAS_SIZE = 240;
-    const PROC_SIZE = 32;
-    const ITERATIONS = 50;
+      // ── Config ──────────────────────────────────────────────────────
+      const MODEL_URL = "/model/model.json";
+      const CANVAS_SIZE = 240;
+      const PROC_SIZE = 32;
+      const ITERATIONS = 50;
 
-    let model = null;
-    let sampleInput = null;
-    let tf = null;
+      let model = null;
+      let sampleInput = null;
+      let tf = null;
 
-    // ── Preprocesado idéntico a digitPreprocess.ts ─────────────────
-    function preprocessGray(gray, w, h) {
-      const MARGIN = 4, PAD = 2;
-      let x0 = w, x1 = -1, y0 = h, y1 = -1;
-      for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-          if (gray[y * w + x] < 0.9) {
-            if (x < x0) x0 = x;
-            if (x > x1) x1 = x;
-            if (y < y0) y0 = y;
-            if (y > y1) y1 = y;
+      // ── Preprocesado idéntico a digitPreprocess.ts ─────────────────
+      function preprocessGray(gray, w, h) {
+        const MARGIN = 4,
+          PAD = 2;
+        let x0 = w,
+          x1 = -1,
+          y0 = h,
+          y1 = -1;
+        for (let y = 0; y < h; y++) {
+          for (let x = 0; x < w; x++) {
+            if (gray[y * w + x] < 0.9) {
+              if (x < x0) x0 = x;
+              if (x > x1) x1 = x;
+              if (y < y0) y0 = y;
+              if (y > y1) y1 = y;
+            }
           }
         }
+        if (x1 < 0) {
+          const blank = new Float32Array(PROC_SIZE * PROC_SIZE);
+          blank.fill(1.0);
+          return blank;
+        }
+        x0 = Math.max(0, x0 - MARGIN);
+        y0 = Math.max(0, y0 - MARGIN);
+        x1 = Math.min(w - 1, x1 + MARGIN);
+        y1 = Math.min(h - 1, y1 + MARGIN);
+        const cw = x1 - x0 + 1;
+        const ch = y1 - y0 + 1;
+        const inner = PROC_SIZE - 2 * PAD;
+        const scale = Math.min(inner / cw, inner / ch);
+        const newW = Math.max(1, Math.round(cw * scale));
+        const newH = Math.max(1, Math.round(ch * scale));
+        const offX = Math.round((PROC_SIZE - newW) / 2);
+        const offY = Math.round((PROC_SIZE - newH) / 2);
+        const scaled = new Float32Array(PROC_SIZE * PROC_SIZE);
+        scaled.fill(1.0);
+        for (let py = 0; py < newH; py++) {
+          for (let px = 0; px < newW; px++) {
+            const sx = newW > 1 ? (px / (newW - 1)) * (cw - 1) : 0;
+            const sy = newH > 1 ? (py / (newH - 1)) * (ch - 1) : 0;
+            const ix = Math.floor(sx),
+              iy = Math.floor(sy);
+            const fx = sx - ix,
+              fy = sy - iy;
+            const ix1 = Math.min(ix + 1, cw - 1);
+            const iy1 = Math.min(iy + 1, ch - 1);
+            scaled[(offY + py) * PROC_SIZE + (offX + px)] =
+              gray[(y0 + iy) * w + (x0 + ix)] * (1 - fx) * (1 - fy) +
+              gray[(y0 + iy) * w + (x0 + ix1)] * fx * (1 - fy) +
+              gray[(y0 + iy1) * w + (x0 + ix)] * (1 - fx) * fy +
+              gray[(y0 + iy1) * w + (x0 + ix1)] * fx * fy;
+          }
+        }
+        // Centro de masa
+        let mx = 0,
+          my = 0,
+          mt = 0;
+        for (let y = 0; y < PROC_SIZE; y++) {
+          for (let x = 0; x < PROC_SIZE; x++) {
+            const m = 1.0 - scaled[y * PROC_SIZE + x];
+            mx += m * x;
+            my += m * y;
+            mt += m;
+          }
+        }
+        if (mt < 1e-6) return scaled;
+        const center = (PROC_SIZE - 1) / 2.0;
+        const dx = Math.round(center - mx / mt);
+        const dy = Math.round(center - my / mt);
+        if (dx === 0 && dy === 0) return scaled;
+        const out = new Float32Array(PROC_SIZE * PROC_SIZE);
+        out.fill(1.0);
+        for (let y = 0; y < PROC_SIZE; y++) {
+          for (let x = 0; x < PROC_SIZE; x++) {
+            const sx = x - dx,
+              sy = y - dy;
+            if (sx >= 0 && sx < PROC_SIZE && sy >= 0 && sy < PROC_SIZE)
+              out[y * PROC_SIZE + x] = scaled[sy * PROC_SIZE + sx];
+          }
+        }
+        return out;
       }
-      if (x1 < 0) {
-        const blank = new Float32Array(PROC_SIZE * PROC_SIZE);
-        blank.fill(1.0);
-        return blank;
+
+      // ── Generar imagen de prueba (dígito "7" sintético) ────────────
+      function generateTestImage() {
+        const canvas = document.createElement("canvas");
+        canvas.width = CANVAS_SIZE;
+        canvas.height = CANVAS_SIZE;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 8;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(40, 30);
+        ctx.lineTo(200, 30);
+        ctx.lineTo(60, 210);
+        ctx.stroke();
+        return canvas;
       }
-      x0 = Math.max(0, x0 - MARGIN);
-      y0 = Math.max(0, y0 - MARGIN);
-      x1 = Math.min(w - 1, x1 + MARGIN);
-      y1 = Math.min(h - 1, y1 + MARGIN);
-      const cw = x1 - x0 + 1;
-      const ch = y1 - y0 + 1;
-      const inner = PROC_SIZE - 2 * PAD;
-      const scale = Math.min(inner / cw, inner / ch);
-      const newW = Math.max(1, Math.round(cw * scale));
-      const newH = Math.max(1, Math.round(ch * scale));
-      const offX = Math.round((PROC_SIZE - newW) / 2);
-      const offY = Math.round((PROC_SIZE - newH) / 2);
-      const scaled = new Float32Array(PROC_SIZE * PROC_SIZE);
-      scaled.fill(1.0);
-      for (let py = 0; py < newH; py++) {
-        for (let px = 0; px < newW; px++) {
-          const sx = newW > 1 ? (px / (newW - 1)) * (cw - 1) : 0;
-          const sy = newH > 1 ? (py / (newH - 1)) * (ch - 1) : 0;
-          const ix = Math.floor(sx), iy = Math.floor(sy);
-          const fx = sx - ix, fy = sy - iy;
-          const ix1 = Math.min(ix + 1, cw - 1);
-          const iy1 = Math.min(iy + 1, ch - 1);
-          scaled[(offY + py) * PROC_SIZE + (offX + px)] =
-            gray[(y0 + iy) * w + (x0 + ix)] * (1 - fx) * (1 - fy) +
-            gray[(y0 + iy) * w + (x0 + ix1)] * fx * (1 - fy) +
-            gray[(y0 + iy1) * w + (x0 + ix)] * (1 - fx) * fy +
-            gray[(y0 + iy1) * w + (x0 + ix1)] * fx * fy;
+
+      // ── Cargar TF.js y modelo ──────────────────────────────────────
+      async function loadTFJS() {
+        log("⏳ Cargando TF.js desde CDN...");
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js";
+        script.onload = () => {
+          tf = window.tf;
+          log("✅ TF.js cargado");
+          loadModel();
+        };
+        script.onerror = () => log("❌ Error cargando TF.js desde CDN");
+        document.head.appendChild(script);
+      }
+
+      async function loadModel() {
+        log("⏳ Cargando modelo TF.js desde " + MODEL_URL + "...");
+        const t0 = performance.now();
+        try {
+          model = await tf.loadLayersModel(MODEL_URL);
+          const loadTime = performance.now() - t0;
+          log(`✅ Modelo cargado en ${loadTime.toFixed(0)} ms`);
+          log(`   Parámetros: ${model.countParams().toLocaleString()}`);
+          log(`   Capas: ${model.layers.length}`);
+          prepareInput();
+        } catch (e) {
+          log(`❌ Error cargando modelo: ${e.message}`);
         }
       }
-      // Centro de masa
-      let mx = 0, my = 0, mt = 0;
-      for (let y = 0; y < PROC_SIZE; y++) {
-        for (let x = 0; x < PROC_SIZE; x++) {
-          const m = 1.0 - scaled[y * PROC_SIZE + x];
-          mx += m * x; my += m * y; mt += m;
+
+      function prepareInput() {
+        const canvas = generateTestImage();
+        const ctx = canvas.getContext("2d");
+        const imageData = ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        const { width, height, data } = imageData;
+        const gray = new Float32Array(width * height);
+        for (let i = 0; i < width * height; i++) {
+          gray[i] = (0.299 * data[i * 4] + 0.587 * data[i * 4 + 1] + 0.114 * data[i * 4 + 2]) / 255;
         }
+        const processed = preprocessGray(gray, width, height);
+        sampleInput = tf.tensor4d(processed, [1, PROC_SIZE, PROC_SIZE, 1]);
+        log(`📥 Input preparado: ${sampleInput.shape.join("×")}`);
+        btnWarm.disabled = false;
       }
-      if (mt < 1e-6) return scaled;
-      const center = (PROC_SIZE - 1) / 2.0;
-      const dx = Math.round(center - mx / mt);
-      const dy = Math.round(center - my / mt);
-      if (dx === 0 && dy === 0) return scaled;
-      const out = new Float32Array(PROC_SIZE * PROC_SIZE);
-      out.fill(1.0);
-      for (let y = 0; y < PROC_SIZE; y++) {
-        for (let x = 0; x < PROC_SIZE; x++) {
-          const sx = x - dx, sy = y - dy;
-          if (sx >= 0 && sx < PROC_SIZE && sy >= 0 && sy < PROC_SIZE)
-            out[y * PROC_SIZE + x] = scaled[sy * PROC_SIZE + sx];
+
+      // ── Warm-up (primera inferencia = compila WASM) ───────────────
+      async function warmUp() {
+        if (!model || !sampleInput) {
+          log("⚠️ Primero carga modelo y prepara input");
+          return;
         }
-      }
-      return out;
-    }
-
-    // ── Generar imagen de prueba (dígito "7" sintético) ────────────
-    function generateTestImage() {
-      const canvas = document.createElement('canvas');
-      canvas.width = CANVAS_SIZE;
-      canvas.height = CANVAS_SIZE;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-      ctx.strokeStyle = '#000';
-      ctx.lineWidth = 8;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(40, 30);
-      ctx.lineTo(200, 30);
-      ctx.lineTo(60, 210);
-      ctx.stroke();
-      return canvas;
-    }
-
-    // ── Cargar TF.js y modelo ──────────────────────────────────────
-    async function loadTFJS() {
-      log('⏳ Cargando TF.js desde CDN...');
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js';
-      script.onload = () => {
-        tf = window.tf;
-        log('✅ TF.js cargado');
-        loadModel();
-      };
-      script.onerror = () => log('❌ Error cargando TF.js desde CDN');
-      document.head.appendChild(script);
-    }
-
-    async function loadModel() {
-      log('⏳ Cargando modelo TF.js desde ' + MODEL_URL + '...');
-      const t0 = performance.now();
-      try {
-        model = await tf.loadLayersModel(MODEL_URL);
-        const loadTime = performance.now() - t0;
-        log(`✅ Modelo cargado en ${loadTime.toFixed(0)} ms`);
-        log(`   Parámetros: ${model.countParams().toLocaleString()}`);
-        log(`   Capas: ${model.layers.length}`);
-        prepareInput();
-      } catch (e) {
-        log(`❌ Error cargando modelo: ${e.message}`);
-      }
-    }
-
-    function prepareInput() {
-      const canvas = generateTestImage();
-      const ctx = canvas.getContext('2d');
-      const imageData = ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-      const { width, height, data } = imageData;
-      const gray = new Float32Array(width * height);
-      for (let i = 0; i < width * height; i++) {
-        gray[i] = (0.299 * data[i * 4] + 0.587 * data[i * 4 + 1] + 0.114 * data[i * 4 + 2]) / 255;
-      }
-      const processed = preprocessGray(gray, width, height);
-      sampleInput = tf.tensor4d(processed, [1, PROC_SIZE, PROC_SIZE, 1]);
-      log(`📥 Input preparado: ${sampleInput.shape.join('×')}`);
-      btnWarm.disabled = false;
-    }
-
-    // ── Warm-up (primera inferencia = compila WASM) ───────────────
-    async function warmUp() {
-      if (!model || !sampleInput) {
-        log('⚠️ Primero carga modelo y prepara input');
-        return;
-      }
-      log('🔥 Warm-up (primera inferencia, compila WASM)...');
-      const t0 = performance.now();
-      const pred = model.predict(sampleInput);
-      const probs = await pred.data();
-      pred.dispose();
-      const warmTime = performance.now() - t0;
-      const maxIdx = probs.indexOf(Math.max(...probs));
-      log(`✅ Warm-up: ${warmTime.toFixed(1)} ms — predijo: ${maxIdx} (conf: ${Math.max(...probs).toFixed(3)})`);
-      addMetric('Cold start (warm-up)', warmTime, 'ms', 1500, 3000);
-      btnLoop.disabled = false;
-    }
-
-    // ── Loop de inferencias ───────────────────────────────────────
-    async function loopInference() {
-      if (!model || !sampleInput) return;
-      btnLoop.disabled = true;
-      btnWarm.disabled = true;
-      btnRun.disabled = true;
-      log(`🔁 Ejecutando ${ITERATIONS} inferencias...`);
-      const times = [];
-      for (let i = 0; i < ITERATIONS; i++) {
+        log("🔥 Warm-up (primera inferencia, compila WASM)...");
         const t0 = performance.now();
         const pred = model.predict(sampleInput);
-        await pred.data();
+        const probs = await pred.data();
         pred.dispose();
-        times.push(performance.now() - t0);
-        if ((i + 1) % 10 === 0) log(`   ${i + 1}/${ITERATIONS}`);
+        const warmTime = performance.now() - t0;
+        const maxIdx = probs.indexOf(Math.max(...probs));
+        log(
+          `✅ Warm-up: ${warmTime.toFixed(1)} ms — predijo: ${maxIdx} (conf: ${Math.max(...probs).toFixed(3)})`,
+        );
+        addMetric("Cold start (warm-up)", warmTime, "ms", 1500, 3000);
+        btnLoop.disabled = false;
       }
-      btnLoop.disabled = false;
-      btnWarm.disabled = false;
-      btnRun.disabled = false;
 
-      times.sort((a, b) => a - b);
-      const mean = times.reduce((a, b) => a + b, 0) / times.length;
-      const p50 = times[Math.floor(times.length * 0.5)];
-      const p95 = times[Math.floor(times.length * 0.95)];
-      const p99 = times[Math.floor(times.length * 0.99)];
-      const min = times[0];
-      const max = times[times.length - 1];
+      // ── Loop de inferencias ───────────────────────────────────────
+      async function loopInference() {
+        if (!model || !sampleInput) return;
+        btnLoop.disabled = true;
+        btnWarm.disabled = true;
+        btnRun.disabled = true;
+        log(`🔁 Ejecutando ${ITERATIONS} inferencias...`);
+        const times = [];
+        for (let i = 0; i < ITERATIONS; i++) {
+          const t0 = performance.now();
+          const pred = model.predict(sampleInput);
+          await pred.data();
+          pred.dispose();
+          times.push(performance.now() - t0);
+          if ((i + 1) % 10 === 0) log(`   ${i + 1}/${ITERATIONS}`);
+        }
+        btnLoop.disabled = false;
+        btnWarm.disabled = false;
+        btnRun.disabled = false;
 
-      log(`📈 Latencia (${ITERATIONS} runs):`);
-      log(`   Media: ${mean.toFixed(1)} ms`);
-      log(`   P50:   ${p50.toFixed(1)} ms`);
-      log(`   P95:   ${p95.toFixed(1)} ms`);
-      log(`   P99:   ${p99.toFixed(1)} ms`);
-      log(`   Min:   ${min.toFixed(1)} ms`);
-      log(`   Max:   ${max.toFixed(1)} ms`);
+        times.sort((a, b) => a - b);
+        const mean = times.reduce((a, b) => a + b, 0) / times.length;
+        const p50 = times[Math.floor(times.length * 0.5)];
+        const p95 = times[Math.floor(times.length * 0.95)];
+        const p99 = times[Math.floor(times.length * 0.99)];
+        const min = times[0];
+        const max = times[times.length - 1];
 
-      addMetric('Latencia media', mean, 'ms', 50, 80);
-      addMetric('P50 (mediana)', p50, 'ms', 50, 80);
-      addMetric('P95', p95, 'ms', 100, 200);
-      addMetric('P99', p99, 'ms', 150, 300);
-    }
+        log(`📈 Latencia (${ITERATIONS} runs):`);
+        log(`   Media: ${mean.toFixed(1)} ms`);
+        log(`   P50:   ${p50.toFixed(1)} ms`);
+        log(`   P95:   ${p95.toFixed(1)} ms`);
+        log(`   P99:   ${p99.toFixed(1)} ms`);
+        log(`   Min:   ${min.toFixed(1)} ms`);
+        log(`   Max:   ${max.toFixed(1)} ms`);
 
-    // ── Benchmark completo ────────────────────────────────────────
-    async function runBenchmark() {
-      resultsEl.innerHTML = '';
-      logEl.textContent = '';
-      btnRun.disabled = true;
-      btnWarm.disabled = true;
-      btnLoop.disabled = true;
+        addMetric("Latencia media", mean, "ms", 50, 80);
+        addMetric("P50 (mediana)", p50, "ms", 50, 80);
+        addMetric("P95", p95, "ms", 100, 200);
+        addMetric("P99", p99, "ms", 150, 300);
+      }
 
-      await loadTFJS();
-    }
+      // ── Benchmark completo ────────────────────────────────────────
+      async function runBenchmark() {
+        resultsEl.innerHTML = "";
+        logEl.textContent = "";
+        btnRun.disabled = true;
+        btnWarm.disabled = true;
+        btnLoop.disabled = true;
 
-    // Event listeners (no onclick en HTML)
-    btnRun.addEventListener('click', runBenchmark);
-    btnWarm.addEventListener('click', warmUp);
-    btnLoop.addEventListener('click', loopInference);
+        await loadTFJS();
+      }
 
-    // Auto-iniciar carga de TF.js al abrir
-    loadTFJS();
-  </script>
-</body>
+      // Event listeners (no onclick en HTML)
+      btnRun.addEventListener("click", runBenchmark);
+      btnWarm.addEventListener("click", warmUp);
+      btnLoop.addEventListener("click", loopInference);
+
+      // Auto-iniciar carga de TF.js al abrir
+      loadTFJS();
+    </script>
+  </body>
 </html>
