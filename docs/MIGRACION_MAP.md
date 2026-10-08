@@ -12,7 +12,7 @@ nueva arquitectura PWA.
   lo deriva de `src/core/content/engine-registry.ts`. Aquí la columna `Estado` se
   copia de ese registro y no se calcula aparte.
 
-Este documento se editó por última vez el **2026-10-07**. La revisión anterior
+Este documento se editó por última vez el **2026-10-08**. La revisión anterior
 (2026-09-30) arrastraba 30 filas que decían "Pendiente (Fase 2)" para motores ya
 migrados, y daba de existentes dos motores que no están en
 `electron-reference/Colegio/src/renderer/src/core/engines/` (`division/` y
@@ -42,7 +42,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `features/splash/SplashScreen.tsx`                            | `src/features/splash/SplashScreen.tsx`                                    | Migrado                                       |
 | `features/home/HomeScreen.tsx`                                | `src/features/home/HomeScreen.tsx`                                        | Migrado                                       |
 
-## Actividades migradas (61 de 62)
+## Actividades migradas (62 de 62)
 
 `Estado` refleja `getEngineRegistration()` en `src/core/content/engine-registry.ts`.
 
@@ -109,6 +109,7 @@ un motor inexistente y que las 62 actividades aparecen una sola vez.
 | `circuloCircunferencia` | `circuloCircunferencia/CirculoCircunferenciaRenderer` | `circuloCircunferencia.ts`            | `circuloCircunferencia/CirculoCircunferenciaScreen.tsx`          | ✅     |
 | `probabilidad`          | `probabilidad/ProbabilidadRenderer`                   | `probabilidad.ts`                     | `probabilidad/ProbabilidadScreen.tsx`                            | ✅     |
 | `simetria`              | `simetria/SimetriaRenderer`                           | `simetria.ts`                         | `simetria/SimetriaScreen.tsx`                                    | ✅     |
+| `problemas2pasos`       | `problemas2pasos/Problemas2PasosRenderer`             | `problemas2pasos.ts`                  | `problemas2pasos/Problemas2PasosScreen.tsx`                      | ✅     |
 
 Seis detalles de este bloque que sorprenden al leerlo y conviene no volver a
 "arreglar" sin saber lo que hacen:
@@ -131,22 +132,14 @@ Seis detalles de este bloque que sorprenden al leerlo y conviene no volver a
   y reutiliza `timeLabel` de `reloj.ts` para nombrar el reloj a los lectores de
   pantalla.
 
-Son 61 actividades lanzables sobre 59 ficheros de núcleo, porque
+Son 62 actividades lanzables sobre 60 ficheros de núcleo, porque
 `laberintoMatematico2` no aporta núcleo propio, `suma` y `resta` comparten
-`operations.ts` y `posicionesAula`, `probabilidad` y `simetria` añaden nuevos motores.
+`operations.ts` y `posicionesAula`, `probabilidad`, `simetria` y `problemas2pasos` añaden nuevos motores.
 
-## Actividades pendientes (1 de 62)
+## Actividades pendientes (0 de 62)
 
-Existe el motor en `electron-reference/Colegio/src/renderer/src/core/engines/`,
-pero no hay ni núcleo ni renderer en la PWA, y el registro los da como `pending`,
-de modo que el catálogo no deja lanzarlas. La prioridad de cada una está en el
-inventario.
-
-| `engineId`        | Motor Electron                            | Núcleo | Renderer | Estado |
-| :---------------- | :---------------------------------------- | :----- | :------- | :----- |
-| `problemas2pasos` | `problemas2pasos/Problemas2PasosRenderer` | —      | —        | ⏳     |
-
-La 1 actividad pendiente sale de 1 carpeta de motor distinta. Ninguna de
+Todas las actividades del catálogo Electron están migradas y lanzables en la PWA.
+El registro `engine-registry.ts` no devuelve ningún `pending`.
 las que se migraron en la tanda 1 (`reloj`, `relojPonerHora`,
 `laberintoMatematico` y `laberintoMatematico2`) ni la primera de la tanda 3
 (`datosInnecesarios`), `circuloCircunferencia`, `cuerpos3d`, `menuCafeteria`,

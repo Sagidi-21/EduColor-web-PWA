@@ -9,14 +9,14 @@ contradice con esta tabla, la tabla manda y el otro documento está mal.
   se pueden lanzar) y `src/features/matematicas/engine-screens.tsx` (qué renderers existen).
 - **Auditoría del catálogo:** 2026-09-07. **Estado verificado contra el código:** 2026-10-01.
 - **Total:** 62 actividades activas: 43 compartidas, 4 específicas de 1.º y 15 específicas de 2.º.
-- **Verificado el 2026-10-07:** 62 de 62 con manifiesto, **61 migradas y lanzables**,
-  1 pendiente.
+- **Verificado el 2026-10-08:** 62 de 62 con manifiesto, **62 migradas y lanzables**,
+  0 pendientes.
 
 > **El `status` de los manifiestos no dice qué está migrado.** Los 62 JSON de
 > `src/manifests/activities/` llevan `status: "available"` porque describe si la
 > actividad pertenece al catálogo de Electron, no si tiene motor en la PWA. Lo que
 > decide si se puede lanzar es `getEngineRegistration()` en
-> `src/core/content/engine-registry.ts`, que hoy da `available` a 61 y `pending` a 1.
+> `src/core/content/engine-registry.ts`, que hoy da `available` a 62 y `pending` a 0.
 > Por eso el ✅ de esta tabla se contrasta con ese registro y no con el manifiesto.
 >
 > La comprobación no es manual: `src/manifests/docsConsistency.test.ts` recalcula
@@ -112,14 +112,7 @@ contradice con esta tabla, la tabla manda y el otro documento está mal.
 
 ## Siguiente motor a migrar
 
-La primera fila **sin ✅** del catálogo, en orden de prioridad, es
-`problemas2pasos` (P3). Las dos últimas P2 se han cerrado con
-`monedasBilletes` y `graficoBarras`, y las P3 con `datosInnecesarios`,
-`rutaCuadricula`, `inventarProblema`, `cintaMetrica`, `redondeo`,
-`series3cifras`, `cuerpos3d`, `circuloCircunferencia`, `probabilidad`,
-`menuCafeteria`, `posicionesAula` y `simetria`. A continuación vienen
-`problemas2pasos`, P3, más `amigos10` y `lecturaNumeros`, cuya prioridad
-todavía no está decidida.
+La primera fila **sin ✅** del catálogo, en orden de prioridad: **ninguna** — las 62 actividades están migradas y lanzables.
 
 Esto no se deduce leyendo un roadmap: sale de esta tabla, y esta tabla se
 contrasta con el registro en cada `npm test`. Si añades un ✅ o lo quitas sin
@@ -194,6 +187,7 @@ catálogo, que es la de Electron.
 | `circuloCircunferencia` | `circuloCircunferencia.ts`            |               5 | `circuloCircunferencia/CirculoCircunferenciaScreen.tsx`          |                    4 |
 | `probabilidad`          | `probabilidad.ts`                     |              19 | `probabilidad/ProbabilidadScreen.tsx`                            |                    3 |
 | `simetria`              | `simetria.ts`                         |              18 | `simetria/SimetriaScreen.tsx`                                    |                    3 |
+| `problemas2pasos`       | `problemas2pasos.ts`                  |              19 | `problemas2pasos/Problemas2PasosScreen.tsx`                      |                    3 |
 
 Las filas de `laberintoMatematico2` repiten los números de
 `laberintoMatematico` porque las dos actividades comparten los mismos ficheros de

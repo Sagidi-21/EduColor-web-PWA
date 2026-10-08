@@ -1,6 +1,6 @@
 ﻿# Estado del proyecto
 
-**Verificado contra el código el 2026-10-06.** Este documento es una página de
+**Verificado contra el código el 2026-10-08.** Este documento es una página de
 estado: dice en qué punto va el proyecto y **enlaza** a quien tiene el detalle. No
 mantiene su propia lista de actividades migradas ni sus propias cifras, porque
 esa duplicación es lo que hacía que los documentos de `docs/` se contradijeran
@@ -26,12 +26,11 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 - **Fase activa:** 2 — Migración del catálogo matemático V1. La Fase 1 (modelo de
   contenido) está cerrada: 62 manifiestos, selector de actividades y el motor
   `comparison` como extra no acoplado al conteo.
-- **Estado de la Fase 2:** 61 de 62 actividades migradas y lanzables; 1
-  pendiente. El detalle por actividad, con núcleo, renderer y tests, está en el
+- **Estado de la Fase 2:** 62 de 62 actividades migradas y lanzables; 0
+  pendientes. El catálogo matemático V1 está **completo**. El detalle por actividad,
+  con núcleo, renderer y tests, está en el
   [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md); no se repite aquí.
-- **Siguiente motor:** `problemas2pasos`, la primera fila sin ✅ del inventario. La
-  regla para elegirlo está en la sección "Siguiente motor a migrar" de ese
-  documento, y su prioridad la confirma el profesor de Matemáticas.
+- **Siguiente motor:** **ninguno** — la migración del catálogo V1 está cerrada.
 - **Fase 5 (escritura de dígitos y reconocimiento local):** adelantada y
   **parcial**, no completa. El subsistema de reconocimiento existe y se usa
   (`LazyDigitCell`, preprocesado, umbral del 85 %, muestras en IndexedDB), pero
