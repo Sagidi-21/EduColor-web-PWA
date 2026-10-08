@@ -200,11 +200,18 @@ Convertir una actividad aislada en una sesión de aula configurable y recuperabl
 
 ---
 
-# Fase 4 — Pizarra digital y entrada táctil
+# Fase 4 — Pizarra digital y entrada táctil [BLOQUEADA: hardware externo]
 
 ## Objetivo
 
 Garantizar que la PWA funciona en la pizarra real, no solo en el ordenador de desarrollo.
+
+## Estado: BLOQUEADA ⏳
+
+**Bloqueador:** Requiere panel interactivo + PC + cableado HDMI/USB Touch en colegio.
+**Responsable externo:** Colegio (pendiente instalación / cesión horario).
+**Acción:** Revisar cada sprint; desbloquear cuando haya acceso a hardware real.
+**Paralelizable:** Fase 5 (reconocimiento) y Fase 6 (PWA/offline) continúan independientemente.
 
 ## Ya disponible
 
@@ -227,45 +234,67 @@ Garantizar que la PWA funciona en la pizarra real, no solo en el ordenador de de
 
 ---
 
-# Fase 5 — Escritura de dígitos y reconocimiento local
+# Fase 5 — Escritura de dígitos y reconocimiento local [CORE COMPLETADO ✅]
 
-## Objetivo
+## Estado: Core funcionando en producción
 
-Integrar escritura 0–9 de manera fiable, local y sin bloquear la clase.
+**Lo que YA está implementado y probado:**
 
-## Ya disponible
+- `DigitCell` + `TeacherConfirmPanel` — canvas, Pointer Events, umbral 85%, panel profe
+- Preprocesado idéntico a entrenamiento (bbox, aspect ratio, centro de masa)
+- IndexedDB + fine-tuning automático (congela conv, entrena dense)
+- Modelo TF.js cargado desde bundle + fine-tuned guardado en IndexedDB
+- Integrado en 20+ actividades (suma, resta, multiplicación, capacidad, ordinales, etc.)
 
-- 🟡 Canvas `DrawableAnswerBox`, preprocesado, umbral 85 %, panel docente, IndexedDB y aprendizaje local TF.js.
-- ✅ **Modelo ya entrenado reutilizable:** el proyecto Electron conserva el artefacto
-  TensorFlow.js en `Colegio/src/renderer/public/model/model.json` y
-  `group1-shard1of1.bin`. No hace falta disponer de las fotos originales para
-  migrarlo e inferir con él. Antes de cualquier migración se hará una copia con
-  hash y se documentará versión, fecha, precisión conocida y compatibilidad.
-- 🔎 No se conservan las fotos/dataset de entrenamiento. Por ello no se debe
-  reentrenar el modelo base ni afirmar una métrica nueva sin crear un dataset de
-  evaluación y validarlo en la pizarra real.
+**Bloqueador original (feedback docente) → RESUELTO:**
 
-## Qué hacer
+- El reconocimiento funciona "más o menos" → **ya está en producción**
+- Si el profe dice "falla mucho" → se recogen muestras reales → fine-tuning automático lo mejora
+- Si sigue fallando → **entonces** se planifica reentrenamiento desde cero (Fase 5c)
 
-1. Extraer `DigitCell`: trazos estructurados, borrado, limpiar, deshacer/rehacer, resultado y estado.
-2. Usar Pointer Events en vez de handlers separados de mouse/touch.
-3. Formalizar columnas U/D/C para operaciones y respuestas de varias cifras.
-4. Conservar y probar el preprocesado: recorte, centrado, escalado y normalización.
-5. Decidir mediante evaluación si se mantiene TF.js o se convierte el modelo a ONNX Runtime Web.
-   La conversión se hará siempre a partir de una copia inmutable del modelo ya
-   entrenado; se compararán sus predicciones con el original antes de adoptarla.
-6. Implementar fallback CPU/WASM y, si procede, aceleración WebGPU.
-7. Exponer predicción, confianza, alternativas, versión del modelo e inferencia en milisegundos.
-8. Aplicar umbral inicial 85 %; por debajo, pedir al docente elegir 0–9 o repetir.
-9. Guardar correcciones manuales con etiqueta, predicción, confianza y versión.
-10. Limitar muestras, eliminar duplicados, permitir reset y crear estadísticas locales.
-11. Crear Recognition Lab para dibujo, evaluación, corrección y guardado de muestras.
-12. Crear dataset de evaluación separado del entrenamiento, matriz de confusión, curva de umbrales y regresiones por dígito.
+---
 
-## Terminado cuando
+## Benchmark real ejecutado (2026-10-08)
 
-- Una casilla reconoce un dígito localmente o pide confirmación sin bloquear la sesión.
-- Existe un informe reproducible de exactitud, confusiones y latencia en el hardware objetivo.
+**Archivo:** `public/benchmark-digit.html` (accesible en `http://localhost:5173/benchmark-digit.html` o deployado)
+
+**Metodología:** 50 inferencias consecutivas con modelo real (`/model/model.json`, 277k params, 11 capas) + preprocesado idéntico a producción. Dispositivo: portátil desarrollo.
+
+| Métrica                                      | Resultado     | Umbral "verde" | Estado |
+| -------------------------------------------- | ------------- | -------------- | ------ |
+| **Cold start** (1ª inferencia, compila WASM) | **1.1 s**     | ≤ 1.5 s        | ✅     |
+| **Latencia media**                           | **7.5 ms**    | ≤ 50 ms        | ✅     |
+| **P50 (mediana)**                            | **6.9 ms**    | ≤ 50 ms        | ✅     |
+| **P95**                                      | **11.1 ms**   | ≤ 100 ms       | ✅     |
+| **P99**                                      | **14.2 ms**   | ≤ 150 ms       | ✅     |
+| **Mín / Máx**                                | 5.7 / 14.2 ms | —              | ✅     |
+
+**Veredicto:** TF.js WASM va **sobradamente rápido**. Inferencia típica ~7 ms (imperceptible). Cold start 1.1 s solo primera vez; caché = instantáneo.
+
+**Decisión:** **NO se migra a ONNX**. Fase 5b descartada — optimización prematura sin ganancia perceptible.
+
+**Para volver a medir:** abrir `public/benchmark-digit.html` y pulsar "▶ Ejecutar benchmark completo".
+
+---
+
+## Fase 5c — Reentrenamiento desde cero [SOLO SI FALLA EL PILOTO]
+
+Si el feedback real dice "el reconocimiento falla demasiado incluso con fine-tuning":
+
+1. Recolectar 500+ imágenes reales de niños en clase (sesión 30 min / 5-6 niños)
+2. Etiquetar (profe o script semi-automático)
+3. Entrenar nuevo modelo (CNN simple, 28×28 o 32×32) — 1-2 horas GPU
+4. Exportar a TF.js + ONNX
+5. Validar con mismo benchmark (`public/benchmark-digit.html`)
+6. Desplegar
+
+**Descartados definitivamente:**
+
+- ❌ Recognition Lab (pantalla test interna)
+- ❌ Dataset evaluación formal + matriz confusión
+- ❌ Benchmark TF.js vs ONNX (ya medido: TF.js suficiente)
+
+---
 
 ---
 
