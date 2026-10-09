@@ -137,13 +137,14 @@ describe("fichaGenerator", () => {
     }
   });
 
-  it("comparison pinta dibujos en alumno y solo respuesta en soluciones", () => {
+  it("comparison pinta dibujos en alumno; soluciones solo la respuesta", () => {
     const medium = generateFicha({
       activityId: "comparison",
       config: { ...baseConfig("comparison"), withImages: true, count: 4, difficulty: "medium" },
       mode: "alumno",
     });
     expect(medium.html).not.toContain("pueden ser iguales");
+    expect(medium.html).toContain("ficha-compare__answer-blank");
 
     const alumno = generateFicha({
       activityId: "comparison",
@@ -182,10 +183,11 @@ describe("fichaGenerator", () => {
       mode: "soluciones",
     });
     expect(soluciones.html).toContain("ficha-answer");
+    expect(soluciones.html).toContain("Iguales");
     expect(soluciones.html).not.toContain("ficha-compare__strip");
     expect(soluciones.html).not.toContain("ficha-compare__thumb");
     expect(soluciones.html).not.toContain("pueden ser iguales");
-    expect(soluciones.html).toContain("Iguales");
+    expect(soluciones.html).toMatch(/Soluciones/i);
   });
 
   it("suma easy con imágenes pinta filas de objetos; soluciones sin miniaturas", () => {
@@ -208,7 +210,7 @@ describe("fichaGenerator", () => {
     expect(soluciones.html).not.toContain("ficha-img-row__thumb");
   });
 
-  it("counting muestra objetos y pregunta; soluciones solo el número", () => {
+  it("counting muestra objetos y casilla en alumno; soluciones solo el número", () => {
     const alumno = generateFicha({
       activityId: "counting",
       config: { ...baseConfig("counting"), withImages: true, count: 4 },
@@ -217,6 +219,7 @@ describe("fichaGenerator", () => {
     expect(alumno.exercises.every((ex) => ex.kind === "counting")).toBe(true);
     expect(alumno.html).toContain("ficha-counting__objects");
     expect(alumno.html).toMatch(/¿Cuántos .+ hay\?/);
+    expect(alumno.html).toContain("ficha-counting__answer-blank");
     expect(alumno.html).not.toContain("ficha-answer");
 
     const soluciones = generateFicha({
@@ -227,6 +230,7 @@ describe("fichaGenerator", () => {
     expect(soluciones.html).toContain("ficha-answer");
     expect(soluciones.html).not.toContain("ficha-counting__objects");
     expect(soluciones.html).not.toMatch(/¿Cuántos .+ hay\?/);
+    expect(soluciones.html).toMatch(/Soluciones/i);
   });
 
   it("relacionar genera bloques con números, letras y soluciones número→letra", () => {
@@ -252,7 +256,7 @@ describe("fichaGenerator", () => {
     expect(soluciones.html).not.toContain("ficha-relacionar__thumb");
   });
 
-  it("soluciones de cualquier actividad solo muestran la respuesta", () => {
+  it("soluciones: solo respuesta, sin enunciados ni imágenes", () => {
     for (const activityId of [
       "suma",
       "seriesNumericas",
@@ -261,6 +265,9 @@ describe("fichaGenerator", () => {
       "graficoBarras",
       "ordinales",
       "ordenar",
+      "comparison",
+      "counting",
+      "relacionar",
     ] as const) {
       const soluciones = generateFicha({
         activityId,
@@ -268,6 +275,7 @@ describe("fichaGenerator", () => {
         mode: "soluciones",
       });
       expect(soluciones.html, activityId).toContain("ficha-answer");
+      expect(soluciones.html, activityId).toMatch(/Soluciones/i);
       expect(soluciones.html, activityId).not.toContain("ficha-img-row");
       expect(soluciones.html, activityId).not.toContain("ficha-series__sequence");
       expect(soluciones.html, activityId).not.toContain("ficha-photo__items");
@@ -275,6 +283,11 @@ describe("fichaGenerator", () => {
       expect(soluciones.html, activityId).not.toContain("ficha-bars__chart");
       expect(soluciones.html, activityId).not.toContain("ficha-ordinales__row");
       expect(soluciones.html, activityId).not.toContain("ficha-ordenar__pool");
+      expect(soluciones.html, activityId).not.toContain("ficha-ordenar__table");
+      expect(soluciones.html, activityId).not.toContain("ficha-compare__strip");
+      expect(soluciones.html, activityId).not.toContain("ficha-counting__objects");
+      expect(soluciones.html, activityId).not.toContain("ficha-relacionar__board");
+      expect(soluciones.html, activityId).not.toContain("__thumb");
     }
   });
 

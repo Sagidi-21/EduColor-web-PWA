@@ -102,10 +102,14 @@ export function buildFichaDocument(input: BuildFichaDocumentInput): FichaDocumen
   const exercises = generator.generate({ ...config, activityId });
 
   const chunks = modes.map((mode) => {
-    const meta = buildMeta(activityId, config, {
+    const baseMeta = buildMeta(activityId, config, {
       ...input.meta,
       studentName: input.meta?.studentName ?? mode === "alumno",
     });
+    const meta =
+      mode === "soluciones" && !/soluciones/i.test(baseMeta.title)
+        ? { ...baseMeta, title: `${baseMeta.title} — Soluciones` }
+        : baseMeta;
     return {
       mode,
       meta,

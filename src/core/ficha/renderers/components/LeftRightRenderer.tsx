@@ -1,4 +1,5 @@
 import type { LeftRightSheetExercise } from "../../types";
+import { solutionAnswerOf } from "../solutionAnswer";
 import { QuestionRenderer } from "./QuestionRenderer";
 
 export interface LeftRightRendererProps {
@@ -9,7 +10,11 @@ export interface LeftRightRendererProps {
 export function LeftRightRenderer({ ex, showAnswer }: LeftRightRendererProps): JSX.Element {
   return (
     <div className="ficha-leftright">
-      <QuestionRenderer question={ex.question} answer={ex.answer} showAnswer={showAnswer} />
+      <QuestionRenderer
+        question={ex.question}
+        answer={solutionAnswerOf(ex)}
+        showAnswer={showAnswer}
+      />
       <div className="ficha-leftright__pair">
         <div className="ficha-leftright__side">
           <span>Izq.</span>

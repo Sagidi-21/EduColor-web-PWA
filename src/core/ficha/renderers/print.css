@@ -210,9 +210,24 @@
 
 /* ===== Soluciones ===== */
 .ficha-answer {
+  margin-top: 4px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ficha-counting__answer {
   margin-top: 2px;
-  font-weight: 700;
-  color: #2563eb;
+}
+
+.ficha-counting__answer-blank {
+  margin-top: 4px;
+  width: 48px;
+  height: 28px;
+  border: 1.5px solid #94a3b8;
+  border-radius: 4px;
+  background: #fff;
+  box-sizing: border-box;
 }
 
 /* ===== Pie de página ===== */
@@ -473,6 +488,16 @@
 .ficha-compare--dense .ficha-compare__thumb {
   width: 11px;
   height: 11px;
+}
+
+.ficha-compare__answer-blank {
+  margin-top: 6px;
+  width: 72px;
+  height: 28px;
+  border: 1.5px solid #94a3b8;
+  border-radius: 4px;
+  background: #fff;
+  box-sizing: border-box;
 }
 
 .ficha-compare--dense .ficha-compare__groups {

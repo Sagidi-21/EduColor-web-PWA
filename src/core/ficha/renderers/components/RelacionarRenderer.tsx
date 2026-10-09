@@ -27,15 +27,10 @@ function ObjectRow({ item }: { item: RelacionarSheetRightItem }): JSX.Element {
 }
 
 export function RelacionarRenderer({ ex, showAnswer }: RelacionarRendererProps): JSX.Element {
-  // Soluciones: solo enunciado + emparejamientos (sin tablero ni figuras).
+  // Soluciones: solo emparejamientos (sin enunciado ni figuras).
   if (showAnswer) {
     return (
-      <div className="ficha-relacionar ficha-relacionar--soluciones">
-        <p className="ficha-relacionar__instruction">Une con una línea cada número con su grupo</p>
-        <div className="ficha-answer ficha-relacionar__answers">
-          {(ex.answer ?? []).join(" · ")}
-        </div>
-      </div>
+      <div className="ficha-answer ficha-relacionar__answers">{(ex.answer ?? []).join(" · ")}</div>
     );
   }
 

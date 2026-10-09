@@ -13,8 +13,11 @@ import printCss from "./print.css?inline";
 
 const A4_WIDTH_MM = 210;
 const A4_HEIGHT_MM = 297;
-/** Tolerancia por subpíxeles / redondeo de mm→px. */
-const FIT_TOLERANCE_PX = 6;
+/**
+ * El pie debe quedar por encima del borde A4 (PDF usa overflow:hidden).
+ * Margen negativo = más estricto que el borde exacto.
+ */
+const FIT_MARGIN_PX = 20;
 
 export interface PackOptions {
   showAnswer?: boolean;
@@ -98,10 +101,10 @@ export function pageContentFits(
   const pageRect = page.getBoundingClientRect();
   const footerRect = footer.getBoundingClientRect();
   if (pageRect.height < 8) {
-    // jsdom u entorno sin layout: asumir que cabe (el heurístico hace de respaldo).
-    return true;
+    // Sin layout real (jsdom): no asumir que cabe; el caller fuerza 1 fila si la página está vacía.
+    return false;
   }
-  return footerRect.bottom <= pageRect.bottom + FIT_TOLERANCE_PX;
+  return footerRect.bottom <= pageRect.bottom - FIT_MARGIN_PX;
 }
 
 /**
@@ -124,12 +127,19 @@ export function packExercisesByFit(
   const host = document.createElement("div");
   host.setAttribute("data-ficha-pack-host", "1");
   host.style.cssText =
-    "position:fixed;left:-12000px;top:0;visibility:hidden;pointer-events:none;background:#fff;";
+    "position:fixed;left:-12000px;top:0;opacity:0;pointer-events:none;background:#fff;z-index:-1;";
 
   document.head.appendChild(style);
   document.body.appendChild(host);
 
   try {
+    // Sin motor de layout (jsdom), caer al heurístico de pageSize.
+    host.innerHTML = pageMarkup(exercises.slice(0, 1), 0, options);
+    const probe = host.querySelector(".ficha-page") as HTMLElement | null;
+    if ((probe?.getBoundingClientRect().height ?? 0) < 8) {
+      return chunkByPageSize(exercises, pageSizeForExercises(exercises, options));
+    }
+
     const pages: SheetExercise[][] = [];
     let i = 0;
     let pageIndex = 0;

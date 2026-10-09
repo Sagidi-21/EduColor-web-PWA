@@ -11,7 +11,15 @@ function densityClass(count: number): string {
   return "";
 }
 
+/**
+ * Alumno: figuras + pregunta + casilla.
+ * Soluciones: las maneja ExerciseRenderer (solo el número).
+ */
 export function CountingRenderer({ ex, showAnswer }: CountingRendererProps): JSX.Element {
+  if (showAnswer) {
+    return <div className="ficha-answer">{ex.answer ?? ex.count}</div>;
+  }
+
   return (
     <div className={`ficha-counting ${densityClass(ex.count)}`.trim()}>
       <div className="ficha-counting__objects" aria-label={`${ex.count} ${ex.objectLabel}`}>
@@ -25,7 +33,7 @@ export function CountingRenderer({ ex, showAnswer }: CountingRendererProps): JSX
       </div>
 
       <p className="ficha-counting__question">{ex.question}</p>
-      {showAnswer && <div className="ficha-answer">{ex.answer ?? ex.count}</div>}
+      <div className="ficha-counting__answer-blank" aria-label="Espacio para la respuesta" />
     </div>
   );
 }

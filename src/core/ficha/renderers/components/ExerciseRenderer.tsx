@@ -35,8 +35,10 @@ export interface ExerciseRendererProps {
 }
 
 /**
- * Despacha cada `SheetExercise` a su componente React según `ex.kind`.
- * En soluciones (`showAnswer`) solo se muestra la respuesta, sin enunciado ni dibujos.
+ * Despacha cada `SheetExercise` a su componente según `ex.kind`.
+ *
+ * REGLA (siempre): en soluciones (`showAnswer`) SOLO la respuesta — sin enunciado,
+ * sin instrucciones y sin imágenes. No reintroducir el layout del alumno aquí.
  */
 export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): ReactNode {
   if (showAnswer) {

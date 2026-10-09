@@ -14,7 +14,6 @@ function densityClass(countA: number, countB: number): string {
 
 function questionText(ex: ComparisonSheetExercise): string {
   const base = ex.questionType === "mas" ? "¿Dónde hay más?" : "¿Dónde hay menos?";
-  // Misma regla que pizarra: hard/expert pueden ser iguales.
   return ex.allowEqual ? `${base} (pueden ser iguales)` : base;
 }
 
@@ -46,22 +45,18 @@ function ObjectStrip({
   return <span className="ficha-compare__count">{count}</span>;
 }
 
+/**
+ * Alumno: pregunta + grupos A/B + casilla.
+ * Soluciones: las maneja ExerciseRenderer (solo texto de respuesta).
+ */
 export function ComparisonRenderer({ ex, showAnswer }: ComparisonRendererProps): JSX.Element {
-  const q = questionText(ex);
-
-  // Soluciones: solo enunciado + respuesta (sin dibujos).
   if (showAnswer) {
-    return (
-      <div className="ficha-compare ficha-compare--soluciones">
-        <p className="ficha-compare__question">{q}</p>
-        <div className="ficha-answer">{answerText(ex)}</div>
-      </div>
-    );
+    return <div className="ficha-answer">{answerText(ex)}</div>;
   }
 
   return (
     <div className={`ficha-compare ${densityClass(ex.countA, ex.countB)}`.trim()}>
-      <p className="ficha-compare__question">{q}</p>
+      <p className="ficha-compare__question">{questionText(ex)}</p>
       <div className="ficha-compare__groups">
         <div className="ficha-compare__group">
           <span className="ficha-compare__letter">A</span>
@@ -72,6 +67,7 @@ export function ComparisonRenderer({ ex, showAnswer }: ComparisonRendererProps):
           <ObjectStrip count={ex.countB} imageUrl={ex.imageUrl} label={ex.objectLabel} />
         </div>
       </div>
+      <div className="ficha-compare__answer-blank" aria-label="Espacio para la respuesta" />
     </div>
   );
 }

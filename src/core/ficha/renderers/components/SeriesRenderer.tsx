@@ -8,8 +8,8 @@ export interface SeriesRendererProps {
 }
 
 /**
- * Ficha de series: misma secuencia visual que la pizarra (cajas + flechas).
- * Soluciones: solo el número de la respuesta.
+ * Alumno: secuencia con hueco.
+ * Soluciones: las maneja ExerciseRenderer (solo el número).
  */
 export function SeriesRenderer({ ex, showAnswer }: SeriesRendererProps): JSX.Element {
   if (showAnswer) {

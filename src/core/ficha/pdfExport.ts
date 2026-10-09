@@ -220,6 +220,13 @@ export async function downloadHtmlAsPdf(input: DownloadHtmlAsPdfInput): Promise<
       flex-wrap: wrap !important;
       overflow: visible !important;
     }
+    .ficha-answer {
+      color: #0f172a !important;
+      font-size: 22px !important;
+      font-weight: 800 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
   </style>
 </head>
 <body>
