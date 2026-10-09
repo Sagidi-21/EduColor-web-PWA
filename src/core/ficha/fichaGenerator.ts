@@ -29,6 +29,32 @@ export interface GeneratedFicha {
   html: string;
 }
 
+export interface BuildFichaDocumentInput {
+  activityId: string;
+  config: SheetConfig;
+  /** Uno o ambos tipos; comparten la misma semilla / ejercicios. */
+  modes: readonly FichaMode[];
+  meta?: Partial<FichaMeta>;
+  logoUrl?: string;
+}
+
+export interface FichaDocumentChunk {
+  mode: FichaMode;
+  meta: FichaMeta;
+  html: string;
+}
+
+/** Documento canónico compartido por vista previa y exportación Word. */
+export interface FichaDocument {
+  exercises: SheetExercise[];
+  config: SheetConfig;
+  modes: FichaMode[];
+  css: string;
+  /** HTML de todos los modos unidos con salto de página. */
+  html: string;
+  chunks: FichaDocumentChunk[];
+}
+
 function buildMeta(
   activityId: string,
   config: SheetConfig,
@@ -60,36 +86,11 @@ function renderFichaHtml(
   return `<div class="ficha-root">${renderToStaticMarkup(element)}</div>`;
 }
 
-/** Genera ejercicios + HTML estático listo para imprimir. */
-export function generateFicha(input: GenerateFichaInput): GeneratedFicha {
-  const { activityId, config, mode, logoUrl = colegioLogoUrl } = input;
-  const generator = getGenerator(activityId);
-  const exercises = generator.generate({ ...config, activityId });
-  const meta = buildMeta(activityId, config, {
-    ...input.meta,
-    studentName: input.meta?.studentName ?? mode === "alumno",
-  });
-  const html = renderFichaHtml(mode, exercises, config, meta, logoUrl);
-
-  persistLastFicha({ activityId, config, mode });
-
-  return { exercises, config, meta, mode, html };
-}
-
-export interface DownloadFichasInput {
-  activityId: string;
-  config: SheetConfig;
-  /** Uno o ambos tipos; comparten la misma semilla / ejercicios. */
-  modes: readonly FichaMode[];
-  meta?: Partial<FichaMeta>;
-  logoUrl?: string;
-}
-
 /**
- * Descarga un Word (.doc) con el mismo aspecto que la vista previa HTML.
- * Si hay dos modos, van en el mismo documento con salto de página entre ellas.
+ * Construye el documento de ficha una sola vez (ejercicios + HTML + CSS).
+ * Preview y Word deben consumir este builder con la misma seed.
  */
-export async function downloadFichas(input: DownloadFichasInput): Promise<SheetExercise[]> {
+export function buildFichaDocument(input: BuildFichaDocumentInput): FichaDocument {
   const modes = uniqueModes(input.modes);
   if (modes.length === 0) {
     throw new Error("Selecciona al menos un tipo de ficha (alumno o soluciones).");
@@ -102,23 +103,74 @@ export async function downloadFichas(input: DownloadFichasInput): Promise<SheetE
   const chunks = modes.map((mode) => {
     const meta = buildMeta(activityId, config, {
       ...input.meta,
-      studentName: mode === "alumno",
+      studentName: input.meta?.studentName ?? mode === "alumno",
     });
-    return renderFichaHtml(mode, exercises, config, meta, logoUrl);
+    return {
+      mode,
+      meta,
+      html: renderFichaHtml(mode, exercises, config, meta, logoUrl),
+    };
   });
 
-  const html = chunks.join('<div class="ficha-print-break" aria-hidden="true"></div>');
-  const modeLabel = modes.join("+");
+  const html = chunks
+    .map((c) => c.html)
+    .join('<div class="ficha-print-break" aria-hidden="true"></div>');
 
-  persistLastFicha({ activityId, config, mode: modes[0]! });
+  return { exercises, config, modes, css: printCss, html, chunks };
+}
+
+/** Genera ejercicios + HTML estático listo para imprimir. */
+export function generateFicha(input: GenerateFichaInput): GeneratedFicha {
+  const doc = buildFichaDocument({
+    activityId: input.activityId,
+    config: input.config,
+    modes: [input.mode],
+    meta: input.meta,
+    logoUrl: input.logoUrl,
+  });
+  const chunk = doc.chunks[0]!;
+
+  persistLastFicha({ activityId: input.activityId, config: input.config, mode: input.mode });
+
+  return {
+    exercises: doc.exercises,
+    config: doc.config,
+    meta: chunk.meta,
+    mode: chunk.mode,
+    html: chunk.html,
+  };
+}
+
+export interface DownloadFichasInput {
+  activityId: string;
+  config: SheetConfig;
+  /** Uno o ambos tipos; comparten la misma semilla / ejercicios. */
+  modes: readonly FichaMode[];
+  meta?: Partial<FichaMeta>;
+  logoUrl?: string;
+}
+
+/**
+ * Descarga un Word (.doc) con el mismo HTML/CSS que la vista previa.
+ * Si hay dos modos, van en el mismo documento con salto de página entre ellas.
+ */
+export async function downloadFichas(input: DownloadFichasInput): Promise<SheetExercise[]> {
+  const doc = buildFichaDocument(input);
+  const modeLabel = doc.modes.join("+");
+
+  persistLastFicha({
+    activityId: input.activityId,
+    config: input.config,
+    mode: doc.modes[0]!,
+  });
 
   await downloadHtmlAsWord({
-    html,
-    css: printCss,
-    filename: `ficha-${activityId}-${modeLabel}.doc`,
+    html: doc.html,
+    css: doc.css,
+    filename: `ficha-${input.activityId}-${modeLabel}.doc`,
   });
 
-  return exercises;
+  return doc.exercises;
 }
 
 /** Descarga la ficha en Word con el mismo HTML/CSS que la vista previa. */

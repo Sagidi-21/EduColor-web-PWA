@@ -48,6 +48,7 @@ export interface TresSumandosSheetExercise {
   a: number;
   b: number;
   c: number;
+  imageUrl: string;
   answer?: number;
 }
 
@@ -107,7 +108,13 @@ export interface CapacidadSheetExercise {
 export interface OrdinalesSheetExercise {
   kind: "ordinales";
   question: string;
+  /** Tamaño de la fila de objetos. */
   count: number;
+  /** Emoji de cada objeto (como en pizarra). */
+  emoji: string;
+  /** Posición 1-based de la estrella (desde la izquierda). */
+  target: number;
+  fromRight: boolean;
   imageUrl: string;
   answer?: number;
 }
@@ -139,13 +146,23 @@ export interface TresSumandosColumnaSheetExercise {
   answer?: number;
 }
 
+export interface BalanzaPlateSheet {
+  emoji: string;
+  count: number;
+  weightLabel?: string | null;
+  unknown: boolean;
+}
+
 export interface BalanzaSheetExercise {
   kind: "balanza";
+  /** compare = MC de la pizarra; equilibra = igualar kg a la derecha. */
+  variant: "compare" | "equilibra";
   question: string;
-  leftText: string;
-  rightText: string;
-  imageUrl: string;
-  answer?: "left" | "right" | "equal";
+  left: BalanzaPlateSheet;
+  right: BalanzaPlateSheet;
+  tilt?: "left" | "right" | "equal";
+  targetKg?: number;
+  answer?: string;
 }
 
 export interface Numeracion6099SheetExercise {
@@ -166,8 +183,11 @@ export interface ParImparSheetExercise {
   kind: "parImpar";
   question: string;
   number: number;
+  /** Emoji repetido `emojiCount` veces en ejercicios visuales. */
+  emoji?: string;
+  emojiCount?: number;
   imageUrl: string;
-  answer?: "par" | "impar";
+  answer?: "par" | "impar" | string;
 }
 
 /** Figura SVG serializable para fichas (polígonos / shapes). */
@@ -302,14 +322,22 @@ export interface RedondeoSheetExercise {
 
 export interface Series3CifrasSheetExercise {
   kind: "series3Cifras";
+  /** Secuencia con `-1` en el hueco (igual que en pizarra). */
+  sequence: number[];
+  blankIndex: number;
+  step: number;
+  ascending: boolean;
+  /** Enunciado (p. ej. con pista de salto en easy/medium). */
   question: string;
   answer?: number;
 }
 
 export interface CintaMetricaSheetExercise {
   kind: "cintaMetrica";
+  emoji: string;
+  itemName: string;
   question: string;
-  answer?: number;
+  answer?: string | number;
 }
 
 export interface CirculoCircunferenciaSheetExercise {
@@ -318,21 +346,40 @@ export interface CirculoCircunferenciaSheetExercise {
   answer?: string | number;
 }
 
+export interface IntervalosTiempoActivitySheet {
+  emoji: string;
+  name: string;
+  label: string;
+  seconds: number;
+}
+
 export interface IntervalosTiempoSheetExercise {
   kind: "intervalosTiempo";
+  type: string;
+  activities: IntervalosTiempoActivitySheet[];
+  showBars: boolean;
   question: string;
   answer?: string | number;
+}
+
+export interface PhotoItemSheet {
+  name: string;
+  imageUrl: string;
 }
 
 export interface ElKiloSheetExercise {
   kind: "elKilo";
   question: string;
+  items: PhotoItemSheet[];
+  referenceUrl?: string;
   answer?: string | number;
 }
 
 export interface ElLitroSheetExercise {
   kind: "elLitro";
   question: string;
+  items: PhotoItemSheet[];
+  referenceUrl?: string;
   answer?: string | number;
 }
 
@@ -344,6 +391,12 @@ export interface VecinosNumeroSheetExercise {
 
 export interface SeriesNumericasSheetExercise {
   kind: "seriesNumericas";
+  /** Secuencia con `-1` en el hueco (igual que en pizarra). */
+  sequence: number[];
+  blankIndex: number;
+  step: number;
+  ascending: boolean;
+  /** Enunciado (p. ej. con pista de salto en easy/medium). */
   question: string;
   answer?: number;
 }
@@ -384,26 +437,55 @@ export interface Algoritmo3CifrasSheetExercise {
   answer?: number;
 }
 
+export interface GraficoBarraSheet {
+  etiqueta: string;
+  emoji: string;
+  valor: number;
+}
+
 export interface GraficoBarrasSheetExercise {
   kind: "graficoBarras";
+  titulo: string;
+  bars: GraficoBarraSheet[];
+  escalaMax: number;
+  blankBarIndex?: number;
   question: string;
   answer?: string | number;
 }
 
+export interface MenuItemSheet {
+  emoji: string;
+  name: string;
+  price: number;
+}
+
 export interface MenuCafeteriaSheetExercise {
   kind: "menuCafeteria";
+  tray: MenuItemSheet[];
   question: string;
-  answer?: number;
+  answer?: string | number;
+}
+
+export interface MonedasMoneySheetItem {
+  url: string;
+  label: string;
 }
 
 export interface MonedasBilletesSheetExercise {
   kind: "monedasBilletes";
+  type: "identify" | "equivalence" | "change" | "shopping";
   question: string;
-  answer?: number;
+  money: MonedasMoneySheetItem[];
+  productEmoji?: string;
+  productName?: string;
+  productPriceLabel?: string;
+  answer?: string | number;
 }
 
 export interface InventarProblemaSheetExercise {
   kind: "inventarProblema";
+  items: MenuItemSheet[];
+  budget?: number;
   question: string;
   answer?: string;
 }
@@ -440,6 +522,29 @@ export interface RelacionarSheetExercise {
   left: RelacionarSheetLeftItem[];
   right: RelacionarSheetRightItem[];
   /** Emparejamientos correctos, p. ej. `["3 → A", "1 → B"]`. */
+  answer?: string[];
+}
+
+export interface RelacionarCantidadesSheetLeftItem {
+  id: number;
+  text: string;
+  cantidades: { total: number; rotulo?: string }[];
+}
+
+export interface RelacionarCantidadesSheetRightItem {
+  id: number;
+  letter: string;
+  text: string;
+}
+
+/** Relacionar cantidades (base 10): dibujo C-D-U a la izquierda, texto a la derecha. */
+export interface RelacionarCantidadesSheetExercise {
+  kind: "relacionarCantidades";
+  left: RelacionarCantidadesSheetLeftItem[];
+  right: RelacionarCantidadesSheetRightItem[];
+  imageUrl: string;
+  objectLabel: string;
+  /** Emparejamientos, p. ej. `["Tengo 25 → A", ...]`. */
   answer?: string[];
 }
 
@@ -496,7 +601,8 @@ export type SheetExercise =
   | MonedasBilletesSheetExercise
   | InventarProblemaSheetExercise
   | OrderingSheetExercise
-  | RelacionarSheetExercise;
+  | RelacionarSheetExercise
+  | RelacionarCantidadesSheetExercise;
 
 export interface GeneratorDef {
   activityId: string;

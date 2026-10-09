@@ -1,21 +1,7 @@
-import { useMemo } from "react";
 import type { ActivityDifficulty } from "../../core/content/contracts";
-import {
-  FichaAlumno,
-  FichaSoluciones,
-  difficultyStars,
-  getGenerator,
-  printElement,
-  type FichaMeta,
-  type FichaMode,
-  type SheetConfig,
-  type SheetExercise,
-} from "../../core/ficha";
+import { buildFichaDocument, type FichaMode, type SheetConfig } from "../../core/ficha";
 import { getActivityManifest } from "../../manifests/content-registry";
-
-/** Logo del colegio con fondo transparente (public/). */
-const colegioLogoUrl = "/logo-ficha.png";
-import "../../core/ficha/renderers/print.css";
+import printCss from "../../core/ficha/renderers/print.css?inline";
 import "./FichaPreviewScreen.css";
 
 function parseModes(raw: string | null): FichaMode[] {
@@ -57,9 +43,14 @@ function readParams(): {
   };
 }
 
+/**
+ * Vista previa = mismo HTML/CSS que se exporta a Word (`buildFichaDocument`).
+ */
 export function FichaPreviewScreen(): JSX.Element {
-  const opts = useMemo(() => readParams(), []);
+  const opts = readParams();
   const manifest = getActivityManifest(opts.activityId);
+  const title = manifest?.title ?? opts.activityId;
+  const modeLabel = opts.modes.join(" + ");
 
   const config: SheetConfig = {
     activityId: opts.activityId,
@@ -69,33 +60,25 @@ export function FichaPreviewScreen(): JSX.Element {
     seed: opts.seed,
   };
 
-  const baseMeta: Omit<FichaMeta, "studentName"> = {
-    title: manifest?.title ?? opts.activityId,
-    grade: opts.grade,
-    subject: opts.subject,
-    className: opts.className || undefined,
-    difficultyStars: difficultyStars(opts.difficulty),
-  };
-
-  let exercises: SheetExercise[];
+  let doc: ReturnType<typeof buildFichaDocument> | null = null;
   let error: string | null = null;
   try {
-    exercises = getGenerator(opts.activityId).generate(config);
+    doc = buildFichaDocument({
+      activityId: opts.activityId,
+      config,
+      modes: opts.modes,
+      meta: {
+        title,
+        grade: opts.grade,
+        subject: opts.subject,
+        className: opts.className || undefined,
+      },
+    });
   } catch (err) {
-    exercises = [];
     error = err instanceof Error ? err.message : "Error al generar la ficha";
   }
 
-  const handlePrint = () => {
-    const sheets = document.querySelector(".ficha-preview__sheets") as HTMLElement | null;
-    if (sheets) {
-      printElement(sheets);
-    } else {
-      window.print();
-    }
-  };
-
-  const modeLabel = opts.modes.join(" + ");
+  const css = doc?.css || printCss;
 
   return (
     <div className="ficha-preview">
@@ -104,38 +87,17 @@ export function FichaPreviewScreen(): JSX.Element {
           Cerrar
         </button>
         <span>
-          {baseMeta.title} · {modeLabel}
+          {title} · {modeLabel}
         </span>
-        <button type="button" className="ficha-preview__print" onClick={handlePrint}>
-          Imprimir / PDF
-        </button>
       </div>
 
-      {error ? (
-        <p className="ficha-preview__error">{error}</p>
+      {error || !doc ? (
+        <p className="ficha-preview__error">{error ?? "Error al generar la ficha"}</p>
       ) : (
-        <div className="ficha-preview__sheets">
-          {opts.modes.map((mode, index) => (
-            <div key={mode}>
-              {index > 0 ? <div className="ficha-print-break" aria-hidden="true" /> : null}
-              {mode === "soluciones" ? (
-                <FichaSoluciones
-                  exercises={exercises}
-                  config={config}
-                  meta={{ ...baseMeta, studentName: false }}
-                  logoUrl={colegioLogoUrl}
-                />
-              ) : (
-                <FichaAlumno
-                  exercises={exercises}
-                  config={config}
-                  meta={{ ...baseMeta, studentName: true }}
-                  logoUrl={colegioLogoUrl}
-                />
-              )}
-            </div>
-          ))}
-        </div>
+        <>
+          <style dangerouslySetInnerHTML={{ __html: css }} />
+          <div className="ficha-preview__sheets" dangerouslySetInnerHTML={{ __html: doc.html }} />
+        </>
       )}
     </div>
   );

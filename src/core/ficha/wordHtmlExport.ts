@@ -23,12 +23,20 @@ export async function inlineImagesInHtml(html: string): Promise<string> {
   if (!root) return html;
 
   const imgs = Array.from(root.querySelectorAll("img"));
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
   await Promise.all(
     imgs.map(async (img) => {
       const src = img.getAttribute("src");
       if (!src || src.startsWith("data:")) return;
       try {
-        const res = await fetch(src);
+        // Word no resuelve rutas relativas tipo /logo-ficha.png → absolutas + data URL.
+        const absolute =
+          src.startsWith("http://") || src.startsWith("https://") || src.startsWith("blob:")
+            ? src
+            : origin
+              ? new URL(src, origin).href
+              : src;
+        const res = await fetch(absolute);
         if (!res.ok) return;
         const dataUrl = await blobToDataUrl(await res.blob());
         img.setAttribute("src", dataUrl);

@@ -1,8 +1,22 @@
 import { useState } from "react";
 import type { ActivityDifficulty, ActivityManifest } from "../../core/content/contracts";
-import { downloadFichas, difficultyStars, randomFichaSeed, type FichaMode } from "../../core/ficha";
+import {
+  downloadFichas,
+  difficultyStars,
+  getGenerator,
+  randomFichaSeed,
+  type FichaMode,
+} from "../../core/ficha";
 import { ModalCloseButton } from "../shared/components/ModalCloseButton";
 import "./FichaModal.css";
+
+function activitySupportsImages(activityId: string): boolean {
+  try {
+    return getGenerator(activityId).supportsImages;
+  } catch {
+    return false;
+  }
+}
 
 export interface FichaModalProps {
   activity: ActivityManifest;
@@ -37,6 +51,11 @@ export function FichaModal({
   const [includeSoluciones, setIncludeSoluciones] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /** Una sola semilla por apertura del modal → preview y Word comparten ejercicios. */
+  const [seed] = useState(() => randomFichaSeed());
+
+  const supportsImages = activitySupportsImages(activity.id);
+  const effectiveWithImages = supportsImages && withImages;
 
   const selectedModes = (): FichaMode[] => {
     const modes: FichaMode[] = [];
@@ -62,8 +81,8 @@ export function FichaModal({
           activityId: activity.id,
           difficulty,
           count,
-          withImages,
-          seed: randomFichaSeed(),
+          withImages: effectiveWithImages,
+          seed,
         },
         meta: {
           title: activity.title,
@@ -92,8 +111,8 @@ export function FichaModal({
       mode: modes.join(","),
       difficulty,
       count: String(count),
-      seed: String(randomFichaSeed()),
-      withImages: withImages ? "1" : "0",
+      seed: String(seed),
+      withImages: effectiveWithImages ? "1" : "0",
       grade: gradeTitle,
       subject: subjectTitle,
     });
@@ -149,14 +168,20 @@ export function FichaModal({
           />
         </label>
 
-        <label className="ficha-modal__check">
-          <input
-            type="checkbox"
-            checked={withImages}
-            onChange={(e) => setWithImages(e.target.checked)}
-          />
-          Incluir imágenes cuando la actividad las soporte
-        </label>
+        {supportsImages ? (
+          <label className="ficha-modal__check">
+            <input
+              type="checkbox"
+              checked={withImages}
+              onChange={(e) => setWithImages(e.target.checked)}
+            />
+            Incluir imágenes (como en la pizarra)
+          </label>
+        ) : (
+          <p className="ficha-modal__hint">
+            Esta actividad no usa imágenes de objetos en la ficha.
+          </p>
+        )}
 
         <fieldset className="ficha-modal__mode">
           <legend>Tipo de ficha</legend>

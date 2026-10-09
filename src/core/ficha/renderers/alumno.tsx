@@ -1,9 +1,8 @@
 import { FichaHeader } from "./components/Header";
 import { StudentNameLine } from "./components/StudentNameLine";
-import { ExerciseCard } from "./components/ExerciseCard";
-import { ExerciseRenderer } from "./components/ExerciseRenderer";
+import { ExerciseGrid } from "./components/ExerciseGrid";
 import { FichaFooter } from "./components/Footer";
-import { chunkByPageSize, isFullWidthExercise, pageSizeForExercises } from "./pageLayout";
+import { chunkByPageSize, pageSizeForExercises } from "./pageLayout";
 import type { SheetExercise, SheetConfig, FichaMeta } from "../types";
 import "./print.css";
 
@@ -16,7 +15,7 @@ export interface FichaAlumnoProps {
 
 /**
  * Renderiza una ficha de ALUMNO (sin respuestas).
- * Devuelve un contenedor listo para `window.print()`.
+ * Devuelve un contenedor listo para exportación / vista previa.
  */
 export function FichaAlumno({
   exercises,
@@ -43,17 +42,11 @@ export function FichaAlumno({
             <p className="ficha-page__continued">{meta.title} — continuación</p>
           )}
 
-          <div className="ficha-grid">
-            {pageExercises.map((ex, i) => (
-              <ExerciseCard
-                key={`${pageIdx}-${i}`}
-                number={pageIdx * pageSize + i + 1}
-                full={isFullWidthExercise(ex)}
-              >
-                <ExerciseRenderer ex={ex} showAnswer={false} />
-              </ExerciseCard>
-            ))}
-          </div>
+          <ExerciseGrid
+            exercises={pageExercises}
+            pageOffset={pageIdx * pageSize}
+            showAnswer={false}
+          />
 
           <FichaFooter />
         </div>

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { activityManifests } from "../../manifests/content-registry";
 import {
+  buildFichaDocument,
   downloadFichas,
   generateFicha,
   loadLastFicha,
@@ -41,6 +42,26 @@ describe("fichaGenerator", () => {
     expect(result.html).toContain("ficha-page");
     expect(result.html).toContain("Suma");
     expect(result.html).not.toContain("ficha-answer");
+    expect(result.html).toContain("ficha-grid");
+    expect(result.html).toContain("ficha-grid__cell");
+    expect(result.html).toContain("ficha-header__table");
+  });
+
+  it("buildFichaDocument comparte ejercicios entre alumno y soluciones", () => {
+    const doc = buildFichaDocument({
+      activityId: "ordenar",
+      config: baseConfig("ordenar"),
+      modes: ["alumno", "soluciones"],
+      meta: { title: "Ordenar números", grade: "1º" },
+    });
+    expect(doc.modes).toEqual(["alumno", "soluciones"]);
+    expect(doc.chunks).toHaveLength(2);
+    expect(doc.exercises).toHaveLength(5);
+    expect(doc.html).toContain("ficha-print-break");
+    expect(doc.html).toContain("ficha-ordenar");
+    expect(typeof doc.css).toBe("string");
+    expect(doc.chunks[0]!.html).toContain("ficha-exercise--ordenar");
+    expect(doc.chunks[0]!.html).toContain("ficha-ordenar__table");
   });
 
   it("modo soluciones incluye respuestas visibles", () => {
@@ -163,10 +184,31 @@ describe("fichaGenerator", () => {
     expect(soluciones.html).toContain("ficha-answer");
     expect(soluciones.html).not.toContain("ficha-compare__strip");
     expect(soluciones.html).not.toContain("ficha-compare__thumb");
+    expect(soluciones.html).not.toContain("pueden ser iguales");
     expect(soluciones.html).toContain("Iguales");
   });
 
-  it("counting muestra objetos y pregunta; soluciones añaden el número", () => {
+  it("suma easy con imágenes pinta filas de objetos; soluciones sin miniaturas", () => {
+    const alumno = generateFicha({
+      activityId: "suma",
+      config: { ...baseConfig("suma"), withImages: true, count: 4, difficulty: "easy" },
+      mode: "alumno",
+    });
+    expect(alumno.exercises.every((ex) => ex.kind === "operation")).toBe(true);
+    expect(alumno.exercises.some((ex) => ex.kind === "operation" && ex.imageUrl)).toBe(true);
+    expect(alumno.html).toContain("ficha-img-row__thumb");
+    expect(alumno.html).not.toContain("ficha-answer");
+
+    const soluciones = generateFicha({
+      activityId: "suma",
+      config: { ...baseConfig("suma"), withImages: true, count: 4, difficulty: "easy" },
+      mode: "soluciones",
+    });
+    expect(soluciones.html).toContain("ficha-answer");
+    expect(soluciones.html).not.toContain("ficha-img-row__thumb");
+  });
+
+  it("counting muestra objetos y pregunta; soluciones solo el número", () => {
     const alumno = generateFicha({
       activityId: "counting",
       config: { ...baseConfig("counting"), withImages: true, count: 4 },
@@ -182,8 +224,9 @@ describe("fichaGenerator", () => {
       config: { ...baseConfig("counting"), withImages: true, count: 4 },
       mode: "soluciones",
     });
-    expect(soluciones.html).toContain("ficha-counting__objects");
     expect(soluciones.html).toContain("ficha-answer");
+    expect(soluciones.html).not.toContain("ficha-counting__objects");
+    expect(soluciones.html).not.toMatch(/¿Cuántos .+ hay\?/);
   });
 
   it("relacionar genera bloques con números, letras y soluciones número→letra", () => {
@@ -203,9 +246,36 @@ describe("fichaGenerator", () => {
       mode: "soluciones",
     });
     expect(soluciones.html).toMatch(/\d+ → [A-Z]/);
-    expect(soluciones.html).toContain("Une con una línea");
+    expect(soluciones.html).toContain("ficha-answer");
+    expect(soluciones.html).not.toContain("Une con una línea");
     expect(soluciones.html).not.toContain("ficha-relacionar__board");
     expect(soluciones.html).not.toContain("ficha-relacionar__thumb");
+  });
+
+  it("soluciones de cualquier actividad solo muestran la respuesta", () => {
+    for (const activityId of [
+      "suma",
+      "seriesNumericas",
+      "elKilo",
+      "balanza",
+      "graficoBarras",
+      "ordinales",
+      "ordenar",
+    ] as const) {
+      const soluciones = generateFicha({
+        activityId,
+        config: { ...baseConfig(activityId), withImages: true, count: 3 },
+        mode: "soluciones",
+      });
+      expect(soluciones.html, activityId).toContain("ficha-answer");
+      expect(soluciones.html, activityId).not.toContain("ficha-img-row");
+      expect(soluciones.html, activityId).not.toContain("ficha-series__sequence");
+      expect(soluciones.html, activityId).not.toContain("ficha-photo__items");
+      expect(soluciones.html, activityId).not.toContain("ficha-balanza__beam");
+      expect(soluciones.html, activityId).not.toContain("ficha-bars__chart");
+      expect(soluciones.html, activityId).not.toContain("ficha-ordinales__row");
+      expect(soluciones.html, activityId).not.toContain("ficha-ordenar__pool");
+    }
   });
 
   it("genera ficha para todas las actividades del catálogo", () => {

@@ -59,6 +59,7 @@ import { generateSeries3CifrasSession } from "../../activities/series3cifras";
 import { generateSession as generateShapes } from "../../activities/shapes";
 import { generateSession as generateSimetria } from "../../activities/simetria";
 import { generateSession as generateSumaLlevando } from "../../activities/sumaLlevando";
+import { SHAPES_REAL_IMAGES } from "../../../platform/shapesRealImages";
 import { generateSession as generateTablaNumerica } from "../../activities/tablaNumerica";
 import { generateSession as generateTresSumandos } from "../../activities/tresSumandos";
 import { generateSession as generateTresSumandosColumna } from "../../activities/tresSumandosColumna";
@@ -112,11 +113,11 @@ export const sessionEngines: Record<string, SessionEngine> = {
   algoritmo3cifras: std(generateAlgoritmo3cifras),
   algoritmoVertical: std(generateAlgoritmoVertical),
   amigos10: std(generateAmigos10),
-  balanza: std(generateBalanza),
-  balanzaEquilibra: std(generateBalanzaEquilibra),
-  capacidad: std(generateCapacidad, true),
+  balanza: std(generateBalanza, true),
+  balanzaEquilibra: std(generateBalanzaEquilibra, true),
+  capacidad: std(generateCapacidad),
   circuloCircunferencia: seedFirst(generateCCSession),
-  cintaMetrica: std(generateCintaMetrica),
+  cintaMetrica: std(generateCintaMetrica, true),
   comparison: {
     supportsImages: true,
     generateSession: (difficulty, seed) =>
@@ -132,27 +133,27 @@ export const sessionEngines: Record<string, SessionEngine> = {
   cuerpos3d: std(generateCuerpos3d),
   datosInnecesarios: std(generateDatosInnecesarios),
   dobleYMitad: std(generateDobleYMitad),
-  elKilo: std(generateElKilo),
-  elLitro: std(generateElLitro),
-  graficoBarras: std(generateGraficoBarras),
+  elKilo: std(generateElKilo, true),
+  elLitro: std(generateElLitro, true),
+  graficoBarras: std(generateGraficoBarras, true),
   igualdad: std(generateIgualdad, true),
-  intervalosTiempo: std(generateIntervalosTiempo),
-  inventarProblema: std(generateInventarProblema),
+  intervalosTiempo: std(generateIntervalosTiempo, true),
+  inventarProblema: std(generateInventarProblema, true),
   laberintoMatematico: std((difficulty, seed) => generateLaberinto(difficulty, seed, "1")),
   laberintoMatematico2: std((difficulty, seed) => generateLaberinto(difficulty, seed, "2")),
   lecturaNumeros: std(generateLecturaNumeros),
-  leftRight: std(generateLeftRight),
+  leftRight: std(generateLeftRight, true),
   lineTypes: std(generateLineTypes),
-  menuCafeteria: std(generateMenuCafeteria),
-  monedasBilletes: std(generateMonedasBilletes),
+  menuCafeteria: std(generateMenuCafeteria, true),
+  monedasBilletes: std(generateMonedasBilletes, true),
   multiplicacion: std(generateMultiplicacion),
   numeracion1119: seedFirst(generateNumeracion1119Session),
   numeracion4059: std(generateNumeracion4059),
   numeracion6099: std(generateNumeracion6099),
   numeracion999: std(generateNumeracion999),
   ordenar: seedFirst(createOrderingSession),
-  ordinales: std(generateOrdinales),
-  parImpar: std(generateParImpar),
+  ordinales: std(generateOrdinales, true),
+  parImpar: std(generateParImpar, true),
   poligonos: std(generatePoligonos),
   posicionesAula: std(generatePosicionesAula),
   probabilidad: std(generateProbabilidad),
@@ -161,7 +162,7 @@ export const sessionEngines: Record<string, SessionEngine> = {
   rectaNumerica: std(generateRectaNumerica),
   redondeo: std(generateRedondeo),
   relacionar: std(generateRelacionar, true),
-  relacionarCantidades: std(generateRelacionarCantidades),
+  relacionarCantidades: std(generateRelacionarCantidades, true),
   relacionSumaResta: std(generateRelacionSumaResta),
   reloj: std(generateReloj),
   relojPonerHora: std(generateRelojPonerHora),
@@ -174,7 +175,11 @@ export const sessionEngines: Record<string, SessionEngine> = {
   rutaCuadricula: std(generateRutaCuadricula),
   series3cifras: seedFirst(generateSeries3CifrasSession),
   seriesNumericas: seedFirst(generateSeriesSession),
-  shapes: std(generateShapes),
+  shapes: {
+    supportsImages: true,
+    generateSession: (difficulty, seed) =>
+      toList(generateShapes(difficulty, seed, SHAPES_REAL_IMAGES)),
+  },
   simetria: std(generateSimetria),
   suma: {
     supportsImages: true,

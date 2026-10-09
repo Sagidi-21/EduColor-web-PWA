@@ -13,6 +13,82 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 
 ---
 
+## Paridad vista previa ↔ Word (Fase 0 — criterio de éxito)
+
+Objetivo: la vista previa debe ser una representación fiel de lo que se guarda en Word
+(mismos ejercicios, misma disposición, mismos tamaños de imagen y márgenes equivalentes).
+
+### Qué cuenta como «igual»
+
+| Criterio          | Descripción                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------ |
+| Mismo contenido   | Misma semilla → mismos enunciados y respuestas                                             |
+| Misma disposición | 2 columnas (o full-width cuando aplique); mismo orden de ejercicios por página             |
+| Mismos tamaños    | Imágenes, cajas de ejercicio y tipografía equivalentes (no «otra maquetación»)             |
+| Márgenes / página | Caja A4 y márgenes equivalentes; tolerancia mínima solo por límites del motor HTML de Word |
+
+**No es objetivo:** igualdad pixel-perfect absoluta con Microsoft Word (imposible al 100 %).
+
+### Protocolo de comparación (baseline)
+
+Usar **siempre** la misma semilla y parámetros:
+
+```
+/ficha-preview?activity=ID&mode=alumno&difficulty=easy&count=10&seed=42
+/ficha-preview?activity=ID&mode=soluciones&difficulty=easy&count=10&seed=42
+```
+
+1. Abrir vista previa alumno y soluciones con `seed=42`.
+2. Guardar Word desde el modal con **la misma** actividad, dificultad, count y seed (cuando Fase 1 lo permita; hasta entonces, anotar si el seed diverge).
+3. Abrir el `.doc` en Word o LibreOffice.
+4. Comparar lado a lado: columnas, tamaños de imagen, márgenes, saltos de página.
+5. Marcar cada ítem del checklist de regresión abajo.
+
+### Checklist de regresión (fichas ya validadas)
+
+Estas son las únicas actividades marcadas OK en la revisión manual de fichas a 2026-10-09.
+Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
+
+| ID           | Actividad                    | Alumno | Soluciones | Print A4 | Word = preview | Notas / baseline                                                                                                     |
+| ------------ | ---------------------------- | ------ | ---------- | -------- | -------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `counting`   | Contamos objetos             | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: objetos+pregunta, 10/hoja, soluciones con número. **Revalidar Word=preview.**                   |
+| `comparison` | Mayor y menor                | [x]    | [x]        | [x]      | [x]            | OK 2026-10-09: fila A\|B, sin +N, hard/expert con iguales, soluciones sin dibujos, **Word=vista previa** ya anotado. |
+| `relacionar` | Relacionar número y cantidad | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**      |
+| `ordenar`    | Ordenar números              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                       |
+
+### Hallazgos baseline — `ordenar` (2026-10-09)
+
+Comparación captura vista previa vs Word (misma actividad «Ordenar números»). **No son iguales.**
+
+| Aspecto                      | Vista previa                                          | Word                                                           |
+| ---------------------------- | ----------------------------------------------------- | -------------------------------------------------------------- |
+| Caja de cada ejercicio       | Borde gris claro + `border-radius` visible            | Contenedor más débil / bordes redondeados perdidos o aplanados |
+| Tarjetas de números y huecos | Esquinas redondeadas (`border-radius: 6px`)           | Esquinas cuadradas (Word ignora `border-radius`)               |
+| Márgenes / caja A4           | Página ancha, padding generoso (`print.css`)          | Márgenes laterales más anchos / contenido más comprimido       |
+| Espaciado vertical           | Entre ejercicios y dentro de la tarjeta más «aireado» | Más apretado; tipografía y pesos distintos                     |
+| Tipografía                   | `system-ui` / Segoe UI del CSS                        | Fuente por defecto de Word (Calibri u otra)                    |
+| Cabecera / logo / título     | Layout web (logo absoluto + `transform`)              | Aproximación; línea y tamaños no coinciden del todo            |
+
+**Causa probable (no es bug del renderer de ordenar):** mismo HTML/CSS en teoría (`OrderingRenderer` + `print.css`), pero el motor HTML de Word no respeta grid/flex/`border-radius`/`@page` como el navegador. Encaja con Fase 2 (layout Word-safe) y Fase 3 (preview = HTML canónico).
+
+**Estado Fase 0 para `ordenar`:** fallo documentado — sirve de caso de regresión obligatorio tras las fases 1–4.
+
+**Regla de cierre de las fases 1–4:** no dar por cerrada la unificación preview↔Word hasta que las 4 filas tengan `Word = preview` en `[x]` con `seed=42`.
+
+Cuando se valide una actividad nueva de la lista general, añadirla también a esta tabla de regresión si aporta un caso de layout distinto (imágenes densas, SVG, full-width, etc.).
+
+### Estado de implementación
+
+| Fase                                  | Estado    | Notas                                                                           |
+| ------------------------------------- | --------- | ------------------------------------------------------------------------------- |
+| 0 — Criterio + checklist              | Hecha     | Baseline `ordenar` Word≠preview documentado                                     |
+| 1 — Seed único + `buildFichaDocument` | Hecha     | Misma seed en modal (preview y Word); builder canónico                          |
+| 2 — Layout Word-safe                  | Hecha     | Tabla 2 cols, cabecera tabla, clases explícitas (sin `:has`), ordenar en tablas |
+| 3 — Preview = HTML canónico           | Hecha     | `FichaPreviewScreen` pinta `buildFichaDocument().html` + mismo CSS              |
+| 4 — Print = mismo pipeline            | Pendiente | Botón Imprimir/PDF quitado de la vista previa                                   |
+
+---
+
 ## Operaciones
 
 - [ ] **suma** — La suma

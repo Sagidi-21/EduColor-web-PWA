@@ -3,6 +3,7 @@ import type {
   ComparisonSheetExercise,
   CountingSheetExercise,
   RelacionarSheetExercise,
+  SeriesNumericasSheetExercise,
   SheetExercise,
 } from "../types";
 import { chunkByPageSize, isFullWidthExercise, pageSizeForExercises } from "./pageLayout";
@@ -88,5 +89,37 @@ describe("pageLayout", () => {
       imageUrl: "",
     }));
     expect(pageSizeForExercises(ops)).toBe(10);
+  });
+
+  it("ordenar pagina según cantidad de números", () => {
+    const few = {
+      kind: "ordenar" as const,
+      numbers: [1, 2, 3],
+      direction: "ascending" as const,
+    };
+    const many = {
+      kind: "ordenar" as const,
+      numbers: [15, 10, 5, 17, 13],
+      direction: "ascending" as const,
+    };
+    expect(pageSizeForExercises([few])).toBe(8);
+    expect(pageSizeForExercises([many])).toBe(6);
+    expect(pageSizeForExercises([many], { showAnswer: true })).toBe(8);
+  });
+
+  it("series: 10 por hoja a ancho completo; soluciones solo número más densas", () => {
+    const ex: SeriesNumericasSheetExercise = {
+      kind: "seriesNumericas",
+      sequence: [1, 2, -1, 4, 5],
+      blankIndex: 2,
+      step: 1,
+      ascending: true,
+      question: "¿Qué número falta?",
+      answer: 3,
+    };
+    expect(pageSizeForExercises([ex])).toBe(10);
+    expect(pageSizeForExercises([ex], { showAnswer: true })).toBe(20);
+    expect(isFullWidthExercise(ex)).toBe(true);
+    expect(isFullWidthExercise(ex, { showAnswer: true })).toBe(false);
   });
 });

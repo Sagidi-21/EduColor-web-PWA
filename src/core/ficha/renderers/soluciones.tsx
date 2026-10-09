@@ -1,9 +1,8 @@
 import { FichaHeader } from "./components/Header";
 import { StudentNameLine } from "./components/StudentNameLine";
-import { ExerciseCard } from "./components/ExerciseCard";
-import { ExerciseRenderer } from "./components/ExerciseRenderer";
+import { ExerciseGrid } from "./components/ExerciseGrid";
 import { FichaFooter } from "./components/Footer";
-import { chunkByPageSize, isFullWidthExercise, pageSizeForExercises } from "./pageLayout";
+import { chunkByPageSize, pageSizeForExercises } from "./pageLayout";
 import type { SheetExercise, SheetConfig, FichaMeta } from "../types";
 import "./print.css";
 
@@ -43,17 +42,11 @@ export function FichaSoluciones({
             <p className="ficha-page__continued">{meta.title} — soluciones (continuación)</p>
           )}
 
-          <div className="ficha-grid">
-            {pageExercises.map((ex, i) => (
-              <ExerciseCard
-                key={`${pageIdx}-${i}`}
-                number={pageIdx * pageSize + i + 1}
-                full={isFullWidthExercise(ex, pageOpts)}
-              >
-                <ExerciseRenderer ex={ex} showAnswer={true} />
-              </ExerciseCard>
-            ))}
-          </div>
+          <ExerciseGrid
+            exercises={pageExercises}
+            pageOffset={pageIdx * pageSize}
+            showAnswer={true}
+          />
 
           <FichaFooter />
         </div>

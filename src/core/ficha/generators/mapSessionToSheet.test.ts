@@ -144,9 +144,46 @@ describe("mapSessionToSheet", () => {
     }
   });
 
-  it("mapea tresSumandos", () => {
-    const ex = mapSessionToSheet("tresSumandos", { a: 1, b: 2, c: 3, answer: 6 }, config);
-    expect(ex).toMatchObject({ kind: "tresSumandos", a: 1, b: 2, c: 3, answer: 6 });
+  it("mapea tresSumandos con imageUrl cuando withImages", () => {
+    const ex = mapSessionToSheet(
+      "tresSumandos",
+      { a: 1, b: 2, c: 3, answer: 6, imageUrl: "/obj.png" },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "tresSumandos",
+      a: 1,
+      b: 2,
+      c: 3,
+      answer: 6,
+      imageUrl: "/obj.png",
+    });
+  });
+
+  it("omite imageUrl de tresSumandos si withImages es false", () => {
+    const ex = mapSessionToSheet(
+      "tresSumandos",
+      { a: 1, b: 2, c: 3, answer: 6, imageUrl: "/obj.png" },
+      { ...config, withImages: false },
+    );
+    expect(ex).toMatchObject({ kind: "tresSumandos", imageUrl: "" });
+  });
+
+  it("mapea igualdad resultado con imageUrl", () => {
+    const ex = mapSessionToSheet(
+      "igualdad",
+      { type: "resultado", a: 2, b: 3, c: 5, answer: 5, imageUrl: "/igl.png" },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "igualdad",
+      type: "result",
+      a: 2,
+      b: 3,
+      c: 5,
+      imageUrl: "/igl.png",
+      answer: 5,
+    });
   });
 
   it("mapea algoritmoVertical y restaColumna", () => {
@@ -208,6 +245,322 @@ describe("mapSessionToSheet", () => {
       direction: "ascending",
       answer: [2, 5, 6],
     });
+  });
+
+  it("mapea seriesNumericas con secuencia y hueco", () => {
+    const ex = mapSessionToSheet(
+      "seriesNumericas",
+      {
+        sequence: [2, 4, -1, 8, 10],
+        blankIndex: 2,
+        step: 2,
+        ascending: true,
+        correctAnswer: "6",
+        options: ["6", "5", "7", "4"],
+      },
+      { ...config, difficulty: "easy" },
+    );
+    expect(ex).toMatchObject({
+      kind: "seriesNumericas",
+      sequence: [2, 4, -1, 8, 10],
+      blankIndex: 2,
+      step: 2,
+      ascending: true,
+      question: "¿Qué número falta? (de 2 en 2)",
+      answer: 6,
+    });
+  });
+
+  it("mapea seriesNumericas hard sin pista de salto", () => {
+    const ex = mapSessionToSheet(
+      "seriesNumericas",
+      {
+        sequence: [20, 15, -1, 5, 0],
+        blankIndex: 2,
+        step: 5,
+        ascending: false,
+        correctAnswer: "10",
+      },
+      { ...config, difficulty: "hard" },
+    );
+    expect(ex).toMatchObject({
+      kind: "seriesNumericas",
+      ascending: false,
+      question: "¿Qué número falta?",
+      answer: 10,
+    });
+  });
+
+  it("mapea series3cifras con secuencia", () => {
+    const ex = mapSessionToSheet(
+      "series3cifras",
+      {
+        sequence: [100, 110, -1, 130, 140],
+        blankIndex: 2,
+        step: 10,
+        ascending: true,
+        correctAnswer: "120",
+      },
+      { ...config, difficulty: "medium" },
+    );
+    expect(ex).toMatchObject({
+      kind: "series3Cifras",
+      sequence: [100, 110, -1, 130, 140],
+      answer: 120,
+      question: "¿Qué número falta? (de 10 en 10)",
+    });
+  });
+
+  it("mapea monedasBilletes identify con URL de moneda", () => {
+    const ex = mapSessionToSheet(
+      "monedasBilletes",
+      {
+        type: "identify",
+        item: {
+          valor: 100,
+          etiqueta: "1 euro",
+          corta: "1€",
+          tipo: "moneda",
+          fichero: "1euro.png",
+        },
+        question: "¿Cuánto vale?",
+        answer: "1€",
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "monedasBilletes",
+      type: "identify",
+      question: "¿Cuánto vale?",
+      answer: "1€",
+    });
+    if (ex.kind === "monedasBilletes") {
+      expect(ex.money.length).toBe(1);
+      expect(ex.money[0]?.url.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("mapea elKilo con fotos de objetos", () => {
+    const ex = mapSessionToSheet(
+      "elKilo",
+      {
+        type: "classify",
+        items: [{ name: "sandía", file: "sandia.png", category: "mas" }],
+        question: "¿Pesa más o menos de 1 kg?",
+        answer: "Más de 1 kg",
+      },
+      config,
+    );
+    expect(ex.kind).toBe("elKilo");
+    if (ex.kind === "elKilo") {
+      expect(ex.items[0]?.imageUrl.length).toBeGreaterThan(0);
+      expect(ex.referenceUrl?.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("mapea relacionarCantidades con dibujo y textos", () => {
+    const ex = mapSessionToSheet(
+      "relacionarCantidades",
+      {
+        pairs: [],
+        leftColumn: [
+          {
+            id: 0,
+            leftText: "Tengo 25",
+            rightText: "25",
+            izquierda: [{ total: 25 }],
+            derecha: { total: 25 },
+            imageUrl: "/obj.png",
+            objectLabel: "manzanas",
+          },
+        ],
+        rightColumn: [
+          {
+            id: 0,
+            leftText: "Tengo 25",
+            rightText: "25",
+            izquierda: [{ total: 25 }],
+            derecha: { total: 25 },
+            imageUrl: "/obj.png",
+            objectLabel: "manzanas",
+          },
+        ],
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "relacionarCantidades",
+      imageUrl: "/obj.png",
+      left: [{ id: 0, text: "Tengo 25" }],
+      right: [{ id: 0, letter: "A", text: "25" }],
+      answer: ["Tengo 25 → A"],
+    });
+  });
+
+  it("mapea parImpar visual con emoji", () => {
+    const ex = mapSessionToSheet(
+      "parImpar",
+      {
+        type: "visual",
+        question: "¿Es par o impar?",
+        number: 4,
+        answer: "par",
+        visualItems: { emoji: "🍎", count: 4 },
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "parImpar",
+      emoji: "🍎",
+      emojiCount: 4,
+      answer: "par",
+    });
+  });
+
+  it("mapea ordinales con fila y estrella", () => {
+    const ex = mapSessionToSheet(
+      "ordinales",
+      {
+        type: "identify",
+        rowSize: 5,
+        target: 3,
+        fromRight: false,
+        question: "¿En qué posición está la estrella?",
+        answer: 3,
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "ordinales",
+      count: 5,
+      target: 3,
+      fromRight: false,
+      answer: 3,
+    });
+    if (ex.kind === "ordinales") {
+      expect(ex.emoji.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("mapea balanza con platos emoji", () => {
+    const ex = mapSessionToSheet(
+      "balanza",
+      {
+        question: "¿Qué lado pesa más?",
+        left: { emoji: "🍉", count: 2, weightLabel: null, unknown: false },
+        right: { emoji: "🧱", count: 1, weightLabel: "1 kg", unknown: false },
+        tilt: "left",
+        correctAnswer: "left",
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "balanza",
+      variant: "compare",
+      left: { emoji: "🍉", count: 2 },
+      right: { emoji: "🧱", count: 1, weightLabel: "1 kg" },
+      answer: "left",
+    });
+  });
+
+  it("mapea graficoBarras con barras", () => {
+    const ex = mapSessionToSheet(
+      "graficoBarras",
+      {
+        titulo: "Animales",
+        bars: [
+          { etiqueta: "Perro", emoji: "🐶", valor: 5 },
+          { etiqueta: "Gato", emoji: "🐱", valor: 3 },
+        ],
+        escalaMax: 6,
+        blankBarIndex: 1,
+        question: "¿Cuántos votos tiene el gato?",
+        correctAnswer: "3",
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "graficoBarras",
+      titulo: "Animales",
+      blankBarIndex: 1,
+      answer: "3",
+    });
+    if (ex.kind === "graficoBarras") expect(ex.bars).toHaveLength(2);
+  });
+
+  it("mapea menuCafeteria con bandeja", () => {
+    const ex = mapSessionToSheet(
+      "menuCafeteria",
+      {
+        tray: [{ emoji: "🍝", name: "Pasta", price: 6 }],
+        question: "¿Cuánto cuesta la bandeja?",
+        correctAnswer: "6€",
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "menuCafeteria",
+      tray: [{ emoji: "🍝", name: "Pasta", price: 6 }],
+      answer: "6€",
+    });
+  });
+
+  it("mapea cintaMetrica con emoji del objeto", () => {
+    const ex = mapSessionToSheet(
+      "cintaMetrica",
+      {
+        item: { name: "un lápiz", size: 15, unit: "cm", emoji: "✏️" },
+        question: "¿En qué unidad lo mides?",
+        correctAnswer: "cm",
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "cintaMetrica",
+      emoji: "✏️",
+      itemName: "un lápiz",
+      answer: "cm",
+    });
+  });
+
+  it("mapea inventarProblema e intervalosTiempo", () => {
+    const inv = mapSessionToSheet(
+      "inventarProblema",
+      {
+        items: [{ emoji: "👟", name: "zapatillas", price: 30 }],
+        budget: 50,
+        question: "¿Puedes comprarlas?",
+        correctAnswer: "sí",
+      },
+      config,
+    );
+    expect(inv).toMatchObject({
+      kind: "inventarProblema",
+      budget: 50,
+      items: [{ emoji: "👟", price: 30 }],
+      answer: "sí",
+    });
+
+    const intv = mapSessionToSheet(
+      "intervalosTiempo",
+      {
+        type: "which-longer",
+        activities: [
+          { name: "recreo", emoji: "🏃", seconds: 1800, label: "30 minutos" },
+          { name: "clase", emoji: "📚", seconds: 3600, label: "1 hora" },
+        ],
+        showBars: true,
+        question: "¿Qué dura más?",
+        correctAnswer: "clase",
+      },
+      config,
+    );
+    expect(intv).toMatchObject({
+      kind: "intervalosTiempo",
+      showBars: true,
+      answer: "clase",
+    });
+    if (intv.kind === "intervalosTiempo") expect(intv.activities).toHaveLength(2);
   });
 
   it("mapea relacionar a columnas con letras y respuestas número→letra", () => {

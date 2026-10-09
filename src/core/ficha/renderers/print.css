@@ -49,23 +49,32 @@
   box-sizing: border-box;
 }
 
-/* ===== Cabecera ===== */
+/* ===== Cabecera (tabla Word-safe; sin absolute/transform) ===== */
 .ficha-header {
   padding-bottom: 10px;
   margin-bottom: 14px;
   border-bottom: 2px solid #e5e7eb;
 }
 
-.ficha-header__text {
-  min-width: 0;
+.ficha-header__table {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+  margin-bottom: 4px;
 }
 
-.ficha-header__meta-row {
-  position: relative;
-  padding-right: 102px;
-  /* Espacio para que el logo (90px) pueda sobresalir por encima de la doble línea */
-  padding-top: 24px;
-  margin-bottom: 8px;
+.ficha-header__meta-cell {
+  vertical-align: bottom;
+  padding: 0;
+  border: none;
+}
+
+.ficha-header__logo-cell {
+  width: 96px;
+  vertical-align: middle;
+  text-align: right;
+  padding: 0 0 0 8px;
+  border: none;
 }
 
 .ficha-header__title {
@@ -73,10 +82,8 @@
   font-weight: 800;
   margin: 0;
   color: #111;
-  line-height: 1.8;
-  /* Mitad inferior del logo (45px) cae sobre la zona del título a la derecha */
-  min-height: 48px;
-  padding-right: 102px;
+  line-height: 1.4;
+  min-height: 36px;
 }
 
 .ficha-header__stars {
@@ -95,24 +102,11 @@
 
 .ficha-header__logo {
   height: 90px;
-  width: auto;
+  width: 90px;
   max-width: 90px;
   object-fit: contain;
-  flex-shrink: 0;
-}
-
-.ficha-header__meta-row .ficha-header__logo {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  /* Centro vertical del logo = doble línea (borde inferior del meta) */
-  transform: translateY(50%);
-}
-
-.ficha-header__logo-only {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 8px;
+  display: block;
+  margin-left: auto;
 }
 
 /* ===== Línea de nombre ===== */
@@ -128,47 +122,66 @@
   white-space: nowrap;
 }
 
-/* ===== Grid de ejercicios (2 columnas) ===== */
+/* ===== Rejilla de ejercicios (tabla 2 columnas — Word-safe) ===== */
 .ficha-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px 14px;
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+  table-layout: fixed;
+  margin: 0;
+}
+
+.ficha-grid__cell {
+  width: 50%;
+  vertical-align: top;
+  padding: 6px 7px;
+  border: none;
+}
+
+.ficha-grid__cell--full {
+  width: 100%;
+}
+
+.ficha-grid__cell--empty {
+  width: 50%;
+  border: none;
+  padding: 6px 7px;
 }
 
 .ficha-exercise {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: block;
   padding: 10px 12px;
   border: 1px solid #e5e7eb;
+  /* Word ignora border-radius; se mantiene para preview en navegador */
   border-radius: 6px;
   min-height: 96px;
   page-break-inside: avoid;
   break-inside: avoid;
+  box-sizing: border-box;
 }
 
 .ficha-exercise__number {
+  display: block;
   font-size: 10px;
   font-weight: 700;
   color: #888;
+  margin-bottom: 4px;
 }
 
 .ficha-exercise__body {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
+  display: block;
 }
 
 .ficha-exercise__text {
-  flex: 1;
+  display: block;
 }
 
 .ficha-exercise__image {
+  height: 56px;
+  width: 56px;
   max-height: 56px;
   max-width: 56px;
   object-fit: contain;
-  flex-shrink: 0;
 }
 
 /* ===== Soluciones ===== */
@@ -199,9 +212,10 @@
   margin-top: 0;
 }
 
-/* Para ejercicios que requieren más espacio (vertical, SVG, etc.) */
+/* Para ejercicios de ancho completo (celda con colspan=2) */
 .ficha-exercise--full {
-  grid-column: 1 / -1;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Tabla numérica */
@@ -225,11 +239,57 @@
   white-space: pre;
 }
 
+/* Miniaturas de objetos (suma/resta/tres sumandos/igualdad) */
+.ficha-img-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  align-items: center;
+}
+
+.ficha-img-row__thumb {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.ficha-img-row__thumb--crossed {
+  opacity: 0.35;
+  filter: grayscale(1);
+}
+
+.ficha-operation__images {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 6px;
+}
+
+.ficha-igualdad__images {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.ficha-igualdad__plus {
+  font-weight: 800;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.ficha-igualdad__formula {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
 /* Contamos objetos — compacto para caber 10 en easy (2×5) */
-.ficha-exercise:has(.ficha-counting) {
+.ficha-exercise--counting {
   min-height: 0;
   padding: 6px 8px;
-  gap: 4px;
 }
 
 .ficha-counting {
@@ -321,10 +381,9 @@
 }
 
 /* Mayor y menor — una fila por ejercicio (ancho completo) */
-.ficha-exercise:has(.ficha-compare) {
+.ficha-exercise--compare {
   min-height: 0;
   padding: 6px 10px;
-  gap: 4px;
 }
 
 .ficha-compare {
@@ -423,40 +482,50 @@
   font-size: 11px;
 }
 
-/* Ordenar números */
+/* Ordenar números — tablas de una fila (sin wrap 4+1) */
 .ficha-ordenar {
   width: 100%;
 }
 
 .ficha-ordenar__instruction {
   margin: 0 0 6px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #1e293b;
 }
 
-.ficha-ordenar__pool,
-.ficha-ordenar__slots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  justify-content: flex-start;
+.ficha-ordenar__table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 4px 0;
+  border: none;
+  table-layout: fixed;
+  margin: 0;
 }
 
-.ficha-ordenar__pool {
-  margin-bottom: 8px;
+.ficha-ordenar__table--slots {
+  margin-top: 6px;
+}
+
+.ficha-ordenar__td {
+  border: none;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .ficha-ordenar__card,
 .ficha-ordenar__slot {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 36px;
-  min-height: 36px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 18px;
+  display: block;
+  width: 100%;
+  max-width: 56px;
+  margin: 0 auto;
+  text-align: center;
+  line-height: 32px;
+  min-height: 32px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 16px;
   font-weight: 800;
   color: #0f172a;
   box-sizing: border-box;
@@ -470,8 +539,73 @@
 .ficha-ordenar__slot {
   border: 1.5px dashed #94a3b8;
   background: #fff;
-  min-width: 60px;
-  min-height: 60px;
+  max-width: 56px;
+  min-height: 40px;
+  line-height: 40px;
+}
+
+/* Series numéricas (formato pizarra: cajas + flechas) */
+.ficha-series {
+  width: 100%;
+}
+
+.ficha-series__question {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-series__sequence {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  justify-content: flex-start;
+}
+
+.ficha-series__box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 4px 6px;
+  margin-right: 14px;
+  border-radius: 8px;
+  border: 2px solid #cbd5e1;
+  background: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  box-sizing: border-box;
+}
+
+.ficha-series__box--blank {
+  border-style: dashed;
+  border-color: #94a3b8;
+  background: #f1f5f9;
+  color: #94a3b8;
+  min-width: 48px;
+}
+
+.ficha-series__arrow {
+  position: absolute;
+  right: -14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.ficha-exercise--series {
+  min-height: 72px;
+}
+
+.ficha-exercise--ordenar {
+  min-height: 0;
 }
 
 /* Separador entre ficha alumno y soluciones en el mismo PDF */
@@ -662,4 +796,519 @@
 .ficha-relacionar--dense .ficha-relacionar__left,
 .ficha-relacionar--dense .ficha-relacionar__right {
   gap: 4px;
+}
+
+/* Relacionar cantidades (base 10) */
+.ficha-relcant {
+  width: 100%;
+}
+
+.ficha-relcant__instruction {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-relcant__board {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.ficha-relcant__left,
+.ficha-relcant__right {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.ficha-relcant__gap {
+  min-width: 24px;
+}
+
+.ficha-relcant__card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  position: relative;
+}
+
+.ficha-relcant__card--right {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.ficha-relcant__text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.ficha-relcant__letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  min-height: 22px;
+  font-size: 12px;
+  font-weight: 800;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #f8fafc;
+}
+
+.ficha-relcant__rotulo {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.ficha-relcant__figuras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.ficha-relcant__cajas,
+.ficha-relcant__unidades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: flex-end;
+}
+
+.ficha-relcant__bloque {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px 3px;
+  border: 1px solid #94a3b8;
+  border-radius: 4px;
+  background: #f8fafc;
+}
+
+.ficha-relcant__bloque--cien {
+  border-color: #64748b;
+  background: #e2e8f0;
+}
+
+.ficha-relcant__bloque-rotulo {
+  font-size: 8px;
+  font-weight: 800;
+  color: #475569;
+}
+
+.ficha-relcant__img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.ficha-relcant__dot,
+.ficha-relcant__dot-end,
+.ficha-relcant__dot-start {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid #64748b;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.ficha-relcant__dot-end {
+  align-self: flex-end;
+}
+
+/* Monedas y billetes */
+.ficha-money__question {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-money__product {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+.ficha-money__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.ficha-money__img {
+  height: 36px;
+  width: auto;
+  max-width: 64px;
+  object-fit: contain;
+}
+
+.ficha-money__label {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* elKilo / elLitro */
+.ficha-photo__question {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-photo__ref {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.ficha-photo__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ficha-photo__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
+}
+
+.ficha-photo__img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.ficha-photo__placeholder {
+  width: 56px;
+  height: 56px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+}
+
+.ficha-photo__name {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  color: #334155;
+}
+
+/* Par/impar y ordinales */
+.ficha-parimpar__row,
+.ficha-ordinales__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.ficha-parimpar__question,
+.ficha-ordinales__question {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-ordinales__cell--star {
+  filter: drop-shadow(0 0 1px #f59e0b);
+}
+
+/* Balanza */
+.ficha-balanza__question,
+.ficha-bars__question,
+.ficha-menu__question,
+.ficha-cinta__question,
+.ficha-inventar__question,
+.ficha-intervalos__question {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-balanza__scale {
+  margin: 4px 0;
+}
+
+.ficha-balanza__beam {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 4px;
+  border-bottom: 3px solid #64748b;
+}
+
+.ficha-balanza__beam--left {
+  transform: rotate(-3deg);
+}
+
+.ficha-balanza__beam--right {
+  transform: rotate(3deg);
+}
+
+.ficha-balanza__fulcrum {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 14px solid #475569;
+  align-self: flex-end;
+  margin-bottom: -3px;
+}
+
+.ficha-balanza__plate {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-height: 36px;
+  padding: 4px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.ficha-balanza__emojis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.ficha-balanza__label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.ficha-balanza__unknown {
+  font-size: 22px;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+.ficha-balanza__hint {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* Gráfico de barras */
+.ficha-bars__title {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.ficha-bars__chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 90px;
+  margin-bottom: 6px;
+  padding: 0 4px;
+  border-bottom: 1px solid #94a3b8;
+}
+
+.ficha-bars__col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  min-width: 0;
+}
+
+.ficha-bars__value {
+  font-size: 10px;
+  font-weight: 800;
+  color: #334155;
+  margin-bottom: 2px;
+}
+
+.ficha-bars__track {
+  flex: 1;
+  width: 70%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.ficha-bars__fill {
+  width: 100%;
+  background: #3b82f6;
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+}
+
+.ficha-bars__emoji {
+  font-size: 14px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.ficha-bars__label {
+  font-size: 9px;
+  font-weight: 600;
+  color: #64748b;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Menú / inventar problema */
+.ficha-menu__tray,
+.ficha-inventar__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ficha-menu__item,
+.ficha-inventar__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  min-width: 56px;
+}
+
+.ficha-menu__emoji,
+.ficha-inventar__emoji {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.ficha-menu__name,
+.ficha-inventar__name {
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+  color: #334155;
+}
+
+.ficha-menu__price,
+.ficha-inventar__price {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ficha-inventar__budget {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #b45309;
+}
+
+/* Cinta métrica */
+.ficha-cinta__object {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.ficha-cinta__emoji {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.ficha-cinta__name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.ficha-cinta__tape {
+  height: 10px;
+  margin-bottom: 6px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    #fbbf24 0 6px,
+    #fef3c7 6px 12px
+  );
+  border: 1px solid #d97706;
+}
+
+/* Intervalos de tiempo */
+.ficha-intervalos__acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ficha-intervalos__card {
+  flex: 1;
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.ficha-intervalos__emoji {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.ficha-intervalos__name {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  color: #0f172a;
+}
+
+.ficha-intervalos__label {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.ficha-intervalos__bar-track {
+  width: 100%;
+  height: 6px;
+  margin-top: 4px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ficha-intervalos__bar-fill {
+  height: 100%;
+  background: #0ea5e9;
+  border-radius: 3px;
 }

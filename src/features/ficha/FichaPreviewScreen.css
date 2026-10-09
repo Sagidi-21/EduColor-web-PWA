@@ -33,8 +33,9 @@
   color: #fff;
 }
 
-.ficha-preview__print {
-  background: #2563eb !important;
+.ficha-preview__toolbar span {
+  flex: 1;
+  text-align: center;
 }
 
 .ficha-preview__sheets {

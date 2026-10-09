@@ -1,21 +1,42 @@
 import { getObjectImage } from "../../../platform/objectImages";
+import { moneyImageUrl } from "../../../platform/moneyImages";
+import { kiloImageUrl, REFERENCE_URL as KILO_REFERENCE_URL } from "../../../platform/kiloImages";
+import { litroImageUrl, litroReferenceUrl } from "../../../platform/litroImages";
+import type { MoneyItem } from "../../activities/monedasBilletes";
+import type { KiloItem } from "../../activities/elKilo";
+import type { LitroItem } from "../../activities/elLitro";
 import type {
   AlgoritmoVerticalSheetExercise,
+  BalanzaPlateSheet,
+  BalanzaSheetExercise,
+  CintaMetricaSheetExercise,
   ComparisonSheetExercise,
   CountingSheetExercise,
+  ElKiloSheetExercise,
+  ElLitroSheetExercise,
+  GraficoBarrasSheetExercise,
   IgualdadSheetExercise,
+  IntervalosTiempoSheetExercise,
+  InventarProblemaSheetExercise,
   LaberintoSheetExercise,
   LeftRightSheetExercise,
+  MenuCafeteriaSheetExercise,
+  MenuItemSheet,
+  MonedasBilletesSheetExercise,
   OperationSheetExercise,
   OrderingSheetExercise,
+  OrdinalesSheetExercise,
   ParImparSheetExercise,
   PoligonosSheetExercise,
   ProblemaSheetExercise,
+  RelacionarCantidadesSheetExercise,
   RelacionarSheetExercise,
   RelacionSumaRestaSheetExercise,
   RelojSheetExercise,
   RepartoIgualSheetExercise,
   RutaCuadriculaSheetExercise,
+  Series3CifrasSheetExercise,
+  SeriesNumericasSheetExercise,
   SheetConfig,
   SheetExercise,
   SheetShapeVisual,
@@ -23,6 +44,8 @@ import type {
   TresSumandosColumnaSheetExercise,
   TresSumandosSheetExercise,
 } from "../types";
+
+const ORDINAL_EMOJIS = ["🏀", "⚽", "🎾", "🏈", "🎱", "🏓", "🎯", "🏐", "⚾", "🏒"];
 
 function asRecord(ex: unknown): Record<string, unknown> {
   return ex && typeof ex === "object" ? (ex as Record<string, unknown>) : { value: ex };
@@ -199,12 +222,16 @@ function mapShapes(ex: Record<string, unknown>, config: SheetConfig): PoligonosS
   };
 }
 
-function mapTresSumandos(ex: Record<string, unknown>): TresSumandosSheetExercise {
+function mapTresSumandos(
+  ex: Record<string, unknown>,
+  config: SheetConfig,
+): TresSumandosSheetExercise {
   return {
     kind: "tresSumandos",
     a: asNumber(ex.a),
     b: asNumber(ex.b),
     c: asNumber(ex.c),
+    imageUrl: config.withImages ? asString(ex.imageUrl) : "",
     answer: asNumber(ex.answer, asNumber(ex.a) + asNumber(ex.b) + asNumber(ex.c)),
   };
 }
@@ -274,6 +301,7 @@ function mapSumaLlevando(ex: Record<string, unknown>): SheetExercise {
       a: addends[0]!,
       b: addends[1]!,
       c: addends[2]!,
+      imageUrl: "",
       answer: asNumber(ex.answer, addends[0]! + addends[1]! + addends[2]!),
     };
   }
@@ -311,18 +339,280 @@ function mapLeftRight(ex: Record<string, unknown>, config: SheetConfig): LeftRig
 
 function mapParImpar(ex: Record<string, unknown>, config: SheetConfig): ParImparSheetExercise {
   const raw = asString(ex.answer).toLowerCase();
-  const answer: "par" | "impar" | undefined =
+  const answer: "par" | "impar" | string | undefined =
     raw === "par" || raw === "even"
       ? "par"
       : raw === "impar" || raw === "odd"
         ? "impar"
-        : undefined;
+        : asString(ex.answer) || undefined;
+  const visual =
+    ex.visualItems && typeof ex.visualItems === "object"
+      ? (ex.visualItems as Record<string, unknown>)
+      : null;
+  const emoji = config.withImages && visual ? asString(visual.emoji) || undefined : undefined;
+  const emojiCount =
+    config.withImages && visual ? asNumber(visual.count, asNumber(ex.number)) : undefined;
   return {
     kind: "parImpar",
     question: questionOf(ex),
     number: asNumber(ex.number),
+    emoji,
+    emojiCount,
     imageUrl: config.withImages ? asString(ex.imageUrl) : "",
     answer,
+  };
+}
+
+function mapOrdinales(ex: Record<string, unknown>, config: SheetConfig): OrdinalesSheetExercise {
+  const rowSize = asNumber(ex.rowSize, asNumber(ex.count, 5));
+  const target = asNumber(ex.target, 1);
+  const emoji = config.withImages ? ORDINAL_EMOJIS[(target + rowSize) % ORDINAL_EMOJIS.length] : "";
+  return {
+    kind: "ordinales",
+    question: questionOf(ex),
+    count: rowSize,
+    emoji,
+    target,
+    fromRight: Boolean(ex.fromRight),
+    imageUrl: "",
+    answer: asNumber(ex.answer),
+  };
+}
+
+function moneySheetItems(
+  items: unknown,
+  withImages: boolean,
+): MonedasBilletesSheetExercise["money"] {
+  if (!Array.isArray(items) || !withImages) return [];
+  return items.map((raw) => {
+    const item = asRecord(raw) as unknown as MoneyItem;
+    return {
+      url: moneyImageUrl(item),
+      label: asString(item.etiqueta || item.corta, "dinero"),
+    };
+  });
+}
+
+function mapMonedasBilletes(
+  ex: Record<string, unknown>,
+  config: SheetConfig,
+): MonedasBilletesSheetExercise {
+  const typeRaw = asString(ex.type, "identify");
+  const type: MonedasBilletesSheetExercise["type"] =
+    typeRaw === "equivalence" || typeRaw === "change" || typeRaw === "shopping"
+      ? typeRaw
+      : "identify";
+
+  let money: MonedasBilletesSheetExercise["money"] = [];
+  if (type === "identify" && ex.item) {
+    money = moneySheetItems([ex.item], config.withImages);
+  } else if (type === "equivalence") {
+    money = moneySheetItems(ex.items, config.withImages);
+  } else if (type === "change") {
+    money = moneySheetItems(ex.pagado, config.withImages);
+  } else if (type === "shopping") {
+    money = moneySheetItems(ex.disponibles, config.withImages);
+  }
+
+  const producto = ex.producto && typeof ex.producto === "object" ? asRecord(ex.producto) : null;
+
+  return {
+    kind: "monedasBilletes",
+    type,
+    question: questionOf(ex),
+    money,
+    productEmoji: producto ? asString(producto.emoji) || undefined : undefined,
+    productName: producto ? asString(producto.nombre) || undefined : undefined,
+    productPriceLabel: asString(ex.precioLabel) || undefined,
+    answer: typeof ex.answer === "number" ? ex.answer : asString(ex.answer) || undefined,
+  };
+}
+
+function mapPhotoItems(
+  items: unknown,
+  resolve: (item: Record<string, unknown>) => string,
+  withImages: boolean,
+): { name: string; imageUrl: string }[] {
+  if (!Array.isArray(items)) return [];
+  return items.map((raw) => {
+    const item = asRecord(raw);
+    return {
+      name: asString(item.name),
+      imageUrl: withImages ? resolve(item) : "",
+    };
+  });
+}
+
+function mapElKilo(ex: Record<string, unknown>, config: SheetConfig): ElKiloSheetExercise {
+  return {
+    kind: "elKilo",
+    question: questionOf(ex),
+    items: mapPhotoItems(
+      ex.items,
+      (item) => kiloImageUrl(item as unknown as KiloItem),
+      config.withImages,
+    ),
+    referenceUrl: config.withImages ? KILO_REFERENCE_URL : undefined,
+    answer: asString(ex.answer) || undefined,
+  };
+}
+
+function mapElLitro(ex: Record<string, unknown>, config: SheetConfig): ElLitroSheetExercise {
+  return {
+    kind: "elLitro",
+    question: questionOf(ex),
+    items: mapPhotoItems(
+      ex.items,
+      (item) => litroImageUrl(item as unknown as LitroItem),
+      config.withImages,
+    ),
+    referenceUrl: config.withImages ? litroReferenceUrl() : undefined,
+    answer: asString(ex.answer) || undefined,
+  };
+}
+
+function mapPlate(raw: unknown, withVisual: boolean): BalanzaPlateSheet {
+  const p = asRecord(raw);
+  return {
+    emoji: withVisual ? asString(p.emoji, "⬜") : "",
+    count: asNumber(p.count, 1),
+    weightLabel:
+      p.weightLabel === null || p.weightLabel === undefined ? null : asString(p.weightLabel),
+    unknown: Boolean(p.unknown),
+  };
+}
+
+function mapBalanza(ex: Record<string, unknown>, config: SheetConfig): BalanzaSheetExercise {
+  const withVisual = config.withImages;
+  return {
+    kind: "balanza",
+    variant: "compare",
+    question: questionOf(ex),
+    left: mapPlate(ex.left, withVisual),
+    right: mapPlate(ex.right, withVisual),
+    tilt:
+      asString(ex.tilt) === "left" || asString(ex.tilt) === "right" || asString(ex.tilt) === "equal"
+        ? (asString(ex.tilt) as "left" | "right" | "equal")
+        : undefined,
+    answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
+  };
+}
+
+function mapBalanzaEquilibra(
+  ex: Record<string, unknown>,
+  config: SheetConfig,
+): BalanzaSheetExercise {
+  const withVisual = config.withImages;
+  const target = asNumber(ex.target, 1);
+  const leftEmoji = withVisual ? asString(ex.leftEmoji, "🧱") : "";
+  const leftKind = asString(ex.leftKind, "weights");
+  return {
+    kind: "balanza",
+    variant: "equilibra",
+    question: questionOf(ex) || `Equilibra la balanza: pon ${target} kg a la derecha`,
+    left: {
+      emoji: leftEmoji,
+      count: leftKind === "weights" ? target : 1,
+      weightLabel: asString(ex.leftLabel, `${target} kg`),
+      unknown: false,
+    },
+    right: {
+      emoji: withVisual ? "⬜" : "",
+      count: 0,
+      weightLabel: null,
+      unknown: true,
+    },
+    targetKg: target,
+    answer: `${target} kg`,
+  };
+}
+
+function mapMenuItems(raw: unknown): MenuItemSheet[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((item) => {
+    const r = asRecord(item);
+    return {
+      emoji: asString(r.emoji),
+      name: asString(r.name),
+      price: asNumber(r.price),
+    };
+  });
+}
+
+function mapGraficoBarras(ex: Record<string, unknown>): GraficoBarrasSheetExercise {
+  const barsRaw = Array.isArray(ex.bars) ? ex.bars : [];
+  const bars = barsRaw.map((b) => {
+    const bar = asRecord(b);
+    return {
+      etiqueta: asString(bar.etiqueta),
+      emoji: asString(bar.emoji),
+      valor: asNumber(bar.valor),
+    };
+  });
+  const blank =
+    typeof ex.blankBarIndex === "number" && Number.isFinite(ex.blankBarIndex)
+      ? ex.blankBarIndex
+      : undefined;
+  return {
+    kind: "graficoBarras",
+    titulo: asString(ex.titulo, "Gráfico"),
+    bars,
+    escalaMax: asNumber(ex.escalaMax, Math.max(1, ...bars.map((b) => b.valor))),
+    blankBarIndex: blank,
+    question: questionOf(ex),
+    answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
+  };
+}
+
+function mapMenuCafeteria(ex: Record<string, unknown>): MenuCafeteriaSheetExercise {
+  return {
+    kind: "menuCafeteria",
+    tray: mapMenuItems(ex.tray),
+    question: questionOf(ex),
+    answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
+  };
+}
+
+function mapCintaMetrica(ex: Record<string, unknown>): CintaMetricaSheetExercise {
+  const item = ex.item && typeof ex.item === "object" ? asRecord(ex.item) : {};
+  return {
+    kind: "cintaMetrica",
+    emoji: asString(item.emoji),
+    itemName: asString(item.name),
+    question: questionOf(ex),
+    answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
+  };
+}
+
+function mapInventarProblema(ex: Record<string, unknown>): InventarProblemaSheetExercise {
+  const budget =
+    typeof ex.budget === "number" && Number.isFinite(ex.budget) ? ex.budget : undefined;
+  return {
+    kind: "inventarProblema",
+    items: mapMenuItems(ex.items),
+    budget,
+    question: questionOf(ex),
+    answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
+  };
+}
+
+function mapIntervalosTiempo(ex: Record<string, unknown>): IntervalosTiempoSheetExercise {
+  const acts = Array.isArray(ex.activities) ? ex.activities : [];
+  return {
+    kind: "intervalosTiempo",
+    type: asString(ex.type),
+    activities: acts.map((a) => {
+      const act = asRecord(a);
+      return {
+        emoji: asString(act.emoji),
+        name: asString(act.name),
+        label: asString(act.label),
+        seconds: asNumber(act.seconds),
+      };
+    }),
+    showBars: Boolean(ex.showBars),
+    question: questionOf(ex),
+    answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
   };
 }
 
@@ -487,7 +777,7 @@ export function mapSessionToSheet(
     case "comparison":
       return mapComparison(ex, config);
     case "tresSumandos":
-      return mapTresSumandos(ex);
+      return mapTresSumandos(ex, config);
     case "igualdad":
       return mapIgualdad(ex, config);
     case "algoritmoVertical":
@@ -539,13 +829,7 @@ export function mapSessionToSheet(
     case "capacidad":
       return mapQuestionKind("capacidad", ex);
     case "ordinales":
-      return {
-        kind: "ordinales",
-        question: questionOf(ex),
-        count: asNumber(ex.count),
-        imageUrl: config.withImages ? asString(ex.imageUrl) : "",
-        answer: asNumber(ex.answer),
-      };
+      return mapOrdinales(ex, config);
     case "numeracion4059":
       return mapQuestionKind("numeracion4059", ex);
     case "numeracion6099":
@@ -580,17 +864,17 @@ export function mapSessionToSheet(
     case "redondeo":
       return mapQuestionKind("redondeo", ex);
     case "series3cifras":
-      return mapQuestionKind("series3Cifras", ex);
+      return mapSeries("series3Cifras", ex, config);
     case "seriesNumericas":
-      return mapQuestionKind("seriesNumericas", ex);
+      return mapSeries("seriesNumericas", ex, config);
     case "cintaMetrica":
-      return mapQuestionKind("cintaMetrica", ex);
+      return mapCintaMetrica(ex);
     case "intervalosTiempo":
-      return mapQuestionKind("intervalosTiempo", ex);
+      return mapIntervalosTiempo(ex);
     case "elKilo":
-      return mapQuestionKind("elKilo", ex);
+      return mapElKilo(ex, config);
     case "elLitro":
-      return mapQuestionKind("elLitro", ex);
+      return mapElLitro(ex, config);
     case "vecinosNumero":
       return mapQuestionKind("vecinosNumero", ex);
     case "amigos10":
@@ -604,28 +888,23 @@ export function mapSessionToSheet(
     case "algoritmo3cifras":
       return mapQuestionKind("algoritmo3Cifras", ex);
     case "graficoBarras":
-      return mapQuestionKind("graficoBarras", ex);
+      return mapGraficoBarras(ex);
     case "menuCafeteria":
-      return mapQuestionKind("menuCafeteria", ex);
+      return mapMenuCafeteria(ex);
     case "monedasBilletes":
-      return mapQuestionKind("monedasBilletes", ex);
+      return mapMonedasBilletes(ex, config);
     case "inventarProblema":
-      return mapQuestionKind("inventarProblema", ex);
+      return mapInventarProblema(ex);
     case "balanza":
+      return mapBalanza(ex, config);
     case "balanzaEquilibra":
-      return {
-        kind: "balanza",
-        question: questionOf(ex),
-        leftText: asString(ex.leftText ?? (ex.left ? JSON.stringify(ex.left) : "izquierda")),
-        rightText: asString(ex.rightText ?? (ex.right ? JSON.stringify(ex.right) : "derecha")),
-        imageUrl: config.withImages ? asString(ex.imageUrl) : "",
-        answer: undefined,
-      };
+      return mapBalanzaEquilibra(ex, config);
     case "ordenar":
       return mapOrdering(ex);
     case "relacionar":
       return mapRelacionar(ex, config);
     case "relacionarCantidades":
+      return mapRelacionarCantidades(ex, config);
     case "rectaNumerica":
     default:
       return mapProblema(ex);
@@ -644,6 +923,44 @@ function mapOrdering(ex: Record<string, unknown>): OrderingSheetExercise {
     numbers,
     direction,
     answer: sorted,
+  };
+}
+
+function mapSeries(
+  kind: "seriesNumericas" | "series3Cifras",
+  ex: Record<string, unknown>,
+  config: SheetConfig,
+): SeriesNumericasSheetExercise | Series3CifrasSheetExercise {
+  const sequence = Array.isArray(ex.sequence)
+    ? ex.sequence.map((n) => (typeof n === "number" && Number.isFinite(n) ? n : -1))
+    : [];
+  const blankFromSeq = sequence.findIndex((n) => n === -1);
+  const blankIndex = asNumber(ex.blankIndex, blankFromSeq >= 0 ? blankFromSeq : 0);
+  const step = asNumber(ex.step, 1);
+  const ascending = ex.ascending !== false;
+
+  const answerRaw = answerOf(ex);
+  let answer: number | undefined;
+  if (typeof answerRaw === "number" && Number.isFinite(answerRaw)) {
+    answer = answerRaw;
+  } else if (typeof answerRaw === "string" && answerRaw.trim() !== "") {
+    const parsed = Number(answerRaw);
+    if (Number.isFinite(parsed)) answer = parsed;
+  }
+
+  // Misma regla que pizarra: pista de salto solo en easy/medium.
+  const showDir = config.difficulty === "easy" || config.difficulty === "medium";
+  const dir = ascending ? `de ${step} en ${step}` : `bajando de ${step} en ${step}`;
+  const question = showDir ? `¿Qué número falta? (${dir})` : "¿Qué número falta?";
+
+  return {
+    kind,
+    sequence,
+    blankIndex,
+    step,
+    ascending,
+    question,
+    answer,
   };
 }
 
@@ -673,4 +990,50 @@ function mapRelacionar(ex: Record<string, unknown>, config: SheetConfig): Relaci
     .map((l) => `${l.number} → ${idToLetter.get(l.id) ?? "?"}`);
 
   return { kind: "relacionar", left, right, answer };
+}
+
+function mapRelacionarCantidades(
+  ex: Record<string, unknown>,
+  config: SheetConfig,
+): RelacionarCantidadesSheetExercise {
+  const leftRaw = Array.isArray(ex.leftColumn) ? ex.leftColumn : [];
+  const rightRaw = Array.isArray(ex.rightColumn) ? ex.rightColumn : [];
+  const first = leftRaw[0] ? asRecord(leftRaw[0]) : {};
+
+  const left = leftRaw.map((item) => {
+    const pair = asRecord(item);
+    const cantidadesRaw = Array.isArray(pair.izquierda) ? pair.izquierda : [];
+    return {
+      id: asNumber(pair.id),
+      text: asString(pair.leftText),
+      cantidades: cantidadesRaw.map((c) => {
+        const cant = asRecord(c);
+        return {
+          total: asNumber(cant.total),
+          rotulo: asString(cant.rotulo) || undefined,
+        };
+      }),
+    };
+  });
+
+  const right = rightRaw.map((item, i) => {
+    const pair = asRecord(item);
+    return {
+      id: asNumber(pair.id),
+      letter: String.fromCharCode(65 + i),
+      text: asString(pair.rightText),
+    };
+  });
+
+  const idToLetter = new Map(right.map((r) => [r.id, r.letter]));
+  const answer = left.map((l) => `${l.text} → ${idToLetter.get(l.id) ?? "?"}`);
+
+  return {
+    kind: "relacionarCantidades",
+    left,
+    right,
+    imageUrl: config.withImages ? asString(first.imageUrl) : "",
+    objectLabel: asString(first.objectLabel, "objetos"),
+    answer,
+  };
 }

@@ -1,4 +1,4 @@
-import type { RelacionarSheetExercise, SheetExercise } from "../types";
+import type { OrderingSheetExercise, RelacionarSheetExercise, SheetExercise } from "../types";
 
 /** Parte un array en páginas de tamaño fijo. */
 export function chunkByPageSize<T>(items: T[], size: number): T[][] {
@@ -31,6 +31,27 @@ export function pageSizeForExercises(
     if (pairs >= 4 || maxCount >= 8) return 5;
     return 6;
   }
+  if (first.kind === "relacionarCantidades") {
+    return options.showAnswer ? 8 : 2;
+  }
+  if (first.kind === "elKilo" || first.kind === "elLitro" || first.kind === "monedasBilletes") {
+    return options.showAnswer ? 12 : 8;
+  }
+  if (first.kind === "ordinales" || first.kind === "parImpar") {
+    return options.showAnswer ? 16 : 10;
+  }
+  if (first.kind === "graficoBarras") {
+    return options.showAnswer ? 10 : 4;
+  }
+  if (
+    first.kind === "balanza" ||
+    first.kind === "menuCafeteria" ||
+    first.kind === "inventarProblema" ||
+    first.kind === "intervalosTiempo" ||
+    first.kind === "cintaMetrica"
+  ) {
+    return options.showAnswer ? 14 : 8;
+  }
   if (first.kind === "counting") {
     // Siempre 10 por hoja A4 (todos los niveles); el CSS densifica figuras.
     return 10;
@@ -38,6 +59,16 @@ export function pageSizeForExercises(
   if (first.kind === "comparison") {
     // Alumno: una fila con dibujos (10/hoja). Soluciones: solo texto (más densas).
     return options.showAnswer ? 12 : 10;
+  }
+  if (first.kind === "seriesNumericas" || first.kind === "series3Cifras") {
+    // Alumno: 10 series por hoja. Soluciones: solo el número (más densas).
+    return options.showAnswer ? 20 : 10;
+  }
+  if (first.kind === "ordenar") {
+    // 2 columnas: con 5 números la tarjeta es más alta → menos por hoja A4.
+    const n = (first as OrderingSheetExercise).numbers.length;
+    if (options.showAnswer) return n >= 5 ? 8 : 12;
+    return n >= 5 ? 6 : 8;
   }
   return exercises.length || 1;
 }
@@ -50,6 +81,17 @@ export function isFullWidthExercise(
   options: { showAnswer?: boolean } = {},
 ): boolean {
   if (ex.kind === "relacionar") return !options.showAnswer;
+  if (ex.kind === "relacionarCantidades") return !options.showAnswer;
   if (ex.kind === "comparison") return !options.showAnswer;
+  // Serie en una sola fila (cajas + flechas), como en pizarra.
+  if (ex.kind === "seriesNumericas" || ex.kind === "series3Cifras") {
+    return !options.showAnswer;
+  }
+  if (ex.kind === "elKilo" || ex.kind === "elLitro" || ex.kind === "ordinales") {
+    return !options.showAnswer;
+  }
+  if (ex.kind === "graficoBarras" || ex.kind === "balanza" || ex.kind === "intervalosTiempo") {
+    return !options.showAnswer;
+  }
   return false;
 }
