@@ -1,4 +1,4 @@
-import type { OrderingSheetExercise, RelacionarSheetExercise, SheetExercise } from "../types";
+import type { RelacionarSheetExercise, SheetExercise } from "../types";
 
 /** Parte un array en páginas de tamaño fijo. */
 export function chunkByPageSize<T>(items: T[], size: number): T[][] {
@@ -65,10 +65,8 @@ export function pageSizeForExercises(
     return options.showAnswer ? 20 : 10;
   }
   if (first.kind === "ordenar") {
-    // 2 columnas: con 5 números la tarjeta es más alta → menos por hoja A4.
-    const n = (first as OrderingSheetExercise).numbers.length;
-    if (options.showAnswer) return n >= 5 ? 8 : 12;
-    return n >= 5 ? 6 : 8;
+    // Siempre 10 por hoja A4 (2×5), alumno y soluciones.
+    return 10;
   }
   return exercises.length || 1;
 }

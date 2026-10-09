@@ -6,11 +6,12 @@ import { getGenerator } from "./generators/registry";
 import { FichaAlumno } from "./renderers/alumno";
 import { FichaSoluciones } from "./renderers/soluciones";
 import printCss from "./renderers/print.css?inline";
+import { downloadHtmlAsPdf } from "./pdfExport";
 import { downloadHtmlAsWord } from "./wordHtmlExport";
 import type { FichaMeta, FichaMode, SheetConfig, SheetExercise } from "./types";
+/** Logo empaquetado por Vite (URL estable + inlinable a data URL en export). */
+import colegioLogoUrl from "../../assets/logo-ficha.png";
 
-/** Logo del colegio con fondo transparente (public/). */
-const colegioLogoUrl = "/logo-ficha.png";
 const LAST_FICHA_KEY = "educolor_ficha_last";
 
 export interface GenerateFichaInput {
@@ -151,8 +152,8 @@ export interface DownloadFichasInput {
 }
 
 /**
- * Descarga un Word (.doc) con el mismo HTML/CSS que la vista previa.
- * Si hay dos modos, van en el mismo documento con salto de página entre ellas.
+ * Descarga un PDF con el mismo HTML/CSS que la vista previa.
+ * Descarga directa del archivo — sin diálogo de impresión ni impresora.
  */
 export async function downloadFichas(input: DownloadFichasInput): Promise<SheetExercise[]> {
   const doc = buildFichaDocument(input);
@@ -164,24 +165,41 @@ export async function downloadFichas(input: DownloadFichasInput): Promise<SheetE
     mode: doc.modes[0]!,
   });
 
-  await downloadHtmlAsWord({
+  await downloadHtmlAsPdf({
     html: doc.html,
     css: doc.css,
-    filename: `ficha-${input.activityId}-${modeLabel}.doc`,
+    filename: `ficha-${input.activityId}-${modeLabel}.pdf`,
   });
 
   return doc.exercises;
 }
 
-/** Descarga la ficha en Word con el mismo HTML/CSS que la vista previa. */
+/** Descarga la ficha en PDF (sin impresión). */
 export async function downloadFicha(input: GenerateFichaInput): Promise<GeneratedFicha> {
   const generated = generateFicha(input);
-  await downloadHtmlAsWord({
+  await downloadHtmlAsPdf({
     html: generated.html,
     css: printCss,
-    filename: `ficha-${input.activityId}-${input.mode}.doc`,
+    filename: `ficha-${input.activityId}-${input.mode}.pdf`,
   });
   return generated;
+}
+
+/** Compatibilidad: exporta Word (.doc HTML). Preferir PDF. */
+export async function downloadFichasAsWord(input: DownloadFichasInput): Promise<SheetExercise[]> {
+  const doc = buildFichaDocument(input);
+  const modeLabel = doc.modes.join("+");
+  persistLastFicha({
+    activityId: input.activityId,
+    config: input.config,
+    mode: doc.modes[0]!,
+  });
+  await downloadHtmlAsWord({
+    html: doc.html,
+    css: doc.css,
+    filename: `ficha-${input.activityId}-${modeLabel}.doc`,
+  });
+  return doc.exercises;
 }
 
 function uniqueModes(modes: readonly FichaMode[]): FichaMode[] {

@@ -91,7 +91,7 @@ describe("pageLayout", () => {
     expect(pageSizeForExercises(ops)).toBe(10);
   });
 
-  it("ordenar pagina según cantidad de números", () => {
+  it("ordenar siempre 10 por hoja", () => {
     const few = {
       kind: "ordenar" as const,
       numbers: [1, 2, 3],
@@ -102,9 +102,9 @@ describe("pageLayout", () => {
       numbers: [15, 10, 5, 17, 13],
       direction: "ascending" as const,
     };
-    expect(pageSizeForExercises([few])).toBe(8);
-    expect(pageSizeForExercises([many])).toBe(6);
-    expect(pageSizeForExercises([many], { showAnswer: true })).toBe(8);
+    expect(pageSizeForExercises([few])).toBe(10);
+    expect(pageSizeForExercises([many])).toBe(10);
+    expect(pageSizeForExercises([many], { showAnswer: true })).toBe(10);
   });
 
   it("series: 10 por hoja a ancho completo; soluciones solo número más densas", () => {

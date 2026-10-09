@@ -9,7 +9,7 @@ import {
   randomFichaSeed,
 } from "./fichaGenerator";
 import { getGenerator } from "./generators/registry";
-import * as wordHtmlExport from "./wordHtmlExport";
+import * as pdfExport from "./pdfExport";
 import type { SheetConfig } from "./types";
 
 const baseConfig = (activityId: string): SheetConfig => ({
@@ -73,8 +73,8 @@ describe("fichaGenerator", () => {
     expect(result.html).toContain("ficha-answer");
   });
 
-  it("downloadFichas(alumno+soluciones) exporta Word con el HTML de la vista previa", async () => {
-    const spy = vi.spyOn(wordHtmlExport, "downloadHtmlAsWord").mockResolvedValue(undefined);
+  it("downloadFichas(alumno+soluciones) exporta PDF con el HTML de la vista previa", async () => {
+    const spy = vi.spyOn(pdfExport, "downloadHtmlAsPdf").mockResolvedValue(undefined);
     const exercises = await downloadFichas({
       activityId: "suma",
       config: baseConfig("suma"),
@@ -85,7 +85,7 @@ describe("fichaGenerator", () => {
     expect(spy).toHaveBeenCalledOnce();
     const arg = spy.mock.calls[0]![0];
     expect(arg.filename).toContain("suma");
-    expect(arg.filename).toMatch(/\.doc$/);
+    expect(arg.filename).toMatch(/\.pdf$/);
     expect(arg.html).toContain("ficha-page");
     expect((arg.html.match(/ficha-page/g) ?? []).length).toBeGreaterThanOrEqual(2);
   });
@@ -297,7 +297,7 @@ describe("fichaGenerator", () => {
   });
 
   it("alumno+soluciones juntos para todas las actividades con generador", async () => {
-    const spy = vi.spyOn(wordHtmlExport, "downloadHtmlAsWord").mockResolvedValue(undefined);
+    const spy = vi.spyOn(pdfExport, "downloadHtmlAsPdf").mockResolvedValue(undefined);
     const failures: string[] = [];
     for (const manifest of activityManifests) {
       try {

@@ -218,7 +218,7 @@ export function FichaModal({
             onClick={handleGenerate}
             disabled={busy}
           >
-            {busy ? "Generando…" : "Guardar Word"}
+            {busy ? "Generando…" : "Guardar PDF"}
           </button>
         </div>
       </div>

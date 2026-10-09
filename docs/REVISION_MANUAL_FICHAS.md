@@ -79,13 +79,13 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 
 ### Estado de implementación
 
-| Fase                                  | Estado    | Notas                                                                           |
-| ------------------------------------- | --------- | ------------------------------------------------------------------------------- |
-| 0 — Criterio + checklist              | Hecha     | Baseline `ordenar` Word≠preview documentado                                     |
-| 1 — Seed único + `buildFichaDocument` | Hecha     | Misma seed en modal (preview y Word); builder canónico                          |
-| 2 — Layout Word-safe                  | Hecha     | Tabla 2 cols, cabecera tabla, clases explícitas (sin `:has`), ordenar en tablas |
-| 3 — Preview = HTML canónico           | Hecha     | `FichaPreviewScreen` pinta `buildFichaDocument().html` + mismo CSS              |
-| 4 — Print = mismo pipeline            | Pendiente | Botón Imprimir/PDF quitado de la vista previa                                   |
+| Fase                                  | Estado | Notas                                                              |
+| ------------------------------------- | ------ | ------------------------------------------------------------------ |
+| 0 — Criterio + checklist              | Hecha  | Baseline `ordenar` Word≠preview documentado                        |
+| 1 — Seed único + `buildFichaDocument` | Hecha  | Misma seed en modal (preview y export); builder canónico           |
+| 2 — Layout Word-safe                  | Hecha  | Tabla 2 cols, cabecera tabla, clases explícitas, ordenar en tablas |
+| 3 — Preview = HTML canónico           | Hecha  | Preview pinta `buildFichaDocument().html` + mismo CSS              |
+| 4 — Guardar PDF (sin impresora)       | Hecha  | Descarga `.pdf` con html2canvas+jsPDF; no `window.print()`         |
 
 ---
 

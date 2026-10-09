@@ -489,7 +489,7 @@
 
 .ficha-ordenar__instruction {
   margin: 0 0 6px;
-  font-size: 13px;
+  font-size: 20px;
   font-weight: 600;
   color: #1e293b;
 }
@@ -516,17 +516,18 @@
 
 .ficha-ordenar__card,
 .ficha-ordenar__slot {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   max-width: 56px;
+  height: 40px;
   margin: 0 auto;
-  text-align: center;
-  line-height: 32px;
-  min-height: 32px;
-  padding: 2px 4px;
+  padding: 0;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 800;
+  line-height: 1;
   color: #0f172a;
   box-sizing: border-box;
 }
@@ -539,9 +540,6 @@
 .ficha-ordenar__slot {
   border: 1.5px dashed #94a3b8;
   background: #fff;
-  max-width: 56px;
-  min-height: 40px;
-  line-height: 40px;
 }
 
 /* Series numéricas (formato pizarra: cajas + flechas) */

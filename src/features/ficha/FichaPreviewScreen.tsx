@@ -2,6 +2,7 @@ import type { ActivityDifficulty } from "../../core/content/contracts";
 import { buildFichaDocument, type FichaMode, type SheetConfig } from "../../core/ficha";
 import { getActivityManifest } from "../../manifests/content-registry";
 import printCss from "../../core/ficha/renderers/print.css?inline";
+import colegioLogoUrl from "../../assets/logo-ficha.png";
 import "./FichaPreviewScreen.css";
 
 function parseModes(raw: string | null): FichaMode[] {
@@ -44,7 +45,7 @@ function readParams(): {
 }
 
 /**
- * Vista previa = mismo HTML/CSS que se exporta a Word (`buildFichaDocument`).
+ * Vista previa = mismo HTML/CSS que se exporta a PDF (`buildFichaDocument`).
  */
 export function FichaPreviewScreen(): JSX.Element {
   const opts = readParams();
@@ -73,6 +74,7 @@ export function FichaPreviewScreen(): JSX.Element {
         subject: opts.subject,
         className: opts.className || undefined,
       },
+      logoUrl: colegioLogoUrl,
     });
   } catch (err) {
     error = err instanceof Error ? err.message : "Error al generar la ficha";
