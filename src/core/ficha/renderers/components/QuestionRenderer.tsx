@@ -15,7 +15,10 @@ export function QuestionRenderer({
   return (
     <div>
       {question && (
-        <p className="ficha-mt-0" style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+        <p
+          className="ficha-exercise__question ficha-mt-0"
+          style={{ margin: 0, whiteSpace: "pre-wrap" }}
+        >
           {question}
         </p>
       )}

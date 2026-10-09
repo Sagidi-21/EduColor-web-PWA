@@ -22,6 +22,8 @@ export function exerciseCardVariant(ex: SheetExercise): string {
       return "series";
     case "ordenar":
       return "ordenar";
+    case "relacionar":
+      return "relacionar";
     default:
       return "";
   }

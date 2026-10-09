@@ -28,10 +28,10 @@ describe("pageLayout", () => {
     expect(chunkByPageSize([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]]);
   });
 
-  it("relacionar easy → 6 por página; hard/expert → menos; soluciones → 12", () => {
-    expect(pageSizeForExercises([relacionar(3, 5)])).toBe(6);
-    expect(pageSizeForExercises([relacionar(4, 9)])).toBe(5);
-    expect(pageSizeForExercises([relacionar(5, 15)])).toBe(4);
+  it("relacionar heurístico de respaldo; soluciones → 12", () => {
+    expect(pageSizeForExercises([relacionar(3, 5)])).toBe(5);
+    expect(pageSizeForExercises([relacionar(4, 9)])).toBe(4);
+    expect(pageSizeForExercises([relacionar(5, 15)])).toBe(3);
     expect(pageSizeForExercises([relacionar(3, 5)], { showAnswer: true })).toBe(12);
   });
 

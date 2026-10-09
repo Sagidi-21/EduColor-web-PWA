@@ -24,12 +24,13 @@ export function pageSizeForExercises(
   if (!first) return 1;
   if (first.kind === "relacionar") {
     if (options.showAnswer) return 12;
+    // Heurístico de respaldo (sin DOM). La paginación real mide alturas en pagePacking.
     const ex = first as RelacionarSheetExercise;
     const maxCount = Math.max(0, ...ex.right.map((r) => r.count));
     const pairs = ex.left.length;
-    if (pairs >= 5 || maxCount >= 12) return 4;
-    if (pairs >= 4 || maxCount >= 8) return 5;
-    return 6;
+    if (pairs >= 5 || maxCount >= 12) return 3;
+    if (pairs >= 4 || maxCount >= 8) return 4;
+    return 5;
   }
   if (first.kind === "relacionarCantidades") {
     return options.showAnswer ? 8 : 2;

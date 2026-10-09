@@ -2,16 +2,26 @@
  * Descarga la ficha como PDF real (archivo .pdf).
  * No abre el diálogo de impresión ni intenta conectar con impresoras.
  *
- * Cada página se maqueta en un iframe A4 (mismo CSS que la preview) y se
- * inserta en el PDF **sin estirar** (se respeta la proporción del canvas).
+ * - Ordenar: mismo override CSS del commit que centraba bien + foreignObjectRendering.
+ * - Relacionar (muchas imágenes): sin FO (evita páginas negras) + centrado table-cell en onclone.
+ * - Todas las hojas: caja A4 fija a ancho completo (márgenes laterales iguales).
  */
 
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { inlineImagesInHtml } from "./wordHtmlExport";
+import printCssFallback from "./renderers/print.css?inline";
 
 const A4_WIDTH_MM = 210;
 const A4_HEIGHT_MM = 297;
+
+/** Solo badges de Relacionar/similares (NO Ordenar: ese iba bien con CSS del commit). */
+const RELACIONAR_BADGE_SELECTORS = [
+  ".ficha-relacionar__num-value",
+  ".ficha-relacionar__letter",
+  ".ficha-relcant__letter",
+  ".ficha-compare__letter",
+].join(", ");
 
 export interface DownloadHtmlAsPdfInput {
   html: string;
@@ -63,45 +73,89 @@ function loadIframeDocument(iframe: HTMLIFrameElement, html: string): Promise<Do
   });
 }
 
-/**
- * Inserta la imagen en A4 manteniendo proporción (nunca estira el texto).
- */
-function addCanvasToPdf(pdf: jsPDF, canvas: HTMLCanvasElement, pageIndex: number): void {
-  const imgData = canvas.toDataURL("image/jpeg", 0.95);
-  if (pageIndex > 0) pdf.addPage();
-
-  const ratio = canvas.height / Math.max(1, canvas.width);
-  let drawW = A4_WIDTH_MM;
-  let drawH = drawW * ratio;
-
-  if (drawH > A4_HEIGHT_MM) {
-    // Encaje uniforme (misma escala en X e Y) — evita el “letter-spacing” falso.
-    const scale = A4_HEIGHT_MM / drawH;
-    drawW *= scale;
-    drawH = A4_HEIGHT_MM;
-  }
-
-  const x = (A4_WIDTH_MM - drawW) / 2;
-  pdf.addImage(imgData, "JPEG", x, 0, drawW, drawH);
+function waitForImages(root: ParentNode): Promise<void> {
+  const imgs = Array.from(root.querySelectorAll("img"));
+  return Promise.all(
+    imgs.map(
+      (img) =>
+        new Promise<void>((resolve) => {
+          if (img.complete && img.naturalWidth > 0) {
+            resolve();
+            return;
+          }
+          const done = () => resolve();
+          img.addEventListener("load", done, { once: true });
+          img.addEventListener("error", done, { once: true });
+        }),
+    ),
+  ).then(() => undefined);
 }
 
 /**
- * Renderiza el HTML de la ficha, captura cada `.ficha-page` y descarga un PDF.
- * Sin `window.print()`.
+ * Relacionar: mismo truco que Ordenar (block + line-height = height + text-align).
+ * html2canvas sin foreignObject no centra flex; table-cell dejaba el texto a la izquierda.
  */
+function centerRelacionarBadgesInClone(clonedDoc: Document, liveRoot: HTMLElement): void {
+  const liveBadges = Array.from(liveRoot.querySelectorAll<HTMLElement>(RELACIONAR_BADGE_SELECTORS));
+  const clonedBadges = Array.from(
+    clonedDoc.querySelectorAll<HTMLElement>(RELACIONAR_BADGE_SELECTORS),
+  );
+  const liveWin = liveRoot.ownerDocument.defaultView;
+
+  clonedBadges.forEach((el, index) => {
+    const live = liveBadges[index];
+    const raw = (el.textContent ?? "").trim();
+    const liveStyle = live && liveWin ? liveWin.getComputedStyle(live) : null;
+    const rect = live?.getBoundingClientRect();
+    const w = rect && rect.width > 0 ? Math.round(rect.width) : 0;
+    const h = rect && rect.height > 0 ? Math.round(rect.height) : 0;
+    const widthPx = w > 0 ? `${w}px` : liveStyle?.width || "32px";
+    const heightPx = h > 0 ? `${h}px` : liveStyle?.height || "32px";
+    const linePx = h > 0 ? `${h}px` : heightPx;
+
+    el.textContent = raw.length > 0 ? raw : "\u00a0";
+    el.style.display = "block";
+    el.style.padding = "0";
+    el.style.margin = "0";
+    el.style.boxSizing = "border-box";
+    el.style.textAlign = "center";
+    el.style.width = widthPx;
+    el.style.minWidth = widthPx;
+    el.style.maxWidth = widthPx;
+    el.style.height = heightPx;
+    el.style.minHeight = heightPx;
+    el.style.lineHeight = linePx;
+    el.style.alignItems = "unset";
+    el.style.justifyContent = "unset";
+    if (liveStyle?.border) el.style.border = liveStyle.border;
+    if (liveStyle?.borderRadius) el.style.borderRadius = liveStyle.borderRadius;
+    if (liveStyle?.backgroundColor) el.style.background = liveStyle.backgroundColor;
+    if (liveStyle?.fontSize) el.style.fontSize = liveStyle.fontSize;
+    if (liveStyle?.fontWeight) el.style.fontWeight = liveStyle.fontWeight;
+    if (liveStyle?.color) el.style.color = liveStyle.color;
+  });
+}
+
+function addCanvasToPdf(pdf: jsPDF, canvas: HTMLCanvasElement, pageIndex: number): void {
+  const imgData = canvas.toDataURL("image/jpeg", 0.95);
+  if (pageIndex > 0) pdf.addPage();
+  pdf.addImage(imgData, "JPEG", 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
+}
+
 export async function downloadHtmlAsPdf(input: DownloadHtmlAsPdfInput): Promise<void> {
   const bodyHtml = await inlineImagesInHtml(input.html);
+  const css = input.css?.trim() ? input.css : printCssFallback;
 
   const iframe = document.createElement("iframe");
   iframe.setAttribute("title", "ficha-pdf");
   iframe.setAttribute("aria-hidden", "true");
-  // Tamaño A4 real en el iframe → mismo layout que la vista previa.
+  // Alto grande: si el iframe es solo 297mm, las páginas 2+ salen negras.
   iframe.style.cssText = [
     "position:fixed",
     "left:0",
     "top:0",
     `width:${A4_WIDTH_MM}mm`,
-    `height:${A4_HEIGHT_MM}mm`,
+    "height:1px",
     "border:0",
     "opacity:0",
     "pointer-events:none",
@@ -121,19 +175,21 @@ export async function downloadHtmlAsPdf(input: DownloadHtmlAsPdfInput): Promise<
       background: #fff;
       width: ${A4_WIDTH_MM}mm;
     }
-    ${input.css}
+    ${css}
     .ficha-page {
       width: ${A4_WIDTH_MM}mm !important;
+      height: ${A4_HEIGHT_MM}mm !important;
       min-height: ${A4_HEIGHT_MM}mm !important;
+      max-height: ${A4_HEIGHT_MM}mm !important;
       margin: 0 !important;
+      overflow: hidden !important;
       box-shadow: none !important;
       background: #fff !important;
       box-sizing: border-box !important;
     }
     .ficha-print-break { display: none !important; }
     /*
-     * html2canvas centra mal el texto con display:flex.
-     * En PDF usamos caja con line-height = height (la preview sigue con flex).
+     * Ordenar / Relacionar — line-height = height (html2canvas no centra flex).
      */
     .ficha-ordenar__card,
     .ficha-ordenar__slot {
@@ -150,6 +206,20 @@ export async function downloadHtmlAsPdf(input: DownloadHtmlAsPdfInput): Promise<
       font-weight: 800 !important;
       box-sizing: border-box !important;
     }
+    .ficha-relacionar__num-value,
+    .ficha-relacionar__letter {
+      display: block !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      text-align: center !important;
+      box-sizing: border-box !important;
+      align-items: unset !important;
+      justify-content: unset !important;
+    }
+    .ficha-relacionar__strip {
+      flex-wrap: wrap !important;
+      overflow: visible !important;
+    }
   </style>
 </head>
 <body>
@@ -159,12 +229,16 @@ ${bodyHtml}
 
   try {
     const doc = await loadIframeDocument(iframe, documentHtml);
+    await waitForImages(doc);
     await waitFrames(3);
 
     const pages = Array.from(doc.querySelectorAll<HTMLElement>(".ficha-page"));
     if (pages.length === 0) {
       throw new Error("No hay páginas de ficha para exportar a PDF.");
     }
+
+    iframe.style.height = `${Math.max(doc.body.scrollHeight, pages.length * 1200)}px`;
+    await waitFrames(2);
 
     const pdf = new jsPDF({
       unit: "mm",
@@ -175,16 +249,42 @@ ${bodyHtml}
 
     for (let i = 0; i < pages.length; i += 1) {
       const page = pages[i]!;
+      page.scrollIntoView({ block: "start" });
+      await waitForImages(page);
+      await waitFrames(1);
+
+      const hasRelacionar = Boolean(page.querySelector(".ficha-relacionar, .ficha-relcant"));
+      const imgCount = page.querySelectorAll("img").length;
+      // Commit: FO true centraba Ordenar. Con muchas imágenes FO saca páginas negras.
+      const useForeignObject = !hasRelacionar && imgCount <= 4;
+
+      const w = Math.max(1, page.offsetWidth);
+      const h = Math.max(1, page.offsetHeight);
+
       const canvas = await html2canvas(page, {
         scale: 2,
         useCORS: true,
         allowTaint: false,
         backgroundColor: "#ffffff",
         logging: false,
+        width: w,
+        height: h,
+        windowWidth: w,
+        windowHeight: h,
         scrollX: 0,
         scrollY: 0,
-        // Mejor fiel al layout del iframe (flex/centrado) cuando el motor lo soporta.
-        foreignObjectRendering: true,
+        foreignObjectRendering: useForeignObject,
+        onclone: (clonedDoc) => {
+          clonedDoc.querySelectorAll<HTMLElement>(".ficha-page").forEach((p) => {
+            p.style.background = "#ffffff";
+            p.style.width = `${A4_WIDTH_MM}mm`;
+            p.style.height = `${A4_HEIGHT_MM}mm`;
+            p.style.overflow = "hidden";
+          });
+          if (hasRelacionar) {
+            centerRelacionarBadgesInClone(clonedDoc, page);
+          }
+        },
       });
       addCanvasToPdf(pdf, canvas, i);
     }

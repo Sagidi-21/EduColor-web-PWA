@@ -63,11 +63,11 @@ describe("downloadHtmlAsPdf", () => {
     expect(print).not.toHaveBeenCalled();
     // Proporción del canvas mock 210x297 → drawW=210, drawH=297
     expect(mocks.addImage).toHaveBeenCalled();
-    // addImage(img, format, x, y, w, h) — proporción del canvas, sin estirar.
+    // addImage(img, format, x, y, w, h) — siempre A4 a ancho completo.
     const first = mocks.addImage.mock.calls[0]!;
-    expect(first[2]).toBeCloseTo(0);
-    expect(first[3]).toBeCloseTo(0);
-    expect(first[4]).toBeCloseTo(210);
-    expect(first[5]).toBeCloseTo(297);
+    expect(first[2]).toBe(0);
+    expect(first[3]).toBe(0);
+    expect(first[4]).toBe(210);
+    expect(first[5]).toBe(297);
   });
 });

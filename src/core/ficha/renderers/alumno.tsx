@@ -2,7 +2,7 @@ import { FichaHeader } from "./components/Header";
 import { StudentNameLine } from "./components/StudentNameLine";
 import { ExerciseGrid } from "./components/ExerciseGrid";
 import { FichaFooter } from "./components/Footer";
-import { chunkByPageSize, pageSizeForExercises } from "./pageLayout";
+import { packExercisesForPrint } from "./pagePacking";
 import type { SheetExercise, SheetConfig, FichaMeta } from "../types";
 import "./print.css";
 
@@ -15,7 +15,7 @@ export interface FichaAlumnoProps {
 
 /**
  * Renderiza una ficha de ALUMNO (sin respuestas).
- * Devuelve un contenedor listo para exportación / vista previa.
+ * Pagina midiendo alturas reales: máximo por hoja sin cortar ninguno.
  */
 export function FichaAlumno({
   exercises,
@@ -23,8 +23,13 @@ export function FichaAlumno({
   meta,
   logoUrl,
 }: FichaAlumnoProps): JSX.Element {
-  const pageSize = pageSizeForExercises(exercises);
-  const pages = chunkByPageSize(exercises, pageSize);
+  const pages = packExercisesForPrint(exercises, {
+    showAnswer: false,
+    withStudentName: Boolean(meta.studentName),
+  });
+  const pageOffsets = pages.map((_, idx) =>
+    pages.slice(0, idx).reduce((sum, page) => sum + page.length, 0),
+  );
 
   return (
     <>
@@ -44,7 +49,7 @@ export function FichaAlumno({
 
           <ExerciseGrid
             exercises={pageExercises}
-            pageOffset={pageIdx * pageSize}
+            pageOffset={pageOffsets[pageIdx] ?? 0}
             showAnswer={false}
           />
 

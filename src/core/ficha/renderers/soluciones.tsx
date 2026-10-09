@@ -2,7 +2,7 @@ import { FichaHeader } from "./components/Header";
 import { StudentNameLine } from "./components/StudentNameLine";
 import { ExerciseGrid } from "./components/ExerciseGrid";
 import { FichaFooter } from "./components/Footer";
-import { chunkByPageSize, pageSizeForExercises } from "./pageLayout";
+import { packExercisesForPrint } from "./pagePacking";
 import type { SheetExercise, SheetConfig, FichaMeta } from "../types";
 import "./print.css";
 
@@ -15,6 +15,7 @@ export interface FichaSolucionesProps {
 
 /**
  * Renderiza una ficha de SOLUCIONES (con respuestas visibles).
+ * Pagina midiendo alturas reales: máximo por hoja sin cortar ninguno.
  */
 export function FichaSoluciones({
   exercises,
@@ -22,9 +23,13 @@ export function FichaSoluciones({
   meta,
   logoUrl,
 }: FichaSolucionesProps): JSX.Element {
-  const pageOpts = { showAnswer: true };
-  const pageSize = pageSizeForExercises(exercises, pageOpts);
-  const pages = chunkByPageSize(exercises, pageSize);
+  const pages = packExercisesForPrint(exercises, {
+    showAnswer: true,
+    withStudentName: Boolean(meta.studentName),
+  });
+  const pageOffsets = pages.map((_, idx) =>
+    pages.slice(0, idx).reduce((sum, page) => sum + page.length, 0),
+  );
 
   return (
     <>
@@ -44,7 +49,7 @@ export function FichaSoluciones({
 
           <ExerciseGrid
             exercises={pageExercises}
-            pageOffset={pageIdx * pageSize}
+            pageOffset={pageOffsets[pageIdx] ?? 0}
             showAnswer={true}
           />
 

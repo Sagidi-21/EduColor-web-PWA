@@ -6,3 +6,4 @@ export { ExerciseRenderer } from "./components/ExerciseRenderer";
 export { FichaFooter } from "./components/Footer";
 export { FichaAlumno } from "./alumno";
 export { FichaSoluciones } from "./soluciones";
+export { packExercisesForPrint, packExercisesByFit, packExercisesByHeights } from "./pagePacking";
