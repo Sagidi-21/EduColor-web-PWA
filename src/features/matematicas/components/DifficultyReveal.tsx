@@ -8,6 +8,7 @@ import type {
 } from "../../../core/content/contracts";
 import { playBackpackOpenSFX, playCardsBurstSFX } from "../../../shared/utils/audioSFX";
 import { getRandomMascotVariant } from "../../../assets/mascota/variants";
+import { ModalCloseButton } from "../../shared/components/ModalCloseButton";
 import "./DifficultyReveal.css";
 
 const levelOrder: CurriculumLevelId[] = [
@@ -233,20 +234,7 @@ export function DifficultyReveal({
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ duration: 0.25 }}
       >
-        <button className="diff-reveal__close" onClick={onClose} aria-label="uthiar">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeLinecap="round"
-          >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
+        <ModalCloseButton onClick={onClose} />
 
         <div className="diff-reveal__header">
           <span className="diff-reveal__icon">{activity.boardCard?.icon ?? "🔢"}</span>

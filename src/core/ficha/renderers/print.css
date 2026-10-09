@@ -225,6 +225,69 @@
   white-space: pre;
 }
 
+/* Contamos objetos — compacto para caber 10 en easy (2×5) */
+.ficha-exercise:has(.ficha-counting) {
+  min-height: 0;
+  padding: 6px 8px;
+  gap: 4px;
+}
+
+.ficha-counting {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ficha-counting__objects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.ficha-counting__thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.ficha-counting__placeholder {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid #94a3b8;
+  background: #f1f5f9;
+  flex-shrink: 0;
+}
+
+.ficha-counting__question {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-counting--compact .ficha-counting__thumb {
+  width: 44px;
+  height: 44px;
+}
+
+.ficha-counting--dense .ficha-counting__thumb {
+  width: 44px;
+  height: 44px;
+}
+
+.ficha-counting--dense .ficha-counting__objects {
+  gap: 1px;
+}
+
+.ficha-counting--compact .ficha-counting__objects {
+  gap: 2px;
+}
+
 /* Figuras / comparación / reloj */
 .ficha-shape-svg,
 .ficha-clock-svg,

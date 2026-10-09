@@ -13,8 +13,8 @@ export function chunkByPageSize<T>(items: T[], size: number): T[][] {
 
 /**
  * Cuántos ejercicios caben por página A4 según el contenido.
- * Relacionar necesita más altura (filas de figuras); en soluciones solo van
- * las respuestas y caben muchas más. El resto sigue en una sola hoja lógica.
+ * Relacionar / counting necesitan más altura con figuras; en soluciones de
+ * relacionar solo van respuestas. El resto sigue en una sola hoja lógica.
  */
 export function pageSizeForExercises(
   exercises: SheetExercise[],
@@ -31,10 +31,16 @@ export function pageSizeForExercises(
     if (pairs >= 4 || maxCount >= 8) return 5;
     return 6;
   }
+  if (first.kind === "counting") {
+    // Siempre 10 por hoja A4 (todos los niveles); el CSS densifica figuras.
+    return 10;
+  }
   return exercises.length || 1;
 }
 
-/** Ancho completo solo en la ficha de alumno (tablero con figuras). */
+/**
+ * Ancho completo: relacionar (alumno) y counting con muchos objetos.
+ */
 export function isFullWidthExercise(
   ex: SheetExercise,
   options: { showAnswer?: boolean } = {},

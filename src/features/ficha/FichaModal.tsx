@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { ActivityDifficulty, ActivityManifest } from "../../core/content/contracts";
 import { downloadFichas, difficultyStars, randomFichaSeed, type FichaMode } from "../../core/ficha";
+import { ModalCloseButton } from "../shared/components/ModalCloseButton";
 import "./FichaModal.css";
 
 export interface FichaModalProps {
@@ -104,9 +105,7 @@ export function FichaModal({
         aria-labelledby="ficha-modal-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <button type="button" className="ficha-modal__close" onClick={onClose} aria-label="Cerrar">
-          ×
-        </button>
+        <ModalCloseButton onClick={onClose} className="ficha-modal__close" />
 
         <h2 id="ficha-modal-title" className="ficha-modal__title">
           {activity.boardCard?.icon ?? "📄"} Generar ficha — {activity.title}

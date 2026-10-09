@@ -91,12 +91,15 @@ function mapOperation(ex: Record<string, unknown>, config: SheetConfig): Operati
 
 function mapCounting(ex: Record<string, unknown>, config: SheetConfig): CountingSheetExercise {
   const count = asNumber(ex.count);
+  const objectLabel = asString(ex.objectLabel, "objetos");
+  const firstStep = Array.isArray(ex.steps) && ex.steps[0] ? asRecord(ex.steps[0]) : null;
   return {
     kind: "counting",
     count,
     imageUrl: config.withImages ? asString(ex.imageUrl) : "",
-    objectLabel: asString(ex.objectLabel, "objetos"),
-    answer: asNumber(ex.answer, count),
+    objectLabel,
+    question: asString(firstStep?.prompt, `¿Cuántos ${objectLabel} hay?`),
+    answer: asNumber(firstStep?.correctAnswer, asNumber(ex.answer, count)),
   };
 }
 

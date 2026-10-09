@@ -183,6 +183,7 @@ mapeo estándar **documentado** del proyecto:
 | `SummaryScreen` shared                                  | `SummaryScreen` en `src/features/matematicas/components/SummaryScreen.tsx`                                                                                                                                                                                                                                                                                                                         |
 | `WrongFeedback` shared                                  | **Ya no existe.** Se unificó con `ActionButtons` (D-018). Usa `ActionButtons` en `src/features/matematicas/components/ActivityActionButtons.tsx`: es el **único** par de botones de reintentar/siguiente de la app                                                                                                                                                                                 |
 | `InputModeToggle` shared                                | `InputModeToggle` en `src/features/shared/components/InputModeToggle.tsx`                                                                                                                                                                                                                                                                                                                          |
+| Aspa / botón cerrar de modal                            | `ModalCloseButton` en `src/features/shared/components/ModalCloseButton.tsx` (pizarra + ficha; no clonar SVG/hover)                                                                                                                                                                                                                                                                                 |
 | `useInputMode` hook                                     | `useInputMode` en `src/features/shared/hooks/useInputMode.ts`                                                                                                                                                                                                                                                                                                                                      |
 | Numpad local de cada renderer (4059, 6099, operations…) | **NUNCA** hagas un Numpad local. Usa el compartido: `Numpad` en `src/features/shared/components/Numpad.tsx`                                                                                                                                                                                                                                                                                        |
 | `DrawableAnswerBox` de operations                       | `LazyDigitCell` en `src/features/shared/DigitCell.tsx`                                                                                                                                                                                                                                                                                                                                             |
@@ -201,12 +202,13 @@ pregunta.
 
 Pieces del catálogo que es fácil reinventar por error:
 
-| Necesitas…                            | Usa                                                                       | Documentado en             |
-| ------------------------------------- | ------------------------------------------------------------------------- | -------------------------- |
-| Botones de reintentar / siguiente     | `ActionButtons` (y **solo** `ActionButtons`)                              | [D-018](./DECISIONES.md)   |
-| Teclear un número, casilla por cifra  | `DigitBoxes` + `useDigitBoxes`, con `order` según se vea en vertical o no | [D-017](./DECISIONES.md)   |
-| Elegir nivel y dificultad             | `DifficultyReveal`                                                        | COMPONENTES_COMPARTIDOS §8 |
-| Que la pantalla no se quede en blanco | `ActivityErrorBoundary` + `NoExerciseNotice`; **nunca** `return null`     | COMPONENTES_COMPARTIDOS §9 |
+| Necesitas…                            | Usa                                                                       | Documentado en              |
+| ------------------------------------- | ------------------------------------------------------------------------- | --------------------------- |
+| Botones de reintentar / siguiente     | `ActionButtons` (y **solo** `ActionButtons`)                              | [D-018](./DECISIONES.md)    |
+| Teclear un número, casilla por cifra  | `DigitBoxes` + `useDigitBoxes`, con `order` según se vea en vertical o no | [D-017](./DECISIONES.md)    |
+| Elegir nivel y dificultad             | `DifficultyReveal`                                                        | COMPONENTES_COMPARTIDOS §8  |
+| Aspa de cerrar un modal               | `ModalCloseButton` (y **solo** `ModalCloseButton`)                        | COMPONENTES_COMPARTIDOS §8b |
+| Que la pantalla no se quede en blanco | `ActivityErrorBoundary` + `NoExerciseNotice`; **nunca** `return null`     | COMPONENTES_COMPARTIDOS §9  |
 
 Si crees que necesitas una pieza que no está en esta tabla: **no la inventes**.
 Detente, busca si ya existe en `src/features/shared/components/`,

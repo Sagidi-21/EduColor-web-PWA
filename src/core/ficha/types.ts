@@ -26,6 +26,8 @@ export interface CountingSheetExercise {
   count: number;
   imageUrl: string;
   objectLabel: string;
+  /** Pregunta, p. ej. «¿Cuántos manzanas hay?» */
+  question: string;
   answer?: number;
 }
 

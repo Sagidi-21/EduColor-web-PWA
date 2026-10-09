@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { RelacionarSheetExercise, SheetExercise } from "../types";
+import type { CountingSheetExercise, RelacionarSheetExercise, SheetExercise } from "../types";
 import { chunkByPageSize, isFullWidthExercise, pageSizeForExercises } from "./pageLayout";
 
 function relacionar(pairs: number, maxCount: number): RelacionarSheetExercise {
@@ -35,6 +35,26 @@ describe("pageLayout", () => {
     expect(isFullWidthExercise({ kind: "operation", a: 1, b: 2, op: "+", imageUrl: "" })).toBe(
       false,
     );
+  });
+
+  it("counting siempre 10 por hoja en 2 columnas", () => {
+    const few: CountingSheetExercise = {
+      kind: "counting",
+      count: 3,
+      imageUrl: "/x.png",
+      objectLabel: "obj",
+      question: "¿Cuántos?",
+      answer: 3,
+    };
+    const many: CountingSheetExercise = {
+      ...few,
+      count: 16,
+      answer: 16,
+    };
+    expect(pageSizeForExercises([few])).toBe(10);
+    expect(pageSizeForExercises([many])).toBe(10);
+    expect(isFullWidthExercise(few)).toBe(false);
+    expect(isFullWidthExercise(many)).toBe(false);
   });
 
   it("otras actividades no fragmentan por defecto", () => {

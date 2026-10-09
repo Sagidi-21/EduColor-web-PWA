@@ -30,6 +30,7 @@ Las decisiones de **por qué** cada pieza es como es están en
 | Selector de modo de entrada              | `shared/components/InputModeToggle.tsx`             | —                        |
 | Resumen final                            | `SummaryScreen.tsx`                                 | —                        |
 | Elección de nivel y dificultad           | `DifficultyReveal.tsx`                              | —                        |
+| Aspa de cerrar modal                     | `shared/components/ModalCloseButton.tsx`            | —                        |
 | Barrera de error y aviso de sesión vacía | `ActivityErrorBoundary.tsx`, `NoExerciseNotice.tsx` | —                        |
 | Feedback sonoro                          | `shared/audioFeedback.ts`                           | —                        |
 | Layout base de pantalla                  | `operations/OperationsScreen.css`                   | —                        |
@@ -143,7 +144,26 @@ originales de Electron.
 
 **Única** pantalla de selección de nivel, con su animación de revelación, las cartas
 de dificultad, las estrellas y el botón de empezar. Se usa ya en todo el catálogo: no
-la reimplementes ni la pintes en un renderer.
+la reimplementes ni la pintes en un renderer. El aspa de cerrar es `ModalCloseButton`
+(§8b), no un botón local.
+
+## 8b. Aspa de cerrar modal — `ModalCloseButton`
+
+```tsx
+import { ModalCloseButton } from "../../shared/components/ModalCloseButton";
+
+<ModalCloseButton onClick={onClose} />;
+```
+
+Botón circular con icono SVG y hover rojo. **Una sola** implementación para todos los
+modales:
+
+- `DifficultyReveal` (selección de nivel / dificultad en pizarra)
+- `FichaModal` (configuración de ficha imprimible)
+
+Props: `onClick`, `ariaLabel` (por defecto «Cerrar») y `className` opcional si el
+modal necesita ajustar solo la posición (como `.ficha-modal__close`). No clones el
+SVG ni el hover en CSS local.
 
 ## 9. Barrera de error y sesión vacía
 

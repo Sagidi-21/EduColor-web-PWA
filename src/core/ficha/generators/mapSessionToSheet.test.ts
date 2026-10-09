@@ -28,10 +28,22 @@ describe("mapSessionToSheet", () => {
   it("mapea counting", () => {
     const ex = mapSessionToSheet(
       "counting",
-      { count: 4, objectLabel: "manzanas", imageUrl: "a.png" },
+      {
+        count: 4,
+        objectLabel: "manzanas",
+        imageUrl: "a.png",
+        steps: [{ prompt: "¿Cuántos manzanas hay?", correctAnswer: 4 }],
+      },
       config,
     );
-    expect(ex).toMatchObject({ kind: "counting", count: 4, answer: 4 });
+    expect(ex).toMatchObject({
+      kind: "counting",
+      count: 4,
+      imageUrl: "a.png",
+      objectLabel: "manzanas",
+      question: "¿Cuántos manzanas hay?",
+      answer: 4,
+    });
   });
 
   it("mapea comparison left/right a A/B", () => {

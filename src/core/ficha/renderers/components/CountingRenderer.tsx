@@ -5,15 +5,26 @@ export interface CountingRendererProps {
   showAnswer: boolean;
 }
 
+function densityClass(count: number): string {
+  if (count >= 15) return "ficha-counting--dense";
+  if (count >= 8) return "ficha-counting--compact";
+  return "";
+}
+
 export function CountingRenderer({ ex, showAnswer }: CountingRendererProps): JSX.Element {
   return (
-    <div>
-      <p style={{ margin: 0, fontWeight: 600 }}>
-        {ex.objectLabel} {ex.count}
-      </p>
-      {ex.imageUrl && (
-        <img src={ex.imageUrl} alt={ex.objectLabel} className="ficha-exercise__image" />
-      )}
+    <div className={`ficha-counting ${densityClass(ex.count)}`.trim()}>
+      <div className="ficha-counting__objects" aria-label={`${ex.count} ${ex.objectLabel}`}>
+        {ex.imageUrl
+          ? Array.from({ length: ex.count }, (_, i) => (
+              <img key={i} src={ex.imageUrl} alt="" className="ficha-counting__thumb" />
+            ))
+          : Array.from({ length: ex.count }, (_, i) => (
+              <span key={i} className="ficha-counting__placeholder" aria-hidden="true" />
+            ))}
+      </div>
+
+      <p className="ficha-counting__question">{ex.question}</p>
       {showAnswer && <div className="ficha-answer">{ex.answer ?? ex.count}</div>}
     </div>
   );

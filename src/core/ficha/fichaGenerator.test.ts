@@ -114,6 +114,26 @@ describe("fichaGenerator", () => {
     }
   });
 
+  it("counting muestra objetos y pregunta; soluciones añaden el número", () => {
+    const alumno = generateFicha({
+      activityId: "counting",
+      config: { ...baseConfig("counting"), withImages: true, count: 4 },
+      mode: "alumno",
+    });
+    expect(alumno.exercises.every((ex) => ex.kind === "counting")).toBe(true);
+    expect(alumno.html).toContain("ficha-counting__objects");
+    expect(alumno.html).toMatch(/¿Cuántos .+ hay\?/);
+    expect(alumno.html).not.toContain("ficha-answer");
+
+    const soluciones = generateFicha({
+      activityId: "counting",
+      config: { ...baseConfig("counting"), withImages: true, count: 4 },
+      mode: "soluciones",
+    });
+    expect(soluciones.html).toContain("ficha-counting__objects");
+    expect(soluciones.html).toContain("ficha-answer");
+  });
+
   it("relacionar genera bloques con números, letras y soluciones número→letra", () => {
     const alumno = generateFicha({
       activityId: "relacionar",

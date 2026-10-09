@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 2 / 62
+**Progreso:** 3 / 62
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -31,7 +31,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 
 ## Conteo y comparación
 
-- [ ] **counting** — Contamos objetos
+- [x] **counting** — Contamos objetos _(2026-10-09: OK — objetos+pregunta, 10/hoja todos los niveles, soluciones con número)_
 - [ ] **comparison** — Mayor y menor
 - [ ] **parImpar** — Pares e impares
 - [ ] **capacidad** — Capacidad y litros
