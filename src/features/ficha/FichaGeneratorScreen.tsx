@@ -120,6 +120,7 @@ export function FichaGeneratorScreen({ initialGradeId, onBack }: Props): JSX.Ele
           gradeTitle={gradeTitle}
           subjectTitle={subjectTitle}
           className={profile.className}
+          mascotUrl={profile.mascotUrl || undefined}
           onClose={() => setSelected(null)}
         />
       )}

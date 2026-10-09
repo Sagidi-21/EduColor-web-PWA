@@ -35,16 +35,21 @@ export function pageSizeForExercises(
     // Siempre 10 por hoja A4 (todos los niveles); el CSS densifica figuras.
     return 10;
   }
+  if (first.kind === "comparison") {
+    // Alumno: una fila con dibujos (10/hoja). Soluciones: solo texto (más densas).
+    return options.showAnswer ? 12 : 10;
+  }
   return exercises.length || 1;
 }
 
 /**
- * Ancho completo: relacionar (alumno) y counting con muchos objetos.
+ * Ancho completo: relacionar (alumno) y comparison (A|B en una sola línea).
  */
 export function isFullWidthExercise(
   ex: SheetExercise,
   options: { showAnswer?: boolean } = {},
 ): boolean {
   if (ex.kind === "relacionar") return !options.showAnswer;
+  if (ex.kind === "comparison") return !options.showAnswer;
   return false;
 }

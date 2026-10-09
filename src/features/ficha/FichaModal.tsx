@@ -14,6 +14,8 @@ export interface FichaModalProps {
   subjectTitle?: string;
   /** Nombre de la clase (configuración). */
   className?: string;
+  /** Mascota de la clase (configuración), para la cabecera del Word. */
+  mascotUrl?: string;
   onClose: () => void;
 }
 
@@ -26,6 +28,7 @@ export function FichaModal({
   gradeTitle = "Primaria",
   subjectTitle = "Matemáticas",
   className,
+  mascotUrl,
   onClose,
 }: FichaModalProps): JSX.Element {
   const [count, setCount] = useState(10);
@@ -42,7 +45,7 @@ export function FichaModal({
     return modes;
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     const modes = selectedModes();
     if (modes.length === 0) {
       setError("Selecciona al menos un tipo: alumno o soluciones.");
@@ -52,7 +55,7 @@ export function FichaModal({
     setBusy(true);
     setError(null);
     try {
-      downloadFichas({
+      await downloadFichas({
         activityId: activity.id,
         modes,
         config: {
@@ -67,6 +70,7 @@ export function FichaModal({
           grade: gradeTitle,
           subject: subjectTitle,
           className,
+          mascotUrl,
         },
       });
     } catch (err) {
@@ -189,7 +193,7 @@ export function FichaModal({
             onClick={handleGenerate}
             disabled={busy}
           >
-            {busy ? "Generando…" : "Imprimir / PDF"}
+            {busy ? "Generando…" : "Guardar Word"}
           </button>
         </div>
       </div>

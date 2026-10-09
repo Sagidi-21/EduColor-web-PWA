@@ -7,7 +7,8 @@ import {
   persistLastFicha,
   randomFichaSeed,
 } from "./fichaGenerator";
-import * as pdf from "./pdf";
+import { getGenerator } from "./generators/registry";
+import * as wordHtmlExport from "./wordHtmlExport";
 import type { SheetConfig } from "./types";
 
 const baseConfig = (activityId: string): SheetConfig => ({
@@ -51,9 +52,9 @@ describe("fichaGenerator", () => {
     expect(result.html).toContain("ficha-answer");
   });
 
-  it("downloadFichas(alumno+soluciones) imprime ambos con los mismos ejercicios", () => {
-    const spy = vi.spyOn(pdf, "generatePDF").mockImplementation(() => undefined);
-    const exercises = downloadFichas({
+  it("downloadFichas(alumno+soluciones) exporta Word con el HTML de la vista previa", async () => {
+    const spy = vi.spyOn(wordHtmlExport, "downloadHtmlAsWord").mockResolvedValue(undefined);
+    const exercises = await downloadFichas({
       activityId: "suma",
       config: baseConfig("suma"),
       modes: ["alumno", "soluciones"],
@@ -61,10 +62,11 @@ describe("fichaGenerator", () => {
     });
     expect(exercises).toHaveLength(5);
     expect(spy).toHaveBeenCalledOnce();
-    const html = spy.mock.calls[0]![0] as string;
-    expect(html).toContain("ficha-print-break");
-    expect(html).toContain("ficha-answer");
-    expect((html.match(/ficha-page/g) ?? []).length).toBeGreaterThanOrEqual(2);
+    const arg = spy.mock.calls[0]![0];
+    expect(arg.filename).toContain("suma");
+    expect(arg.filename).toMatch(/\.doc$/);
+    expect(arg.html).toContain("ficha-page");
+    expect((arg.html.match(/ficha-page/g) ?? []).length).toBeGreaterThanOrEqual(2);
   });
 
   it("misma seed produce el mismo HTML (reproducibilidad byte-a-byte)", () => {
@@ -112,6 +114,56 @@ describe("fichaGenerator", () => {
       expect(seed).toBeGreaterThanOrEqual(1);
       expect(seed).toBeLessThan(999983);
     }
+  });
+
+  it("comparison pinta dibujos en alumno y solo respuesta en soluciones", () => {
+    const medium = generateFicha({
+      activityId: "comparison",
+      config: { ...baseConfig("comparison"), withImages: true, count: 4, difficulty: "medium" },
+      mode: "alumno",
+    });
+    expect(medium.html).not.toContain("pueden ser iguales");
+
+    const alumno = generateFicha({
+      activityId: "comparison",
+      config: { ...baseConfig("comparison"), withImages: true, count: 4, difficulty: "hard" },
+      mode: "alumno",
+    });
+    expect(alumno.exercises.every((ex) => ex.kind === "comparison")).toBe(true);
+    expect(alumno.html).toContain("ficha-compare__strip");
+    expect(alumno.html).not.toContain("ficha-compare__more");
+    expect(alumno.html).toContain("ficha-exercise--full");
+    expect(alumno.html).toContain("pueden ser iguales");
+
+    let seedWithEqual = 1;
+    for (let s = 1; s < 400; s += 1) {
+      const sample = getGenerator("comparison").generate({
+        ...baseConfig("comparison"),
+        withImages: true,
+        count: 12,
+        difficulty: "hard",
+        seed: s,
+      });
+      if (sample.some((ex) => ex.kind === "comparison" && ex.answer === "iguales")) {
+        seedWithEqual = s;
+        break;
+      }
+    }
+    const soluciones = generateFicha({
+      activityId: "comparison",
+      config: {
+        ...baseConfig("comparison"),
+        withImages: true,
+        count: 12,
+        difficulty: "hard",
+        seed: seedWithEqual,
+      },
+      mode: "soluciones",
+    });
+    expect(soluciones.html).toContain("ficha-answer");
+    expect(soluciones.html).not.toContain("ficha-compare__strip");
+    expect(soluciones.html).not.toContain("ficha-compare__thumb");
+    expect(soluciones.html).toContain("Iguales");
   });
 
   it("counting muestra objetos y pregunta; soluciones añaden el número", () => {
@@ -174,13 +226,13 @@ describe("fichaGenerator", () => {
     expect(failures, failures.join("\n")).toEqual([]);
   });
 
-  it("alumno+soluciones juntos para todas las actividades con generador", () => {
-    const spy = vi.spyOn(pdf, "generatePDF").mockImplementation(() => undefined);
+  it("alumno+soluciones juntos para todas las actividades con generador", async () => {
+    const spy = vi.spyOn(wordHtmlExport, "downloadHtmlAsWord").mockResolvedValue(undefined);
     const failures: string[] = [];
     for (const manifest of activityManifests) {
       try {
         spy.mockClear();
-        const exercises = downloadFichas({
+        const exercises = await downloadFichas({
           activityId: manifest.id,
           config: { ...baseConfig(manifest.id), count: 3 },
           modes: ["alumno", "soluciones"],
@@ -189,9 +241,9 @@ describe("fichaGenerator", () => {
           failures.push(`${manifest.id}: 0 ejercicios`);
           continue;
         }
-        const html = String(spy.mock.calls[0]?.[0] ?? "");
-        if (!html.includes("ficha-print-break")) {
-          failures.push(`${manifest.id}: falta salto alumno/soluciones`);
+        const arg = spy.mock.calls[0]?.[0];
+        if (!arg?.html.includes("ficha-page")) {
+          failures.push(`${manifest.id}: HTML de vista previa ausente`);
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);

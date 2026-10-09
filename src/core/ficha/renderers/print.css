@@ -320,22 +320,52 @@
   color: #666;
 }
 
+/* Mayor y menor — una fila por ejercicio (ancho completo) */
+.ficha-exercise:has(.ficha-compare) {
+  min-height: 0;
+  padding: 6px 10px;
+  gap: 4px;
+}
+
+.ficha-compare {
+  width: 100%;
+}
+
+.ficha-compare__question {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
 .ficha-compare__groups {
   display: flex;
-  gap: 12px;
-  margin-top: 6px;
+  align-items: center;
+  gap: 28px;
+  margin-top: 2px;
 }
 
 .ficha-compare__group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex: 1;
   min-width: 0;
 }
 
 .ficha-compare__letter {
   font-weight: 800;
-  font-size: 12px;
-  display: block;
-  margin-bottom: 2px;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  min-height: 22px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #f8fafc;
+  color: #334155;
+  flex-shrink: 0;
 }
 
 .ficha-compare__strip {
@@ -343,12 +373,14 @@
   flex-wrap: wrap;
   gap: 2px;
   align-items: center;
+  min-width: 0;
 }
 
 .ficha-compare__thumb {
-  width: 22px;
-  height: 22px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
 .ficha-compare__count {
@@ -356,9 +388,18 @@
   font-weight: 800;
 }
 
-.ficha-compare__more {
-  font-size: 11px;
-  color: #666;
+.ficha-compare--compact .ficha-compare__thumb {
+  width: 30px;
+  height: 30px;
+}
+
+.ficha-compare--dense .ficha-compare__thumb {
+  width: 11px;
+  height: 11px;
+}
+
+.ficha-compare--dense .ficha-compare__groups {
+  gap: 20px;
 }
 
 .ficha-reloj {

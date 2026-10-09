@@ -38,7 +38,9 @@ export interface ComparisonSheetExercise {
   imageUrl: string;
   objectLabel: string;
   questionType: "mas" | "menos";
-  answer?: "A" | "B";
+  /** true en hard/expert (misma regla que pizarra): pueden ser iguales. */
+  allowEqual: boolean;
+  answer?: "A" | "B" | "iguales";
 }
 
 export interface TresSumandosSheetExercise {

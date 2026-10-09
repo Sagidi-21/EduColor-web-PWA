@@ -107,8 +107,14 @@ function mapComparison(ex: Record<string, unknown>, config: SheetConfig): Compar
   const q = asString(ex.question);
   const questionType: "mas" | "menos" = q === "less" || q === "menos" ? "menos" : "mas";
   const raw = asString(ex.answer);
-  const answer: "A" | "B" | undefined =
-    raw === "left" || raw === "A" ? "A" : raw === "right" || raw === "B" ? "B" : undefined;
+  const answer: ComparisonSheetExercise["answer"] =
+    raw === "equal" || raw === "iguales" || raw === "igual"
+      ? "iguales"
+      : raw === "left" || raw === "A"
+        ? "A"
+        : raw === "right" || raw === "B"
+          ? "B"
+          : undefined;
   const objectLabel = asString(ex.objectSet ?? ex.objectLabel, "objetos");
   const imageUrl = config.withImages
     ? asString(ex.imageUrl) || getObjectImage(objectLabel, asNumber(ex.objectIndex))
@@ -120,6 +126,7 @@ function mapComparison(ex: Record<string, unknown>, config: SheetConfig): Compar
     imageUrl,
     objectLabel,
     questionType,
+    allowEqual: Boolean(ex.allowEqual),
     answer,
   };
 }

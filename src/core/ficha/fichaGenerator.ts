@@ -2,16 +2,15 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { getActivityManifest } from "../../manifests/content-registry";
 import { difficultyStars } from "./difficultyStars";
-
-/** Logo del colegio con fondo transparente (public/). */
-const colegioLogoUrl = "/logo-ficha.png";
 import { getGenerator } from "./generators/registry";
-import { generatePDF } from "./pdf";
 import { FichaAlumno } from "./renderers/alumno";
 import { FichaSoluciones } from "./renderers/soluciones";
 import printCss from "./renderers/print.css?inline";
+import { downloadHtmlAsWord } from "./wordHtmlExport";
 import type { FichaMeta, FichaMode, SheetConfig, SheetExercise } from "./types";
 
+/** Logo del colegio con fondo transparente (public/). */
+const colegioLogoUrl = "/logo-ficha.png";
 const LAST_FICHA_KEY = "educolor_ficha_last";
 
 export interface GenerateFichaInput {
@@ -87,10 +86,10 @@ export interface DownloadFichasInput {
 }
 
 /**
- * Imprime una o dos fichas (alumno / soluciones) con los mismos ejercicios.
- * Si hay dos, van en el mismo documento con salto de página entre ellas.
+ * Descarga un Word (.doc) con el mismo aspecto que la vista previa HTML.
+ * Si hay dos modos, van en el mismo documento con salto de página entre ellas.
  */
-export function downloadFichas(input: DownloadFichasInput): SheetExercise[] {
+export async function downloadFichas(input: DownloadFichasInput): Promise<SheetExercise[]> {
   const modes = uniqueModes(input.modes);
   if (modes.length === 0) {
     throw new Error("Selecciona al menos un tipo de ficha (alumno o soluciones).");
@@ -113,22 +112,22 @@ export function downloadFichas(input: DownloadFichasInput): SheetExercise[] {
 
   persistLastFicha({ activityId, config, mode: modes[0]! });
 
-  // Título vacío: evita que el navegador imprima "Ordenar… (alumno+soluciones)" en la cabecera.
-  generatePDF(html, `ficha-${activityId}-${modeLabel}.pdf`, {
-    title: "",
-    extraCss: printCss,
+  await downloadHtmlAsWord({
+    html,
+    css: printCss,
+    filename: `ficha-${activityId}-${modeLabel}.doc`,
   });
 
   return exercises;
 }
 
-/** Abre el diálogo de impresión / guardar PDF. */
-export function downloadFicha(input: GenerateFichaInput): GeneratedFicha {
+/** Descarga la ficha en Word con el mismo HTML/CSS que la vista previa. */
+export async function downloadFicha(input: GenerateFichaInput): Promise<GeneratedFicha> {
   const generated = generateFicha(input);
-  const filename = `ficha-${input.activityId}-${input.mode}.pdf`;
-  generatePDF(generated.html, filename, {
-    title: "",
-    extraCss: printCss,
+  await downloadHtmlAsWord({
+    html: generated.html,
+    css: printCss,
+    filename: `ficha-${input.activityId}-${input.mode}.doc`,
   });
   return generated;
 }

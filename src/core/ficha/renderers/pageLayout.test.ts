@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import type { CountingSheetExercise, RelacionarSheetExercise, SheetExercise } from "../types";
+import type {
+  ComparisonSheetExercise,
+  CountingSheetExercise,
+  RelacionarSheetExercise,
+  SheetExercise,
+} from "../types";
 import { chunkByPageSize, isFullWidthExercise, pageSizeForExercises } from "./pageLayout";
 
 function relacionar(pairs: number, maxCount: number): RelacionarSheetExercise {
@@ -55,6 +60,23 @@ describe("pageLayout", () => {
     expect(pageSizeForExercises([many])).toBe(10);
     expect(isFullWidthExercise(few)).toBe(false);
     expect(isFullWidthExercise(many)).toBe(false);
+  });
+
+  it("comparison: 10 por hoja a ancho completo; soluciones sin dibujos más densas", () => {
+    const ex: ComparisonSheetExercise = {
+      kind: "comparison",
+      countA: 4,
+      countB: 15,
+      imageUrl: "/x.png",
+      objectLabel: "globos",
+      questionType: "menos",
+      allowEqual: true,
+      answer: "A",
+    };
+    expect(pageSizeForExercises([ex])).toBe(10);
+    expect(pageSizeForExercises([ex], { showAnswer: true })).toBe(12);
+    expect(isFullWidthExercise(ex)).toBe(true);
+    expect(isFullWidthExercise(ex, { showAnswer: true })).toBe(false);
   });
 
   it("otras actividades no fragmentan por defecto", () => {

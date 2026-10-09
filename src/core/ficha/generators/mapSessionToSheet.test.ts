@@ -56,6 +56,7 @@ describe("mapSessionToSheet", () => {
         objectIndex: 0,
         question: "more",
         answer: "right",
+        allowEqual: false,
       },
       config,
     );
@@ -64,11 +65,35 @@ describe("mapSessionToSheet", () => {
       countA: 3,
       countB: 5,
       questionType: "mas",
+      allowEqual: false,
       answer: "B",
     });
     if (ex.kind === "comparison") {
       expect(ex.imageUrl.length).toBeGreaterThan(0);
     }
+  });
+
+  it("mapea comparison equal a iguales con allowEqual", () => {
+    const ex = mapSessionToSheet(
+      "comparison",
+      {
+        leftCount: 7,
+        rightCount: 7,
+        objectSet: "globos",
+        objectIndex: 0,
+        question: "more",
+        answer: "equal",
+        allowEqual: true,
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "comparison",
+      countA: 7,
+      countB: 7,
+      allowEqual: true,
+      answer: "iguales",
+    });
   });
 
   it("mapea poligonos con figura SVG", () => {

@@ -3,6 +3,7 @@ export * from "./renderers";
 export * from "./generators";
 export { difficultyStars } from "./difficultyStars";
 export { generatePDF, printElement } from "./pdf";
+export { downloadHtmlAsWord } from "./wordHtmlExport";
 export {
   generateFicha,
   downloadFicha,
