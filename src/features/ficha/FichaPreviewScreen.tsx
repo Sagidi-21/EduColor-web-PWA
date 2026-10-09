@@ -89,7 +89,7 @@ export function FichaPreviewScreen(): JSX.Element {
   const handlePrint = () => {
     const sheets = document.querySelector(".ficha-preview__sheets") as HTMLElement | null;
     if (sheets) {
-      printElement(sheets, baseMeta.title);
+      printElement(sheets);
     } else {
       window.print();
     }

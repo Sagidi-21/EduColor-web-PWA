@@ -2,7 +2,7 @@
 
 @page {
   size: A4;
-  margin: 18mm 20mm;
+  margin: 2mm 4mm;
 }
 
 /* Ocultar elementos no imprimibles al imprimir */
@@ -35,10 +35,15 @@
   width: 210mm;
   min-height: 297mm;
   margin: 0 auto;
-  padding: 18mm 20mm;
+  padding: 6mm 8mm;
   background: #fff;
   color: #111;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
   font-size: 13px;
   line-height: 1.4;
   box-sizing: border-box;
@@ -127,17 +132,17 @@
 .ficha-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px 16px;
+  gap: 12px 14px;
 }
 
 .ficha-exercise {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 6px 8px;
+  gap: 6px;
+  padding: 10px 12px;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
-  min-height: 64px;
+  min-height: 96px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -361,8 +366,8 @@
 .ficha-ordenar__slot {
   border: 1.5px dashed #94a3b8;
   background: #fff;
-  min-width: 54px;
-  min-height: 54px;
+  min-width: 60px;
+  min-height: 60px;
 }
 
 /* Separador entre ficha alumno y soluciones en el mismo PDF */

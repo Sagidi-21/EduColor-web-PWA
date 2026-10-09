@@ -110,12 +110,12 @@ export function downloadFichas(input: DownloadFichasInput): SheetExercise[] {
 
   const html = chunks.join('<div class="ficha-print-break" aria-hidden="true"></div>');
   const modeLabel = modes.join("+");
-  const titleBase = buildMeta(activityId, config, input.meta).title;
 
   persistLastFicha({ activityId, config, mode: modes[0]! });
 
+  // Título vacío: evita que el navegador imprima "Ordenar… (alumno+soluciones)" en la cabecera.
   generatePDF(html, `ficha-${activityId}-${modeLabel}.pdf`, {
-    title: `${titleBase} (${modeLabel})`,
+    title: "",
     extraCss: printCss,
   });
 
@@ -127,7 +127,7 @@ export function downloadFicha(input: GenerateFichaInput): GeneratedFicha {
   const generated = generateFicha(input);
   const filename = `ficha-${input.activityId}-${input.mode}.pdf`;
   generatePDF(generated.html, filename, {
-    title: `${generated.meta.title} (${input.mode})`,
+    title: "",
     extraCss: printCss,
   });
   return generated;

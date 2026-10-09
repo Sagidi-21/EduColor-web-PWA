@@ -5,7 +5,16 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", "dev-dist", "node_modules", ".kilo/worktrees", "vite.config.js", "vite.config.d.ts"] },
+  {
+    ignores: [
+      "dist",
+      "dev-dist",
+      "node_modules",
+      ".kilo/worktrees",
+      "vite.config.js",
+      "vite.config.d.ts",
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
