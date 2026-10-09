@@ -9,6 +9,12 @@ import { HomeScreen } from "./features/home/HomeScreen";
 import { MatematicasCatalogScreen } from "./features/matematicas/MatematicasCatalogScreen";
 import { SplashScreen } from "./features/splash/SplashScreen";
 import { WelcomeScreen } from "./features/splash/WelcomeScreen";
+import { FichaPreviewScreen } from "./features/ficha/FichaPreviewScreen";
+
+function isFichaPreviewRoute(): boolean {
+  const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  return path === "/ficha-preview" || path.endsWith("/ficha-preview");
+}
 
 function AppShell() {
   const { activeAulaId, aulas } = useClassProfile();
@@ -77,6 +83,15 @@ function AppShell() {
 }
 
 export default function App() {
+  // Vista de impresión / preview sin splash ni navegación de aula
+  if (isFichaPreviewRoute()) {
+    return (
+      <div className="app">
+        <FichaPreviewScreen />
+      </div>
+    );
+  }
+
   return (
     <ClassProfileProvider>
       <div className="app">

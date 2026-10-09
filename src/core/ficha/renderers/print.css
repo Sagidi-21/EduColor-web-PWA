@@ -1,0 +1,193 @@
+/* ===== Ficha A4 — estilos de impresión ===== */
+
+@page {
+  size: A4;
+  margin: 18mm 20mm;
+}
+
+/* Ocultar elementos no imprimibles al imprimir */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  /* Forzar colores y fondos (algunos navegadores los omiten por defecto) */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Evitar cortes de página en mitad de un ejercicio */
+  .ficha-exercise {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .ficha-header,
+  .ficha-footer {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+
+/* ===== Pantalla ===== */
+.ficha-page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 18mm 20mm;
+  background: #fff;
+  color: #111;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+
+/* ===== Cabecera ===== */
+.ficha-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.ficha-header__title {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0;
+  color: #111;
+}
+
+.ficha-header__meta {
+  font-size: 11px;
+  color: #555;
+  margin-top: 2px;
+}
+
+.ficha-header__logo {
+  height: 48px;
+  width: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* ===== Línea de nombre ===== */
+.ficha-name-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+.ficha-name-line__label {
+  white-space: nowrap;
+}
+
+.ficha-name-line__line {
+  flex: 1;
+  height: 1px;
+  border-top: 1.5px solid #999;
+  margin: 0 4px;
+}
+
+/* ===== Grid de ejercicios (2 columnas) ===== */
+.ficha-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+}
+
+.ficha-exercise {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  min-height: 64px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.ficha-exercise__number {
+  font-size: 10px;
+  font-weight: 700;
+  color: #888;
+}
+
+.ficha-exercise__body {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.ficha-exercise__text {
+  flex: 1;
+}
+
+.ficha-exercise__image {
+  max-height: 56px;
+  max-width: 56px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* ===== Soluciones ===== */
+.ficha-answer {
+  margin-top: 2px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+/* ===== Pie de página ===== */
+.ficha-footer {
+  margin-top: 14px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: #999;
+}
+
+/* ===== Utilidades compartidas ===== */
+.ficha-center {
+  text-align: center;
+}
+
+.ficha-mt-0 {
+  margin-top: 0;
+}
+
+/* Para ejercicios que requieren más espacio (vertical, SVG, etc.) */
+.ficha-exercise--full {
+  grid-column: 1 / -1;
+}
+
+/* Tabla numérica */
+.ficha-table {
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.ficha-table td,
+.ficha-table th {
+  border: 1px solid #ccc;
+  padding: 3px 6px;
+  text-align: center;
+}
+
+/* Algoritmo vertical */
+.ficha-vertical {
+  font-family: "SF Mono", "Consolas", "Menlo", monospace;
+  font-size: 13px;
+  line-height: 1.3;
+  white-space: pre;
+}

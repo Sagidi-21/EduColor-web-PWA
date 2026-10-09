@@ -267,6 +267,14 @@
   color: #475569;
 }
 
+/* Acciones: Empezar + Ficha */
+.diff-reveal__actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 /* Botón de Empezar */
 .diff-reveal__start-btn {
   width: 100%;
@@ -281,6 +289,24 @@
   transition: all 0.2s ease;
   letter-spacing: 0.03em;
   text-transform: uppercase;
+}
+
+.diff-reveal__ficha-btn {
+  width: 100%;
+  padding: 12px 20px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: 700;
+  border: 2px solid #cbd5e1;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.diff-reveal__ficha-btn:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
 }
 
 .diff-reveal__start-btn--chalk {

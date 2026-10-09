@@ -340,16 +340,16 @@ copies una lista de actividades, un recuento de tests, un número de renderers n
 un estado de fase de un documento a otro. Si el destino necesita ese dato, pon un
 enlace y la fecha de la medición.
 
-| Dato                                               | Dueño                                                        | Lo demás                                                     |
-| :------------------------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| Qué actividades están migradas y cuál va siguiente | `INVENTARIO_MIGRACION_ACTIVIDADES.md`                        | Enlazan                                                      |
-| Dónde acabó cada fichero de Electron               | `MIGRACION_MAP.md`                                           | Enlazan                                                      |
-| Cifras de tests, ficheros y cobertura vigentes     | `INVENTARIO_MIGRACION_ACTIVIDADES.md`, tabla de verificación | Enlazan; los registros históricos citan la suya con su fecha |
-| Estado de la fase activa                           | `ESTADO_DEL_PROYECTO.md`                                     | Enlazan                                                      |
-| Por qué se decidió algo                            | `DECISIONES.md`                                              | Enlazan                                                      |
-| Deuda técnica abierta                              | `DEUDA_TECNICA.md`                                           | Enlazan                                                      |
-| Cómo se migra una actividad                        | `EJECUCION_PASO_A_PASO.md` y este documento                  | Enlazan                                                      |
-| A dónde va el producto                             | `ROADMAP_MAESTRO.md`                                         | No lleva estado                                              |
+| Dato                                               | Dueño                                                            | Lo demás                                                     |
+| :------------------------------------------------- | :--------------------------------------------------------------- | :----------------------------------------------------------- |
+| Qué actividades están migradas y cuál va siguiente | `INVENTARIO_MIGRACION_ACTIVIDADES.md`                            | Enlazan                                                      |
+| Dónde acabó cada fichero de Electron               | `MIGRACION_MAP.md`                                               | Enlazan                                                      |
+| Cifras de tests, ficheros y cobertura vigentes     | `INVENTARIO_MIGRACION_ACTIVIDADES.md`, tabla de verificación     | Enlazan; los registros históricos citan la suya con su fecha |
+| Estado de la fase activa                           | `ESTADO_DEL_PROYECTO.md`                                         | Enlazan                                                      |
+| Por qué se decidió algo                            | `DECISIONES.md`                                                  | Enlazan                                                      |
+| Deuda técnica abierta                              | `DEUDA_TECNICA.md`                                               | Enlazan                                                      |
+| Cómo se migra una actividad                        | `EJECUCION_PASO_A_PASO.md` y este documento                      | Enlazan                                                      |
+| A dónde va el producto (operativo)                 | `ROADMAP_DE_EJECUCION_DETALLADO.md` + `EJECUCION_PASO_A_PASO.md` | Enlazan; `ROADMAP_MAESTRO.md` es histórico                   |
 
 Esto no es una recomendación de estilo: `src/manifests/docsConsistency.test.ts`
 deriva el estado desde `src/core/content/engine-registry.ts` y **falla** si un ✅

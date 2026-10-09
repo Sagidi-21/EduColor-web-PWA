@@ -1,0 +1,49 @@
+.ficha-preview {
+  min-height: 100vh;
+  background: #e2e8f0;
+  padding-bottom: 40px;
+}
+
+.ficha-preview__toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #0f172a;
+  color: #f8fafc;
+  font-size: 13px;
+}
+
+.ficha-preview__toolbar button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  background: #334155;
+  color: #fff;
+}
+
+.ficha-preview__print {
+  background: #2563eb !important;
+}
+
+.ficha-preview__error {
+  max-width: 640px;
+  margin: 40px auto;
+  padding: 16px;
+  background: #fef2f2;
+  color: #991b1b;
+  border-radius: 8px;
+}
+
+@media print {
+  .ficha-preview {
+    background: #fff;
+    padding: 0;
+  }
+}

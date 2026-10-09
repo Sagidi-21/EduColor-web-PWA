@@ -1,3 +1,18 @@
+# ROADMAP_MAESTRO — archivo histórico
+
+> **Estado:** histórico. No es la fuente operativa del trabajo diario.
+>
+> Para fases, pasos y criterios actuales usar
+> [ROADMAP_DE_EJECUCION_DETALLADO.md](ROADMAP_DE_EJECUCION_DETALLADO.md) y
+> [EJECUCION_PASO_A_PASO.md](EJECUCION_PASO_A_PASO.md). El estado de migración de
+> actividades vive solo en
+> [INVENTARIO_MIGRACION_ACTIVIDADES.md](INVENTARIO_MIGRACION_ACTIVIDADES.md).
+>
+> Este fichero se conserva como referencia del plan original de migración
+> (Bloque 0 y los 239 pasos). No actualizarlo con el avance del proyecto.
+
+---
+
 # BLOQUE 0 — PRESERVACIÓN, AUDITORÍA Y ESTRATEGIA DE MIGRACIÓN
 
 > **IMPORTANTE:** Este bloque se añade al roadmap existente sin sustituir ni eliminar ninguno de sus 239 pasos. Su función es proteger el trabajo ya realizado antes de comenzar la migración a web.

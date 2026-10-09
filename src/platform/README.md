@@ -8,5 +8,5 @@ worker, IndexedDB, conectividad, archivos, telemetría y API futura.
 - Todo acceso a navegador, almacenamiento o red se concentra aquí para que el
   núcleo se pueda probar sin DOM ni Internet.
 
-La actual inicialización del service worker permanece en `main.tsx` hasta que
-se cree su adaptador durante la Fase 6.
+El registro del service worker se gestiona desde
+`src/platform/serviceWorkerRegistration.ts` (solo en producción).

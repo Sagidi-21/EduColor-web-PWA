@@ -1,4 +1,7 @@
-import type { ActivityManifest, EngineId } from "./contracts";
+import type { ActivityDifficulty, ActivityManifest, EngineId } from "./contracts";
+
+/** Alias usado por el contrato de fichas (`SheetConfig.difficulty`). */
+export type Difficulty = ActivityDifficulty;
 
 export type EngineMigrationStatus = "available" | "pending";
 

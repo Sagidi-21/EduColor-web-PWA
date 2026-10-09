@@ -50,9 +50,11 @@ También se puede aplicar el formato automáticamente con `npm run format` y las
 | `npm test`             | Ejecuta pruebas automatizadas.                    |
 | `npm run build`        | Genera la build de producción.                    |
 
-Consulta [la arquitectura inicial](docs/ARQUITECTURA_INICIAL.md), el [roadmap operativo auditado](docs/ROADMAP_AUDITADO.md), el [plan de ejecución detallado](docs/ROADMAP_DE_EJECUCION_DETALLADO.md) y el [estado actual del proyecto](docs/ESTADO_DEL_PROYECTO.md).
+Documentación del proyecto en [`docs/`](docs/):
 
-La deuda técnica y las reservas de recursos se mantienen en
-[DEUDA_TECNICA.md](docs/DEUDA_TECNICA.md).
-
-La lista mínima para cerrar una tarea está en [Definition of Done](docs/DEFINITION_OF_DONE.md).
+- [Arquitectura inicial](docs/ARQUITECTURA_INICIAL.md)
+- [Plan de ejecución detallado](docs/ROADMAP_DE_EJECUCION_DETALLADO.md)
+- [Ejecución paso a paso](docs/EJECUCION_PASO_A_PASO.md)
+- [Estado del proyecto](docs/ESTADO_DEL_PROYECTO.md)
+- [Definition of Done](docs/DEFINITION_OF_DONE.md)
+- [Deuda técnica](docs/DEUDA_TECNICA.md)

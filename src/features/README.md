@@ -8,5 +8,5 @@ sesiones, fichas, inicio y configuración docente.
 - Cada feature debe mantener su estado de interfaz separado de la lógica de
   dominio que corresponde a `core`.
 
-El renderer del vertical slice de conteo permanece temporalmente en `App.tsx`.
-Se moverá a esta capa al iniciar la migración del catálogo en la Fase 2.
+Las pantallas de Matemáticas viven en `src/features/matematicas/`. El estado de
+cada actividad migrada está en `docs/INVENTARIO_MIGRACION_ACTIVIDADES.md`.

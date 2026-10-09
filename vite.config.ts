@@ -53,9 +53,31 @@ export default defineConfig({
             },
           },
           {
+            urlPattern: /\/assets\/.*/,
+            handler: "StaleWhileRevalidate",
+            options: { cacheName: "educolor-assets" },
+          },
+          {
             urlPattern: /\/manifests\/.*/,
-            handler: "CacheFirst",
-            options: { cacheName: "educolor-manifests", expiration: { maxEntries: 100 } },
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "educolor-manifests",
+              networkTimeoutSeconds: 3,
+              expiration: { maxEntries: 100 },
+            },
+          },
+          {
+            urlPattern: /manifest\.webmanifest$/,
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "educolor-manifest",
+              networkTimeoutSeconds: 3,
+            },
+          },
+          {
+            urlPattern: /\/api\/.*/,
+            handler: "NetworkFirst",
+            options: { cacheName: "educolor-api" },
           },
           {
             urlPattern: ({ request }) => request.mode === "navigate",

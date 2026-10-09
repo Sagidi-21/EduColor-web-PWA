@@ -62,7 +62,7 @@ La auditoría completa solo se repite al cerrar una fase o antes de una release.
 | `video_libro.mp4`, `splash-logo.png`, `school-bg.jpg` | Splash e inicio                              | Fase 1      | En uso.              |
 | `objects/`                                            | Comparación y motores que reutilizan objetos | Fases 1-2   | En uso (comparison). |
 | `problemas/`                                          | `problemas` (Problemas de operaciones)       | Fase 2      | En uso.              |
-| `dinero/`                                             | `monedasBilletes`                            | Fase 2      | Reserva trazable.    |
+| `dinero/`                                             | `monedasBilletes`                            | Fase 2      | En uso.              |
 | `izquierda-derecha/`                                  | `leftRight`                                  | Fase 2      | En uso.              |
 | `laberinto/`                                          | `laberintoMatematico`                        | Fase 2      | En uso.              |
 | `+kilo/`, `-kilo/`, `kilo/`                           | `elKilo`                                     | Fase 2      | En uso.              |
@@ -81,12 +81,11 @@ manifiesto:
 - `shapes-real/` → `shapesRealImages.ts`, importado por `ShapesScreen.tsx`.
 - `+litro/`, `-litro/`, `litro/` → `litroImages.ts`, importado por `ElLitroScreen.tsx`.
 - `+kilo/`, `-kilo/`, `kilo/` → `kiloImages.ts`, importado por `ElKiloScreen.tsx`.
+- `dinero/` → `monedasBilletes/moneyImages.ts`, importado por `MonedasBilletesScreen.tsx`.
 
-`dinero/` sigue como **Reserva trazable**: su motor (`monedasBilletes`) aún no
-tiene renderer PWA, por lo que sus recursos solo se preparan para una migración
-futura. `laberinto/` pasó a **En uso** el 2026-10-01 al migrarse
-`laberintoMatematico` y `laberintoMatematico2`: sus 13 fondos se cargan con
-`import.meta.glob` desde la pantalla compartida.
+`laberinto/` pasó a **En uso** el 2026-10-01 al migrarse `laberintoMatematico` y
+`laberintoMatematico2`: sus 13 fondos se cargan con `import.meta.glob` desde la
+pantalla compartida. `dinero/` pasó a **En uso** con `monedasBilletes`.
 
 `kilo/pesa de 1 kilo.png` no existía en el proyecto original: se ha creado para
 la PWA como referencia visual de 1 kg, en sustitución del emoji ⚖️ que usaba el

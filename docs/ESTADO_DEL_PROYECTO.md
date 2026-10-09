@@ -8,40 +8,35 @@ entre sí.
 
 ## Dónde vive cada dato
 
-| Pregunta                                              | Documento que la responde                                                                                             |
-| :---------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------- |
-| ¿Qué actividades hay migradas y cuál es la siguiente? | [INVENTARIO_MIGRACION_ACTIVIDADES.md](./INVENTARIO_MIGRACION_ACTIVIDADES.md)                                          |
-| ¿Dónde acabó cada archivo de Electron?                | [MIGRACION_MAP.md](./MIGRACION_MAP.md)                                                                                |
-| ¿Cómo se migra una actividad, paso a paso?            | [EJECUCION_PASO_A_PASO.md](./EJECUCION_PASO_A_PASO.md) y [AGENT_RULES.md](./AGENT_RULES.md)                           |
-| ¿Qué falta y con qué calidad cierro?                  | [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) y [DEUDA_TECNICA.md](./DEUDA_TECNICA.md)                             |
-| ¿Por qué se decidió así?                              | [DECISIONES.md](./DECISIONES.md)                                                                                      |
-| ¿Qué puede reutilizar un renderer?                    | [COMPONENTES_COMPARTIDOS.md](./COMPONENTES_COMPARTIDOS.md)                                                            |
-| ¿Hacia dónde va el producto a largo plazo?            | [ROADMAP_MAESTRO.md](./ROADMAP_MAESTRO.md) y [ROADMAP_DE_EJECUCION_DETALLADO.md](./ROADMAP_DE_EJECUCION_DETALLADO.md) |
+| Pregunta                                              | Documento que la responde                                                                                                                                                                   |
+| :---------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ¿Qué actividades hay migradas y cuál es la siguiente? | [INVENTARIO_MIGRACION_ACTIVIDADES.md](./INVENTARIO_MIGRACION_ACTIVIDADES.md)                                                                                                                |
+| ¿Dónde acabó cada archivo de Electron?                | [MIGRACION_MAP.md](./MIGRACION_MAP.md)                                                                                                                                                      |
+| ¿Cómo se migra una actividad, paso a paso?            | [EJECUCION_PASO_A_PASO.md](./EJECUCION_PASO_A_PASO.md) y [AGENT_RULES.md](./AGENT_RULES.md)                                                                                                 |
+| ¿Qué falta y con qué calidad cierro?                  | [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) y [DEUDA_TECNICA.md](./DEUDA_TECNICA.md)                                                                                                   |
+| ¿Por qué se decidió así?                              | [DECISIONES.md](./DECISIONES.md)                                                                                                                                                            |
+| ¿Qué puede reutilizar un renderer?                    | [COMPONENTES_COMPARTIDOS.md](./COMPONENTES_COMPARTIDOS.md)                                                                                                                                  |
+| ¿Hacia dónde va el producto a largo plazo?            | [ROADMAP_DE_EJECUCION_DETALLADO.md](./ROADMAP_DE_EJECUCION_DETALLADO.md) y [EJECUCION_PASO_A_PASO.md](./EJECUCION_PASO_A_PASO.md) ([ROADMAP_MAESTRO.md](./ROADMAP_MAESTRO.md) es histórico) |
 
 El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 `src/core/content/engine-registry.ts`, la suite falla.
 
 ## Punto de trabajo actual
 
-- **Fase activa:** 2 — Migración del catálogo matemático V1. La Fase 1 (modelo de
-  contenido) está cerrada: 62 manifiestos, selector de actividades y el motor
-  `comparison` como extra no acoplado al conteo.
-- **Estado de la Fase 2:** 62 de 62 actividades migradas y lanzables; 0
-  pendientes. El catálogo matemático V1 está **completo**. El detalle por actividad,
-  con núcleo, renderer y tests, está en el
+- **Fase 2 (catálogo matemático V1):** **cerrada en migración técnica** — 62 de 62
+  actividades migradas y lanzables. El detalle por actividad está en el
   [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md); no se repite aquí.
-- **Siguiente motor:** **ninguno** — la migración del catálogo V1 está cerrada.
-- **Fase 5 (escritura de dígitos y reconocimiento local):** adelantada y
-  **parcial**, no completa. El subsistema de reconocimiento existe y se usa
-  (`LazyDigitCell`, preprocesado, umbral del 85 %, muestras en IndexedDB), pero
-  los 12 pasos de la Fase 5 de
-  [EJECUCION_PASO_A_PASO.md](./EJECUCION_PASO_A_PASO.md) no están cerrados: faltan
-  el dataset de evaluación, la matriz de confusión y el resto del bloque. Este
-  documento decía antes que la Fase 5 estaba "completada", y no lo estaba.
-- **Lo que bloquea el cierre de la fase:** la validación pedagógica en pizarra. Las
-  59 actividades migradas están técnicamente terminadas, pero eso no es lo mismo que
-  aprobadas: la única cerrada pedagógicamente es `ordenar`, validada en pizarra el
-  2026-10-02 para 1.º y 2.º. Las 3 pendientes ni siquiera han llegado a ese punto.
+- **Siguiente motor:** **ninguno**.
+- **Trabajo pendiente de la Fase 2:** validación visual y pedagógica en pizarra
+  (tamaños, legibilidad, ajustes de UI). Se hace junto con el profesorado; el
+  inventario marca qué actividades ya llevan “verificada en pizarra”. No se
+  anticipa desde aquí: se actualiza cuando Salvador lo indique tras cada pase.
+- **Fase 5 (escritura de dígitos y reconocimiento local):** core adelantado y en
+  uso (`LazyDigitCell`, preprocesado, umbral 85 %, muestras en IndexedDB,
+  benchmark de latencia). El dataset formal de evaluación y la matriz de
+  confusión quedaron **descartados** como cierre de fase (ver
+  [ROADMAP_DE_EJECUCION_DETALLADO.md](./ROADMAP_DE_EJECUCION_DETALLADO.md));
+  reentrenamiento solo si el piloto real lo exige (Fase 5c).
 - **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
   GitHub Projects para reducir gestión y consumo innecesario.
 
