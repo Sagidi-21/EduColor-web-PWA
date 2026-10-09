@@ -11,6 +11,7 @@ import type {
   ParImparSheetExercise,
   PoligonosSheetExercise,
   ProblemaSheetExercise,
+  RelacionarSheetExercise,
   RelacionSumaRestaSheetExercise,
   RelojSheetExercise,
   RepartoIgualSheetExercise,
@@ -613,6 +614,7 @@ export function mapSessionToSheet(
     case "ordenar":
       return mapOrdering(ex);
     case "relacionar":
+      return mapRelacionar(ex, config);
     case "relacionarCantidades":
     case "rectaNumerica":
     default:
@@ -633,4 +635,32 @@ function mapOrdering(ex: Record<string, unknown>): OrderingSheetExercise {
     direction,
     answer: sorted,
   };
+}
+
+function mapRelacionar(ex: Record<string, unknown>, config: SheetConfig): RelacionarSheetExercise {
+  const leftRaw = Array.isArray(ex.leftColumn) ? ex.leftColumn : [];
+  const rightRaw = Array.isArray(ex.rightColumn) ? ex.rightColumn : [];
+
+  const left = leftRaw.map((item) => {
+    const pair = asRecord(item);
+    return { id: asNumber(pair.id), number: asNumber(pair.number) };
+  });
+
+  const right = rightRaw.map((item, i) => {
+    const pair = asRecord(item);
+    return {
+      id: asNumber(pair.id),
+      letter: String.fromCharCode(65 + i),
+      count: asNumber(pair.number),
+      imageUrl: config.withImages ? asString(pair.imageUrl) : "",
+      objectLabel: asString(pair.objectLabel, "objetos"),
+    };
+  });
+
+  const idToLetter = new Map(right.map((r) => [r.id, r.letter]));
+  const answer = [...left]
+    .sort((a, b) => a.number - b.number)
+    .map((l) => `${l.number} → ${idToLetter.get(l.id) ?? "?"}`);
+
+  return { kind: "relacionar", left, right, answer };
 }

@@ -379,3 +379,183 @@
   padding: 0;
   border: none;
 }
+
+/* Páginas adicionales de la misma ficha */
+.ficha-page--continued {
+  page-break-before: always;
+  break-before: page;
+}
+
+.ficha-page__continued {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* Relacionar número y cantidad */
+.ficha-relacionar {
+  width: 100%;
+}
+
+.ficha-relacionar__instruction {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-relacionar__board {
+  display: grid;
+  grid-template-columns: auto minmax(28px, 1fr) minmax(0, 1fr);
+  gap: 4px 8px;
+  align-items: stretch;
+}
+
+.ficha-relacionar__left,
+.ficha-relacionar__right {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: space-around;
+}
+
+.ficha-relacionar__num,
+.ficha-relacionar__group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+}
+
+.ficha-relacionar__num {
+  justify-content: flex-end;
+}
+
+.ficha-relacionar__num-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 2px 6px;
+  border: 1.5px solid #94a3b8;
+  border-radius: 6px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.ficha-relacionar__letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  min-height: 26px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #f8fafc;
+  flex-shrink: 0;
+}
+
+.ficha-relacionar__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid #64748b;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.ficha-relacionar__gap {
+  /* Zona vacía para que el alumno dibuje las líneas entre los puntos */
+  min-width: 28px;
+}
+
+.ficha-exercise--full .ficha-exercise__body {
+  align-items: stretch;
+  width: 100%;
+}
+
+.ficha-relacionar__strip {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1px;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ficha-relacionar__thumb {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.ficha-relacionar__count-badge {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ficha-relacionar__answers {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.ficha-relacionar--compact .ficha-relacionar__thumb {
+  width: 22px;
+  height: 22px;
+}
+
+.ficha-relacionar--compact .ficha-relacionar__num-value {
+  min-width: 24px;
+  min-height: 24px;
+  font-size: 14px;
+}
+
+.ficha-relacionar--compact .ficha-relacionar__num,
+.ficha-relacionar--compact .ficha-relacionar__group {
+  min-height: 24px;
+  gap: 4px;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__thumb {
+  width: 24px;
+  height: 24px;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__num-value {
+  min-width: 22px;
+  min-height: 22px;
+  font-size: 13px;
+  padding: 1px 4px;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__letter {
+  min-width: 18px;
+  min-height: 18px;
+  font-size: 11px;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__num,
+.ficha-relacionar--dense .ficha-relacionar__group {
+  min-height: 20px;
+  gap: 3px;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__instruction {
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__left,
+.ficha-relacionar--dense .ficha-relacionar__right {
+  gap: 4px;
+}

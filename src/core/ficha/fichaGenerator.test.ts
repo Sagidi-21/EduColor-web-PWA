@@ -114,6 +114,28 @@ describe("fichaGenerator", () => {
     }
   });
 
+  it("relacionar genera bloques con números, letras y soluciones número→letra", () => {
+    const alumno = generateFicha({
+      activityId: "relacionar",
+      config: { ...baseConfig("relacionar"), withImages: true, count: 6 },
+      mode: "alumno",
+    });
+    expect(alumno.exercises.every((ex) => ex.kind === "relacionar")).toBe(true);
+    expect(alumno.html).toContain("Une con una línea");
+    expect(alumno.html).toContain("ficha-relacionar__letter");
+    expect(alumno.html).not.toContain("→");
+
+    const soluciones = generateFicha({
+      activityId: "relacionar",
+      config: { ...baseConfig("relacionar"), withImages: true, count: 6 },
+      mode: "soluciones",
+    });
+    expect(soluciones.html).toMatch(/\d+ → [A-Z]/);
+    expect(soluciones.html).toContain("Une con una línea");
+    expect(soluciones.html).not.toContain("ficha-relacionar__board");
+    expect(soluciones.html).not.toContain("ficha-relacionar__thumb");
+  });
+
   it("genera ficha para todas las actividades del catálogo", () => {
     const failures: string[] = [];
     for (const manifest of activityManifests) {

@@ -172,4 +172,37 @@ describe("mapSessionToSheet", () => {
       answer: [2, 5, 6],
     });
   });
+
+  it("mapea relacionar a columnas con letras y respuestas número→letra", () => {
+    const ex = mapSessionToSheet(
+      "relacionar",
+      {
+        pairs: [
+          { id: 0, number: 3, imageUrl: "/a.png", objectLabel: "manzanas" },
+          { id: 1, number: 1, imageUrl: "/b.png", objectLabel: "peras" },
+        ],
+        leftColumn: [
+          { id: 1, number: 1, imageUrl: "/b.png", objectLabel: "peras" },
+          { id: 0, number: 3, imageUrl: "/a.png", objectLabel: "manzanas" },
+        ],
+        rightColumn: [
+          { id: 0, number: 3, imageUrl: "/a.png", objectLabel: "manzanas" },
+          { id: 1, number: 1, imageUrl: "/b.png", objectLabel: "peras" },
+        ],
+      },
+      { ...config, withImages: true },
+    );
+    expect(ex).toMatchObject({
+      kind: "relacionar",
+      left: [
+        { id: 1, number: 1 },
+        { id: 0, number: 3 },
+      ],
+      right: [
+        { id: 0, letter: "A", count: 3, imageUrl: "/a.png" },
+        { id: 1, letter: "B", count: 1, imageUrl: "/b.png" },
+      ],
+      answer: ["1 → B", "3 → A"],
+    });
+  });
 });

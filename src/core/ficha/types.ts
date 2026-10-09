@@ -412,6 +412,33 @@ export interface OrderingSheetExercise {
   answer?: number[];
 }
 
+/** Un ítem de la columna izquierda (números barajados). */
+export interface RelacionarSheetLeftItem {
+  id: number;
+  number: number;
+}
+
+/** Un grupo de la columna derecha, etiquetado A, B, C… */
+export interface RelacionarSheetRightItem {
+  id: number;
+  letter: string;
+  count: number;
+  imageUrl: string;
+  objectLabel: string;
+}
+
+/**
+ * Relacionar número y cantidad: una ronda = un bloque con varias parejas a unir.
+ * El alumno traza líneas; las soluciones van como «número → letra».
+ */
+export interface RelacionarSheetExercise {
+  kind: "relacionar";
+  left: RelacionarSheetLeftItem[];
+  right: RelacionarSheetRightItem[];
+  /** Emparejamientos correctos, p. ej. `["3 → A", "1 → B"]`. */
+  answer?: string[];
+}
+
 export type SheetExercise =
   | OperationSheetExercise
   | CountingSheetExercise
@@ -464,7 +491,8 @@ export type SheetExercise =
   | MenuCafeteriaSheetExercise
   | MonedasBilletesSheetExercise
   | InventarProblemaSheetExercise
-  | OrderingSheetExercise;
+  | OrderingSheetExercise
+  | RelacionarSheetExercise;
 
 export interface GeneratorDef {
   activityId: string;

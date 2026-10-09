@@ -12,6 +12,7 @@ import { RelojRenderer } from "./RelojRenderer";
 import { LeftRightRenderer } from "./LeftRightRenderer";
 import { LineTypesRenderer } from "./LineTypesRenderer";
 import { OrderingRenderer } from "./OrderingRenderer";
+import { RelacionarRenderer } from "./RelacionarRenderer";
 import { DefaultRenderer } from "./DefaultRenderer";
 
 export interface ExerciseRendererProps {
@@ -102,6 +103,8 @@ export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): Rea
       return <LineTypesRenderer ex={ex} showAnswer={showAnswer} />;
     case "ordenar":
       return <OrderingRenderer ex={ex} showAnswer={showAnswer} />;
+    case "relacionar":
+      return <RelacionarRenderer ex={ex} showAnswer={showAnswer} />;
     case "parImpar":
       return (
         <QuestionRenderer

@@ -160,7 +160,7 @@ export const sessionEngines: Record<string, SessionEngine> = {
   problemas2pasos: std(generateProblemas2pasos),
   rectaNumerica: std(generateRectaNumerica),
   redondeo: std(generateRedondeo),
-  relacionar: std(generateRelacionar),
+  relacionar: std(generateRelacionar, true),
   relacionarCantidades: std(generateRelacionarCantidades),
   relacionSumaResta: std(generateRelacionSumaResta),
   reloj: std(generateReloj),
