@@ -17,7 +17,6 @@ import { useViewTransition } from "../../core/transition/ViewTransitionContext";
 import { useExerciseSession } from "./ExerciseSessionContext";
 import { CatalogFilterBar } from "./CatalogFilterBar";
 import { DifficultyReveal } from "./components/DifficultyReveal";
-import { FichaModal } from "../ficha/FichaModal";
 import "./MatematicasCatalogScreen.css";
 import fondoImg from "../../assets/catalogo-fondo.png";
 
@@ -82,7 +81,6 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
   const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard" | "expert">("easy");
   const [levelId, setLevelId] = useState<CurriculumLevelId | null>(null);
   const [popupShrinking, setPopupShrinking] = useState(false);
-  const [fichaOpen, setFichaOpen] = useState(false);
   const grades = getGrades(subjectId);
   const blocks = getCurriculumBlocks(subjectId, gradeId);
   const visibleBlocks = blockId ? blocks.filter((block) => block.id === blockId) : blocks;
@@ -189,7 +187,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
         ))}
       </div>
 
-      {selected && !fichaOpen && (
+      {selected && (
         <DifficultyReveal
           activity={selected}
           gradeId={gradeId}
@@ -206,22 +204,11 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
               setPopupShrinking(true);
             }
           }}
-          onGenerateFicha={() => setFichaOpen(true)}
           onClose={() => setSelected(null)}
           isShrinking={popupShrinking}
           onAnimationEnd={() => {
             if (popupShrinking) launchExercise();
           }}
-        />
-      )}
-
-      {selected && fichaOpen && (
-        <FichaModal
-          activity={selected}
-          difficulty={difficulty}
-          gradeTitle={gradeTitle}
-          className={profile.className}
-          onClose={() => setFichaOpen(false)}
         />
       )}
     </div>

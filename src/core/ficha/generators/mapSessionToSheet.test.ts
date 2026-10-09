@@ -155,12 +155,21 @@ describe("mapSessionToSheet", () => {
     expect(ex).toMatchObject({ kind: "repartoIgual", total: 12, groups: 3, answer: 4 });
   });
 
-  it("fallback ordenar produce problemas con pregunta", () => {
+  it("mapea ordenar con números y dirección", () => {
     const ex = mapSessionToSheet(
       "ordenar",
-      { question: "Ordena de menor a mayor", answer: "1,2,3" },
+      {
+        numbers: [5, 2, 6],
+        sortedNumbers: [2, 5, 6],
+        direction: "ascending",
+      },
       config,
     );
-    expect(ex.kind).toBe("problemas");
+    expect(ex).toMatchObject({
+      kind: "ordenar",
+      numbers: [5, 2, 6],
+      direction: "ascending",
+      answer: [2, 5, 6],
+    });
   });
 });

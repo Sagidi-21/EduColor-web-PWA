@@ -1,6 +1,13 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { activityManifests } from "../../manifests/content-registry";
-import { generateFicha, loadLastFicha, persistLastFicha, randomFichaSeed } from "./fichaGenerator";
+import {
+  downloadFichas,
+  generateFicha,
+  loadLastFicha,
+  persistLastFicha,
+  randomFichaSeed,
+} from "./fichaGenerator";
+import * as pdf from "./pdf";
 import type { SheetConfig } from "./types";
 
 const baseConfig = (activityId: string): SheetConfig => ({
@@ -42,6 +49,22 @@ describe("fichaGenerator", () => {
       mode: "soluciones",
     });
     expect(result.html).toContain("ficha-answer");
+  });
+
+  it("downloadFichas(alumno+soluciones) imprime ambos con los mismos ejercicios", () => {
+    const spy = vi.spyOn(pdf, "generatePDF").mockImplementation(() => undefined);
+    const exercises = downloadFichas({
+      activityId: "suma",
+      config: baseConfig("suma"),
+      modes: ["alumno", "soluciones"],
+      meta: { title: "Suma", grade: "1º" },
+    });
+    expect(exercises).toHaveLength(5);
+    expect(spy).toHaveBeenCalledOnce();
+    const html = spy.mock.calls[0]![0] as string;
+    expect(html).toContain("ficha-print-break");
+    expect(html).toContain("ficha-answer");
+    expect((html.match(/ficha-page/g) ?? []).length).toBeGreaterThanOrEqual(2);
   });
 
   it("misma seed produce el mismo HTML (reproducibilidad byte-a-byte)", () => {
@@ -104,6 +127,35 @@ describe("fichaGenerator", () => {
         expect(result.html).toContain("ficha-page");
       } catch (err) {
         failures.push(`${manifest.id}: ${err instanceof Error ? err.message : String(err)}`);
+      }
+    }
+    expect(failures, failures.join("\n")).toEqual([]);
+  });
+
+  it("alumno+soluciones juntos para todas las actividades con generador", () => {
+    const spy = vi.spyOn(pdf, "generatePDF").mockImplementation(() => undefined);
+    const failures: string[] = [];
+    for (const manifest of activityManifests) {
+      try {
+        spy.mockClear();
+        const exercises = downloadFichas({
+          activityId: manifest.id,
+          config: { ...baseConfig(manifest.id), count: 3 },
+          modes: ["alumno", "soluciones"],
+        });
+        if (exercises.length === 0) {
+          failures.push(`${manifest.id}: 0 ejercicios`);
+          continue;
+        }
+        const html = String(spy.mock.calls[0]?.[0] ?? "");
+        if (!html.includes("ficha-print-break")) {
+          failures.push(`${manifest.id}: falta salto alumno/soluciones`);
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        if (!msg.includes("No hay generador")) {
+          failures.push(`${manifest.id}: ${msg}`);
+        }
       }
     }
     expect(failures, failures.join("\n")).toEqual([]);

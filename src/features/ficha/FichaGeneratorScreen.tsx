@@ -35,6 +35,7 @@ export function FichaGeneratorScreen({ initialGradeId, onBack }: Props): JSX.Ele
   const blocks = getCurriculumBlocks(subjectId, gradeId);
   const visibleBlocks = blockId ? blocks.filter((block) => block.id === blockId) : blocks;
   const gradeTitle = grades.find((grade) => grade.id === gradeId)?.title ?? "Primaria";
+  const subjectTitle = subjects.find((subject) => subject.id === subjectId)?.title ?? "Matemáticas";
   const activityGroups = visibleBlocks.map((block) => ({
     block,
     activities: getActivities({ subjectId, gradeId, curriculumBlockId: block.id }),
@@ -76,7 +77,7 @@ export function FichaGeneratorScreen({ initialGradeId, onBack }: Props): JSX.Ele
         />
 
         <p className="mat__migration-note">
-          Elige una actividad para generar la ficha de alumno o la hoja de soluciones.
+          Elige una actividad para generar la ficha de alumno, la de soluciones, o ambas a la vez.
         </p>
 
         {activityGroups.map(({ block, activities }) => (
@@ -117,6 +118,7 @@ export function FichaGeneratorScreen({ initialGradeId, onBack }: Props): JSX.Ele
           difficulty={difficulty}
           onDifficultyChange={setDifficulty}
           gradeTitle={gradeTitle}
+          subjectTitle={subjectTitle}
           className={profile.className}
           onClose={() => setSelected(null)}
         />

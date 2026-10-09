@@ -7,6 +7,7 @@ import type {
   LaberintoSheetExercise,
   LeftRightSheetExercise,
   OperationSheetExercise,
+  OrderingSheetExercise,
   ParImparSheetExercise,
   PoligonosSheetExercise,
   ProblemaSheetExercise,
@@ -610,10 +611,26 @@ export function mapSessionToSheet(
         answer: undefined,
       };
     case "ordenar":
+      return mapOrdering(ex);
     case "relacionar":
     case "relacionarCantidades":
     case "rectaNumerica":
     default:
       return mapProblema(ex);
   }
+}
+
+function mapOrdering(ex: Record<string, unknown>): OrderingSheetExercise {
+  const numbers = Array.isArray(ex.numbers) ? ex.numbers.map((n) => asNumber(n)) : [];
+  const direction: OrderingSheetExercise["direction"] =
+    asString(ex.direction) === "descending" ? "descending" : "ascending";
+  const sorted = Array.isArray(ex.sortedNumbers)
+    ? ex.sortedNumbers.map((n) => asNumber(n))
+    : [...numbers].sort((a, b) => (direction === "descending" ? b - a : a - b));
+  return {
+    kind: "ordenar",
+    numbers,
+    direction,
+    answer: sorted,
+  };
 }

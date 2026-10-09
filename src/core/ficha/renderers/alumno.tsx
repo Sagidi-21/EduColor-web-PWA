@@ -36,7 +36,7 @@ export function FichaAlumno({
         ))}
       </div>
 
-      <FichaFooter logoUrl={logoUrl} />
+      <FichaFooter />
     </div>
   );
 }

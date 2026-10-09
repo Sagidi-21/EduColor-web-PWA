@@ -81,6 +81,7 @@ describe("getGenerator", () => {
       { id: "problemas", kind: "problemas" },
       { id: "repartoIgual", kind: "repartoIgual" },
       { id: "weekDays", kind: "weekDay" },
+      { id: "ordenar", kind: "ordenar" },
     ];
 
     for (const sample of samples) {

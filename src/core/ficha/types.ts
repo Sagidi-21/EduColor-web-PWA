@@ -404,6 +404,14 @@ export interface InventarProblemaSheetExercise {
   answer?: string;
 }
 
+export interface OrderingSheetExercise {
+  kind: "ordenar";
+  numbers: number[];
+  direction: "ascending" | "descending";
+  /** Orden correcto (solo visible en hoja de soluciones). */
+  answer?: number[];
+}
+
 export type SheetExercise =
   | OperationSheetExercise
   | CountingSheetExercise
@@ -455,7 +463,8 @@ export type SheetExercise =
   | GraficoBarrasSheetExercise
   | MenuCafeteriaSheetExercise
   | MonedasBilletesSheetExercise
-  | InventarProblemaSheetExercise;
+  | InventarProblemaSheetExercise
+  | OrderingSheetExercise;
 
 export interface GeneratorDef {
   activityId: string;
@@ -469,10 +478,16 @@ export interface GeneratorDef {
 
 export interface FichaMeta {
   title: string;
+  /** Curso, p. ej. "1º Primaria" / "2º Primaria" (extensible a más cursos). */
   grade: string;
+  /** Materia, p. ej. "Matemáticas". */
+  subject?: string;
+  /** Nombre de la clase (configuración). */
   className?: string;
   mascotUrl?: string;
   studentName: boolean;
+  /** Solo estrellas (⭐…), sin texto de dificultad. */
+  difficultyStars?: string;
 }
 
 export type FichaMode = "alumno" | "soluciones";

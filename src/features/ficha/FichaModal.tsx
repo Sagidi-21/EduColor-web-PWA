@@ -1,13 +1,17 @@
 import { useState } from "react";
 import type { ActivityDifficulty, ActivityManifest } from "../../core/content/contracts";
-import { downloadFicha, randomFichaSeed, type FichaMode } from "../../core/ficha";
+import { downloadFichas, randomFichaSeed, type FichaMode } from "../../core/ficha";
 import "./FichaModal.css";
 
 export interface FichaModalProps {
   activity: ActivityManifest;
   difficulty: ActivityDifficulty;
   onDifficultyChange?: (difficulty: ActivityDifficulty) => void;
+  /** Curso, p. ej. "1º Primaria". */
   gradeTitle?: string;
+  /** Materia, p. ej. "Matemáticas". */
+  subjectTitle?: string;
+  /** Nombre de la clase (configuración). */
   className?: string;
   onClose: () => void;
 }
@@ -24,35 +28,49 @@ export function FichaModal({
   difficulty,
   onDifficultyChange,
   gradeTitle = "Primaria",
+  subjectTitle = "Matemáticas",
   className,
   onClose,
 }: FichaModalProps): JSX.Element {
   const [count, setCount] = useState(10);
   const [withImages, setWithImages] = useState(true);
-  const [seed, setSeed] = useState(() => randomFichaSeed());
-  const [mode, setMode] = useState<FichaMode>("alumno");
+  const [includeAlumno, setIncludeAlumno] = useState(true);
+  const [includeSoluciones, setIncludeSoluciones] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const selectedModes = (): FichaMode[] => {
+    const modes: FichaMode[] = [];
+    if (includeAlumno) modes.push("alumno");
+    if (includeSoluciones) modes.push("soluciones");
+    return modes;
+  };
+
   const handleGenerate = () => {
+    const modes = selectedModes();
+    if (modes.length === 0) {
+      setError("Selecciona al menos un tipo: alumno o soluciones.");
+      return;
+    }
+
     setBusy(true);
     setError(null);
     try {
-      downloadFicha({
+      downloadFichas({
         activityId: activity.id,
-        mode,
+        modes,
         config: {
           activityId: activity.id,
           difficulty,
           count,
           withImages,
-          seed,
+          seed: randomFichaSeed(),
         },
         meta: {
           title: activity.title,
           grade: gradeTitle,
+          subject: subjectTitle,
           className,
-          studentName: mode === "alumno",
         },
       });
     } catch (err) {
@@ -63,14 +81,23 @@ export function FichaModal({
   };
 
   const openPreview = () => {
+    const modes = selectedModes();
+    if (modes.length === 0) {
+      setError("Selecciona al menos un tipo: alumno o soluciones.");
+      return;
+    }
+    setError(null);
     const params = new URLSearchParams({
       activity: activity.id,
-      mode,
+      mode: modes.join(","),
       difficulty,
       count: String(count),
-      seed: String(seed),
+      seed: String(randomFichaSeed()),
       withImages: withImages ? "1" : "0",
+      grade: gradeTitle,
+      subject: subjectTitle,
     });
+    if (className) params.set("className", className);
     window.open(`/ficha-preview?${params.toString()}`, "_blank", "noopener,noreferrer");
   };
 
@@ -118,21 +145,6 @@ export function FichaModal({
           />
         </label>
 
-        <label className="ficha-modal__field">
-          <span>Semilla (reproducible)</span>
-          <div className="ficha-modal__seed-row">
-            <input
-              type="number"
-              min={1}
-              value={seed}
-              onChange={(e) => setSeed(Math.max(1, Number(e.target.value) || 1))}
-            />
-            <button type="button" onClick={() => setSeed(randomFichaSeed())}>
-              Nueva
-            </button>
-          </div>
-        </label>
-
         <label className="ficha-modal__check">
           <input
             type="checkbox"
@@ -146,22 +158,23 @@ export function FichaModal({
           <legend>Tipo de ficha</legend>
           <label>
             <input
-              type="radio"
-              name="ficha-mode"
-              checked={mode === "alumno"}
-              onChange={() => setMode("alumno")}
+              type="checkbox"
+              checked={includeAlumno}
+              onChange={(e) => setIncludeAlumno(e.target.checked)}
             />
             Alumno (sin soluciones)
           </label>
           <label>
             <input
-              type="radio"
-              name="ficha-mode"
-              checked={mode === "soluciones"}
-              onChange={() => setMode("soluciones")}
+              type="checkbox"
+              checked={includeSoluciones}
+              onChange={(e) => setIncludeSoluciones(e.target.checked)}
             />
             Soluciones
           </label>
+          <p className="ficha-modal__hint">
+            Si marcas ambas, se generan con los mismos ejercicios.
+          </p>
         </fieldset>
 
         {error && <p className="ficha-modal__error">{error}</p>}

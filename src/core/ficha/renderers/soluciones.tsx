@@ -35,7 +35,7 @@ export function FichaSoluciones({
         ))}
       </div>
 
-      <FichaFooter logoUrl={logoUrl} />
+      <FichaFooter />
     </div>
   );
 }

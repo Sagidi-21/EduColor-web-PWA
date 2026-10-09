@@ -3,6 +3,7 @@ import type { ActivityDifficulty } from "../../core/content/contracts";
 import {
   FichaAlumno,
   FichaSoluciones,
+  difficultyStars,
   getGenerator,
   printElement,
   type FichaMeta,
@@ -11,26 +12,48 @@ import {
   type SheetExercise,
 } from "../../core/ficha";
 import { getActivityManifest } from "../../manifests/content-registry";
+
+/** Logo del colegio con fondo transparente (public/). */
+const colegioLogoUrl = "/logo-ficha.png";
 import "../../core/ficha/renderers/print.css";
 import "./FichaPreviewScreen.css";
 
+function parseModes(raw: string | null): FichaMode[] {
+  const parts = (raw ?? "alumno")
+    .split(",")
+    .map((p) => p.trim())
+    .filter(Boolean);
+  const modes: FichaMode[] = [];
+  for (const part of parts) {
+    if (part === "soluciones" && !modes.includes("soluciones")) modes.push("soluciones");
+    if (part === "alumno" && !modes.includes("alumno")) modes.push("alumno");
+  }
+  return modes.length > 0 ? modes : ["alumno"];
+}
+
 function readParams(): {
   activityId: string;
-  mode: FichaMode;
+  modes: FichaMode[];
   difficulty: ActivityDifficulty;
   count: number;
   seed: number;
   withImages: boolean;
+  grade: string;
+  subject: string;
+  className: string;
 } {
   const params = new URLSearchParams(window.location.search);
   const difficulty = (params.get("difficulty") ?? "easy") as ActivityDifficulty;
   return {
     activityId: params.get("activity") ?? "suma",
-    mode: params.get("mode") === "soluciones" ? "soluciones" : "alumno",
+    modes: parseModes(params.get("mode")),
     difficulty: ["easy", "medium", "hard", "expert"].includes(difficulty) ? difficulty : "easy",
     count: Math.max(1, Math.min(30, Number(params.get("count") ?? 10) || 10)),
     seed: Math.max(1, Number(params.get("seed") ?? 42) || 42),
     withImages: params.get("withImages") !== "0",
+    grade: params.get("grade") ?? "Primaria",
+    subject: params.get("subject") ?? "Matemáticas",
+    className: params.get("className") ?? "",
   };
 }
 
@@ -46,10 +69,12 @@ export function FichaPreviewScreen(): JSX.Element {
     seed: opts.seed,
   };
 
-  const meta: FichaMeta = {
+  const baseMeta: Omit<FichaMeta, "studentName"> = {
     title: manifest?.title ?? opts.activityId,
-    grade: "Primaria",
-    studentName: opts.mode === "alumno",
+    grade: opts.grade,
+    subject: opts.subject,
+    className: opts.className || undefined,
+    difficultyStars: difficultyStars(opts.difficulty),
   };
 
   let exercises: SheetExercise[];
@@ -62,13 +87,15 @@ export function FichaPreviewScreen(): JSX.Element {
   }
 
   const handlePrint = () => {
-    const page = document.querySelector(".ficha-page") as HTMLElement | null;
-    if (page) {
-      printElement(page, meta.title);
+    const sheets = document.querySelector(".ficha-preview__sheets") as HTMLElement | null;
+    if (sheets) {
+      printElement(sheets, baseMeta.title);
     } else {
       window.print();
     }
   };
+
+  const modeLabel = opts.modes.join(" + ");
 
   return (
     <div className="ficha-preview">
@@ -77,7 +104,7 @@ export function FichaPreviewScreen(): JSX.Element {
           Cerrar
         </button>
         <span>
-          {meta.title} · {opts.mode} · seed {opts.seed}
+          {baseMeta.title} · {modeLabel}
         </span>
         <button type="button" className="ficha-preview__print" onClick={handlePrint}>
           Imprimir / PDF
@@ -86,10 +113,29 @@ export function FichaPreviewScreen(): JSX.Element {
 
       {error ? (
         <p className="ficha-preview__error">{error}</p>
-      ) : opts.mode === "soluciones" ? (
-        <FichaSoluciones exercises={exercises} config={config} meta={meta} />
       ) : (
-        <FichaAlumno exercises={exercises} config={config} meta={meta} />
+        <div className="ficha-preview__sheets">
+          {opts.modes.map((mode, index) => (
+            <div key={mode}>
+              {index > 0 ? <div className="ficha-print-break" aria-hidden="true" /> : null}
+              {mode === "soluciones" ? (
+                <FichaSoluciones
+                  exercises={exercises}
+                  config={config}
+                  meta={{ ...baseMeta, studentName: false }}
+                  logoUrl={colegioLogoUrl}
+                />
+              ) : (
+                <FichaAlumno
+                  exercises={exercises}
+                  config={config}
+                  meta={{ ...baseMeta, studentName: true }}
+                  logoUrl={colegioLogoUrl}
+                />
+              )}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

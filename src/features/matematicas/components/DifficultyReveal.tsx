@@ -130,7 +130,6 @@ export interface DifficultyRevealProps {
   selectedLevelId: CurriculumLevelId | null;
   onSelectDifficulty: (diff: ActivityDifficulty, levelId: CurriculumLevelId | null) => void;
   onStart: () => void;
-  onGenerateFicha?: () => void;
   onClose: () => void;
   isShrinking: boolean;
   onAnimationEnd: () => void;
@@ -143,7 +142,6 @@ export function DifficultyReveal({
   selectedLevelId,
   onSelectDifficulty,
   onStart,
-  onGenerateFicha,
   onClose,
   isShrinking,
   onAnimationEnd,
@@ -407,9 +405,9 @@ export function DifficultyReveal({
             </div>
           </div>
 
-          {/* Botones: Empezar + Generar ficha */}
-          <motion.div
-            className="diff-reveal__actions"
+          <motion.button
+            className="diff-reveal__start-btn diff-reveal__start-btn--chalk"
+            onClick={onStart}
             initial={animStep !== "ready" ? { opacity: 0, scale: 0.3 } : false}
             animate={
               animStep === "cards_burst" || animStep === "ready"
@@ -422,19 +420,8 @@ export function DifficultyReveal({
               delay: 1.28,
             }}
           >
-            <button
-              type="button"
-              className="diff-reveal__start-btn diff-reveal__start-btn--chalk"
-              onClick={onStart}
-            >
-              🚀 ¡Empezar Ejercicio!
-            </button>
-            {onGenerateFicha && (
-              <button type="button" className="diff-reveal__ficha-btn" onClick={onGenerateFicha}>
-                📄 Generar ficha
-              </button>
-            )}
-          </motion.div>
+            🚀 ¡Empezar Ejercicio!
+          </motion.button>
         </div>
       </motion.div>
     </div>

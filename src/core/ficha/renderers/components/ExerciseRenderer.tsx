@@ -11,6 +11,7 @@ import { PoligonosRenderer } from "./PoligonosRenderer";
 import { RelojRenderer } from "./RelojRenderer";
 import { LeftRightRenderer } from "./LeftRightRenderer";
 import { LineTypesRenderer } from "./LineTypesRenderer";
+import { OrderingRenderer } from "./OrderingRenderer";
 import { DefaultRenderer } from "./DefaultRenderer";
 
 export interface ExerciseRendererProps {
@@ -99,6 +100,8 @@ export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): Rea
       return <PoligonosRenderer ex={ex} showAnswer={showAnswer} />;
     case "lineTypes":
       return <LineTypesRenderer ex={ex} showAnswer={showAnswer} />;
+    case "ordenar":
+      return <OrderingRenderer ex={ex} showAnswer={showAnswer} />;
     case "parImpar":
       return (
         <QuestionRenderer
