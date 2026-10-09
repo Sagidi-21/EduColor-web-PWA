@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ActivityDifficulty, ActivityManifest } from "../../core/content/contracts";
-import { downloadFichas, randomFichaSeed, type FichaMode } from "../../core/ficha";
+import { downloadFichas, difficultyStars, randomFichaSeed, type FichaMode } from "../../core/ficha";
 import "./FichaModal.css";
 
 export interface FichaModalProps {
@@ -16,12 +16,7 @@ export interface FichaModalProps {
   onClose: () => void;
 }
 
-const DIFFICULTIES: { id: ActivityDifficulty; label: string }[] = [
-  { id: "easy", label: "⭐ Fácil" },
-  { id: "medium", label: "⭐⭐ Medio" },
-  { id: "hard", label: "⭐⭐⭐ Difícil" },
-  { id: "expert", label: "⭐⭐⭐⭐ Experto" },
-];
+const DIFFICULTIES: ActivityDifficulty[] = ["easy", "medium", "hard", "expert"];
 
 export function FichaModal({
   activity,
@@ -120,17 +115,23 @@ export function FichaModal({
         {onDifficultyChange && (
           <fieldset className="ficha-modal__mode">
             <legend>Dificultad</legend>
-            {DIFFICULTIES.map((diff) => (
-              <label key={diff.id}>
-                <input
-                  type="radio"
-                  name="ficha-difficulty"
-                  checked={difficulty === diff.id}
-                  onChange={() => onDifficultyChange(diff.id)}
-                />
-                {diff.label}
-              </label>
-            ))}
+            {DIFFICULTIES.map((diff) => {
+              const desc = activity.boardCard?.difficultyDescriptions?.[diff];
+              return (
+                <label key={diff} className="ficha-modal__difficulty">
+                  <input
+                    type="radio"
+                    name="ficha-difficulty"
+                    checked={difficulty === diff}
+                    onChange={() => onDifficultyChange(diff)}
+                  />
+                  <span className="ficha-modal__stars" aria-hidden="true">
+                    {difficultyStars(diff)}
+                  </span>
+                  {desc && <span className="ficha-modal__diff-desc">{desc}</span>}
+                </label>
+              );
+            })}
           </fieldset>
         )}
 
