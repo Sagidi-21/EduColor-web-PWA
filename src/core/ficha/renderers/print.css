@@ -191,3 +191,97 @@
   line-height: 1.3;
   white-space: pre;
 }
+
+/* Figuras / comparación / reloj */
+.ficha-shape-svg,
+.ficha-clock-svg,
+.ficha-line-svg {
+  display: block;
+  margin-top: 6px;
+}
+
+.ficha-poligonos__figure {
+  margin-top: 6px;
+}
+
+.ficha-poligonos__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ficha-poligonos__option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.ficha-poligonos__opt-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #666;
+}
+
+.ficha-compare__groups {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.ficha-compare__group {
+  flex: 1;
+  min-width: 0;
+}
+
+.ficha-compare__letter {
+  font-weight: 800;
+  font-size: 12px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.ficha-compare__strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  align-items: center;
+}
+
+.ficha-compare__thumb {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.ficha-compare__count {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.ficha-compare__more {
+  font-size: 11px;
+  color: #666;
+}
+
+.ficha-reloj {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ficha-leftright__pair {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.ficha-leftright__side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+}

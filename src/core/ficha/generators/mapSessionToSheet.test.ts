@@ -41,6 +41,7 @@ describe("mapSessionToSheet", () => {
         leftCount: 3,
         rightCount: 5,
         objectSet: "coches",
+        objectIndex: 0,
         question: "more",
         answer: "right",
       },
@@ -53,6 +54,57 @@ describe("mapSessionToSheet", () => {
       questionType: "mas",
       answer: "B",
     });
+    if (ex.kind === "comparison") {
+      expect(ex.imageUrl.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("mapea poligonos con figura SVG", () => {
+    const ex = mapSessionToSheet(
+      "poligonos",
+      {
+        question: "¿Cuántos lados?",
+        answer: "3",
+        showVertices: true,
+        shape: {
+          name: "Triángulo",
+          path: "M 100 30 L 170 150 L 30 150 Z",
+          drawType: "path",
+          color: "#3b82f6",
+          vertexPoints: [
+            { x: 100, y: 30 },
+            { x: 170, y: 150 },
+            { x: 30, y: 150 },
+          ],
+        },
+      },
+      config,
+    );
+    expect(ex.kind).toBe("poligonos");
+    if (ex.kind === "poligonos") {
+      expect(ex.shape?.path).toContain("M 100 30");
+      expect(ex.shape?.showVertices).toBe(true);
+    }
+  });
+
+  it("mapea lineTypes con svg del line", () => {
+    const ex = mapSessionToSheet(
+      "lineTypes",
+      {
+        line: {
+          kind: "horizontal",
+          label: "Horizontal",
+          svg: '<line x1="30" y1="100" x2="270" y2="100"/>',
+        },
+        options: ["Horizontal", "Vertical"],
+        answer: "Horizontal",
+      },
+      config,
+    );
+    expect(ex.kind).toBe("lineTypes");
+    if (ex.kind === "lineTypes") {
+      expect(ex.svg).toContain("line");
+    }
   });
 
   it("mapea tresSumandos", () => {

@@ -45,3 +45,15 @@ export function pickImage(category: ImageCategory, rng: () => number): string {
 export function pickCategory(rng: () => number): ImageCategory {
   return IMAGE_CATEGORIES[Math.floor(rng() * IMAGE_CATEGORIES.length)];
 }
+
+/** Busca una categoría por nombre de carpeta (`coches`, `globos`, …). */
+export function findCategory(name: string): ImageCategory | undefined {
+  return IMAGE_CATEGORIES.find((cat) => cat.name === name);
+}
+
+/** Imagen concreta de una categoría por índice (determinista para fichas). */
+export function getObjectImage(categoryName: string, index = 0): string {
+  const cat = findCategory(categoryName);
+  if (!cat || cat.images.length === 0) return "";
+  return cat.images[Math.abs(index) % cat.images.length] ?? "";
+}

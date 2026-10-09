@@ -6,14 +6,23 @@ import "./FichaModal.css";
 export interface FichaModalProps {
   activity: ActivityManifest;
   difficulty: ActivityDifficulty;
+  onDifficultyChange?: (difficulty: ActivityDifficulty) => void;
   gradeTitle?: string;
   className?: string;
   onClose: () => void;
 }
 
+const DIFFICULTIES: { id: ActivityDifficulty; label: string }[] = [
+  { id: "easy", label: "⭐ Fácil" },
+  { id: "medium", label: "⭐⭐ Medio" },
+  { id: "hard", label: "⭐⭐⭐ Difícil" },
+  { id: "expert", label: "⭐⭐⭐⭐ Experto" },
+];
+
 export function FichaModal({
   activity,
   difficulty,
+  onDifficultyChange,
   gradeTitle = "Primaria",
   className,
   onClose,
@@ -80,6 +89,23 @@ export function FichaModal({
         <h2 id="ficha-modal-title" className="ficha-modal__title">
           {activity.boardCard?.icon ?? "📄"} Generar ficha — {activity.title}
         </h2>
+
+        {onDifficultyChange && (
+          <fieldset className="ficha-modal__mode">
+            <legend>Dificultad</legend>
+            {DIFFICULTIES.map((diff) => (
+              <label key={diff.id}>
+                <input
+                  type="radio"
+                  name="ficha-difficulty"
+                  checked={difficulty === diff.id}
+                  onChange={() => onDifficultyChange(diff.id)}
+                />
+                {diff.label}
+              </label>
+            ))}
+          </fieldset>
+        )}
 
         <label className="ficha-modal__field">
           <span>Número de ejercicios</span>

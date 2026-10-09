@@ -10,6 +10,7 @@ import { MatematicasCatalogScreen } from "./features/matematicas/MatematicasCata
 import { SplashScreen } from "./features/splash/SplashScreen";
 import { WelcomeScreen } from "./features/splash/WelcomeScreen";
 import { FichaPreviewScreen } from "./features/ficha/FichaPreviewScreen";
+import { FichaGeneratorScreen } from "./features/ficha/FichaGeneratorScreen";
 
 function isFichaPreviewRoute(): boolean {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
@@ -69,6 +70,12 @@ function AppShell() {
           // ),
           mathematics: ({ navigate }) => (
             <MatematicasCatalogScreen
+              initialGradeId={initialGradeId}
+              onBack={() => navigate("home", "left")}
+            />
+          ),
+          generator: ({ navigate }) => (
+            <FichaGeneratorScreen
               initialGradeId={initialGradeId}
               onBack={() => navigate("home", "left")}
             />

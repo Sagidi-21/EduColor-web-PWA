@@ -7,6 +7,10 @@ import { TresSumandosRenderer } from "./TresSumandosRenderer";
 import { AlgoritmoVerticalRenderer } from "./AlgoritmoVerticalRenderer";
 import { TablaNumericaRenderer } from "./TablaNumericaRenderer";
 import { QuestionRenderer } from "./QuestionRenderer";
+import { PoligonosRenderer } from "./PoligonosRenderer";
+import { RelojRenderer } from "./RelojRenderer";
+import { LeftRightRenderer } from "./LeftRightRenderer";
+import { LineTypesRenderer } from "./LineTypesRenderer";
 import { DefaultRenderer } from "./DefaultRenderer";
 
 export interface ExerciseRendererProps {
@@ -88,24 +92,13 @@ export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): Rea
         />
       );
     case "reloj":
-      return (
-        <QuestionRenderer
-          question={
-            ex.question || `¿Qué hora marca? (${ex.hours}:${String(ex.minutes).padStart(2, "0")})`
-          }
-          answer={ex.answer}
-          showAnswer={showAnswer}
-          detail={ex.showHands ? undefined : "Escribe la hora"}
-        />
-      );
+      return <RelojRenderer ex={ex} showAnswer={showAnswer} />;
     case "leftRight":
-      return (
-        <QuestionRenderer
-          question={ex.question || `${ex.leftObj} | ${ex.rightObj}`}
-          answer={ex.answer}
-          showAnswer={showAnswer}
-        />
-      );
+      return <LeftRightRenderer ex={ex} showAnswer={showAnswer} />;
+    case "poligonos":
+      return <PoligonosRenderer ex={ex} showAnswer={showAnswer} />;
+    case "lineTypes":
+      return <LineTypesRenderer ex={ex} showAnswer={showAnswer} />;
     case "parImpar":
       return (
         <QuestionRenderer
@@ -158,15 +151,6 @@ export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): Rea
           detail={`${ex.leftText}  vs  ${ex.rightText}`}
         />
       );
-    case "lineTypes":
-      return (
-        <QuestionRenderer
-          question={ex.question}
-          answer={ex.answer}
-          showAnswer={showAnswer}
-          detail={ex.options.length ? `Opciones: ${ex.options.join(", ")}` : undefined}
-        />
-      );
     case "numeracion1119":
       return (
         <QuestionRenderer
@@ -181,7 +165,6 @@ export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): Rea
     case "numeracion4059":
     case "numeracion6099":
     case "numeracion999":
-    case "poligonos":
     case "cuerpos3d":
     case "multiplicacion":
     case "simetria":

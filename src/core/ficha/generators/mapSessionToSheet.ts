@@ -1,3 +1,4 @@
+import { getObjectImage } from "../../../platform/objectImages";
 import type {
   AlgoritmoVerticalSheetExercise,
   ComparisonSheetExercise,
@@ -7,6 +8,7 @@ import type {
   LeftRightSheetExercise,
   OperationSheetExercise,
   ParImparSheetExercise,
+  PoligonosSheetExercise,
   ProblemaSheetExercise,
   RelacionSumaRestaSheetExercise,
   RelojSheetExercise,
@@ -14,6 +16,7 @@ import type {
   RutaCuadriculaSheetExercise,
   SheetConfig,
   SheetExercise,
+  SheetShapeVisual,
   TablaNumericaSheetExercise,
   TresSumandosColumnaSheetExercise,
   TresSumandosSheetExercise,
@@ -101,14 +104,86 @@ function mapComparison(ex: Record<string, unknown>, config: SheetConfig): Compar
   const raw = asString(ex.answer);
   const answer: "A" | "B" | undefined =
     raw === "left" || raw === "A" ? "A" : raw === "right" || raw === "B" ? "B" : undefined;
+  const objectLabel = asString(ex.objectSet ?? ex.objectLabel, "objetos");
+  const imageUrl = config.withImages
+    ? asString(ex.imageUrl) || getObjectImage(objectLabel, asNumber(ex.objectIndex))
+    : "";
   return {
     kind: "comparison",
     countA: asNumber(ex.leftCount ?? ex.countA),
     countB: asNumber(ex.rightCount ?? ex.countB),
-    imageUrl: config.withImages ? asString(ex.imageUrl) : "",
-    objectLabel: asString(ex.objectSet ?? ex.objectLabel, "objetos"),
+    imageUrl,
+    objectLabel,
     questionType,
     answer,
+  };
+}
+
+function shapeFromPoligono(raw: unknown, showVertices = false): SheetShapeVisual | undefined {
+  if (!raw || typeof raw !== "object") return undefined;
+  const s = raw as Record<string, unknown>;
+  const drawRaw = asString(s.drawType, "path");
+  const drawType: SheetShapeVisual["drawType"] =
+    drawRaw === "circle" ||
+    drawRaw === "open_line" ||
+    drawRaw === "curved_side" ||
+    drawRaw === "primitive"
+      ? drawRaw
+      : "path";
+  return {
+    path: asString(s.path),
+    drawType,
+    color: asString(s.color, "#3b82f6"),
+    vertexPoints: Array.isArray(s.vertexPoints)
+      ? (s.vertexPoints as { x: number; y: number }[])
+      : [],
+    showVertices,
+    label: asString(s.name || s.label) || undefined,
+  };
+}
+
+function mapPoligonos(ex: Record<string, unknown>): PoligonosSheetExercise {
+  const showVertices = Boolean(ex.showVertices);
+  const optionsList = Array.isArray(ex.optionsList)
+    ? ex.optionsList
+        .map((opt) => shapeFromPoligono(opt, false))
+        .filter((s): s is SheetShapeVisual => Boolean(s))
+    : undefined;
+  return {
+    kind: "poligonos",
+    question: questionOf(ex),
+    answer: answerOf(ex),
+    shape: shapeFromPoligono(ex.shape, showVertices),
+    optionsList,
+  };
+}
+
+function mapShapes(ex: Record<string, unknown>, config: SheetConfig): PoligonosSheetExercise {
+  const shapeRaw =
+    ex.shape && typeof ex.shape === "object" ? (ex.shape as Record<string, unknown>) : {};
+  const primitive = asString(shapeRaw.type || shapeRaw.primitive) as SheetShapeVisual["primitive"];
+  const shape: SheetShapeVisual = {
+    path: "",
+    drawType: "primitive",
+    color: asString(ex.color, "#3b82f6"),
+    primitive:
+      primitive === "circle" ||
+      primitive === "square" ||
+      primitive === "triangle" ||
+      primitive === "rectangle" ||
+      primitive === "rhombus" ||
+      primitive === "oval"
+        ? primitive
+        : "circle",
+    rotation: asNumber(ex.rotation),
+    label: asString(shapeRaw.label),
+  };
+  return {
+    kind: "poligonos",
+    question: questionOf(ex) || "¿Qué forma es?",
+    answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
+    shape,
+    imageUrl: config.withImages ? asString(ex.imageUrl) || undefined : undefined,
   };
 }
 
@@ -203,7 +278,7 @@ function mapSumaLlevando(ex: Record<string, unknown>): SheetExercise {
   return mapQuestionKind("algoritmo3Cifras", ex);
 }
 
-function mapLeftRight(ex: Record<string, unknown>): LeftRightSheetExercise {
+function mapLeftRight(ex: Record<string, unknown>, config: SheetConfig): LeftRightSheetExercise {
   const raw = asString(ex.answer);
   const answer: "left" | "right" | undefined =
     raw === "left" || raw === "box-left"
@@ -215,8 +290,8 @@ function mapLeftRight(ex: Record<string, unknown>): LeftRightSheetExercise {
     kind: "leftRight",
     leftObj: asString(ex.leftObj, "A"),
     rightObj: asString(ex.rightObj, "B"),
-    leftImgUrl: asString(ex.leftImgUrl),
-    rightImgUrl: asString(ex.rightImgUrl),
+    leftImgUrl: config.withImages ? asString(ex.leftImgUrl) : "",
+    rightImgUrl: config.withImages ? asString(ex.rightImgUrl) : "",
     question: questionOf(ex),
     answer,
   };
@@ -264,11 +339,14 @@ function mapRepartoIgual(ex: Record<string, unknown>): RepartoIgualSheetExercise
 }
 
 function mapReloj(ex: Record<string, unknown>): RelojSheetExercise {
+  const type = asString(ex.type);
+  // En digital_to_analog el alumno pone las agujas: en ficha mostramos cara vacía.
+  const showHands = type !== "digital_to_analog" && ex.showHands !== false;
   return {
     kind: "reloj",
     hours: asNumber(ex.hours),
     minutes: asNumber(ex.minutes),
-    showHands: ex.showHands !== false,
+    showHands,
     question: questionOf(ex),
     answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
   };
@@ -409,7 +487,7 @@ export function mapSessionToSheet(
     case "sumaLlevando":
       return mapSumaLlevando(ex);
     case "leftRight":
-      return mapLeftRight(ex);
+      return mapLeftRight(ex, config);
     case "parImpar":
       return mapParImpar(ex, config);
     case "relacionSumaResta":
@@ -463,22 +541,26 @@ export function mapSessionToSheet(
     case "numeracion999":
       return mapQuestionKind("numeracion999", ex);
     case "poligonos":
+      return mapPoligonos(ex);
     case "shapes":
-      return mapQuestionKind("poligonos", ex);
+      return mapShapes(ex, config);
     case "cuerpos3d":
       return mapQuestionKind("cuerpos3d", ex);
     case "simetria":
       return mapQuestionKind("simetria", ex);
     case "circuloCircunferencia":
       return mapQuestionKind("circuloCircunferencia", ex);
-    case "lineTypes":
+    case "lineTypes": {
+      const line =
+        ex.line && typeof ex.line === "object" ? (ex.line as Record<string, unknown>) : {};
       return {
         kind: "lineTypes",
-        svg: asString(ex.svg),
+        svg: asString(ex.svg || line.svg),
         options: asStringArray(ex.options),
-        question: questionOf(ex),
+        question: questionOf(ex) || "¿Qué tipo de línea es?",
         answer: asString(ex.answer ?? ex.correctAnswer) || undefined,
       };
+    }
     case "multiplicacion":
       return mapQuestionKind("multiplicacion", ex);
     case "probabilidad":

@@ -166,10 +166,28 @@ export interface ParImparSheetExercise {
   answer?: "par" | "impar";
 }
 
+/** Figura SVG serializable para fichas (polígonos / shapes). */
+export interface SheetShapeVisual {
+  path: string;
+  drawType: "path" | "circle" | "open_line" | "curved_side" | "primitive";
+  color: string;
+  vertexPoints?: { x: number; y: number }[];
+  showVertices?: boolean;
+  /** Para shapes: círculo, cuadrado, triángulo, etc. */
+  primitive?: "circle" | "square" | "triangle" | "rectangle" | "rhombus" | "oval";
+  rotation?: number;
+  label?: string;
+}
+
 export interface PoligonosSheetExercise {
   kind: "poligonos";
   question: string;
   answer?: string | number;
+  shape?: SheetShapeVisual;
+  /** Foto real (p. ej. shapes expert) en lugar del SVG. */
+  imageUrl?: string;
+  /** Rejilla de opciones (nivel experto). */
+  optionsList?: SheetShapeVisual[];
 }
 
 export interface RelacionSumaRestaSheetExercise {

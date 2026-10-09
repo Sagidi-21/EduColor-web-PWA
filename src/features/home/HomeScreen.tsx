@@ -100,8 +100,7 @@ export function HomeScreen({ onNavigate }: { onNavigate: (view: AppView) => void
           </h2>
           <div className="home__mode-grid">
             {modes.map((mode) => {
-              const isMigrated = mode.id === "mathematics";
-              const blocked = !isMigrated || !selected;
+              const blocked = !selected;
               return (
                 <button
                   key={mode.id}
@@ -117,9 +116,7 @@ export function HomeScreen({ onNavigate }: { onNavigate: (view: AppView) => void
                 >
                   <span className="mode-card__icon">{mode.icon}</span>
                   <span className="mode-card__label">{mode.label}</span>
-                  <span className="mode-card__desc">
-                    {isMigrated ? mode.description : "En migración desde la aplicación original"}
-                  </span>
+                  <span className="mode-card__desc">{mode.description}</span>
                   <span className="mode-card__check">✓</span>
                 </button>
               );
