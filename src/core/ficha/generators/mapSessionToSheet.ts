@@ -1171,7 +1171,9 @@ function mapVecinosNumero(ex: Record<string, unknown>): SheetExercise {
       : askType === "posterior"
         ? "¿Cuál es el número posterior?"
         : "¿Cuáles son los vecinos?");
-  const choiceLabels = asStringArray(ex.options).map((o) => o.replace("·", " · "));
+  /** Hard/expert: pares «a-p» → «a - p» (guion, no punto medio). */
+  const formatPair = (s: string) => s.replace("-", " - ").replace("·", " - ");
+  const choiceLabels = asStringArray(ex.options).map(formatPair);
   const answerRaw = answerOf(ex);
   return {
     kind: "vecinosNumero",
@@ -1181,7 +1183,7 @@ function mapVecinosNumero(ex: Record<string, unknown>): SheetExercise {
     anterior: asNumber(ex.anterior),
     posterior: asNumber(ex.posterior),
     choiceLabels: choiceLabels.length > 0 ? choiceLabels : undefined,
-    answer: typeof answerRaw === "string" ? answerRaw.replace("·", " · ") : answerRaw,
+    answer: typeof answerRaw === "string" ? formatPair(answerRaw) : answerRaw,
   };
 }
 

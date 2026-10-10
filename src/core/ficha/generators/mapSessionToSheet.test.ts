@@ -410,8 +410,8 @@ describe("mapSessionToSheet", () => {
         type: "ambos",
         anterior: 4,
         posterior: 6,
-        correctAnswer: "4·6",
-        options: ["4·6", "3·6", "4·7", "5·6"],
+        correctAnswer: "4-6",
+        options: ["4-6", "3-6", "4-7", "5-6"],
       },
       config,
     );
@@ -420,9 +420,9 @@ describe("mapSessionToSheet", () => {
       number: 5,
       askType: "ambos",
       question: "¿Cuáles son los vecinos?",
-      answer: "4 · 6",
+      answer: "4 - 6",
     });
-    if (ex.kind === "vecinosNumero") expect(ex.choiceLabels?.[0]).toBe("4 · 6");
+    if (ex.kind === "vecinosNumero") expect(ex.choiceLabels?.[0]).toBe("4 - 6");
   });
 
   it("mapea dobleYMitad con cajas y opciones", () => {

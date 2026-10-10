@@ -60,7 +60,7 @@ describe("generateVecinosSession", () => {
   it("calcula bien correctAnswer para 'ambos'", () => {
     const session = generateVecinosSession(42, "expert");
     for (const ex of session) {
-      expect(ex.correctAnswer).toBe(`${ex.number - 1}·${ex.number + 1}`);
+      expect(ex.correctAnswer).toBe(`${ex.number - 1}-${ex.number + 1}`);
     }
   });
 });

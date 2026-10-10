@@ -22,7 +22,9 @@ export function VecinosRenderer({ ex, showAnswer }: VecinosRendererProps): JSX.E
 
   return (
     <div className="ficha-vecinos">
-      <p className="ficha-vecinos__question">{ex.question}</p>
+      <p className="ficha-vecinos__question">
+        {ex.question} <span className="ficha-vecinos__hint">(redondea la correcta)</span>
+      </p>
       {hasTrack && (
         <div className="ficha-vecinos__track" aria-label="Antes, número y después">
           <div className="ficha-vecinos__house">

@@ -126,11 +126,11 @@ export function VecinosScreen({
 
   const renderOption = (opt: string) => {
     if (isAmbos) {
-      const [a, p] = opt.split("·");
+      const [a, p] = opt.split("-");
       return (
         <>
           <span className="vec__opt-pair">{a}</span>
-          <span className="vec__opt-sep">·</span>
+          <span className="vec__opt-sep">-</span>
           <span className="vec__opt-pair">{p}</span>
         </>
       );

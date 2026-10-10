@@ -70,7 +70,7 @@ export function generateVecinosSession(
       }
       options = [correctAnswer, ...Array.from(wrongs)].sort(() => rng() - 0.5);
     } else {
-      correctAnswer = `${ant}·${pos}`;
+      correctAnswer = `${ant}-${pos}`;
       const wrongs = new Set<string>();
       let w = 0;
       while (wrongs.size < 3 && w < 80) {
@@ -79,7 +79,7 @@ export function generateVecinosSession(
         const d2 = randInt(rng, -2, 2);
         const wa = ant + d1;
         const wp = pos + d2;
-        const lbl = `${wa}·${wp}`;
+        const lbl = `${wa}-${wp}`;
         if (wa >= 0 && lbl !== correctAnswer) wrongs.add(lbl);
       }
       options = [correctAnswer, ...Array.from(wrongs)].sort(() => rng() - 0.5);

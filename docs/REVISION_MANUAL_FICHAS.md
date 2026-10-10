@@ -137,7 +137,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **ordenar** — Ordenar números _(2026-10-09: OK — alumno+soluciones, impresión A4, cabecera/logo)_
 - [ ] **seriesNumericas** — Series numéricas
 - [ ] **series3cifras** — Series de 3 cifras
-- [ ] **vecinosNumero** — Vecinos del número
+- [x] **vecinosNumero** — Vecinos del número _(2026-10-10: OK — color de clase en «el número»; centrado; hint redondea; hard/expert con guion; opciones space-between)_
 - [x] **rectaNumerica** — Coloca el número en la recta _(2026-10-10: OK — número sin recuadro; hard/expert 1/fila recta ancha; soluciones con recta + marca vertical; sin flecha)_
 - [ ] **redondeo** — Redondeo a la decena
 - [ ] **abaco3cifras** — Ábaco de tres cifras
@@ -214,7 +214,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | `poligonos`                          | ○ opciones de texto (como shapes)                           |
 | `lineTypes`                          | OK navegador 2026-10-10 — ver checklist Geometría           |
 | `series3cifras`                      | Cajas más anchas                                            |
-| `vecinosNumero`                      | Vía antes/número/después + ○                                |
+| `vecinosNumero`                      | OK navegador 2026-10-10 — ver checklist Numeración          |
 | `problemas`                          | Emoji + historia + `a ± b = □`                              |
 | `datosInnecesarios`                  | Frases con ○ (mapeo `historia`/`pregunta` arreglado)        |
 | `weekDays`                           | Tira L-M-X-J-V-S-D + ○                                      |

@@ -620,7 +620,7 @@ export interface VecinosNumeroSheetExercise {
   askType?: "anterior" | "posterior" | "ambos";
   anterior?: number;
   posterior?: number;
-  /** Opciones MC (en «ambos», pares «a · p»). */
+  /** Opciones MC (en «ambos», pares «a - p»). */
   choiceLabels?: string[];
   answer?: number | string;
 }

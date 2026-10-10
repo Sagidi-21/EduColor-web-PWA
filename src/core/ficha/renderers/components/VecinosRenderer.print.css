@@ -8,9 +8,16 @@
   line-height: 1.25;
 }
 
+.ficha-vecinos__hint {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+}
+
 .ficha-vecinos__track {
   display: flex;
   align-items: flex-start;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -37,9 +44,9 @@
 }
 
 .ficha-vecinos__box--center {
-  color: #0284c7;
-  border-color: #0284c7;
-  background: #e0f2fe;
+  color: var(--color-primary, #0284c7);
+  border-color: var(--color-primary, #0284c7);
+  background: color-mix(in srgb, var(--color-primary, #0284c7) 18%, #fff);
 }
 
 .ficha-vecinos__box--blank {
@@ -61,9 +68,11 @@
 
 .ficha-vecinos__choices {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  width: 100%;
   margin-top: 8px;
+  box-sizing: border-box;
 }
 
 .ficha-vecinos__choice {

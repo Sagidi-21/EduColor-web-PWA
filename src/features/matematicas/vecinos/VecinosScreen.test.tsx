@@ -22,8 +22,8 @@ const optionButtons = (container: HTMLElement) =>
   Array.from(container.querySelectorAll<HTMLButtonElement>(".vec__opt"));
 
 /**
- * En el tipo `ambos` el renderer parte la respuesta combinada `7·8` en dos
- * casillas con un separador, así que el texto del botón no es el de la opción.
+ * En el tipo `ambos` el renderer parte la respuesta combinada `7-8` en dos
+ * casillas con un guion, así que el texto del botón no es el de la opción.
  * El resto de tipos sí lo es.
  */
 const clickOption = (container: HTMLElement, ex: VecinosExercise, text: string) => {
@@ -183,8 +183,8 @@ describe("VecinosScreen smoke", () => {
     (["hard", "expert"] as ActivityDifficulty[]).forEach((difficulty) => {
       session(difficulty, seed).forEach((ex) => {
         expect(ex.type).toBe("ambos");
-        // La respuesta del motor es `anterior·posterior`.
-        expect(ex.correctAnswer).toBe(`${ex.anterior}·${ex.posterior}`);
+        // La respuesta del motor es `anterior-posterior`.
+        expect(ex.correctAnswer).toBe(`${ex.anterior}-${ex.posterior}`);
         expect(ex.options).toHaveLength(4);
       });
     });
