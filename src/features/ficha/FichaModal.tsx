@@ -208,8 +208,10 @@ export function FichaModal({
           </h2>
 
           {onDifficultyChange && (
-            <fieldset className="ficha-modal__mode">
-              <legend>Dificultad</legend>
+            <fieldset className="ficha-modal__mode" aria-labelledby="ficha-diff-title">
+              <p id="ficha-diff-title" className="ficha-modal__mode-title">
+                Dificultad
+              </p>
               {DIFFICULTIES.map((diff) => {
                 const desc = activity.boardCard?.difficultyDescriptions?.[diff];
                 return (
@@ -256,8 +258,10 @@ export function FichaModal({
             </p>
           )}
 
-          <fieldset className="ficha-modal__mode">
-            <legend>Tipo de ficha</legend>
+          <fieldset className="ficha-modal__mode" aria-labelledby="ficha-tipo-title">
+            <p id="ficha-tipo-title" className="ficha-modal__mode-title">
+              Tipo de ficha
+            </p>
             <label>
               <input
                 type="checkbox"
