@@ -218,7 +218,7 @@ describe("fichaGenerator", () => {
     });
     expect(alumno.exercises.every((ex) => ex.kind === "counting")).toBe(true);
     expect(alumno.html).toContain("ficha-counting__objects");
-    expect(alumno.html).toMatch(/¿Cuántos .+ hay\?/);
+    expect(alumno.html).toMatch(/¿Cuánt[oa]s .+ hay\?/);
     expect(alumno.html).toContain("ficha-counting__answer-blank");
     expect(alumno.html).not.toContain("ficha-answer");
 
@@ -229,7 +229,7 @@ describe("fichaGenerator", () => {
     });
     expect(soluciones.html).toContain("ficha-answer");
     expect(soluciones.html).not.toContain("ficha-counting__objects");
-    expect(soluciones.html).not.toMatch(/¿Cuántos .+ hay\?/);
+    expect(soluciones.html).not.toMatch(/¿Cuánt[oa]s .+ hay\?/);
     expect(soluciones.html).toMatch(/Soluciones/i);
   });
 

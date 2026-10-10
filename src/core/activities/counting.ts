@@ -10,7 +10,13 @@ import type {
   GroupFrame,
 } from "../content/contracts";
 export type { CurriculumLevelId, ExerciseStep };
-import { IMAGE_CATEGORIES, pickImage } from "../../platform/objectImages";
+import {
+  IMAGE_CATEGORIES,
+  countHowManyPrompt,
+  displayObjectLabel,
+  pickImage,
+  cuantosWord,
+} from "../../platform/objectImages";
 import type { ImageCategory } from "../../platform/objectImages";
 
 // ---------------------------------------------------------------------------
@@ -451,8 +457,8 @@ function buildSteps(
   objectLabel: string,
   rng: () => number,
 ): ExerciseStep[] {
-  const obj = objectLabel === "pajaros" ? "pájaros" : objectLabel;
-  const q = ["flores", "manzanas"].includes(objectLabel) ? "Cuántas" : "Cuántos";
+  const obj = displayObjectLabel(objectLabel);
+  const q = cuantosWord(objectLabel);
 
   const tens = Math.floor(count / 10);
   const units = count % 10;
@@ -1165,7 +1171,7 @@ export function generateSession(config: CountingConfig, seed = 42): CountingExer
       steps: [
         {
           answerType: "COUNT_TOTAL" as AnswerType,
-          prompt: `¿Cuántos ${cat.name} hay?`,
+          prompt: countHowManyPrompt(cat.name),
           correctAnswer,
           options,
           persistent: false,

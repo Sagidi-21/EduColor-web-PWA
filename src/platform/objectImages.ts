@@ -16,6 +16,29 @@ export interface ImageCategory {
   images: string[]; // URLs resueltas por Vite
 }
 
+/** Categorías (nombre de carpeta) de género femenino en plural. */
+const FEMININE_OBJECT_LABELS = new Set(["flores", "manzanas"]);
+
+/** Etiqueta con tildes / forma correcta para mostrar en prompts. */
+const OBJECT_LABEL_DISPLAY: Record<string, string> = {
+  pajaros: "pájaros",
+};
+
+/** Forma visual del plural para enunciados. */
+export function displayObjectLabel(label: string): string {
+  return OBJECT_LABEL_DISPLAY[label] ?? label;
+}
+
+/** «Cuántos» / «Cuántas» según el género del sustantivo. */
+export function cuantosWord(label: string): "Cuántos" | "Cuántas" {
+  return FEMININE_OBJECT_LABELS.has(label) ? "Cuántas" : "Cuántos";
+}
+
+/** Pregunta de conteo con concordancia, p. ej. «¿Cuántas manzanas hay?». */
+export function countHowManyPrompt(label: string, trailing = "hay?"): string {
+  return `¿${cuantosWord(label)} ${displayObjectLabel(label)} ${trailing}`;
+}
+
 // Agrupa las imágenes por carpeta (categoría)
 function buildCategories(): ImageCategory[] {
   const map: Record<string, string[]> = {};

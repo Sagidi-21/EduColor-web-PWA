@@ -199,6 +199,16 @@ describe("counting/engine", () => {
         expect(ex.steps[0].options).toHaveLength(4);
       });
     });
+
+    it("concuerda Cuántos/Cuántas con el género del objeto", () => {
+      const exercises = generateSession({ ...baseConfig, quantity: 20 }, 7);
+      const femeninos = new Set(["flores", "manzanas"]);
+      exercises.forEach((ex) => {
+        const expected = femeninos.has(ex.objectLabel) ? "Cuántas" : "Cuántos";
+        expect(ex.steps[0].prompt).toMatch(new RegExp(`^¿${expected} .+ hay\\?$`));
+        expect(ex.steps[0].prompt).not.toMatch(/¿Cuántos (flores|manzanas)/);
+      });
+    });
   });
 
   describe("generateSessionForLevel", () => {

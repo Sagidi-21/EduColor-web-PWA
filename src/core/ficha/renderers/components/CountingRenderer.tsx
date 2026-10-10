@@ -32,8 +32,10 @@ export function CountingRenderer({ ex, showAnswer }: CountingRendererProps): JSX
             ))}
       </div>
 
-      <p className="ficha-counting__question">{ex.question}</p>
-      <div className="ficha-counting__answer-blank" aria-label="Espacio para la respuesta" />
+      <div className="ficha-counting__prompt">
+        <p className="ficha-counting__question">{ex.question}</p>
+        <div className="ficha-counting__answer-blank" aria-label="Espacio para la respuesta" />
+      </div>
     </div>
   );
 }

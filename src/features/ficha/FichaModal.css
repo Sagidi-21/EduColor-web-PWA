@@ -147,8 +147,12 @@
   font-size: 14px;
   cursor: pointer;
   border: none;
-  background: #2563eb;
+  background: var(--color-primary, #6366f1);
   color: #fff;
+}
+
+.ficha-modal__primary:hover:not(:disabled) {
+  background: var(--color-primary-dark, #3b3f91);
 }
 
 .ficha-modal__primary:disabled {

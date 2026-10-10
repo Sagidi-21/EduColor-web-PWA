@@ -1,4 +1,4 @@
-import { getObjectImage } from "../../../platform/objectImages";
+import { countHowManyPrompt, getObjectImage } from "../../../platform/objectImages";
 import { moneyImageUrl } from "../../../platform/moneyImages";
 import { kiloImageUrl, REFERENCE_URL as KILO_REFERENCE_URL } from "../../../platform/kiloImages";
 import { litroImageUrl, litroReferenceUrl } from "../../../platform/litroImages";
@@ -121,7 +121,7 @@ function mapCounting(ex: Record<string, unknown>, config: SheetConfig): Counting
     count,
     imageUrl: config.withImages ? asString(ex.imageUrl) : "",
     objectLabel,
-    question: asString(firstStep?.prompt, `¿Cuántos ${objectLabel} hay?`),
+    question: asString(firstStep?.prompt, countHowManyPrompt(objectLabel)),
     answer: asNumber(firstStep?.correctAnswer, asNumber(ex.answer, count)),
   };
 }

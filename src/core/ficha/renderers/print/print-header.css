@@ -5,6 +5,8 @@
   margin-bottom: 14px;
   border-bottom: 2px solid #e5e7eb;
   overflow: visible;
+  font-style: italic;
+  font-weight: 700;
 }
 
 .ficha-header__table {
@@ -75,6 +77,8 @@
   gap: 8px;
   margin-bottom: 14px;
   font-size: 13px;
+  font-style: italic;
+  font-weight: 700;
 }
 
 .ficha-name-line__label {

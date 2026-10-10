@@ -32,7 +32,7 @@ describe("mapSessionToSheet", () => {
         count: 4,
         objectLabel: "manzanas",
         imageUrl: "a.png",
-        steps: [{ prompt: "¿Cuántos manzanas hay?", correctAnswer: 4 }],
+        steps: [{ prompt: "¿Cuántas manzanas hay?", correctAnswer: 4 }],
       },
       config,
     );
@@ -41,9 +41,24 @@ describe("mapSessionToSheet", () => {
       count: 4,
       imageUrl: "a.png",
       objectLabel: "manzanas",
-      question: "¿Cuántos manzanas hay?",
+      question: "¿Cuántas manzanas hay?",
       answer: 4,
     });
+  });
+
+  it("counting sin prompt usa Cuántas/Cuántos según el género", () => {
+    const femenino = mapSessionToSheet(
+      "counting",
+      { count: 3, objectLabel: "flores", imageUrl: "f.png" },
+      config,
+    );
+    const masculino = mapSessionToSheet(
+      "counting",
+      { count: 3, objectLabel: "coches", imageUrl: "c.png" },
+      config,
+    );
+    expect(femenino).toMatchObject({ question: "¿Cuántas flores hay?" });
+    expect(masculino).toMatchObject({ question: "¿Cuántos coches hay?" });
   });
 
   it("mapea comparison left/right a A/B", () => {
