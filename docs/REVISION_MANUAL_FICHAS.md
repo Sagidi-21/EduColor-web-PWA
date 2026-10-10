@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 13 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 14 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -51,21 +51,22 @@ Usar **siempre** la misma semilla y parámetros:
 Estas son las únicas actividades marcadas OK en la revisión manual de fichas a 2026-10-10.
 Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 
-| ID               | Actividad                    | Alumno | Soluciones | Print A4 | Word = preview | Notas / baseline                                                                                                                         |
-| ---------------- | ---------------------------- | ------ | ---------- | -------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `counting`       | Contamos objetos             | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: objetos+pregunta, 10/hoja, soluciones con número. **Revalidar Word=preview.**                                       |
-| `comparison`     | Mayor y menor                | [x]    | [x]        | [x]      | [x]            | OK 2026-10-09: fila A\|B, sin +N, hard/expert con iguales, soluciones sin dibujos, **Word=vista previa** ya anotado.                     |
-| `relacionar`     | Relacionar número y cantidad | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**                          |
-| `ordenar`        | Ordenar números              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                                           |
-| `amigos10`       | Los amigos del 10            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: ten-frame + operación a la derecha, casilla de respuesta, soluciones solo número, **Word=vista previa**.                  |
-| `shapes`         | Formas y tamaños             | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: figura/foto + opciones texto como pizarra, soluciones solo nombre, PDF alineado (○ tipográfico).                          |
-| `suma`           | La suma                      | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: imágenes izq. + algoritmo der., sin casillas discontinuas, 32px bajo línea, thumbs scoped. **Revalidar Word.**            |
-| `resta`          | La resta                     | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: mismo layout que suma (objetos tachados en resta). **Revalidar Word=preview.**                                            |
-| `posicionesAula` | Posiciones en el aula        | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: escena aula SVG + ○ opciones, soluciones solo respuesta. **Revalidar Word=preview.**                                      |
-| `numeracion1119` | Números del 11 al 19         | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: easy/expert identify con opciones; medium+ enunciado bajo imagen; huecos dobles solo ficha. **Revalidar Word.**           |
-| `igualdad`       | El signo igual               | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: enunciados por tipo; imágenes+op en fila (easy); centrado sin imágenes; hard opciones en línea con •. **Revalidar Word.** |
-| `lineTypes`      | Tipos de líneas              | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: SVG + opciones •; hint «(redondea la correcta)»; gap 120px línea↔opciones. **Revalidar Word.**                            |
-| `rectaNumerica`  | Coloca el número en la recta | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: sin flecha/recuadro; hard/expert 1/fila; soluciones con recta + marca vertical. **Revalidar Word.**                       |
+| ID                    | Actividad                    | Alumno | Soluciones | Print A4 | Word = preview | Notas / baseline                                                                                                                         |
+| --------------------- | ---------------------------- | ------ | ---------- | -------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `counting`            | Contamos objetos             | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: objetos+pregunta, 10/hoja, soluciones con número. **Revalidar Word=preview.**                                       |
+| `comparison`          | Mayor y menor                | [x]    | [x]        | [x]      | [x]            | OK 2026-10-09: fila A\|B, sin +N, hard/expert con iguales, soluciones sin dibujos, **Word=vista previa** ya anotado.                     |
+| `relacionar`          | Relacionar número y cantidad | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**                          |
+| `ordenar`             | Ordenar números              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                                           |
+| `amigos10`            | Los amigos del 10            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: ten-frame + operación a la derecha, casilla de respuesta, soluciones solo número, **Word=vista previa**.                  |
+| `shapes`              | Formas y tamaños             | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: figura/foto + opciones texto como pizarra, soluciones solo nombre, PDF alineado (○ tipográfico).                          |
+| `suma`                | La suma                      | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: imágenes izq. + algoritmo der., sin casillas discontinuas, 32px bajo línea, thumbs scoped. **Revalidar Word.**            |
+| `resta`               | La resta                     | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: mismo layout que suma (objetos tachados en resta). **Revalidar Word=preview.**                                            |
+| `posicionesAula`      | Posiciones en el aula        | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: escena aula SVG + ○ opciones, soluciones solo respuesta. **Revalidar Word=preview.**                                      |
+| `numeracion1119`      | Números del 11 al 19         | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: easy/expert identify con opciones; medium+ enunciado bajo imagen; huecos dobles solo ficha. **Revalidar Word.**           |
+| `igualdad`            | El signo igual               | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: enunciados por tipo; imágenes+op en fila (easy); centrado sin imágenes; hard opciones en línea con •. **Revalidar Word.** |
+| `lineTypes`           | Tipos de líneas              | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: SVG + opciones •; hint «(redondea la correcta)»; gap 120px línea↔opciones. **Revalidar Word.**                            |
+| `rectaNumerica`       | Coloca el número en la recta | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: sin flecha/recuadro; hard/expert 1/fila; soluciones con recta + marca vertical. **Revalidar Word.**                       |
+| `laberintoMatematico` | Laberinto matemático (1.º)   | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: tablero grande color de clase; nodo INICIO soft; soluciones con casillas rellenas (sin enunciado); modal ficha afinado.   |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
@@ -178,7 +179,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **posicionesAula** — Posiciones en el aula _(2026-10-10: OK — escena SVG + ○ opciones, soluciones solo respuesta)_
 - [ ] **rutaCuadricula** — Taller de programación
 - [ ] **repartoIgual** — Repartos en partes iguales
-- [ ] **laberintoMatematico** — Laberinto matemático (1.º)
+- [x] **laberintoMatematico** — Laberinto matemático (1.º) _(2026-10-10: OK — tablero grande color de clase; INICIO soft; soluciones con casillas rellenas; modal ficha)_
 - [ ] **laberintoMatematico2** — Laberinto matemático (2.º)
 - [ ] **probabilidad** — Probabilidad
 - [ ] **graficoBarras** — Gráfico de barras

@@ -218,7 +218,7 @@ export function FichaModal({
 
         <aside className="ficha-modal__controls">
           <h2 id="ficha-modal-title" className="ficha-modal__title">
-            {activity.boardCard?.icon ?? "📄"} Generar ficha — {activity.title}
+            {activity.boardCard?.icon ?? "📄"} {activity.title}
           </h2>
 
           {onDifficultyChange && (
