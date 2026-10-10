@@ -1,0 +1,53 @@
+/* Círculo / circunferencia — figura SVG u objeto real + opciones ○ */
+
+.ficha-cc__question {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.25;
+}
+
+.ficha-cc__body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 40px;
+  margin-top: 6px;
+}
+
+.ficha-cc__figure {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ficha-cc__svg {
+  display: block;
+}
+
+.ficha-cc__emoji {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.ficha-cc__choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* ○ tipográfico en línea (html2canvas alinea mal cajas vacías/flex). */
+.ficha-cc__choice {
+  display: block;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-cc__choice-mark {
+  margin-right: 6px;
+}

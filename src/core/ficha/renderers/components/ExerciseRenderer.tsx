@@ -8,7 +8,6 @@ import { TresSumandosRenderer } from "./TresSumandosRenderer";
 import { IgualdadRenderer } from "./IgualdadRenderer";
 import { AlgoritmoVerticalRenderer } from "./AlgoritmoVerticalRenderer";
 import { TablaNumericaRenderer } from "./TablaNumericaRenderer";
-import { QuestionRenderer } from "./QuestionRenderer";
 import { PoligonosRenderer } from "./PoligonosRenderer";
 import { RelojRenderer } from "./RelojRenderer";
 import { LeftRightRenderer } from "./LeftRightRenderer";
@@ -22,12 +21,39 @@ import { PhotoCompareRenderer } from "./PhotoCompareRenderer";
 import { ParImparRenderer } from "./ParImparRenderer";
 import { OrdinalesRenderer } from "./OrdinalesRenderer";
 import { BalanzaRenderer } from "./BalanzaRenderer";
+import { BalanzaEquilibraRenderer } from "./BalanzaEquilibraRenderer";
+import { LaberintoRenderer } from "./LaberintoRenderer";
+import { RutaCuadriculaRenderer } from "./RutaCuadriculaRenderer";
+import { PosicionesAulaRenderer } from "./PosicionesAulaRenderer";
+import { ProbabilidadRenderer } from "./ProbabilidadRenderer";
+import { CapacidadRenderer } from "./CapacidadRenderer";
 import { GraficoBarrasRenderer } from "./GraficoBarrasRenderer";
 import { MenuCafeteriaRenderer } from "./MenuCafeteriaRenderer";
 import { CintaMetricaRenderer } from "./CintaMetricaRenderer";
 import { InventarProblemaRenderer } from "./InventarProblemaRenderer";
 import { IntervalosTiempoRenderer } from "./IntervalosTiempoRenderer";
 import { Amigos10Renderer } from "./Amigos10Renderer";
+import { TresSumandosColumnaRenderer } from "./TresSumandosColumnaRenderer";
+import { DatosInnecesariosRenderer } from "./DatosInnecesariosRenderer";
+import { RelacionSumaRestaRenderer } from "./RelacionSumaRestaRenderer";
+import { ProblemaRenderer } from "./ProblemaRenderer";
+import { WeekDaysRenderer } from "./WeekDaysRenderer";
+import { VecinosRenderer } from "./VecinosRenderer";
+import { DobleYMitadRenderer } from "./DobleYMitadRenderer";
+import { RepartoIgualRenderer } from "./RepartoIgualRenderer";
+import { Problemas2PasosRenderer } from "./Problemas2PasosRenderer";
+import { SimetriaRenderer } from "./SimetriaRenderer";
+import { Cuerpos3DRenderer } from "./Cuerpos3DRenderer";
+import { CirculoCircunferenciaRenderer } from "./CirculoCircunferenciaRenderer";
+import { MultiplicacionRenderer } from "./MultiplicacionRenderer";
+import { SumaLlevandoRenderer } from "./SumaLlevandoRenderer";
+import { Algoritmo3CifrasRenderer } from "./Algoritmo3CifrasRenderer";
+import { RectaNumericaRenderer } from "./RectaNumericaRenderer";
+import { NumeracionRenderer } from "./NumeracionRenderer";
+import { LecturaNumerosRenderer } from "./LecturaNumerosRenderer";
+import { Abaco3CifrasRenderer } from "./Abaco3CifrasRenderer";
+import { RedondeoRenderer } from "./RedondeoRenderer";
+import { Numeracion999Renderer } from "./Numeracion999Renderer";
 import { DefaultRenderer } from "./DefaultRenderer";
 
 export interface ExerciseRendererProps {
@@ -43,7 +69,10 @@ export interface ExerciseRendererProps {
  */
 export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): ReactNode {
   if (showAnswer) {
-    return <div className="ficha-answer">{solutionAnswerOf(ex)}</div>;
+    const text = solutionAnswerOf(ex);
+    // Respuestas largas (laberinto, escenas de personaje): letra más pequeña para que quepan.
+    const className = text.length > 26 ? "ficha-answer ficha-answer--long" : "ficha-answer";
+    return <div className={className}>{text}</div>;
   }
 
   switch (ex.kind) {
@@ -58,32 +87,15 @@ export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): Rea
     case "algoritmoVertical":
       return <AlgoritmoVerticalRenderer ex={ex} showAnswer={false} />;
     case "tresSumandosColumna":
-      return (
-        <div className="ficha-vertical">
-          {ex.a}
-          {"\n"}+{ex.b}
-          {"\n"}+{ex.c}
-          {"\n"}───
-        </div>
-      );
+      return <TresSumandosColumnaRenderer ex={ex} showAnswer={false} />;
     case "tablaNumerica":
       return <TablaNumericaRenderer ex={ex} showAnswer={false} />;
     case "igualdad":
       return <IgualdadRenderer ex={ex} showAnswer={false} />;
     case "relacionSumaResta":
-      return (
-        <QuestionRenderer
-          question={`Total ${ex.total}: partes ${ex.partA} y ${ex.partB}`}
-          showAnswer={false}
-        />
-      );
+      return <RelacionSumaRestaRenderer ex={ex} showAnswer={false} />;
     case "repartoIgual":
-      return (
-        <QuestionRenderer
-          question={`Reparte ${ex.total} en ${ex.groups} grupos iguales. ¿Cuántos en cada grupo?`}
-          showAnswer={false}
-        />
-      );
+      return <RepartoIgualRenderer ex={ex} showAnswer={false} />;
     case "reloj":
       return <RelojRenderer ex={ex} showAnswer={false} />;
     case "leftRight":
@@ -111,7 +123,11 @@ export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): Rea
     case "elLitro":
       return <PhotoCompareRenderer ex={ex} showAnswer={false} />;
     case "balanza":
-      return <BalanzaRenderer ex={ex} showAnswer={false} />;
+      return ex.variant === "equilibra" ? (
+        <BalanzaEquilibraRenderer ex={ex} showAnswer={false} />
+      ) : (
+        <BalanzaRenderer ex={ex} showAnswer={false} />
+      );
     case "graficoBarras":
       return <GraficoBarrasRenderer ex={ex} showAnswer={false} />;
     case "menuCafeteria":
@@ -123,57 +139,53 @@ export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): Rea
     case "intervalosTiempo":
       return <IntervalosTiempoRenderer ex={ex} showAnswer={false} />;
     case "problemas":
+      return <ProblemaRenderer ex={ex} showAnswer={false} />;
     case "problemas2pasos":
+      return <Problemas2PasosRenderer ex={ex} showAnswer={false} />;
     case "datosInnecesarios":
-      return (
-        <QuestionRenderer
-          question={[...(ex.story ?? []), ex.question].filter(Boolean).join("\n")}
-          showAnswer={false}
-        />
-      );
+      return <DatosInnecesariosRenderer ex={ex} showAnswer={false} />;
     case "posicionesAula":
-      return (
-        <QuestionRenderer
-          question={ex.question}
-          showAnswer={false}
-          detail={`${ex.object} / ${ex.container} / ${ex.position}`}
-        />
-      );
+      return <PosicionesAulaRenderer ex={ex} showAnswer={false} />;
     case "rutaCuadricula":
-      return (
-        <QuestionRenderer
-          question={`Ve de (${ex.start.x},${ex.start.y}) a (${ex.end.x},${ex.end.y}) en una cuadrícula ${ex.gridSize.cols}×${ex.gridSize.rows}.`}
-          showAnswer={false}
-        />
-      );
+      return <RutaCuadriculaRenderer ex={ex} showAnswer={false} />;
     case "laberintoMatematico":
-      return (
-        <QuestionRenderer
-          question={ex.question || `Laberinto: empieza en ${ex.start} (${ex.mode})`}
-          showAnswer={false}
-        />
-      );
+      return <LaberintoRenderer ex={ex} showAnswer={false} />;
     case "numeracion1119":
-      return (
-        <QuestionRenderer question={ex.question || `Número: ${ex.number}`} showAnswer={false} />
-      );
-    case "weekDay":
-    case "capacidad":
     case "numeracion4059":
     case "numeracion6099":
-    case "numeracion999":
-    case "cuerpos3d":
-    case "multiplicacion":
-    case "simetria":
-    case "probabilidad":
-    case "redondeo":
-    case "circuloCircunferencia":
-    case "vecinosNumero":
+      return <NumeracionRenderer ex={ex} showAnswer={false} />;
     case "lecturaNumeros":
-    case "dobleYMitad":
+      return <LecturaNumerosRenderer ex={ex} showAnswer={false} />;
     case "abaco3Cifras":
+      return <Abaco3CifrasRenderer ex={ex} showAnswer={false} />;
+    case "redondeo":
+      return <RedondeoRenderer ex={ex} showAnswer={false} />;
+    case "weekDay":
+      return <WeekDaysRenderer ex={ex} showAnswer={false} />;
+    case "vecinosNumero":
+      return <VecinosRenderer ex={ex} showAnswer={false} />;
+    case "dobleYMitad":
+      return <DobleYMitadRenderer ex={ex} showAnswer={false} />;
+    case "capacidad":
+      return <CapacidadRenderer ex={ex} showAnswer={false} />;
+    case "probabilidad":
+      return <ProbabilidadRenderer ex={ex} showAnswer={false} />;
+    case "numeracion999":
+      return <Numeracion999Renderer ex={ex} showAnswer={false} />;
+    case "multiplicacion":
+      return <MultiplicacionRenderer ex={ex} showAnswer={false} />;
+    case "sumaLlevando":
+      return <SumaLlevandoRenderer ex={ex} showAnswer={false} />;
     case "algoritmo3Cifras":
-      return <QuestionRenderer question={"question" in ex ? ex.question : ""} showAnswer={false} />;
+      return <Algoritmo3CifrasRenderer ex={ex} showAnswer={false} />;
+    case "rectaNumerica":
+      return <RectaNumericaRenderer ex={ex} showAnswer={false} />;
+    case "cuerpos3d":
+      return <Cuerpos3DRenderer ex={ex} showAnswer={false} />;
+    case "simetria":
+      return <SimetriaRenderer ex={ex} showAnswer={false} />;
+    case "circuloCircunferencia":
+      return <CirculoCircunferenciaRenderer ex={ex} showAnswer={false} />;
     case "amigos10":
       return <Amigos10Renderer ex={ex} showAnswer={false} />;
     default:

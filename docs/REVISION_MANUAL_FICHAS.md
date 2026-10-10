@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 6 / 62
+**Progreso:** 9 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -51,14 +51,17 @@ Usar **siempre** la misma semilla y parámetros:
 Estas son las únicas actividades marcadas OK en la revisión manual de fichas a 2026-10-10.
 Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 
-| ID           | Actividad                    | Alumno | Soluciones | Print A4 | Word = preview | Notas / baseline                                                                                                        |
-| ------------ | ---------------------------- | ------ | ---------- | -------- | -------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `counting`   | Contamos objetos             | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: objetos+pregunta, 10/hoja, soluciones con número. **Revalidar Word=preview.**                      |
-| `comparison` | Mayor y menor                | [x]    | [x]        | [x]      | [x]            | OK 2026-10-09: fila A\|B, sin +N, hard/expert con iguales, soluciones sin dibujos, **Word=vista previa** ya anotado.    |
-| `relacionar` | Relacionar número y cantidad | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**         |
-| `ordenar`    | Ordenar números              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                          |
-| `amigos10`   | Los amigos del 10            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: ten-frame + operación a la derecha, casilla de respuesta, soluciones solo número, **Word=vista previa**. |
-| `shapes`     | Formas y tamaños             | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: figura/foto + opciones texto como pizarra, soluciones solo nombre, PDF alineado (○ tipográfico).         |
+| ID               | Actividad                    | Alumno | Soluciones | Print A4 | Word = preview | Notas / baseline                                                                                                              |
+| ---------------- | ---------------------------- | ------ | ---------- | -------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `counting`       | Contamos objetos             | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: objetos+pregunta, 10/hoja, soluciones con número. **Revalidar Word=preview.**                            |
+| `comparison`     | Mayor y menor                | [x]    | [x]        | [x]      | [x]            | OK 2026-10-09: fila A\|B, sin +N, hard/expert con iguales, soluciones sin dibujos, **Word=vista previa** ya anotado.          |
+| `relacionar`     | Relacionar número y cantidad | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**               |
+| `ordenar`        | Ordenar números              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                                |
+| `amigos10`       | Los amigos del 10            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: ten-frame + operación a la derecha, casilla de respuesta, soluciones solo número, **Word=vista previa**.       |
+| `shapes`         | Formas y tamaños             | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: figura/foto + opciones texto como pizarra, soluciones solo nombre, PDF alineado (○ tipográfico).               |
+| `suma`           | La suma                      | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: imágenes izq. + algoritmo der., sin casillas discontinuas, 32px bajo línea, thumbs scoped. **Revalidar Word.** |
+| `resta`          | La resta                     | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: mismo layout que suma (objetos tachados en resta). **Revalidar Word=preview.**                                 |
+| `posicionesAula` | Posiciones en el aula        | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: escena aula SVG + ○ opciones, soluciones solo respuesta. **Revalidar Word=preview.**                           |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
@@ -95,8 +98,8 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 
 ## Operaciones
 
-- [ ] **suma** — La suma
-- [ ] **resta** — La resta
+- [x] **suma** — La suma _(2026-10-10: OK — imágenes a la izquierda + operación vertical a la derecha, sin casillas discontinuas, espacio 32px bajo la línea, tamaño thumbs en `.ficha-operation`)_
+- [x] **resta** — La resta _(2026-10-10: OK — mismo layout que suma; objetos tachados)_
 - [ ] **tresSumandos** — Sumas con tres sumandos
 - [ ] **algoritmoVertical** — Sumas en columna
 - [ ] **tresSumandosColumna** — Sumas en columna (3 sumandos)
@@ -168,7 +171,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 ## Otros
 
 - [ ] **leftRight** — Izquierda y derecha
-- [ ] **posicionesAula** — Posiciones en el aula
+- [x] **posicionesAula** — Posiciones en el aula _(2026-10-10: OK — escena SVG + ○ opciones, soluciones solo respuesta)_
 - [ ] **rutaCuadricula** — Taller de programación
 - [ ] **repartoIgual** — Repartos en partes iguales
 - [ ] **laberintoMatematico** — Laberinto matemático (1.º)
@@ -186,3 +189,56 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 /ficha-preview?activity=ID&mode=alumno&difficulty=easy&count=10&seed=42
 /ficha-preview?activity=ID&mode=soluciones&difficulty=easy&count=10&seed=42
 ```
+
+---
+
+## Pasada paridad pizarra (2026-10-10) — código, sin OK navegador
+
+### Mejoradas en esta pasada (listas para revisar en preview)
+
+| ID                                   | Cambio principal                                            |
+| ------------------------------------ | ----------------------------------------------------------- |
+| `suma` / `resta`                     | Algoritmo vertical con casillas de cifra                    |
+| `tresSumandos`                       | Idem + filas de objetos                                     |
+| `algoritmoVertical` / `restaColumna` | Cuadrícula D·U + casillas                                   |
+| `tresSumandosColumna`                | Cuadrícula D·U 3 sumandos                                   |
+| `igualdad`                           | Huecos correctos (sin filtrar respuesta) + ○ opciones       |
+| `relacionSumaResta`                  | Tres ecuaciones con hueco                                   |
+| `dobleYMitad`                        | Cajas Número/Doble\|Mitad + ○                               |
+| `parImpar`                           | ○ Par/Impar (o opciones del motor)                          |
+| `ordinales`                          | «Desde la derecha», etiquetas 1º…, casilla                  |
+| `poligonos`                          | ○ opciones de texto (como shapes)                           |
+| `lineTypes`                          | ○ opciones marcables                                        |
+| `series3cifras`                      | Cajas más anchas                                            |
+| `vecinosNumero`                      | Vía antes/número/después + ○                                |
+| `problemas`                          | Emoji + historia + `a ± b = □`                              |
+| `datosInnecesarios`                  | Frases con ○ (mapeo `historia`/`pregunta` arreglado)        |
+| `weekDays`                           | Tira L-M-X-J-V-S-D + ○                                      |
+| `relojPonerHora`                     | Cara vacía + enunciado con hora objetivo (no revela agujas) |
+| `elKilo` / `elLitro`                 | ○ opciones MC                                               |
+| `problemas2pasos`                    | Solución: `correctAnswer` (antes vacío/mal)                 |
+
+### Ya alineadas (código) — candidatos a marcar OK tras mirar preview
+
+`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `inventarProblema`, `elLitro`, `elKilo`, `cintaMetrica`, `intervalosTiempo`, `monedasBilletes`, `graficoBarras`, `balanza`
+
+### 2ª vuelta (2026-10-10) — decisiones del profesor aplicadas
+
+| #   | ID                                                                 | Decisión                                    | Estado código |
+| --- | ------------------------------------------------------------------ | ------------------------------------------- | ------------- |
+| 1   | `multiplicacion`                                                   | Emparejar columnas                          | Hecho         |
+| 2   | `sumaLlevando`                                                     | Casilla de llevada                          | Hecho         |
+| 3   | `algoritmo3cifras`                                                 | C·D·U + llevar/prestar                      | Hecho         |
+| 4   | `rectaNumerica`                                                    | SVG de recta                                | Hecho         |
+| 5   | `tablaNumerica`                                                    | Rejilla 10×10 real                          | Hecho         |
+| 6   | `numeracion1119/4059/6099`                                         | Bloques decenas/unidades                    | Hecho         |
+| 7   | `abaco3cifras` / `lecturaNumeros` / `redondeo` (+ `numeracion999`) | Visuales pizarra                            | Hecho         |
+| 8   | `repartoIgual` / `problemas2pasos`                                 | Diagramas                                   | Hecho         |
+| 9   | laberinto, ruta, posiciones, probabilidad, capacidad               | Dibujar escena                              | Hecho         |
+| 10  | simetría / cuerpos3d / círculo                                     | SVG + ○                                     | Hecho         |
+| 11  | `reloj`                                                            | Digital si aplica; analógico con/sin agujas | Hecho         |
+| 12  | menu / balanzaEquilibra / leftRight hard                           | Extras pizarra                              | Hecho         |
+
+**Nota Word:** muchas escenas usan SVG inline; en vista previa/PDF deberían verse bien; Word puede degradar SVG.
+
+Pendiente de OK manual en navegador (marcar `[x]` arriba tras preview con `seed=42`).

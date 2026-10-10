@@ -50,3 +50,22 @@
   text-align: center;
   color: #334155;
 }
+
+/* Opciones MC (○) como en pizarra */
+.ficha-photo__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 6px;
+}
+
+.ficha-photo__choice {
+  display: inline-block;
+  font-size: 14px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-photo__choice-mark {
+  margin-right: 5px;
+}

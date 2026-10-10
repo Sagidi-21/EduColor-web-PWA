@@ -24,8 +24,12 @@ export function exerciseCardVariant(ex: SheetExercise): string {
       return "ordenar";
     case "relacionar":
       return "relacionar";
+    case "multiplicacion":
+      return "multiplicacion";
     case "amigos10":
       return "amigos10";
+    case "tablaNumerica":
+      return "tabla";
     default:
       return "";
   }

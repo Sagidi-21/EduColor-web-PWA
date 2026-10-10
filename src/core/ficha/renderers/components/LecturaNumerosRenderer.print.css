@@ -1,0 +1,48 @@
+/* Lectura de números — cifra/palabra grande + ○ opciones */
+
+.ficha-lectura__question {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.25;
+}
+
+/* Número / palabra grande — edita font-size aquí */
+.ficha-lectura__display {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 4px 22px;
+  font-size: 40px;
+  font-weight: 900;
+  line-height: 1.15;
+  color: #0284c7;
+  background: #e0f2fe;
+  border: 1.5px solid #0284c7;
+  border-radius: 8px;
+}
+
+.ficha-lectura__display--word {
+  font-size: 26px;
+  font-style: italic;
+  color: #6d28d9;
+  background: #ede9fe;
+  border-color: #7c3aed;
+}
+
+.ficha-lectura__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.ficha-lectura__choice {
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-lectura__choice-mark {
+  margin-right: 5px;
+}

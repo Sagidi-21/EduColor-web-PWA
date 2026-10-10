@@ -222,6 +222,45 @@ export function generateMatchSession(difficulty: ActivityDifficulty, seed = 42):
   return { mode: "match", pairs, leftColumn, rightColumn };
 }
 
+/** Filas por bloque de unir en la ficha impresa (como las rondas de `relacionar`). */
+export const FICHA_BLOCK_SIZE = 5;
+
+/**
+ * Bloques de unir para la ficha impresa, en cualquier dificultad.
+ *
+ * La pizarra usa opción múltiple en `hard`/`expert`, pero el papel siempre se
+ * imprime como columnas a unir (decisión del profesorado): se reutiliza la
+ * configuración `UNIR` de cada nivel y se parte en bloques de `blockSize` filas
+ * (por tabla en `medium`/`hard`/`expert`) para que quepan varios por hoja. Cada
+ * bloque baraja sus dos columnas por separado; el producto es único en toda la
+ * sesión, así que dentro de un bloque no hay dos filas que apunten al mismo valor.
+ */
+export function generateMatchBlocks(
+  difficulty: ActivityDifficulty,
+  seed = 42,
+  blockSize = FICHA_BLOCK_SIZE,
+): MatchSession[] {
+  const rng = lcg(seed);
+  const { tablas, porTabla } = UNIR[difficulty];
+  const pairs = generarPares(rng, tablas, porTabla);
+  const size = Math.max(1, blockSize);
+  const blocks: MatchSession[] = [];
+
+  for (let i = 0; i < pairs.length; i += size) {
+    const chunk = pairs.slice(i, i + size);
+    const leftColumn = shuffle(chunk, rng);
+    let rightColumn = shuffle(chunk, rng);
+    // Con el mismo orden las líneas serían todas horizontales: se rebaraja.
+    for (let t = 0; t < 5 && chunk.length > 1; t++) {
+      if (rightColumn.some((p, idx) => p.id !== leftColumn[idx].id)) break;
+      rightColumn = shuffle(chunk, rng);
+    }
+    blocks.push({ mode: "match", pairs: chunk, leftColumn, rightColumn });
+  }
+
+  return blocks;
+}
+
 /** Si las dos tarjetas que se han tocado forman una unión correcta. */
 export function isCorrectPair(left: MatchPair, right: MatchPair): boolean {
   return left.product === right.product;

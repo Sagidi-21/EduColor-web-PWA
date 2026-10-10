@@ -1,6 +1,6 @@
 /* Suma / resta — layout alumno */
 
-/* Miniaturas (copia local del ejercicio) */
+/* Miniaturas — scoped a suma/resta (otros CSS también usan .ficha-img-row__thumb). */
 .ficha-img-row {
   display: flex;
   flex-wrap: wrap;
@@ -8,28 +8,73 @@
   align-items: center;
 }
 
-.ficha-img-row__thumb {
-  width: 22px;
-  height: 22px;
+.ficha-operation .ficha-img-row__thumb {
+  width: 32px;
+  height: 32px;
   object-fit: contain;
 }
 
-.ficha-img-row__thumb--crossed {
+.ficha-operation .ficha-img-row__thumb--crossed {
   opacity: 0.35;
   filter: grayscale(1);
 }
 
-/* Algoritmo vertical (copia local del ejercicio) */
-.ficha-vertical {
-  font-family: "SF Mono", "Consolas", "Menlo", monospace;
-  font-size: 13px;
-  line-height: 1.3;
-  white-space: pre;
+/* Imágenes a la izquierda, operación a la derecha (como pizarra). */
+.ficha-operation {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
 }
 
 .ficha-operation__images {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  margin-bottom: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ficha-operation .ficha-vop {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+/* Algoritmo vertical con casillas (suma / resta / tres sumandos) */
+.ficha-vop {
+  display: grid;
+  grid-template-columns: 18px repeat(var(--ficha-vop-cols, 3), 22px);
+  gap: 2px 3px;
+  align-items: center;
+  width: max-content;
+  font-family: "SF Mono", "Consolas", "Menlo", monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.ficha-vop__sym {
+  text-align: center;
+  color: #334155;
+}
+
+.ficha-vop__digit {
+  text-align: center;
+  min-height: 22px;
+  line-height: 22px;
+}
+
+.ficha-vop__sep {
+  grid-column: 1 / -1;
+  height: 0;
+  border-top: 1.5px solid #334155;
+  margin: 2px 0 0;
+}
+
+/* Espacio bajo la línea para escribir el resultado a mano. */
+.ficha-vop::after {
+  content: "";
+  grid-column: 1 / -1;
+  height: 32px;
 }

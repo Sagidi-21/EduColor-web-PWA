@@ -61,20 +61,38 @@ export interface IgualdadSheetExercise {
   b: number;
   c: number;
   imageUrl: string;
-  answer?: number;
+  /** Opciones MC como en pizarra (números o pares «3+7»). */
+  choiceLabels?: string[];
+  answer?: number | string;
 }
 
-export interface Numeracion1119SheetExercise {
-  kind: "numeracion1119";
-  type: "identify" | "units" | "sequence";
+/**
+ * Campos comunes de numeración 11-19 / 40-59 / 60-99.
+ * `number` alimenta los bloques decenas/unidades (obligatorios en identify).
+ */
+export interface NumeracionBlocksFields {
+  type: string;
   number: number;
   question: string;
+  /** Mostrar bloques de decenas + unidades (como TensBlock de pizarra). */
+  showBlocks: boolean;
+  /** Opciones MC (○). Si vacío, casillas de cifra en blanco. */
+  choiceLabels?: string[];
   answer?: number | string;
+}
+
+export interface Numeracion1119SheetExercise extends NumeracionBlocksFields {
+  kind: "numeracion1119";
+  type: "identify" | "units" | "sequence";
 }
 
 export interface WeekDaySheetExercise {
   kind: "weekDay";
   question: string;
+  /** Opciones MC (días) como en pizarra. */
+  choiceLabels?: string[];
+  /** Día mencionado en el enunciado: se resalta en la tira L-M-X-J-V-S-D. */
+  highlightDay?: string;
   answer?: string;
 }
 
@@ -90,20 +108,58 @@ export interface AlgoritmoVerticalSheetExercise {
   answer?: number;
 }
 
+export interface LeftRightCharSheet {
+  imageUrl: string;
+  name: string;
+  /** frente: su mano derecha cae a la izquierda del papel; espaldas: coincide. */
+  perspective: "frente" | "espaldas";
+}
+
+export interface LeftRightDragObjectSheet {
+  label: string;
+  /** Vacío si «Incluir imágenes» está desactivado (se imprime solo el nombre). */
+  imageUrl: string;
+}
+
 export interface LeftRightSheetExercise {
   kind: "leftRight";
+  /**
+   * pair (por defecto): dos objetos + opciones.
+   * char-*: escena con personaje (nivel experto en pizarra) adaptada a papel.
+   */
+  variant?: "pair" | "char-click" | "char-drag-one" | "char-drag-both";
   leftObj: string;
   rightObj: string;
   leftImgUrl: string;
   rightImgUrl: string;
   question: string;
-  answer?: "left" | "right";
+  /** Opciones MC (izquierda/derecha o nombres de objeto) como en pizarra. */
+  choiceLabels?: string[];
+  /** Nivel fácil: rótulos «izquierda» / «derecha» junto a los objetos. */
+  showSideLabels?: boolean;
+  /** Personaje de la escena (variantes char-*). */
+  char?: LeftRightCharSheet;
+  /** Objetos que el alumno une con la mano correcta (char-drag-*). */
+  dragObjects?: LeftRightDragObjectSheet[];
+  /** `left`/`right` (legado), texto de la opción correcta o descripción de la escena. */
+  answer?: string;
 }
 
 export interface CapacidadSheetExercise {
   kind: "capacidad";
+  /** compare = A/B/Igual; read = leer nivel; fill = sumar vasos de 1 L. */
+  variant?: "compare" | "read" | "fill";
   question: string;
-  imageUrl: string;
+  imageUrl?: string;
+  litersA?: number;
+  litersB?: number;
+  /** Capacidad máxima del recipiente graduado. */
+  maxLiters?: number;
+  /** read: litros dibujados en el recipiente. */
+  liters?: number;
+  /** fill: número de vasos de 1 L. */
+  cups?: number;
+  choiceLabels?: string[];
   answer?: string | number;
 }
 
@@ -121,16 +177,21 @@ export interface OrdinalesSheetExercise {
   answer?: number;
 }
 
-export interface Numeracion4059SheetExercise {
+export interface Numeracion4059SheetExercise extends NumeracionBlocksFields {
   kind: "numeracion4059";
-  question: string;
-  answer?: string | number;
+  type: "identify" | "units" | "sequence" | "jump";
 }
 
 export interface ProblemaSheetExercise {
   kind: "problemas";
   story: string[];
   question: string;
+  /** Emoji del tema (pizarra); solo con imágenes activadas. */
+  emoji?: string;
+  /** Operandos y signo para la ecuación `a ± b = □` (solo actividad problemas). */
+  a?: number;
+  b?: number;
+  op?: "+" | "-";
   answer?: string | number;
 }
 
@@ -164,21 +225,43 @@ export interface BalanzaSheetExercise {
   right: BalanzaPlateSheet;
   tilt?: "left" | "right" | "equal";
   targetKg?: number;
+  /** equilibra: paleta de pesas arrastrables en pizarra (p. ej. [1] o [1, 2]). */
+  weightChips?: number[];
+  /** equilibra: carga fija izquierda = bloques de pesa u objeto. */
+  leftKind?: "weights" | "object";
   answer?: string;
 }
 
-export interface Numeracion6099SheetExercise {
+export interface Numeracion6099SheetExercise extends NumeracionBlocksFields {
   kind: "numeracion6099";
-  question: string;
-  answer?: string | number;
+  type: "identify" | "units" | "sequence" | "word" | "jump";
+}
+
+/** Estado de celda de la tabla 0-99 (igual que `gridState` de pizarra). */
+export type TablaNumericaCellKind = "visible" | "blank" | "target" | "symbol";
+
+export interface TablaNumericaSheetCell {
+  /** Número de la casilla (0-99); coincide con el índice en la rejilla. */
+  value: number;
+  state: TablaNumericaCellKind;
+  /** Símbolo en celdas `symbol`. */
+  symbol?: string;
 }
 
 export interface TablaNumericaSheetExercise {
   kind: "tablaNumerica";
-  cells: (number | null)[];
+  variant: "missing" | "symbol" | "colorear";
+  question: string;
+  /** Rejilla completa (100 celdas en filas de `cols`). */
+  cells: TablaNumericaSheetCell[];
   cols: number;
   rows: number;
-  answer?: (number | null)[];
+  /** Símbolo preguntado (variant symbol). */
+  targetSymbol?: string;
+  /** Regla a colorear (variant colorear), p. ej. «3 unidades». */
+  ruleLabel?: string;
+  /** Soluciones: número / casilla / lista de números a colorear. */
+  answer?: string | number;
 }
 
 export interface ParImparSheetExercise {
@@ -189,6 +272,10 @@ export interface ParImparSheetExercise {
   emoji?: string;
   emojiCount?: number;
   imageUrl: string;
+  /** Opciones MC (Par/Impar, números, etc.). Si vacío y no es escritura → Par/Impar. */
+  choiceLabels?: string[];
+  /** true = casilla en blanco (modo write), sin ○. */
+  writeIn?: boolean;
   answer?: "par" | "impar" | string;
 }
 
@@ -230,13 +317,17 @@ export interface RepartoIgualSheetExercise {
   kind: "repartoIgual";
   total: number;
   groups: number;
+  /** Puntos + cajas de grupo como en pizarra (solo easy/medium). */
+  showVisual?: boolean;
   answer?: number;
 }
 
 export interface DatosInnecesariosSheetExercise {
   kind: "datosInnecesarios";
+  /** Tres frases (como en pizarra); el alumno marca la que sobra. */
   story: string[];
   question: string;
+  /** Texto de la frase innecesaria (soluciones). */
   answer?: string | number;
 }
 
@@ -246,36 +337,74 @@ export interface RutaCuadriculaSheetExercise {
   start: { x: number; y: number };
   end: { x: number; y: number };
   obstacles: { x: number; y: number }[];
+  /** Dibujar 🚶 🏫 🌳 (con «Incluir imágenes»); si no, letras S / F y casillas grises. */
+  showEmoji?: boolean;
+  /** Ruta válida de ejemplo para soluciones, p. ej. «→ → ↑ ↑». */
   answer?: string;
+}
+
+export interface RelojClockChoiceSheet {
+  /** Letra de opción (A, B, C, D). */
+  letter: string;
+  /** Hora de la esfera, p. ej. «7:05». */
+  label: string;
+  hours: number;
+  minutes: number;
 }
 
 export interface RelojSheetExercise {
   kind: "reloj";
   hours: number;
   minutes: number;
+  /** Agujas visibles en la esfera analógica (false = esfera vacía para dibujarlas). */
   showHands: boolean;
   question: string;
+  /** Tipo del motor (`analog_to_digital`, `digital_to_analog`, `match_scene`, `digital_read`, `poner_hora`). */
+  type?: string;
+  /** Dibujar la esfera analógica (por defecto true). */
+  showAnalog?: boolean;
+  /** Mostrar el reloj digital del enunciado (digital_to_analog, digital_read, poner hora). */
+  showDigital?: boolean;
+  /** Hora digital, p. ej. «7:05». */
+  digitalLabel?: string;
+  /** Opciones de texto ○ (horas digitales o lectura en palabras). */
+  choiceLabels?: string[];
+  /** Opciones como minirelojes con agujas (digital_to_analog nivel medio). */
+  clockChoices?: RelojClockChoiceSheet[];
+  /** El alumno dibuja las agujas en una esfera vacía (nivel alto / pon la hora). */
+  drawHands?: boolean;
   answer?: string;
+}
+
+export interface LaberintoEdgeSheet {
+  from: string;
+  to: string;
+  op: "+" | "-";
+  value: number;
+  direction: "right" | "down";
 }
 
 export interface LaberintoSheetExercise {
   kind: "laberintoMatematico";
   start: number;
-  edges: { from: string; to: string; op: "+" | "-"; value: number; direction: "right" | "down" }[];
+  edges: LaberintoEdgeSheet[];
   answers: Record<string, number>;
   mode: "mayor" | "menor";
   correctFin: string;
   question: string;
-  answer?: Record<string, number>;
+  /** Soluciones: valores de los nodos y respuesta final. */
+  answer?: string;
 }
 
 export interface PosicionesAulaSheetExercise {
   kind: "posicionesAula";
   container: "caja" | "mochila" | "mesa" | "silla";
-  object: "pelota" | "lapiz" | "libro" | "goma";
+  object: "pelota" | "lápiz" | "lapiz" | "libro" | "goma";
   position: "dentro" | "fuera" | "encima" | "debajo" | "al lado";
   story: string[];
   question: string;
+  /** Opciones MC como en pizarra (Dentro/Fuera, Encima/Debajo/…). */
+  choiceLabels?: string[];
   answer?: string;
 }
 
@@ -290,24 +419,90 @@ export interface LineTypesSheetExercise {
 export interface Cuerpos3DSheetExercise {
   kind: "cuerpos3d";
   question: string;
+  /** Cuerpo dibujado en SVG (como en pizarra). */
+  shape?: "cubo" | "esfera" | "cilindro" | "cono" | "prisma" | "piramide";
+  /** Opciones ○ como en pizarra. */
+  choiceLabels?: string[];
   answer?: string | number;
 }
 
+/** Fila izquierda de la unión de multiplicación: `table × factor`. */
+export interface MultiplicacionSheetLeftItem {
+  id: number;
+  table: number;
+  factor: number;
+}
+
+/** Fila derecha: el producto (barajado respecto a la izquierda). */
+export interface MultiplicacionSheetRightItem {
+  id: number;
+  product: number;
+}
+
+/**
+ * Multiplicación en modo unir (como pizarra easy/medium): operaciones a la izquierda,
+ * productos a la derecha y puntos para trazar la línea. Soluciones: `2 × 3 = 6`.
+ */
 export interface MultiplicacionSheetExercise {
   kind: "multiplicacion";
-  question: string;
+  left: MultiplicacionSheetLeftItem[];
+  right: MultiplicacionSheetRightItem[];
+  /** Parejas correctas, p. ej. `["2 × 3 = 6", ...]`. */
+  answer?: string[];
+}
+
+/** Suma llevando: cuadrícula D·U con casilla de llevada y 2-3 sumandos. */
+export interface SumaLlevandoSheetExercise {
+  kind: "sumaLlevando";
+  addends: number[];
+  answer?: number;
+}
+
+/** Recta numérica 0..max: el alumno marca la posición de `target`. */
+export interface RectaNumericaSheetExercise {
+  kind: "rectaNumerica";
+  target: number;
+  max: number;
+  labelEvery: number;
   answer?: number;
 }
 
 export interface SimetriaSheetExercise {
   kind: "simetria";
   question: string;
+  /** Figura plana en SVG; solo si la pregunta la muestra (no en «which-shape»). */
+  shape?:
+    | "circulo"
+    | "cuadrado"
+    | "rectangulo"
+    | "triangulo-eq"
+    | "triangulo-iso"
+    | "triangulo-esc"
+    | "rombo"
+    | "pentagono"
+    | "hexagono"
+    | "estrella";
+  /** Opciones ○ como en pizarra (Sí/No, número de ejes o nombres). */
+  choiceLabels?: string[];
   answer?: string;
+}
+
+export interface ProbabilidadBallSheet {
+  color: string;
+  count: number;
 }
 
 export interface ProbabilidadSheetExercise {
   kind: "probabilidad";
   question: string;
+  /** classify = suceso en texto; bag = bolsa con pelotas de colores. */
+  variant?: "classify" | "bag";
+  /** Suceso a clasificar (classify). */
+  context?: string;
+  /** Contenido de la bolsa (bag). */
+  balls?: ProbabilidadBallSheet[];
+  /** Opciones MC (Seguro / Posible / Imposible). */
+  choiceLabels?: string[];
   answer?: string | number;
 }
 
@@ -315,13 +510,24 @@ export interface Problemas2PasosSheetExercise {
   kind: "problemas2pasos";
   story: string[];
   question: string;
+  /** Tracker de pasos (como en pizarra): a op1 b = ? → ? op2 c = ?. */
+  steps?: { a: number; b: number; c: number; op1: "+" | "-"; op2: "+" | "-" };
+  /** Opciones ○ como en pizarra. */
+  choiceLabels?: string[];
   answer?: number;
 }
 
 export interface RedondeoSheetExercise {
   kind: "redondeo";
+  variant: "round-to-ten" | "which-closer";
   question: string;
-  answer?: number;
+  /** Número a redondear (badge + marca en la recta). */
+  number: number;
+  lowerDecade: number;
+  upperDecade: number;
+  /** Opciones MC (○), como en pizarra. */
+  choiceLabels: string[];
+  answer?: number | string;
 }
 
 export interface Series3CifrasSheetExercise {
@@ -347,6 +553,14 @@ export interface CintaMetricaSheetExercise {
 export interface CirculoCircunferenciaSheetExercise {
   kind: "circuloCircunferencia";
   question: string;
+  /** classify-shape = SVG relleno/aro; real-object = objeto cotidiano. */
+  type?: "classify-shape" | "real-object";
+  shapeType?: "circulo" | "circunferencia";
+  objectName?: string;
+  /** Emoji del objeto real (solo con imágenes activadas). */
+  objectEmoji?: string;
+  /** Opciones ○ como en pizarra (Círculo / Circunferencia). */
+  choiceLabels?: string[];
   answer?: string | number;
 }
 
@@ -376,6 +590,8 @@ export interface ElKiloSheetExercise {
   question: string;
   items: PhotoItemSheet[];
   referenceUrl?: string;
+  /** Opciones MC como en pizarra. */
+  choiceLabels?: string[];
   answer?: string | number;
 }
 
@@ -384,13 +600,22 @@ export interface ElLitroSheetExercise {
   question: string;
   items: PhotoItemSheet[];
   referenceUrl?: string;
+  /** Opciones MC como en pizarra. */
+  choiceLabels?: string[];
   answer?: string | number;
 }
 
 export interface VecinosNumeroSheetExercise {
   kind: "vecinosNumero";
   question: string;
-  answer?: number;
+  /** Número central de la vía (antes / número / después). */
+  number?: number;
+  askType?: "anterior" | "posterior" | "ambos";
+  anterior?: number;
+  posterior?: number;
+  /** Opciones MC (en «ambos», pares «a · p»). */
+  choiceLabels?: string[];
+  answer?: number | string;
 }
 
 export interface SeriesNumericasSheetExercise {
@@ -417,31 +642,84 @@ export interface Amigos10SheetExercise {
 
 export interface LecturaNumerosSheetExercise {
   kind: "lecturaNumeros";
+  variant: "cifra-to-palabra" | "palabra-to-cifra";
+  /** Consigna («Elige cómo se escribe este número:»). */
   question: string;
+  /** Texto grande: la cifra o la palabra entre comillas. */
+  display: string;
+  number: number;
+  word: string;
+  choiceLabels: string[];
   answer?: string | number;
 }
 
 export interface Numeracion999SheetExercise {
   kind: "numeracion999";
   question: string;
+  /** cifra-to-cdu | cdu-to-cifra | valor-posicional | anterior-posterior */
+  type?: string;
+  number?: number;
+  centenas?: number;
+  decenas?: number;
+  unidades?: number;
+  /** true = tarjeta C·D·U; false = número grande. */
+  showCduCard?: boolean;
+  choiceLabels?: string[];
   answer?: string | number;
 }
 
 export interface DobleYMitadSheetExercise {
   kind: "dobleYMitad";
   question: string;
+  /** Número del enunciado (cajas Número / Doble|Mitad). */
+  number?: number;
+  operacion?: "x2" | "div2";
+  /** "original": dato = número de partida (hueco en Doble/Mitad); "resultado": hueco en Número. */
+  conocido?: "original" | "resultado";
+  choiceLabels?: string[];
   answer?: number;
+}
+
+export interface AbacoColumnsSheet {
+  c: number;
+  d: number;
+  u: number;
+}
+
+export interface AbacoOptionSheet extends AbacoColumnsSheet {
+  /** Letra A-D para marcar el ábaco correcto. */
+  letter: string;
 }
 
 export interface Abaco3CifrasSheetExercise {
   kind: "abaco3Cifras";
+  variant: "read-abaco" | "find-abaco" | "valor-posicional";
   question: string;
-  answer?: number;
+  number: number;
+  /** Bolitas por columna del ábaco principal (read / valor). */
+  columns: AbacoColumnsSheet;
+  /** Opciones numéricas (read / valor) como texto. */
+  choiceLabels?: string[];
+  /** Opciones-ábaco (find-abaco). */
+  abacoOptions?: AbacoOptionSheet[];
+  /** read/valor: texto de la opción; find: letra del ábaco correcto. */
+  answer?: string | number;
 }
 
+/** Algoritmo C·D·U con casillas de llevar/prestar (como `ColumnCarryOperation` en pizarra). */
 export interface Algoritmo3CifrasSheetExercise {
   kind: "algoritmo3Cifras";
-  question: string;
+  op: "+" | "-";
+  a: number;
+  b: number;
+  aC: number;
+  aD: number;
+  aU: number;
+  bC: number;
+  bD: number;
+  bU: number;
+  /** Rótulo de la fila de casillas: «llevar» al sumar, «prestar» al restar. */
+  carryLabel: string;
   answer?: number;
 }
 
@@ -469,8 +747,13 @@ export interface MenuItemSheet {
 
 export interface MenuCafeteriaSheetExercise {
   kind: "menuCafeteria";
+  /** Platos elegidos en este ejercicio (se resaltan en la carta). */
   tray: MenuItemSheet[];
+  /** Carta completa de precios (como «Carta del menú» en pizarra). */
+  menu?: MenuItemSheet[];
   question: string;
+  /** Opciones MC (importes o Sí/No) como en pizarra. */
+  choiceLabels?: string[];
   answer?: string | number;
 }
 
@@ -604,6 +887,8 @@ export type SheetExercise =
   | DobleYMitadSheetExercise
   | Abaco3CifrasSheetExercise
   | Algoritmo3CifrasSheetExercise
+  | SumaLlevandoSheetExercise
+  | RectaNumericaSheetExercise
   | GraficoBarrasSheetExercise
   | MenuCafeteriaSheetExercise
   | MonedasBilletesSheetExercise

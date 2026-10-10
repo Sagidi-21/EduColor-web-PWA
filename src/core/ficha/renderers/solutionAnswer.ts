@@ -13,21 +13,22 @@ export function solutionAnswerOf(ex: SheetExercise): string {
       return String(ex.answer ?? ex.count);
     case "relacionar":
     case "relacionarCantidades":
+    case "multiplicacion":
       return (ex.answer ?? []).join(" · ") || "?";
     case "ordenar":
       return ex.answer?.join(", ") ?? "?";
     case "leftRight":
       if (ex.answer === "left") return "Izquierda";
       if (ex.answer === "right") return "Derecha";
-      return "?";
-    case "tablaNumerica":
-      return (
-        (ex.answer ?? ex.cells).filter((c): c is number => typeof c === "number").join(", ") || "?"
-      );
+      // Opción de texto (medium: nombre del objeto) o descripción de la escena (experto).
+      return ex.answer ? ex.answer : "?";
     case "relacionSumaResta":
       return `${ex.partA}+${ex.partB}=${ex.total}; ${ex.total}−${ex.partA}=${ex.partB}`;
-    case "laberintoMatematico":
-      return String(ex.correctFin ?? "?");
+    case "laberintoMatematico": {
+      if (ex.answer) return ex.answer;
+      const finalValue = ex.answers?.[ex.correctFin];
+      return typeof finalValue === "number" ? String(finalValue) : "?";
+    }
     case "reloj":
       return String(ex.answer ?? "?");
     default: {

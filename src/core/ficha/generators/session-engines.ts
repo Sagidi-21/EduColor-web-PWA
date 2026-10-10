@@ -30,7 +30,7 @@ import { generateSession as generateLeftRight } from "../../activities/leftRight
 import { generateSession as generateLineTypes } from "../../activities/lineTypes";
 import { generateSession as generateMenuCafeteria } from "../../activities/menuCafeteria";
 import { generateSession as generateMonedasBilletes } from "../../activities/monedasBilletes";
-import { generateSession as generateMultiplicacion } from "../../activities/multiplicacion";
+import { generateMatchBlocks as generateMultiplicacion } from "../../activities/multiplicacion";
 import { generateNumeracion1119Session } from "../../activities/numeracion1119";
 import { generateSession as generateNumeracion4059 } from "../../activities/numeracion4059";
 import { generateSession as generateNumeracion6099 } from "../../activities/numeracion6099";
@@ -146,7 +146,8 @@ export const sessionEngines: Record<string, SessionEngine> = {
   lineTypes: std(generateLineTypes),
   menuCafeteria: std(generateMenuCafeteria, true),
   monedasBilletes: std(generateMonedasBilletes, true),
-  multiplicacion: std(generateMultiplicacion),
+  // Ficha: siempre bloques de unir (`generateSession` devolvería opción múltiple en hard/expert).
+  multiplicacion: std((difficulty, seed) => generateMultiplicacion(difficulty, seed)),
   numeracion1119: seedFirst(generateNumeracion1119Session),
   numeracion4059: std(generateNumeracion4059),
   numeracion6099: std(generateNumeracion6099),

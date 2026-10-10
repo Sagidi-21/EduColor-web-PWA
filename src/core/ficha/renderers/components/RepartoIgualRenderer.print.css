@@ -1,0 +1,68 @@
+/* Reparto igual — puntos + cajas de grupo (easy/medium) + casilla de respuesta */
+
+.ficha-reparto__text {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+.ficha-reparto__visual {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.ficha-reparto__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 260px;
+}
+
+.ficha-reparto__item {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff9e7d;
+  border: 1px solid #e0764f;
+  box-sizing: border-box;
+}
+
+.ficha-reparto__groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ficha-reparto__group-box {
+  display: block;
+  width: 38px;
+  height: 38px;
+  border: 2px dashed #7cc4f5;
+  border-radius: 8px;
+  background: #f4fafe;
+  box-sizing: border-box;
+}
+
+.ficha-reparto__answer-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: #222;
+}
+
+.ficha-reparto__input {
+  display: inline-block;
+  width: 44px;
+  height: 32px;
+  border: 2px solid #94a3b8;
+  border-radius: 6px;
+  background: #f9fafb;
+  box-sizing: border-box;
+}

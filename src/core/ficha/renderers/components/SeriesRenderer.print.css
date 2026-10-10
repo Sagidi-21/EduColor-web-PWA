@@ -68,3 +68,13 @@
   min-height: 0;
   padding: 6px 10px;
 }
+
+/* Series de 3 cifras — cajas más anchas como en pizarra */
+.ficha-series--3cifras .ficha-series__box:not(.ficha-series__box--blank) {
+  min-width: 56px;
+  font-size: 18px;
+}
+
+.ficha-series--3cifras .ficha-series__box--blank {
+  min-width: 72px;
+}

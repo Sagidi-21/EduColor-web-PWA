@@ -1,6 +1,5 @@
 /* Igualdad — layout alumno */
 
-/* Miniaturas (copia local del ejercicio) */
 .ficha-img-row {
   display: flex;
   flex-wrap: wrap;
@@ -8,13 +7,14 @@
   align-items: center;
 }
 
-.ficha-img-row__thumb {
+/* Tamaño propio (no pisa suma/resta). Edita aquí. */
+.ficha-igualdad .ficha-img-row__thumb {
   width: 22px;
   height: 22px;
   object-fit: contain;
 }
 
-.ficha-img-row__thumb--crossed {
+.ficha-igualdad .ficha-img-row__thumb--crossed {
   opacity: 0.35;
   filter: grayscale(1);
 }
@@ -34,8 +34,51 @@
 }
 
 .ficha-igualdad__formula {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
   margin: 0;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
   color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.ficha-igualdad__num {
+  color: #0284c7;
+}
+
+.ficha-igualdad__op {
+  color: #334155;
+}
+
+.ficha-igualdad__blank {
+  display: inline-block;
+  width: 36px;
+  height: 32px;
+  border: 1.5px dashed #94a3b8;
+  border-radius: 3px;
+  background: #f8fafc;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+.ficha-igualdad__choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.ficha-igualdad__choice {
+  display: block;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-igualdad__choice-mark {
+  margin-right: 6px;
 }

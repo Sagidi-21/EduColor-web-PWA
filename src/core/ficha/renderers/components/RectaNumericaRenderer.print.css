@@ -1,0 +1,34 @@
+/* Recta numérica — SVG 0..max con marcas; el alumno señala el número pedido */
+
+.ficha-recta {
+  width: 100%;
+}
+
+.ficha-recta__question {
+  margin: 0 0 2px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-recta__target {
+  display: inline-block;
+  min-width: 28px;
+  padding: 0 6px;
+  border: 1.5px solid #94a3b8;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.3;
+  color: #0f172a;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.ficha-recta__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 80px;
+}

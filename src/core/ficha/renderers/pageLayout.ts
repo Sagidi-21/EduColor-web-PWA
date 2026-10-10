@@ -73,6 +73,48 @@ export function pageSizeForExercises(
     // Alumno: figura + opciones de texto (más altos). Soluciones: solo etiqueta.
     return options.showAnswer ? 16 : 8;
   }
+  if (
+    first.kind === "simetria" ||
+    first.kind === "cuerpos3d" ||
+    first.kind === "circuloCircunferencia" ||
+    first.kind === "problemas2pasos" ||
+    first.kind === "repartoIgual"
+  ) {
+    // Alumno: figura/diagrama + opciones (más altos). Soluciones: solo la respuesta.
+    return options.showAnswer ? exercises.length || 1 : 8;
+  }
+  if (first.kind === "tablaNumerica") {
+    // Alumno: rejilla 10×10 a ancho completo (pocos por hoja). Soluciones: solo respuesta.
+    return options.showAnswer ? 16 : 4;
+  }
+  if (first.kind === "abaco3Cifras") {
+    return options.showAnswer ? 16 : 8;
+  }
+  if (first.kind === "laberintoMatematico") {
+    // Alumno: tablero a ancho completo (pocos por hoja). Soluciones: solo valores.
+    return options.showAnswer ? 10 : 3;
+  }
+  if (first.kind === "rutaCuadricula" || first.kind === "capacidad") {
+    return options.showAnswer ? 16 : 8;
+  }
+  if (first.kind === "posicionesAula" || first.kind === "probabilidad") {
+    return options.showAnswer ? 16 : 8;
+  }
+  if (first.kind === "reloj" || first.kind === "leftRight") {
+    return options.showAnswer ? 16 : 8;
+  }
+  if (first.kind === "multiplicacion") {
+    // Alumno: bloque de unir (≤5 filas) a media columna. Soluciones: solo parejas.
+    return options.showAnswer ? 12 : 8;
+  }
+  if (first.kind === "rectaNumerica") {
+    // Alumno: 2 por fila (10/hoja). Soluciones: solo el número.
+    return options.showAnswer ? 20 : 10;
+  }
+  if (first.kind === "sumaLlevando" || first.kind === "algoritmo3Cifras") {
+    // Alumno: cuadrícula con casillas (más alta que una operación suelta).
+    return options.showAnswer ? 20 : 10;
+  }
   return exercises.length || 1;
 }
 
@@ -85,12 +127,22 @@ export function isFullWidthExercise(
 ): boolean {
   if (ex.kind === "relacionar") return !options.showAnswer;
   if (ex.kind === "relacionarCantidades") return !options.showAnswer;
+  if (ex.kind === "tablaNumerica") return !options.showAnswer;
+  if (ex.kind === "abaco3Cifras") {
+    // find-abaco: 4 ábacos en fila → ancho completo.
+    return ex.variant === "find-abaco" && !options.showAnswer;
+  }
   if (ex.kind === "comparison") return !options.showAnswer;
   if (ex.kind === "elKilo" || ex.kind === "elLitro" || ex.kind === "ordinales") {
     return !options.showAnswer;
   }
   if (ex.kind === "graficoBarras" || ex.kind === "balanza" || ex.kind === "intervalosTiempo") {
     return !options.showAnswer;
+  }
+  // Escenas anchas dibujadas en SVG: tablero del laberinto y personaje (izq. | personaje | der.).
+  if (ex.kind === "laberintoMatematico") return !options.showAnswer;
+  if (ex.kind === "leftRight") {
+    return !options.showAnswer && ex.variant !== undefined && ex.variant.startsWith("char-");
   }
   return false;
 }

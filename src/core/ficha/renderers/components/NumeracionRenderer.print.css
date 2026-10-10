@@ -1,0 +1,56 @@
+/* Numeración 11-19 / 40-59 / 60-99 — bloques decenas+unidades + ○ o casillas */
+
+.ficha-numeracion__blocks {
+  margin: 0 0 4px;
+  text-align: left;
+}
+
+.ficha-tens-blocks {
+  display: inline-block;
+  vertical-align: top;
+  max-width: 100%;
+  height: auto;
+}
+
+.ficha-numeracion__question {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.25;
+}
+
+.ficha-numeracion__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 6px;
+}
+
+.ficha-numeracion__choice {
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-numeracion__choice-mark {
+  margin-right: 5px;
+}
+
+.ficha-numeracion__boxes {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+/* Casilla de cifra — edita width/height aquí */
+.ficha-numeracion__box {
+  display: inline-block;
+  width: 36px;
+  height: 40px;
+  border: 1.5px dashed #94a3b8;
+  border-radius: 4px;
+  background: #f8fafc;
+  box-sizing: border-box;
+}

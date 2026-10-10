@@ -2,11 +2,88 @@
 
 .ficha-clock-svg {
   display: block;
-  margin-top: 6px;
 }
 
 .ficha-reloj {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.ficha-reloj__question {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-reloj__body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ficha-reloj__blank {
+  display: inline-block;
+  width: 72px;
+  height: 36px;
+  border: 1.5px dashed #94a3b8;
+  border-radius: 3px;
+  background: #f8fafc;
+  box-sizing: border-box;
+}
+
+/* Reloj digital del enunciado (monocromo: sale bien en blanco y negro) */
+.ficha-reloj__digital {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 2px solid #1e293b;
+  border-radius: 6px;
+  background: #fff;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 1px;
+  color: #0f172a;
+}
+
+/* Opciones ○ (círculo tipográfico: html2canvas alinea mal cajas vacías) */
+.ficha-reloj__choices {
+  display: block;
+  margin-top: 2px;
+}
+
+.ficha-reloj__choice {
+  display: inline-block;
+  margin: 2px 14px 2px 0;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-reloj__choice-mark {
+  margin-right: 6px;
+}
+
+/* Minirelojes A–D con agujas (digital → analógico, nivel medio) */
+.ficha-reloj__clock-choices {
+  display: block;
+  margin-top: 2px;
+}
+
+.ficha-reloj__clock-choice {
+  display: inline-block;
+  margin: 0 12px 4px 0;
+  text-align: center;
+  vertical-align: top;
+}
+
+.ficha-reloj__clock-choice-label {
+  display: block;
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #222;
 }

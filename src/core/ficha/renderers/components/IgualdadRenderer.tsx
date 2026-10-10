@@ -6,17 +6,52 @@ export interface IgualdadRendererProps {
   showAnswer: boolean;
 }
 
-function formula(ex: IgualdadSheetExercise): string {
-  if (ex.type === "addend") return `${ex.a} + ? = ${ex.c}`;
-  if (ex.type === "decompose") return `Descompón ${ex.a}`;
-  return `${ex.a} + ${ex.b} = ?`;
-}
-
 /**
- * Igualdad: en tipo resultado (easy) muestra las mismas filas de objetos que la pizarra.
+ * Alumno: imágenes (resultado) + fórmula con huecos como en pizarra + ○ opciones.
+ * Soluciones: las maneja ExerciseRenderer.
  */
 export function IgualdadRenderer({ ex, showAnswer }: IgualdadRendererProps): JSX.Element {
-  const showImages = !showAnswer && ex.type === "result" && Boolean(ex.imageUrl);
+  if (showAnswer) {
+    return <div className="ficha-answer">{ex.answer ?? "?"}</div>;
+  }
+
+  const showImages = ex.type === "result" && Boolean(ex.imageUrl);
+  const blank = <span className="ficha-igualdad__blank" aria-label="Espacio para la respuesta" />;
+
+  let formula: JSX.Element;
+  if (ex.type === "addend") {
+    formula = (
+      <>
+        {blank}
+        <span className="ficha-igualdad__op">+</span>
+        <span className="ficha-igualdad__num">{ex.b}</span>
+        <span className="ficha-igualdad__op">=</span>
+        <span className="ficha-igualdad__num">{ex.c}</span>
+      </>
+    );
+  } else if (ex.type === "decompose") {
+    formula = (
+      <>
+        <span className="ficha-igualdad__num">{ex.c}</span>
+        <span className="ficha-igualdad__op">=</span>
+        {blank}
+        <span className="ficha-igualdad__op">+</span>
+        {blank}
+      </>
+    );
+  } else {
+    formula = (
+      <>
+        <span className="ficha-igualdad__num">{ex.a}</span>
+        <span className="ficha-igualdad__op">+</span>
+        <span className="ficha-igualdad__num">{ex.b}</span>
+        <span className="ficha-igualdad__op">=</span>
+        {blank}
+      </>
+    );
+  }
+
+  const choices = ex.choiceLabels ?? [];
 
   return (
     <div className="ficha-igualdad">
@@ -29,8 +64,21 @@ export function IgualdadRenderer({ ex, showAnswer }: IgualdadRendererProps): JSX
           <ObjectImageRow count={ex.b} imageUrl={ex.imageUrl} />
         </div>
       )}
-      <p className="ficha-igualdad__formula">{formula(ex)}</p>
-      {showAnswer && ex.answer !== undefined && <div className="ficha-answer">{ex.answer}</div>}
+      <div className="ficha-igualdad__formula" aria-label="Operación">
+        {formula}
+      </div>
+      {choices.length > 0 && (
+        <div className="ficha-igualdad__choices">
+          {choices.map((label, i) => (
+            <div key={`${label}-${i}`} className="ficha-igualdad__choice">
+              <span className="ficha-igualdad__choice-mark" aria-hidden>
+                ○
+              </span>
+              <span className="ficha-igualdad__choice-text">{label}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

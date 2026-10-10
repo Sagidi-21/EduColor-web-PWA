@@ -1,0 +1,48 @@
+/* Simetría — figura SVG + opciones ○ */
+
+.ficha-simetria__question {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.25;
+}
+
+.ficha-simetria__body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 40px;
+  margin-top: 6px;
+}
+
+.ficha-simetria__figure {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ficha-simetria__svg {
+  display: block;
+}
+
+.ficha-simetria__choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* ○ tipográfico en línea (html2canvas alinea mal cajas vacías/flex). */
+.ficha-simetria__choice {
+  display: block;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-simetria__choice-mark {
+  margin-right: 6px;
+}

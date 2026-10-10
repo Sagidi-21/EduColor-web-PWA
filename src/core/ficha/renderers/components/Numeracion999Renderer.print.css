@@ -1,0 +1,77 @@
+/* Numeración hasta 999 — layout alumno */
+
+.ficha-n999__question {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.25;
+}
+
+.ficha-n999__number {
+  font-size: 36px;
+  font-weight: 800;
+  color: #0284c7;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.ficha-n999__cdu {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.ficha-n999__cdu-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 48px;
+  padding: 4px 6px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 4px;
+  background: #f8fafc;
+}
+
+.ficha-n999__cdu-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.ficha-n999__cdu-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.ficha-n999__cdu-sep {
+  font-size: 18px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.ficha-n999__choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.ficha-n999__choice {
+  display: block;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-n999__choice-mark {
+  margin-right: 6px;
+}

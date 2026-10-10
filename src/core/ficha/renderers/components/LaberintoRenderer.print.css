@@ -1,0 +1,40 @@
+/* Laberinto matemático — layout alumno (tablero SVG a ancho completo) */
+
+.ficha-laberinto__hint {
+  margin: 0 0 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.ficha-laberinto__svg {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.ficha-laberinto__final {
+  margin-top: 4px;
+  text-align: center;
+}
+
+.ficha-laberinto__question {
+  margin-right: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  vertical-align: middle;
+}
+
+.ficha-laberinto__blank {
+  display: inline-block;
+  width: 64px;
+  height: 32px;
+  border: 2px solid #1a2a6c;
+  border-radius: 6px;
+  background: #fff;
+  box-sizing: border-box;
+  vertical-align: middle;
+}

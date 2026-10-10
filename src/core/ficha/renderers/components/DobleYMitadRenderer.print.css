@@ -1,0 +1,75 @@
+/* Doble y mitad — cajas Número / Doble|Mitad + opciones ○ */
+
+.ficha-doble__question {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.25;
+}
+
+.ficha-doble__visual {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.ficha-doble__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.ficha-doble__box {
+  display: block;
+  width: 56px;
+  height: 40px;
+  line-height: 38px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0284c7;
+  border: 1.5px solid #0284c7;
+  border-radius: 6px;
+  background: #e0f2fe;
+  box-sizing: border-box;
+}
+
+.ficha-doble__box--blank {
+  color: #0f172a;
+  border-color: #94a3b8;
+  border-style: dashed;
+  background: #f8fafc;
+}
+
+.ficha-doble__label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.ficha-doble__arrow {
+  line-height: 40px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.ficha-doble__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 8px;
+}
+
+.ficha-doble__choice {
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-doble__choice-mark {
+  margin-right: 5px;
+}

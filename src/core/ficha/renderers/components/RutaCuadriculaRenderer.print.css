@@ -1,0 +1,39 @@
+/* Taller de programación (ruta en cuadrícula) — layout alumno */
+
+.ficha-ruta__question {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #1e293b;
+}
+
+.ficha-ruta__svg {
+  display: block;
+  margin: 2px auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.ficha-ruta__legend {
+  margin: 2px 0 4px;
+  font-size: 11px;
+  text-align: center;
+  color: #64748b;
+}
+
+.ficha-ruta__boxes {
+  text-align: center;
+}
+
+.ficha-ruta__box {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  margin: 2px;
+  border: 1.5px dashed #94a3b8;
+  border-radius: 4px;
+  background: #f8fafc;
+  box-sizing: border-box;
+  vertical-align: middle;
+}

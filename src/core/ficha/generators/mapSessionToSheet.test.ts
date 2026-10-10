@@ -269,9 +269,83 @@ describe("mapSessionToSheet", () => {
     expect(sub).toMatchObject({ kind: "algoritmoVertical", op: "-", answer: 9 });
   });
 
-  it("mapea sumaLlevando con 3 sumandos", () => {
+  it("mapea sumaLlevando a su propio kind con sumandos y respuesta", () => {
     const ex = mapSessionToSheet("sumaLlevando", { addends: [12, 15, 8], answer: 35 }, config);
-    expect(ex).toMatchObject({ kind: "tresSumandos", a: 12, b: 15, c: 8, answer: 35 });
+    expect(ex).toMatchObject({ kind: "sumaLlevando", addends: [12, 15, 8], answer: 35 });
+
+    const two = mapSessionToSheet("sumaLlevando", { addends: [18, 7] }, config);
+    expect(two).toMatchObject({ kind: "sumaLlevando", addends: [18, 7], answer: 25 });
+  });
+
+  it("mapea algoritmo3cifras con cifras C·D·U y rótulo llevar/prestar", () => {
+    const sum = mapSessionToSheet(
+      "algoritmo3cifras",
+      { op: "+", a: 178, b: 245, result: 423, aC: 1, aD: 7, aU: 8, bC: 2, bD: 4, bU: 5 },
+      config,
+    );
+    expect(sum).toMatchObject({
+      kind: "algoritmo3Cifras",
+      op: "+",
+      aC: 1,
+      aD: 7,
+      aU: 8,
+      bC: 2,
+      bD: 4,
+      bU: 5,
+      carryLabel: "llevar",
+      answer: 423,
+    });
+
+    const sub = mapSessionToSheet(
+      "algoritmo3cifras",
+      { op: "-", a: 523, b: 178, result: 345 },
+      config,
+    );
+    expect(sub).toMatchObject({
+      kind: "algoritmo3Cifras",
+      op: "-",
+      aC: 5,
+      aD: 2,
+      aU: 3,
+      bC: 1,
+      bD: 7,
+      bU: 8,
+      carryLabel: "prestar",
+      answer: 345,
+    });
+  });
+
+  it("mapea rectaNumerica a su propio kind (ya no cae en problemas)", () => {
+    const ex = mapSessionToSheet("rectaNumerica", { target: 7, max: 20, labelEvery: 5 }, config);
+    expect(ex).toEqual({
+      kind: "rectaNumerica",
+      target: 7,
+      max: 20,
+      labelEvery: 5,
+      answer: 7,
+    });
+  });
+
+  it("mapea multiplicacion como unir columnas con parejas de solución", () => {
+    const p0 = { id: 0, table: 2, factor: 3, product: 6 };
+    const p1 = { id: 1, table: 2, factor: 5, product: 10 };
+    const ex = mapSessionToSheet(
+      "multiplicacion",
+      { mode: "match", pairs: [p0, p1], leftColumn: [p1, p0], rightColumn: [p0, p1] },
+      config,
+    );
+    expect(ex).toEqual({
+      kind: "multiplicacion",
+      left: [
+        { id: 1, table: 2, factor: 5 },
+        { id: 0, table: 2, factor: 3 },
+      ],
+      right: [
+        { id: 0, product: 6 },
+        { id: 1, product: 10 },
+      ],
+      answer: ["2 × 3 = 6", "2 × 5 = 10"],
+    });
   });
 
   it("mapea problemas con story y answer", () => {
@@ -287,13 +361,232 @@ describe("mapSessionToSheet", () => {
     }
   });
 
+  it("mapea problemas con emoji y ecuación a ± b", () => {
+    const ex = mapSessionToSheet(
+      "problemas",
+      {
+        story: "Hay 3 perros. Llegan 2 más.",
+        question: "¿Cuántos perros hay ahora?",
+        emoji: "🐶",
+        a: 3,
+        b: 2,
+        op: "suma",
+        answer: 5,
+      },
+      config,
+    );
+    expect(ex).toMatchObject({ kind: "problemas", emoji: "🐶", a: 3, b: 2, op: "+", answer: 5 });
+    const sin = mapSessionToSheet(
+      "problemas",
+      { story: "x", question: "y", emoji: "🐶", a: 3, b: 2, op: "resta", answer: 1 },
+      { ...config, withImages: false },
+    );
+    expect(sin).toMatchObject({ op: "-", emoji: undefined });
+  });
+
+  it("mapea weekDays con opciones y día resaltado", () => {
+    const ex = mapSessionToSheet(
+      "weekDays",
+      {
+        question: "¿Qué día va después del martes?",
+        options: ["lunes", "miércoles", "jueves", "domingo"],
+        answer: "miércoles",
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "weekDay",
+      highlightDay: "martes",
+      choiceLabels: ["lunes", "miércoles", "jueves", "domingo"],
+      answer: "miércoles",
+    });
+  });
+
+  it("mapea vecinosNumero con vía, pregunta y opciones", () => {
+    const ex = mapSessionToSheet(
+      "vecinosNumero",
+      {
+        number: 5,
+        type: "ambos",
+        anterior: 4,
+        posterior: 6,
+        correctAnswer: "4·6",
+        options: ["4·6", "3·6", "4·7", "5·6"],
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "vecinosNumero",
+      number: 5,
+      askType: "ambos",
+      question: "¿Cuáles son los vecinos?",
+      answer: "4 · 6",
+    });
+    if (ex.kind === "vecinosNumero") expect(ex.choiceLabels?.[0]).toBe("4 · 6");
+  });
+
+  it("mapea dobleYMitad con cajas y opciones", () => {
+    const ex = mapSessionToSheet(
+      "dobleYMitad",
+      {
+        type: "doble",
+        number: 4,
+        result: 8,
+        operacion: "x2",
+        conocido: "original",
+        question: "¿Cuánto es el doble de 4?",
+        correctAnswer: 8,
+        options: [8, 6, 7, 10],
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "dobleYMitad",
+      number: 4,
+      operacion: "x2",
+      conocido: "original",
+      choiceLabels: ["8", "6", "7", "10"],
+      answer: 8,
+    });
+  });
+
+  it("mapea elLitro/elKilo con choiceLabels desde options", () => {
+    const ex = mapSessionToSheet(
+      "elKilo",
+      {
+        items: [],
+        question: "¿Cuál pesa más?",
+        options: ["Sandía", "Pluma"],
+        answer: "Sandía",
+      },
+      config,
+    );
+    expect(ex).toMatchObject({ kind: "elKilo", choiceLabels: ["Sandía", "Pluma"] });
+  });
+
   it("mapea repartoIgual", () => {
     const ex = mapSessionToSheet(
       "repartoIgual",
       { total: 12, groups: 3, itemsPerGroup: 4 },
       config,
     );
-    expect(ex).toMatchObject({ kind: "repartoIgual", total: 12, groups: 3, answer: 4 });
+    expect(ex).toMatchObject({
+      kind: "repartoIgual",
+      total: 12,
+      groups: 3,
+      answer: 4,
+      showVisual: true,
+    });
+    const hard = mapSessionToSheet(
+      "repartoIgual",
+      { total: 12, groups: 3, itemsPerGroup: 4 },
+      { ...config, difficulty: "hard" },
+    );
+    expect(hard).toMatchObject({ kind: "repartoIgual", showVisual: false });
+  });
+
+  it("mapea problemas2pasos con tracker y opciones", () => {
+    const ex = mapSessionToSheet(
+      "problemas2pasos",
+      {
+        type: "add-sub",
+        op1: "+",
+        op2: "-",
+        a: 10,
+        b: 5,
+        c: 3,
+        mid: 15,
+        result: 12,
+        story: ["Juan tiene 10.", "Le dan 5.", "Da 3."],
+        question: "¿Cuántos le quedan?",
+        correctAnswer: "12",
+        options: ["10", "12", "14", "15"],
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "problemas2pasos",
+      steps: { a: 10, b: 5, c: 3, op1: "+", op2: "-" },
+      choiceLabels: ["10", "12", "14", "15"],
+      answer: 12,
+    });
+  });
+
+  it("mapea simetria con figura y opciones; which-shape sin figura", () => {
+    const ex = mapSessionToSheet(
+      "simetria",
+      {
+        type: "is-symmetric",
+        shape: "cuadrado",
+        axes: 4,
+        question: "¿Tiene el cuadrado algún eje de simetría?",
+        correctAnswer: "Sí",
+        options: ["Sí", "No"],
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "simetria",
+      shape: "cuadrado",
+      choiceLabels: ["Sí", "No"],
+      answer: "Sí",
+    });
+    const which = mapSessionToSheet(
+      "simetria",
+      {
+        type: "which-shape",
+        shape: "cuadrado",
+        axes: 4,
+        question: "¿Cuál tiene eje?",
+        correctAnswer: "Cuadrado",
+        options: ["Cuadrado", "Rombo"],
+      },
+      config,
+    );
+    expect(which).toMatchObject({ kind: "simetria", shape: undefined });
+  });
+
+  it("mapea cuerpos3d con cuerpo y opciones", () => {
+    const ex = mapSessionToSheet(
+      "cuerpos3d",
+      {
+        type: "count-faces",
+        shape: "cubo",
+        question: "¿Cuántas caras tiene el cubo?",
+        correctAnswer: "6",
+        options: ["2", "4", "6", "8"],
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "cuerpos3d",
+      shape: "cubo",
+      choiceLabels: ["2", "4", "6", "8"],
+      answer: "6",
+    });
+  });
+
+  it("mapea circuloCircunferencia con figura/objeto y opciones", () => {
+    const raw = {
+      type: "real-object",
+      shapeType: "circulo",
+      objectName: "una moneda",
+      objectEmoji: "🪙",
+      question: "🪙 Una moneda… ¿es un círculo o una circunferencia?",
+      options: ["Círculo", "Circunferencia"],
+      correctAnswer: "Círculo",
+    };
+    const ex = mapSessionToSheet("circuloCircunferencia", raw, config);
+    expect(ex).toMatchObject({
+      kind: "circuloCircunferencia",
+      type: "real-object",
+      shapeType: "circulo",
+      objectEmoji: "🪙",
+      choiceLabels: ["Círculo", "Circunferencia"],
+      answer: "Círculo",
+    });
+    const sin = mapSessionToSheet("circuloCircunferencia", raw, { ...config, withImages: false });
+    expect(sin).toMatchObject({ objectEmoji: undefined });
   });
 
   it("mapea ordenar con números y dirección", () => {

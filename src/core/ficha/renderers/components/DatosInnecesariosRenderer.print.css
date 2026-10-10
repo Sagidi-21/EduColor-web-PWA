@@ -1,0 +1,37 @@
+/* Datos innecesarios — layout alumno */
+
+.ficha-datos-innec__question {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.ficha-datos-innec__hint {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.ficha-datos-innec__frases {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ficha-datos-innec__frase {
+  display: block;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #1e293b;
+}
+
+.ficha-datos-innec__mark {
+  margin-right: 4px;
+}
+
+.ficha-datos-innec__num {
+  font-weight: 700;
+  margin-right: 4px;
+}

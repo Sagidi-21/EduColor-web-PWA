@@ -1,13 +1,105 @@
-/* Tabla numérica — layout alumno */
+/* Tabla numérica 10×10 (0-99) — layout alumno: enunciado a la izquierda, rejilla a la derecha */
 
-.ficha-table {
-  border-collapse: collapse;
-  font-size: 12px;
+.ficha-exercise--tabla {
+  min-height: 0;
+  padding: 6px 10px;
 }
 
-.ficha-table td,
-.ficha-table th {
-  border: 1px solid #ccc;
-  padding: 3px 6px;
+.ficha-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ficha-tabla__info {
+  width: 38%;
+  padding: 0 10px 0 0;
+  vertical-align: top;
+}
+
+.ficha-tabla__grid-cell {
+  width: 62%;
+  padding: 0;
+  vertical-align: top;
+}
+
+.ficha-tabla__question {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.25;
+}
+
+.ficha-tabla__symbol {
+  margin: 0 0 6px;
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1;
+  color: #6d28d9;
+}
+
+.ficha-tabla__rule {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0284c7;
+}
+
+/* Casilla de respuesta — edita width/height aquí */
+.ficha-tabla__blank {
+  display: inline-block;
+  width: 60px;
+  height: 40px;
+  border: 1.5px dashed #94a3b8;
+  border-radius: 4px;
+  background: #f8fafc;
+  box-sizing: border-box;
+}
+
+.ficha-tabla__grid {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Celda de la rejilla — edita height/font-size aquí */
+.ficha-tabla__cell {
+  height: 22px;
+  padding: 0;
+  border: 1px solid #94a3b8;
   text-align: center;
+  vertical-align: middle;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
+  color: #1e293b;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* Hueco que el alumno no ve (no es la pregunta) */
+.ficha-tabla__cell--blank {
+  background: #e2e8f0;
+  color: transparent;
+}
+
+/* Casilla amarilla: es la que se pregunta */
+.ficha-tabla__cell--target {
+  background: #fde047;
+  border-color: #ca8a04;
+  border-width: 2px;
+  color: #854d0e;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.ficha-tabla__cell--symbol {
+  background: #ede9fe;
+  border-color: #7c3aed;
+  color: #6d28d9;
+  font-size: 15px;
+  font-weight: 900;
 }

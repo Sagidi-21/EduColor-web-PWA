@@ -1,0 +1,40 @@
+/* Multiplicación (unir columnas) — hereda tablero/puntos de RelacionarRenderer.print.css */
+
+.ficha-exercise--multiplicacion {
+  padding: 6px 8px;
+  min-height: 0;
+}
+
+.ficha-mult .ficha-relacionar__instruction {
+  font-size: 16px;
+}
+
+.ficha-mult .ficha-relacionar__board {
+  max-width: 420px;
+  gap: 4px 8px;
+}
+
+.ficha-mult .ficha-relacionar__left,
+.ficha-mult .ficha-relacionar__right {
+  gap: 8px;
+}
+
+.ficha-mult .ficha-relacionar__group {
+  align-items: center;
+}
+
+/* La operación `2 × 7` no cabe en el badge cuadrado de relacionar. */
+.ficha-mult .ficha-mult__op {
+  width: auto;
+  min-width: 62px;
+  padding: 0 8px;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+.ficha-mult .ficha-mult__product {
+  width: auto;
+  min-width: 44px;
+  padding: 0 8px;
+  font-size: 18px;
+}

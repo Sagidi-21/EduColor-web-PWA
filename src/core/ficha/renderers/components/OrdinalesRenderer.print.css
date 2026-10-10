@@ -1,21 +1,52 @@
 /* Ordinales — layout alumno */
 
+.ficha-ordinales__direction {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+}
+
 .ficha-ordinales__row {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 8px;
   margin-bottom: 6px;
   font-size: 20px;
   line-height: 1;
 }
 
+.ficha-ordinales__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.ficha-ordinales__pos {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.ficha-ordinales__item--star .ficha-ordinales__pos {
+  color: #d97706;
+}
+
 .ficha-ordinales__question {
-  margin: 0;
-  font-size: 20px;
+  margin: 6px 0 0;
+  font-size: 16px;
   font-weight: 600;
   color: #1e293b;
 }
 
-.ficha-ordinales__cell--star {
-  filter: drop-shadow(0 0 1px #f59e0b);
+.ficha-ordinales__blank {
+  display: inline-block;
+  width: 48px;
+  height: 36px;
+  margin-top: 6px;
+  border: 1.5px dashed #94a3b8;
+  border-radius: 3px;
+  background: #f8fafc;
+  box-sizing: border-box;
 }

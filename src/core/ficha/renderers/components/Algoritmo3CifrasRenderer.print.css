@@ -1,0 +1,71 @@
+/* Algoritmo de tres cifras — cuadrícula C·D·U con casillas de llevar/prestar */
+
+.ficha-alg3 {
+  display: grid;
+  grid-template-columns: 18px 28px 28px 28px auto;
+  gap: 3px 4px;
+  align-items: center;
+  width: max-content;
+  font-family: "SF Mono", "Consolas", "Menlo", monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.ficha-alg3__label {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.04em;
+}
+
+.ficha-alg3__digit {
+  text-align: center;
+  min-height: 24px;
+  line-height: 24px;
+}
+
+.ficha-alg3__op {
+  text-align: center;
+  color: #334155;
+}
+
+/* Casillas de llevar/prestar: pequeñas y discontinuas sobre C y D (U no recibe). */
+.ficha-alg3__carry {
+  display: block;
+  width: 24px;
+  height: 20px;
+  justify-self: center;
+  border: 1.5px dashed #d97706;
+  border-radius: 6px;
+  background: #fffbeb;
+  box-sizing: border-box;
+}
+
+.ficha-alg3__carry-label {
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 700;
+  color: #a8a29e;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.ficha-alg3__sep {
+  grid-column: 1 / -1;
+  height: 0;
+  border-top: 1.5px solid #334155;
+  margin: 2px 0;
+}
+
+.ficha-alg3__blank {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border: 1.5px dashed #94a3b8;
+  border-radius: 3px;
+  background: #f8fafc;
+  box-sizing: border-box;
+}

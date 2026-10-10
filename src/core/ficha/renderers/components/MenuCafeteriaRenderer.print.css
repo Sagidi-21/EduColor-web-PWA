@@ -1,16 +1,45 @@
-/* Menú cafetería — layout alumno */
+/* Menú cafetería — layout alumno (carta completa de precios) */
 
 .ficha-menu__question {
   margin: 0 0 6px;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 600;
+  line-height: 1.3;
   color: #1e293b;
+  white-space: pre-wrap;
+}
+
+.ficha-menu__card {
+  margin: 4px 0;
+  padding: 6px 8px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.ficha-menu__card-title {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  color: #334155;
 }
 
 .ficha-menu__tray {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+/* Carta: 4 columnas × 2 filas con los 8 platos del menú */
+.ficha-menu__tray--card {
+  gap: 5px;
+}
+
+.ficha-menu__tray--card .ficha-menu__item {
+  width: 23%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .ficha-menu__item {
@@ -22,6 +51,12 @@
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   min-width: 56px;
+}
+
+/* Platos del pedido: borde grueso (se distingue también en blanco y negro) */
+.ficha-menu__item--selected {
+  border: 2.5px solid #1e293b;
+  background: #f1f5f9;
 }
 
 .ficha-menu__emoji {
@@ -40,4 +75,21 @@
   font-size: 11px;
   font-weight: 800;
   color: #0f172a;
+}
+
+/* Opciones ○ (círculo tipográfico, como el resto de fichas) */
+.ficha-menu__choices {
+  margin-top: 6px;
+}
+
+.ficha-menu__choice {
+  display: inline-block;
+  margin: 2px 16px 2px 0;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-menu__choice-mark {
+  margin-right: 6px;
 }

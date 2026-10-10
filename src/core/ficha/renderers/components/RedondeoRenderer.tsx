@@ -1,0 +1,90 @@
+import type { RedondeoSheetExercise } from "../../types";
+
+export interface RedondeoRendererProps {
+  ex: RedondeoSheetExercise;
+  showAnswer: boolean;
+}
+
+const LINE_W = 260;
+const LINE_H = 54;
+const X0 = 22;
+const X1 = LINE_W - 22;
+const Y = 30;
+
+/** Recta entre dos decenas con la marca del número (como pizarra). */
+function DecadeNumberLine({
+  number,
+  lower,
+  upper,
+}: {
+  number: number;
+  lower: number;
+  upper: number;
+}): JSX.Element {
+  const span = Math.max(1, upper - lower);
+  const pct = Math.min(1, Math.max(0, (number - lower) / span));
+  const xN = X0 + pct * (X1 - X0);
+  return (
+    <svg
+      className="ficha-redondeo__line"
+      width={LINE_W}
+      height={LINE_H}
+      viewBox={`0 0 ${LINE_W} ${LINE_H}`}
+      role="img"
+      aria-label={`Recta entre ${lower} y ${upper} con el ${number}`}
+    >
+      <line x1={X0} y1={Y} x2={X1} y2={Y} stroke="#64748b" strokeWidth={3} strokeLinecap="round" />
+      {[X0, X1].map((x) => (
+        <line key={x} x1={x} y1={Y - 9} x2={x} y2={Y + 9} stroke="#0f172a" strokeWidth={3} />
+      ))}
+      <text x={X0} y={LINE_H - 3} textAnchor="middle" fontSize={14} fontWeight={800} fill="#0f172a">
+        {lower}
+      </text>
+      <text x={X1} y={LINE_H - 3} textAnchor="middle" fontSize={14} fontWeight={800} fill="#0f172a">
+        {upper}
+      </text>
+      <circle cx={xN} cy={Y} r={6} fill="#f59e0b" stroke="#b45309" strokeWidth={1.5} />
+      <text x={xN} y={Y - 11} textAnchor="middle" fontSize={14} fontWeight={900} fill="#b45309">
+        {number}
+      </text>
+    </svg>
+  );
+}
+
+/**
+ * Alumno: badge con el número + recta de decenas + pregunta + ○ opciones.
+ * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
+ */
+export function RedondeoRenderer({ ex, showAnswer }: RedondeoRendererProps): JSX.Element {
+  if (showAnswer) {
+    return <div className="ficha-answer">{ex.answer ?? "?"}</div>;
+  }
+
+  return (
+    <div className="ficha-redondeo">
+      <table className="ficha-redondeo__top" cellPadding={0} cellSpacing={0} role="presentation">
+        <tbody>
+          <tr>
+            <td className="ficha-redondeo__badge-cell" valign="middle">
+              <span className="ficha-redondeo__badge">{ex.number}</span>
+            </td>
+            <td className="ficha-redondeo__line-cell" valign="middle">
+              <DecadeNumberLine number={ex.number} lower={ex.lowerDecade} upper={ex.upperDecade} />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p className="ficha-redondeo__question">{ex.question}</p>
+      <div className="ficha-redondeo__choices">
+        {ex.choiceLabels.map((label, i) => (
+          <span key={`${label}-${i}`} className="ficha-redondeo__choice">
+            <span className="ficha-redondeo__choice-mark" aria-hidden>
+              ○
+            </span>
+            <span>{label}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}

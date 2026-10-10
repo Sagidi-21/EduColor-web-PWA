@@ -1,0 +1,59 @@
+/* Días de la semana — tira + opciones ○ */
+
+.ficha-weekdays__strip {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.ficha-weekdays__day {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 22px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #f8fafc;
+  box-sizing: border-box;
+}
+
+/* Borde grueso + fondo: se distingue aunque se imprima en blanco y negro. */
+.ficha-weekdays__day--active {
+  color: #0f172a;
+  border: 2px solid #0284c7;
+  background: #e0f2fe;
+}
+
+.ficha-weekdays__question {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.25;
+}
+
+.ficha-weekdays__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 8px;
+}
+
+.ficha-weekdays__choice {
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-weekdays__choice-mark {
+  margin-right: 5px;
+}
+
+.ficha-weekdays__choice-text {
+  text-transform: capitalize;
+}

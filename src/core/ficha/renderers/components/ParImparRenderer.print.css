@@ -11,7 +11,37 @@
 
 .ficha-parimpar__question {
   margin: 0;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   color: #1e293b;
+}
+
+.ficha-parimpar__choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.ficha-parimpar__choice {
+  display: block;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-parimpar__choice-mark {
+  margin-right: 6px;
+}
+
+.ficha-parimpar__blank {
+  display: inline-block;
+  width: 48px;
+  height: 36px;
+  margin-top: 8px;
+  border: 1.5px dashed #94a3b8;
+  border-radius: 3px;
+  background: #f8fafc;
+  box-sizing: border-box;
 }

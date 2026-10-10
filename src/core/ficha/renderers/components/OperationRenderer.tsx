@@ -6,9 +6,29 @@ export interface OperationRendererProps {
   showAnswer: boolean;
 }
 
+function padDigits(n: number, cols: number): (string | null)[] {
+  const s = String(Math.max(0, n));
+  const out: (string | null)[] = Array(cols).fill(null);
+  const start = cols - s.length;
+  for (let i = 0; i < s.length; i++) out[start + i] = s[i]!;
+  return out;
+}
+
+/**
+ * Alumno: filas de objetos (si hay imagen) + algoritmo vertical con casillas de respuesta.
+ * Soluciones: ExerciseRenderer.
+ */
 export function OperationRenderer({ ex, showAnswer }: OperationRendererProps): JSX.Element {
+  if (showAnswer) {
+    return <div className="ficha-answer">{ex.answer ?? "?"}</div>;
+  }
+
   const op = ex.op === "+" ? "+" : "−";
-  const showImages = !showAnswer && Boolean(ex.imageUrl);
+  const showImages = Boolean(ex.imageUrl);
+  const ansLen = String(ex.answer ?? ex.a + (ex.op === "+" ? ex.b : -ex.b)).length;
+  const cols = Math.max(String(ex.a).length, String(ex.b).length, ansLen);
+  const aDigits = padDigits(ex.a, cols);
+  const bDigits = padDigits(ex.b, cols);
 
   return (
     <div className="ficha-operation">
@@ -28,14 +48,25 @@ export function OperationRenderer({ ex, showAnswer }: OperationRendererProps): J
           )}
         </div>
       )}
-      <div className="ficha-vertical">
-        {ex.a}
-        {"\n"}
-        {op}
-        {ex.b}
-        {"\n"}───
+      <div
+        className="ficha-vop"
+        style={{ ["--ficha-vop-cols" as string]: cols }}
+        aria-label={`${ex.a} ${op} ${ex.b}`}
+      >
+        <span className="ficha-vop__sym" />
+        {aDigits.map((d, i) => (
+          <span key={`a${i}`} className="ficha-vop__digit">
+            {d ?? ""}
+          </span>
+        ))}
+        <span className="ficha-vop__sym">{op}</span>
+        {bDigits.map((d, i) => (
+          <span key={`b${i}`} className="ficha-vop__digit">
+            {d ?? ""}
+          </span>
+        ))}
+        <span className="ficha-vop__sep" />
       </div>
-      {showAnswer && ex.answer !== undefined && <div className="ficha-answer">{ex.answer}</div>}
     </div>
   );
 }

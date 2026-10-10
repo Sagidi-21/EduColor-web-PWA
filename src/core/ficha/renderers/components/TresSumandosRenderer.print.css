@@ -1,6 +1,5 @@
 /* Tres sumandos — layout alumno */
 
-/* Miniaturas (copia local del ejercicio) */
 .ficha-img-row {
   display: flex;
   flex-wrap: wrap;
@@ -8,28 +7,35 @@
   align-items: center;
 }
 
-.ficha-img-row__thumb {
+/* Tamaño propio (no pisa suma/resta). Edita aquí. */
+.ficha-tres-sumandos .ficha-img-row__thumb {
   width: 22px;
   height: 22px;
   object-fit: contain;
 }
 
-.ficha-img-row__thumb--crossed {
+.ficha-tres-sumandos .ficha-img-row__thumb--crossed {
   opacity: 0.35;
   filter: grayscale(1);
 }
 
-/* Algoritmo vertical (copia local del ejercicio) */
-.ficha-vertical {
-  font-family: "SF Mono", "Consolas", "Menlo", monospace;
-  font-size: 13px;
-  line-height: 1.3;
-  white-space: pre;
+.ficha-tres-sumandos {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
 }
 
-.ficha-operation__images {
+.ficha-tres-sumandos__images {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  margin-bottom: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ficha-tres-sumandos .ficha-vop {
+  flex: 0 0 auto;
+  margin-left: auto;
 }

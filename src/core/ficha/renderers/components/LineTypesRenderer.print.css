@@ -1,6 +1,39 @@
 /* Tipos de línea — layout alumno */
 
+.ficha-linetypes__question {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-linetypes__body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .ficha-line-svg {
   display: block;
-  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.ficha-linetypes__choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.ficha-linetypes__choice {
+  display: block;
+  font-size: 14px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-linetypes__choice-mark {
+  margin-right: 6px;
 }

@@ -16,8 +16,10 @@ export function SeriesRenderer({ ex, showAnswer }: SeriesRendererProps): JSX.Ele
     return <div className="ficha-answer">{ex.answer ?? "?"}</div>;
   }
 
+  const wide = ex.kind === "series3Cifras";
+
   return (
-    <div className="ficha-series">
+    <div className={`ficha-series${wide ? " ficha-series--3cifras" : ""}`}>
       <p className="ficha-series__question">{ex.question}</p>
       <div className="ficha-series__sequence" aria-label="Serie numérica">
         {ex.sequence.map((n, i) => {

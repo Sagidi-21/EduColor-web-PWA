@@ -7,16 +7,16 @@ export interface PhotoCompareRendererProps {
   showAnswer: boolean;
 }
 
-/** elKilo / elLitro: fotos de objetos + referencia (1 kg / 1 L). */
+/**
+ * elKilo / elLitro alumno: pregunta + referencia (1 kg / 1 L) + fotos + ○ opciones.
+ * Soluciones: SOLO la respuesta (sin enunciado ni imágenes).
+ */
 export function PhotoCompareRenderer({ ex, showAnswer }: PhotoCompareRendererProps): JSX.Element {
   if (showAnswer) {
-    return (
-      <div className="ficha-photo">
-        <p className="ficha-photo__question">{ex.question}</p>
-        <div className="ficha-answer">{ex.answer ?? "?"}</div>
-      </div>
-    );
+    return <div className="ficha-answer">{ex.answer ?? "?"}</div>;
   }
+
+  const choices = ex.choiceLabels ?? [];
 
   return (
     <div className="ficha-photo">
@@ -39,6 +39,18 @@ export function PhotoCompareRenderer({ ex, showAnswer }: PhotoCompareRendererPro
           </div>
         ))}
       </div>
+      {choices.length > 0 && (
+        <div className="ficha-photo__choices">
+          {choices.map((label, i) => (
+            <span key={`${label}-${i}`} className="ficha-photo__choice">
+              <span className="ficha-photo__choice-mark" aria-hidden>
+                ○
+              </span>
+              <span>{label}</span>
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
