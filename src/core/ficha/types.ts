@@ -406,6 +406,10 @@ export interface SeriesNumericasSheetExercise {
 export interface Amigos10SheetExercise {
   kind: "amigos10";
   question: string;
+  /** Sumando conocido (celdas pintadas del ten-frame). */
+  given: number;
+  /** Ten-frame como en pizarra (toggle «Incluir imágenes»). */
+  showVisual: boolean;
   answer?: number;
 }
 

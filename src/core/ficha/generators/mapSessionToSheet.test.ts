@@ -263,6 +263,42 @@ describe("mapSessionToSheet", () => {
     });
   });
 
+  it("mapea amigos10 con ten-frame cuando withImages", () => {
+    const ex = mapSessionToSheet(
+      "amigos10",
+      {
+        given: 3,
+        complement: 7,
+        type: "complement",
+        question: "¿Cuánto le falta al 3 para llegar a 10?",
+        correctAnswer: "7",
+        options: ["7", "6", "8", "5"],
+      },
+      { ...config, activityId: "amigos10", withImages: true },
+    );
+    expect(ex).toMatchObject({
+      kind: "amigos10",
+      given: 3,
+      showVisual: true,
+      answer: 7,
+      question: "¿Cuánto le falta al 3 para llegar a 10?",
+    });
+  });
+
+  it("omite ten-frame de amigos10 si withImages es false", () => {
+    const ex = mapSessionToSheet(
+      "amigos10",
+      {
+        given: 4,
+        complement: 6,
+        question: "4 + ___ = 10",
+        correctAnswer: "6",
+      },
+      { ...config, activityId: "amigos10", withImages: false },
+    );
+    expect(ex).toMatchObject({ kind: "amigos10", given: 4, showVisual: false, answer: 6 });
+  });
+
   it("mapea seriesNumericas con secuencia y hueco", () => {
     const ex = mapSessionToSheet(
       "seriesNumericas",

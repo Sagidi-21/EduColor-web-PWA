@@ -29,6 +29,7 @@ import menuCafeteria from "../components/MenuCafeteriaRenderer.print.css?inline"
 import inventarProblema from "../components/InventarProblemaRenderer.print.css?inline";
 import cintaMetrica from "../components/CintaMetricaRenderer.print.css?inline";
 import intervalosTiempo from "../components/IntervalosTiempoRenderer.print.css?inline";
+import amigos10 from "../components/Amigos10Renderer.print.css?inline";
 
 export const printCss = [
   base,
@@ -61,6 +62,7 @@ export const printCss = [
   inventarProblema,
   cintaMetrica,
   intervalosTiempo,
+  amigos10,
 ].join("\n");
 
 export default printCss;

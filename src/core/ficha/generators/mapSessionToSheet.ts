@@ -7,6 +7,7 @@ import type { KiloItem } from "../../activities/elKilo";
 import type { LitroItem } from "../../activities/elLitro";
 import type {
   AlgoritmoVerticalSheetExercise,
+  Amigos10SheetExercise,
   BalanzaPlateSheet,
   BalanzaSheetExercise,
   CintaMetricaSheetExercise,
@@ -728,6 +729,16 @@ function mapQuestionKind(
   } as SheetExercise;
 }
 
+function mapAmigos10(ex: Record<string, unknown>, config: SheetConfig): Amigos10SheetExercise {
+  return {
+    kind: "amigos10",
+    question: questionOf(ex),
+    given: asNumber(ex.given),
+    showVisual: config.withImages,
+    answer: asNumber(ex.correctAnswer ?? ex.answer ?? ex.complement),
+  };
+}
+
 function mapPosicionesAula(ex: Record<string, unknown>): SheetExercise {
   return {
     kind: "posicionesAula",
@@ -879,7 +890,7 @@ export function mapSessionToSheet(
     case "vecinosNumero":
       return mapQuestionKind("vecinosNumero", ex);
     case "amigos10":
-      return mapQuestionKind("amigos10", ex);
+      return mapAmigos10(ex, config);
     case "lecturaNumeros":
       return mapQuestionKind("lecturaNumeros", ex);
     case "dobleYMitad":

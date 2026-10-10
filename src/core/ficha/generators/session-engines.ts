@@ -112,7 +112,7 @@ export const sessionEngines: Record<string, SessionEngine> = {
   abaco3cifras: std(generateAbaco3cifras),
   algoritmo3cifras: std(generateAlgoritmo3cifras),
   algoritmoVertical: std(generateAlgoritmoVertical),
-  amigos10: std(generateAmigos10),
+  amigos10: std(generateAmigos10, true),
   balanza: std(generateBalanza, true),
   balanzaEquilibra: std(generateBalanzaEquilibra, true),
   capacidad: std(generateCapacidad),

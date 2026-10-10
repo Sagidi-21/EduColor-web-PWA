@@ -49,6 +49,27 @@ describe("getGenerator", () => {
     expect(exercises).toHaveLength(3);
   });
 
+  it("amigos10 soporta apoyo visual (ten-frame)", () => {
+    expect(sessionEngines.amigos10?.supportsImages).toBe(true);
+    expect(getGenerator("amigos10").supportsImages).toBe(true);
+    const exercises = getGenerator("amigos10").generate({
+      activityId: "amigos10",
+      difficulty: "easy",
+      count: 3,
+      withImages: true,
+      seed: 7,
+    });
+    expect(exercises).toHaveLength(3);
+    exercises.forEach((ex) => {
+      expect(ex.kind).toBe("amigos10");
+      if (ex.kind === "amigos10") {
+        expect(ex.given).toBeGreaterThan(0);
+        expect(ex.showVisual).toBe(true);
+        expect(ex.answer).toBe(10 - ex.given);
+      }
+    });
+  });
+
   it("mapea counting a CountingSheetExercise", () => {
     const exercises = getGenerator("counting").generate({
       activityId: "counting",

@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 4 / 62
+**Progreso:** 5 / 62
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -46,15 +46,16 @@ Usar **siempre** la misma semilla y parámetros:
 
 ### Checklist de regresión (fichas ya validadas)
 
-Estas son las únicas actividades marcadas OK en la revisión manual de fichas a 2026-10-09.
+Estas son las únicas actividades marcadas OK en la revisión manual de fichas a 2026-10-10.
 Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 
-| ID           | Actividad                    | Alumno | Soluciones | Print A4 | Word = preview | Notas / baseline                                                                                                     |
-| ------------ | ---------------------------- | ------ | ---------- | -------- | -------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `counting`   | Contamos objetos             | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: objetos+pregunta, 10/hoja, soluciones con número. **Revalidar Word=preview.**                   |
-| `comparison` | Mayor y menor                | [x]    | [x]        | [x]      | [x]            | OK 2026-10-09: fila A\|B, sin +N, hard/expert con iguales, soluciones sin dibujos, **Word=vista previa** ya anotado. |
-| `relacionar` | Relacionar número y cantidad | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**      |
-| `ordenar`    | Ordenar números              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                       |
+| ID           | Actividad                    | Alumno | Soluciones | Print A4 | Word = preview | Notas / baseline                                                                                                                   |
+| ------------ | ---------------------------- | ------ | ---------- | -------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `counting`   | Contamos objetos             | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: objetos+pregunta, 10/hoja, soluciones con número. **Revalidar Word=preview.**                                 |
+| `comparison` | Mayor y menor                | [x]    | [x]        | [x]      | [x]            | OK 2026-10-09: fila A\|B, sin +N, hard/expert con iguales, soluciones sin dibujos, **Word=vista previa** ya anotado.               |
+| `relacionar` | Relacionar número y cantidad | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**                    |
+| `ordenar`    | Ordenar números              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                                     |
+| `amigos10`   | Los amigos del 10            | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-10: ten-frame + operación a la derecha, casilla de respuesta, soluciones solo número. **Revalidar Word=preview.** |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
@@ -73,7 +74,7 @@ Comparación captura vista previa vs Word (misma actividad «Ordenar números»)
 
 **Estado Fase 0 para `ordenar`:** fallo documentado — sirve de caso de regresión obligatorio tras las fases 1–4.
 
-**Regla de cierre de las fases 1–4:** no dar por cerrada la unificación preview↔Word hasta que las 4 filas tengan `Word = preview` en `[x]` con `seed=42`.
+**Regla de cierre de las fases 1–4:** no dar por cerrada la unificación preview↔Word hasta que las filas de la tabla de regresión tengan `Word = preview` en `[x]` con `seed=42`.
 
 Cuando se valide una actividad nueva de la lista general, añadirla también a esta tabla de regresión si aporta un caso de layout distinto (imágenes densas, SVG, full-width, etc.).
 
@@ -103,7 +104,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [ ] **relacionSumaResta** — Familia de operaciones
 - [ ] **multiplicacion** — Multiplicación
 - [ ] **dobleYMitad** — El doble y la mitad
-- [ ] **amigos10** — Los amigos del 10
+- [x] **amigos10** — Los amigos del 10 _(2026-10-10: OK — ten-frame como en pizarra + operación a la derecha con casilla, toggle imágenes, soluciones solo número)_
 
 ## Conteo y comparación
 

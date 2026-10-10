@@ -1,0 +1,103 @@
+/* Amigos del 10 — ten-frame alumno */
+
+.ficha-exercise--amigos10 {
+  min-height: 0;
+  padding: 6px 10px;
+}
+
+.ficha-amigos10 {
+  width: 100%;
+}
+
+.ficha-amigos10__question {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.25;
+}
+
+.ficha-amigos10__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ficha-amigos10__tenframe {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+  width: max-content;
+  max-width: 100%;
+  padding: 4px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.ficha-amigos10__cell {
+  width: 22px;
+  height: 22px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.ficha-amigos10__cell--given {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+}
+
+.ficha-amigos10__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #0284c7;
+  display: block;
+}
+
+/* Texto de la operación (3 + □ = 10) — edita font-size aquí */
+.ficha-amigos10__eq {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-weight: 800;
+  font-size: 28px;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.ficha-amigos10__eq-n {
+  color: #0284c7;
+}
+
+.ficha-amigos10__eq-op {
+  color: #334155;
+}
+
+/* Cuadro para escribir la respuesta — edita width/height aquí */
+.ficha-amigos10__eq-blank {
+  display: inline-block;
+  width: 60px;
+  height: 50px;
+  border: 1.5px dashed #94a3b8;
+  border-radius: 4px;
+  background: #f8fafc;
+  box-sizing: border-box;
+}
+
+/* Cuadro solo (sin ten-frame, withImages off) */
+.ficha-amigos10__eq-blank--solo {
+  margin-top: 6px;
+  width: 48px;
+  height: 48px;
+}

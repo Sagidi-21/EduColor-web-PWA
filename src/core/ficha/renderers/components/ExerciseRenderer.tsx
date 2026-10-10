@@ -27,6 +27,7 @@ import { MenuCafeteriaRenderer } from "./MenuCafeteriaRenderer";
 import { CintaMetricaRenderer } from "./CintaMetricaRenderer";
 import { InventarProblemaRenderer } from "./InventarProblemaRenderer";
 import { IntervalosTiempoRenderer } from "./IntervalosTiempoRenderer";
+import { Amigos10Renderer } from "./Amigos10Renderer";
 import { DefaultRenderer } from "./DefaultRenderer";
 
 export interface ExerciseRendererProps {
@@ -168,12 +169,13 @@ export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): Rea
     case "redondeo":
     case "circuloCircunferencia":
     case "vecinosNumero":
-    case "amigos10":
     case "lecturaNumeros":
     case "dobleYMitad":
     case "abaco3Cifras":
     case "algoritmo3Cifras":
       return <QuestionRenderer question={"question" in ex ? ex.question : ""} showAnswer={false} />;
+    case "amigos10":
+      return <Amigos10Renderer ex={ex} showAnswer={false} />;
     default:
       return <DefaultRenderer ex={ex} showAnswer={false} />;
   }
