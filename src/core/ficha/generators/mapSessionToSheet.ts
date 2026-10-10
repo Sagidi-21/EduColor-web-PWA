@@ -730,12 +730,21 @@ function mapQuestionKind(
 }
 
 function mapAmigos10(ex: Record<string, unknown>, config: SheetConfig): Amigos10SheetExercise {
+  const given = asNumber(ex.given);
+  const complement = asNumber(ex.complement, Math.max(0, 10 - given));
+  const raw = ex.correctAnswer ?? ex.answer ?? complement;
+  const parsed =
+    typeof raw === "number" && Number.isFinite(raw)
+      ? raw
+      : typeof raw === "string" && raw.trim() !== "" && Number.isFinite(Number(raw))
+        ? Number(raw)
+        : complement;
   return {
     kind: "amigos10",
     question: questionOf(ex),
-    given: asNumber(ex.given),
+    given,
     showVisual: config.withImages,
-    answer: asNumber(ex.correctAnswer ?? ex.answer ?? ex.complement),
+    answer: parsed,
   };
 }
 
