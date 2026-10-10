@@ -1,16 +1,4 @@
-/* Numeración 11-19 / 40-59 / 60-99 — bloques decenas+unidades + ○ o casillas */
-
-.ficha-numeracion__blocks {
-  margin: 0 0 4px;
-  text-align: left;
-}
-
-.ficha-tens-blocks {
-  display: inline-block;
-  vertical-align: top;
-  max-width: 100%;
-  height: auto;
-}
+/* Numeración 11-19 / 40-59 / 60-99 — bloques + opciones o casillas */
 
 .ficha-numeracion__question {
   margin: 0 0 6px;
@@ -20,18 +8,55 @@
   line-height: 1.25;
 }
 
+/* Medium+ 11–19: enunciado debajo de la imagen */
+.ficha-numeracion--prompt-below .ficha-numeracion__blocks {
+  margin-bottom: 6px;
+}
+
+/* Desplaza el texto para que el hueco (___ unidades) no quede bajo la imagen. */
+.ficha-numeracion--prompt-below .ficha-numeracion__question {
+  margin: 0;
+  margin-left: 56px; /* edita aquí el desplazamiento */
+}
+
+/* Imagen a la izquierda, posibilidades a la derecha en vertical. */
+.ficha-numeracion__body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 140px;
+  flex-wrap: wrap;
+}
+
+.ficha-numeracion__blocks {
+  flex: 0 1 auto;
+  margin: 0;
+  text-align: left;
+  min-width: 0;
+}
+
+.ficha-tens-blocks {
+  display: inline-block;
+  vertical-align: top;
+  max-width: 100%;
+  height: auto;
+}
+
 .ficha-numeracion__choices {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
-  margin-top: 6px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  flex: 0 0 auto;
 }
 
 .ficha-numeracion__choice {
-  display: inline-block;
-  font-size: 15px;
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
   line-height: 1.35;
-  color: #222;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
 }
 
 .ficha-numeracion__choice-mark {

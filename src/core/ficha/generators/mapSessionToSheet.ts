@@ -1373,7 +1373,7 @@ function mapCapacidad(ex: Record<string, unknown>): CapacidadSheetExercise {
   };
 }
 
-function mapNumeracion1119(ex: Record<string, unknown>, config: SheetConfig): SheetExercise {
+function mapNumeracion1119(ex: Record<string, unknown>, _config: SheetConfig): SheetExercise {
   const raw = asString(ex.type);
   const type =
     raw === "units" || raw === "unidades"
@@ -1381,15 +1381,26 @@ function mapNumeracion1119(ex: Record<string, unknown>, config: SheetConfig): Sh
       : raw === "sequence" || raw === "secuencia"
         ? "sequence"
         : "identify";
-  const options = asStringArray(ex.options);
+  // Identify (easy y expert) trae opciones numéricas; asStringArray las convierte.
+  const options = Array.isArray(ex.options)
+    ? ex.options.map((o) => String(o)).filter(Boolean)
+    : asStringArray(ex.options);
+  const hasChoices = type === "identify" && options.length > 0;
+  // Solo ficha: huecos al doble (___ → ______) en units y sequence.
+  const question =
+    type === "identify"
+      ? "Redondea el número que representa la imagen."
+      : questionOf(ex).replace(/_+/g, "______");
   return {
     kind: "numeracion1119",
     type,
     number: asNumber(ex.number),
-    question: questionOf(ex),
-    // Pizarra: bloques siempre; opciones solo en easy (MC), resto casillas.
+    question,
+    // Bloques siempre. Identify = MC a la derecha; units/sequence = imagen + enunciado debajo.
     showBlocks: true,
-    choiceLabels: config.difficulty === "easy" && options.length > 0 ? options : undefined,
+    choiceLabels: hasChoices ? options : undefined,
+    showAnswerBoxes: false,
+    questionBelowImage: !hasChoices,
     answer: answerOf(ex),
   };
 }

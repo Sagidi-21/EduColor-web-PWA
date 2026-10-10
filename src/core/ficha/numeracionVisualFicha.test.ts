@@ -95,9 +95,11 @@ describe("numeración con bloques decenas/unidades", () => {
       expect(ex.type).toBe("identify");
       expect(ex.showBlocks).toBe(true);
       expect(ex.choiceLabels).toHaveLength(4);
+      expect(ex.question).toBe("Redondea el número que representa la imagen.");
       const markup = html(createElement(NumeracionRenderer, { ex, showAnswer: false }));
       expect(markup).toContain("ficha-tens-blocks");
-      expect(markup).toContain("○");
+      // Sin ○: el alumno redondea el número a mano.
+      expect(markup).not.toContain("○");
       // 1 decena + n unidades
       expect((markup.match(/<rect/g) ?? []).length).toBe(1);
       expect((markup.match(/<circle/g) ?? []).length).toBe(ex.number % 10);
@@ -106,8 +108,27 @@ describe("numeración con bloques decenas/unidades", () => {
     for (const ex of medium) {
       expect(ex.showBlocks).toBe(true);
       expect(ex.choiceLabels).toBeUndefined();
+      expect(ex.showAnswerBoxes).toBe(false);
+      expect(ex.questionBelowImage).toBe(true);
       const markup = html(createElement(NumeracionRenderer, { ex, showAnswer: false }));
-      expect(markup).toContain("ficha-numeracion__box");
+      expect(markup).not.toContain("ficha-numeracion__box");
+      expect(markup).toContain("ficha-numeracion--prompt-below");
+      // Imagen antes del enunciado en el HTML.
+      const blocksAt = markup.indexOf("ficha-numeracion__blocks");
+      const questionAt = markup.indexOf("ficha-numeracion__question");
+      expect(blocksAt).toBeGreaterThan(-1);
+      expect(questionAt).toBeGreaterThan(blocksAt);
+    }
+
+    const expert = generate<Numeracion1119SheetExercise>("numeracion1119", "expert");
+    const identify = expert.filter((ex) => ex.type === "identify");
+    expect(identify.length).toBeGreaterThan(0);
+    for (const ex of identify) {
+      expect(ex.choiceLabels?.length).toBe(4);
+      expect(ex.questionBelowImage).toBe(false);
+      const markup = html(createElement(NumeracionRenderer, { ex, showAnswer: false }));
+      expect(markup).toContain("ficha-numeracion__choices");
+      expect(markup).not.toContain("○");
     }
   });
 

@@ -76,8 +76,15 @@ export interface NumeracionBlocksFields {
   question: string;
   /** Mostrar bloques de decenas + unidades (como TensBlock de pizarra). */
   showBlocks: boolean;
-  /** Opciones MC (○). Si vacío, casillas de cifra en blanco. */
+  /** Opciones MC. Si vacío, casillas de cifra o solo enunciado. */
   choiceLabels?: string[];
+  /**
+   * Casillas discontinuas para escribir.
+   * false = sin casillas (p. ej. 11–19 medium: imagen + enunciado debajo).
+   */
+  showAnswerBoxes?: boolean;
+  /** Enunciado debajo de la imagen (11–19 medium+). */
+  questionBelowImage?: boolean;
   answer?: number | string;
 }
 

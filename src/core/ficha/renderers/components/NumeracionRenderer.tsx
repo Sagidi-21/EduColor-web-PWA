@@ -14,9 +14,10 @@ export interface NumeracionRendererProps {
 }
 
 /**
- * Alumno: bloques decenas/unidades (obligatorios en identify) + pregunta +
- * ○ opciones (MC) o casillas de cifra en blanco.
- * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
+ * Alumno:
+ * - MC: enunciado arriba; imagen + opciones a la derecha (11–19 sin ○).
+ * - 11–19 medium+: imagen y enunciado debajo (sin casillas).
+ * - Resto sin MC: casillas discontinuas si `showAnswerBoxes !== false`.
  */
 export function NumeracionRenderer({ ex, showAnswer }: NumeracionRendererProps): JSX.Element {
   if (showAnswer) {
@@ -25,27 +26,59 @@ export function NumeracionRenderer({ ex, showAnswer }: NumeracionRendererProps):
 
   const choices = ex.choiceLabels ?? [];
   const digits = Math.max(1, String(ex.answer ?? "00").length);
+  const showChoiceMarks = ex.kind !== "numeracion1119";
+  const hasChoices = choices.length > 0;
+  const questionBelow = Boolean(ex.questionBelowImage);
+  const showBoxes = !hasChoices && ex.showAnswerBoxes !== false;
+
+  const questionEl = <p className="ficha-numeracion__question">{ex.question}</p>;
+  const blocksEl = ex.showBlocks ? (
+    <div className="ficha-numeracion__blocks">
+      <TensBlocksSvg number={ex.number} />
+    </div>
+  ) : null;
+
+  if (hasChoices) {
+    return (
+      <div className={`ficha-numeracion ficha-numeracion--${ex.kind}`}>
+        {questionEl}
+        <div className="ficha-numeracion__body">
+          {blocksEl}
+          <div className="ficha-numeracion__choices">
+            {choices.map((label, i) => (
+              <span key={`${label}-${i}`} className="ficha-numeracion__choice">
+                {showChoiceMarks && (
+                  <span className="ficha-numeracion__choice-mark" aria-hidden>
+                    ○
+                  </span>
+                )}
+                <span>{label}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="ficha-numeracion">
-      {ex.showBlocks && (
-        <div className="ficha-numeracion__blocks">
-          <TensBlocksSvg number={ex.number} />
-        </div>
-      )}
-      <p className="ficha-numeracion__question">{ex.question}</p>
-      {choices.length > 0 ? (
-        <div className="ficha-numeracion__choices">
-          {choices.map((label, i) => (
-            <span key={`${label}-${i}`} className="ficha-numeracion__choice">
-              <span className="ficha-numeracion__choice-mark" aria-hidden>
-                ○
-              </span>
-              <span>{label}</span>
-            </span>
-          ))}
-        </div>
+    <div
+      className={`ficha-numeracion ficha-numeracion--${ex.kind}${
+        questionBelow ? " ficha-numeracion--prompt-below" : ""
+      }`}
+    >
+      {questionBelow ? (
+        <>
+          {blocksEl}
+          {questionEl}
+        </>
       ) : (
+        <>
+          {questionEl}
+          {blocksEl}
+        </>
+      )}
+      {showBoxes && (
         <div className="ficha-numeracion__boxes" aria-label="Espacio para la respuesta">
           {Array.from({ length: digits }, (_, i) => (
             <span key={i} className="ficha-numeracion__box" />
