@@ -2,19 +2,20 @@
 
 .ficha-algcol {
   display: grid;
-  grid-template-columns: 18px 28px 28px;
-  gap: 3px 4px;
+  grid-template-columns: 22px 34px 34px;
+  gap: 4px 5px;
   align-items: center;
   width: max-content;
+  margin: 0 auto;
   font-family: "SF Mono", "Consolas", "Menlo", monospace;
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 700;
   color: #0f172a;
 }
 
 .ficha-algcol__label {
   text-align: center;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: #64748b;
   letter-spacing: 0.04em;
@@ -22,8 +23,8 @@
 
 .ficha-algcol__digit {
   text-align: center;
-  min-height: 24px;
-  line-height: 24px;
+  min-height: 30px;
+  line-height: 30px;
 }
 
 .ficha-algcol__op {
@@ -35,15 +36,35 @@
   grid-column: 1 / -1;
   height: 0;
   border-top: 1.5px solid #334155;
-  margin: 2px 0;
+  margin: 2px 0 0;
+}
+
+/* Sin casillas: espacio bajo la línea para escribir el resultado */
+.ficha-algcol--write::after {
+  content: "";
+  grid-column: 1 / -1;
+  height: 40px;
 }
 
 .ficha-algcol__blank {
   display: block;
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   border: 1.5px dashed #94a3b8;
   border-radius: 3px;
   background: #f8fafc;
+  box-sizing: border-box;
+}
+
+/* Tarjeta más alta (3 por fila) — edita min-height aquí */
+.ficha-exercise--algcol {
+  min-height: 180px;
+}
+
+.ficha-exercise--algcol .ficha-exercise__body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
   box-sizing: border-box;
 }

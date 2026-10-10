@@ -6,7 +6,7 @@ export interface AlgoritmoVerticalRendererProps {
 }
 
 /**
- * Cuadrícula D·U como en pizarra, con casillas de respuesta vacías.
+ * Cuadrícula D·U centrada; sin casillas — espacio bajo la línea para escribir.
  */
 export function AlgoritmoVerticalRenderer({
   ex,
@@ -23,7 +23,7 @@ export function AlgoritmoVerticalRenderer({
   const bU = ex.op === "-" ? (ex.bU > 0 || ex.bD > 0 ? String(ex.bU) : "") : String(ex.bU);
 
   return (
-    <div className="ficha-algcol" aria-label={`${ex.a} ${op} ${ex.b}`}>
+    <div className="ficha-algcol ficha-algcol--write" aria-label={`${ex.a} ${op} ${ex.b}`}>
       <span />
       <span className="ficha-algcol__label">D</span>
       <span className="ficha-algcol__label">U</span>
@@ -37,10 +37,6 @@ export function AlgoritmoVerticalRenderer({
       <span className="ficha-algcol__digit">{bU}</span>
 
       <span className="ficha-algcol__sep" />
-
-      <span />
-      <span className="ficha-algcol__blank" aria-label="Decenas" />
-      <span className="ficha-algcol__blank" aria-label="Unidades" />
     </div>
   );
 }

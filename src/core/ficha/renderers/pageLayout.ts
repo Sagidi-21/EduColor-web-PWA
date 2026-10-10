@@ -121,6 +121,10 @@ export function pageSizeForExercises(
     // Alumno: cuadrícula con casillas (más alta que una operación suelta).
     return options.showAnswer ? 20 : 10;
   }
+  if (first.kind === "algoritmoVertical") {
+    // Alumno: 3 por fila, cajas más altas. Soluciones: solo el número.
+    return options.showAnswer ? 18 : 9;
+  }
   return exercises.length || 1;
 }
 

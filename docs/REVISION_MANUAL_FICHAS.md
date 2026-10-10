@@ -105,7 +105,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **suma** — La suma _(2026-10-10: OK — imágenes a la izquierda + operación vertical a la derecha, sin casillas discontinuas, espacio 32px bajo la línea, tamaño thumbs en `.ficha-operation`)_
 - [x] **resta** — La resta _(2026-10-10: OK — mismo layout que suma; objetos tachados)_
 - [x] **tresSumandos** — Sumas con tres sumandos _(2026-10-10: OK — easy imágenes+op más grandes; gap imágenes/op; medium+ operación centrada)_
-- [ ] **algoritmoVertical** — Sumas en columna
+- [x] **algoritmoVertical** — Sumas en columna _(2026-10-10: OK — operación centrada; sin casillas; 3/fila; números grandes; caja alta)_
 - [ ] **tresSumandosColumna** — Sumas en columna (3 sumandos)
 - [ ] **sumaLlevando** — Sumamos llevando
 - [ ] **restaColumna** — Resta en columna
@@ -200,27 +200,28 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 
 ### Mejoradas en esta pasada (listas para revisar en preview)
 
-| ID                                   | Cambio principal                                            |
-| ------------------------------------ | ----------------------------------------------------------- |
-| `suma` / `resta`                     | Algoritmo vertical con casillas de cifra                    |
-| `tresSumandos`                       | OK navegador 2026-10-10 — ver checklist Operaciones         |
-| `algoritmoVertical` / `restaColumna` | Cuadrícula D·U + casillas                                   |
-| `tresSumandosColumna`                | Cuadrícula D·U 3 sumandos                                   |
-| `igualdad`                           | OK navegador 2026-10-10 — ver checklist Operaciones         |
-| `relacionSumaResta`                  | Tres ecuaciones con hueco                                   |
-| `dobleYMitad`                        | Cajas Número/Doble\|Mitad + ○                               |
-| `parImpar`                           | ○ Par/Impar (o opciones del motor)                          |
-| `ordinales`                          | «Desde la derecha», etiquetas 1º…, casilla                  |
-| `poligonos`                          | ○ opciones de texto (como shapes)                           |
-| `lineTypes`                          | OK navegador 2026-10-10 — ver checklist Geometría           |
-| `series3cifras`                      | Cajas más anchas                                            |
-| `vecinosNumero`                      | OK navegador 2026-10-10 — ver checklist Numeración          |
-| `problemas`                          | Emoji + historia + `a ± b = □`                              |
-| `datosInnecesarios`                  | Frases con ○ (mapeo `historia`/`pregunta` arreglado)        |
-| `weekDays`                           | OK navegador 2026-10-10 — ver checklist Medidas y tiempo    |
-| `relojPonerHora`                     | Cara vacía + enunciado con hora objetivo (no revela agujas) |
-| `elKilo` / `elLitro`                 | ○ opciones MC                                               |
-| `problemas2pasos`                    | Solución: `correctAnswer` (antes vacío/mal)                 |
+| ID                    | Cambio principal                                            |
+| --------------------- | ----------------------------------------------------------- |
+| `suma` / `resta`      | Algoritmo vertical con casillas de cifra                    |
+| `tresSumandos`        | OK navegador 2026-10-10 — ver checklist Operaciones         |
+| `algoritmoVertical`   | OK navegador 2026-10-10 — ver checklist Operaciones         |
+| `restaColumna`        | Cuadrícula D·U + casillas                                   |
+| `tresSumandosColumna` | Cuadrícula D·U 3 sumandos                                   |
+| `igualdad`            | OK navegador 2026-10-10 — ver checklist Operaciones         |
+| `relacionSumaResta`   | Tres ecuaciones con hueco                                   |
+| `dobleYMitad`         | Cajas Número/Doble\|Mitad + ○                               |
+| `parImpar`            | ○ Par/Impar (o opciones del motor)                          |
+| `ordinales`           | «Desde la derecha», etiquetas 1º…, casilla                  |
+| `poligonos`           | ○ opciones de texto (como shapes)                           |
+| `lineTypes`           | OK navegador 2026-10-10 — ver checklist Geometría           |
+| `series3cifras`       | Cajas más anchas                                            |
+| `vecinosNumero`       | OK navegador 2026-10-10 — ver checklist Numeración          |
+| `problemas`           | Emoji + historia + `a ± b = □`                              |
+| `datosInnecesarios`   | Frases con ○ (mapeo `historia`/`pregunta` arreglado)        |
+| `weekDays`            | OK navegador 2026-10-10 — ver checklist Medidas y tiempo    |
+| `relojPonerHora`      | Cara vacía + enunciado con hora objetivo (no revela agujas) |
+| `elKilo` / `elLitro`  | ○ opciones MC                                               |
+| `problemas2pasos`     | Solución: `correctAnswer` (antes vacío/mal)                 |
 
 ### Ya alineadas (código) — candidatos a marcar OK tras mirar preview
 

@@ -2,7 +2,7 @@ export { FichaHeader } from "./components/Header";
 export { StudentNameLine } from "./components/StudentNameLine";
 export { ExerciseCard } from "./components/ExerciseCard";
 export { ExerciseGrid } from "./components/ExerciseGrid";
-export { exerciseCardVariant, pairIntoRows } from "./exerciseLayout";
+export { columnsPerRow, exerciseCardVariant, pairIntoRows } from "./exerciseLayout";
 export { ExerciseRenderer } from "./components/ExerciseRenderer";
 export { FichaFooter } from "./components/Footer";
 export { FichaAlumno } from "./alumno";

@@ -28,12 +28,23 @@ export function exerciseCardVariant(ex: SheetExercise): string {
       return "amigos10";
     case "tablaNumerica":
       return "tabla";
+    case "algoritmoVertical":
+      return "algcol";
     default:
       return "";
   }
 }
 
-/** Empareja celdas en filas de 2; full-width ocupa fila completa. */
+/** Columnas por fila en alumno (p. ej. sumas en columna → 3). */
+export function columnsPerRow(ex: SheetExercise): number {
+  if (ex.kind === "algoritmoVertical") return 3;
+  return 2;
+}
+
+/**
+ * Empaqueta celdas en filas. Full-width ocupa fila sola; el resto usa
+ * `columnsPerRow` del primer ejercicio de la fila.
+ */
 export function pairIntoRows(cells: ExerciseGridCell[]): ExerciseGridCell[][] {
   const rows: ExerciseGridCell[][] = [];
   let i = 0;
@@ -44,14 +55,16 @@ export function pairIntoRows(cells: ExerciseGridCell[]): ExerciseGridCell[][] {
       i += 1;
       continue;
     }
-    const next = cells[i + 1];
-    if (next && !next.full) {
-      rows.push([cur, next]);
-      i += 2;
-    } else {
-      rows.push([cur]);
+    const cols = columnsPerRow(cur.ex);
+    const row: ExerciseGridCell[] = [cur];
+    i += 1;
+    while (row.length < cols && i < cells.length) {
+      const next = cells[i]!;
+      if (next.full || columnsPerRow(next.ex) !== cols) break;
+      row.push(next);
       i += 1;
     }
+    rows.push(row);
   }
   return rows;
 }

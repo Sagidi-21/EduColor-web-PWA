@@ -8,6 +8,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { SheetExercise } from "../types";
 import { ExerciseGrid } from "./components/ExerciseGrid";
+import { columnsPerRow } from "./exerciseLayout";
 import { chunkByPageSize, isFullWidthExercise, pageSizeForExercises } from "./pageLayout";
 import printCss from "./print/print-bundle";
 
@@ -29,9 +30,15 @@ function nextRowTake(exercises: SheetExercise[], start: number, showAnswer: bool
   const ex = exercises[start];
   if (!ex) return 0;
   if (isFullWidthExercise(ex, { showAnswer })) return 1;
-  const next = exercises[start + 1];
-  if (next && !isFullWidthExercise(next, { showAnswer })) return 2;
-  return 1;
+  const cols = columnsPerRow(ex);
+  let take = 1;
+  while (take < cols) {
+    const next = exercises[start + take];
+    if (!next || isFullWidthExercise(next, { showAnswer })) break;
+    if (columnsPerRow(next) !== cols) break;
+    take += 1;
+  }
+  return take;
 }
 
 function pageMarkup(

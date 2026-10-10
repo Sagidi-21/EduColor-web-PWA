@@ -9,7 +9,7 @@
 }
 
 .ficha-grid__cell {
-  width: 50%;
+  /* El % lo pone el width= del <td> (2 cols → 50%, 3 cols → 33%). */
   vertical-align: top;
   padding: 6px 7px;
   border: none;
@@ -20,7 +20,6 @@
 }
 
 .ficha-grid__cell--empty {
-  width: 50%;
   border: none;
   padding: 6px 7px;
 }
