@@ -72,7 +72,7 @@ describe("LaberintoMatematicoScreen smoke", () => {
     vi.useRealTimers();
   });
 
-  it.each(NOMBRES)("monta con la pregunta del motor y el contador 1/5 (%s)", (nombre) => {
+  it.each(NOMBRES)("monta con la pregunta del motor y el contador 1/4 (%s)", (nombre) => {
     const grade: LaberintoGrade = nombre === "laberintoMatematico2" ? "2" : "1";
     const ejercicios = generateSession("medium", 4242, grade);
     const ex = ejercicios[0];
@@ -80,7 +80,7 @@ describe("LaberintoMatematicoScreen smoke", () => {
     const { container } = render(<LaberintoMatematicoScreen {...buildProps(nombre, "medium")} />);
 
     expect(pregunta(container)).toBe(ex.question);
-    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("1/5");
+    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("1/4");
   });
 
   it.each(NOMBRES)("dibuja los 8 nodos, el de inicio y las 8 operaciones (%s)", (nombre) => {
@@ -199,7 +199,7 @@ describe("LaberintoMatematicoScreen smoke", () => {
 
     expect(respuestaFinal(container)?.className).toContain("lm-ns-ok");
     fireEvent.click(container.querySelector(".activity-action--next")!);
-    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("2/5");
+    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("2/4");
   });
 
   it("fallar la pregunta final no deja avanzar y avisa en rojo", () => {
@@ -214,7 +214,7 @@ describe("LaberintoMatematicoScreen smoke", () => {
     expect(respuestaFinal(container)?.className).toContain("lm-ns-err");
     // Aun con el botón a la vista, sin acertar no se pasa de ejercicio.
     fireEvent.click(container.querySelector(".activity-action--next")!);
-    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("1/5");
+    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("1/4");
 
     act(() => {
       vi.advanceTimersByTime(400);
@@ -236,7 +236,7 @@ describe("LaberintoMatematicoScreen smoke", () => {
     }
     expect(respuestaFinal(container)?.value).toBe(String(ex.answers[ex.correctFin]));
     fireEvent.click(container.querySelector(".activity-action--next")!);
-    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("2/5");
+    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("2/4");
   });
 
   it("los dos botones del pie son los compartidos", () => {
@@ -269,7 +269,7 @@ describe("LaberintoMatematicoScreen smoke", () => {
     expect(container.querySelector(".lm-canvas-overlay")).not.toBeNull();
   });
 
-  it("acabar la sesión muestra el resumen con los cinco ejercicios", () => {
+  it("acabar la sesión muestra el resumen con los cuatro ejercicios", () => {
     const grade: LaberintoGrade = "1";
     const ejercicios = generateSession("medium", 4242, grade);
 
@@ -285,10 +285,10 @@ describe("LaberintoMatematicoScreen smoke", () => {
     // Ya no hay cabecera de actividad: se ve el resumen.
     expect(container.querySelector(".activity-header__counter")).toBeNull();
     expect(container.querySelector(".summary")).not.toBeNull();
-    expect(container.textContent).toContain(`${ejercicios.length}/5`);
+    expect(container.textContent).toContain(`${ejercicios.length}/4`);
     // Se usan todos: la sesión se reveló y pasó, así que el contador de aciertos
-    // va por detrás, pero los cinco ejercicios están.
-    expect(container.querySelector(".summary__stat-value")?.textContent).toContain("5");
+    // va por detrás, pero los cuatro ejercicios están.
+    expect(container.querySelector(".summary__stat-value")?.textContent).toContain("4");
   });
 
   it("el resumen vuelve a empezar por el primer laberinto", () => {
@@ -304,7 +304,7 @@ describe("LaberintoMatematicoScreen smoke", () => {
     });
 
     fireEvent.click(container.querySelector(".summary__btn--primary")!);
-    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("1/5");
+    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("1/4");
     expect(respuestaFinal(container)?.value).toBe("□");
     expect(pregunta(container)).toBe(ejercicios[0].question);
   });

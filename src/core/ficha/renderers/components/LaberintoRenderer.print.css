@@ -1,40 +1,132 @@
-/* Laberinto matemático — layout alumno (tablero SVG a ancho completo) */
+/* Laberinto matemático — paleta = color de clase (--color-primary) */
+
+.ficha-laberinto {
+  width: 100%;
+  box-sizing: border-box;
+  --lab-ink: var(--color-primary, #0284c7);
+  --lab-ink-dark: var(--color-primary-dark, #0369a1);
+  --lab-soft: color-mix(in srgb, var(--lab-ink) 18%, #fff);
+  --lab-soft-strong: color-mix(in srgb, var(--lab-ink) 28%, #fff);
+  --lab-muted: #64748b;
+  --lab-digit: #0f172a;
+}
 
 .ficha-laberinto__hint {
-  margin: 0 0 2px;
-  font-size: 12px;
+  margin: 0 0 6px;
+  font-size: 14px;
   font-weight: 600;
   color: #475569;
+  text-align: center;
 }
 
 .ficha-laberinto__svg {
   display: block;
   width: 100%;
-  max-width: 420px;
+  max-width: none;
   height: auto;
   margin: 0 auto;
 }
 
+/* Flechas y badges de operación */
+.ficha-laberinto__edge line {
+  stroke: var(--lab-ink);
+}
+
+.ficha-laberinto__edge polygon {
+  fill: var(--lab-ink);
+}
+
+.ficha-laberinto__edge circle {
+  fill: #fff;
+  stroke: var(--lab-ink);
+}
+
+.ficha-laberinto__edge text {
+  fill: var(--lab-ink-dark);
+}
+
+.ficha-laberinto__label {
+  fill: #475569;
+}
+
+.ficha-laberinto__digit {
+  fill: var(--lab-digit);
+}
+
+.ficha-laberinto__fin-label {
+  fill: var(--lab-ink-dark);
+}
+
+/* Nodos */
+.ficha-laberinto__node {
+  fill: #fff;
+  stroke: var(--lab-muted);
+}
+
+.ficha-laberinto__node--start {
+  fill: var(--lab-soft);
+  stroke: var(--lab-ink);
+}
+
+.ficha-laberinto__node--fin {
+  stroke: var(--lab-ink);
+}
+
+.ficha-laberinto__node--blank:not(.ficha-laberinto__node--filled) {
+  stroke: var(--lab-muted);
+}
+
+.ficha-laberinto__node--answer {
+  fill: var(--lab-soft-strong);
+  stroke: var(--lab-ink);
+}
+
 .ficha-laberinto__final {
-  margin-top: 4px;
+  margin-top: 10px;
   text-align: center;
 }
 
 .ficha-laberinto__question {
-  margin-right: 10px;
-  font-size: 15px;
+  margin-right: 12px;
+  font-size: 16px;
   font-weight: 700;
   color: #1e293b;
   vertical-align: middle;
 }
 
+/* Casilla final del alumno — edita tamaño aquí */
 .ficha-laberinto__blank {
   display: inline-block;
-  width: 64px;
-  height: 32px;
-  border: 2px solid #1a2a6c;
-  border-radius: 6px;
+  width: 88px;
+  height: 44px;
+  border: 2.5px solid var(--lab-ink);
+  border-radius: 8px;
   background: #fff;
   box-sizing: border-box;
   vertical-align: middle;
+}
+
+.ficha-laberinto__sol-answer {
+  display: inline-block;
+  min-width: 88px;
+  padding: 6px 14px;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--lab-digit);
+  border: 2.5px solid var(--lab-ink);
+  border-radius: 8px;
+  background: var(--lab-soft);
+  box-sizing: border-box;
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* Tarjeta ancha (2 ejercicios / página); el SVG a 100% ocupa el ancho útil */
+.ficha-exercise--laberinto {
+  padding: 12px 14px;
+}
+
+.ficha-exercise--laberinto .ficha-exercise__body {
+  width: 100%;
+  box-sizing: border-box;
 }

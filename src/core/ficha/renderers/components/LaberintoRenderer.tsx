@@ -12,10 +12,11 @@ export interface LaberintoRendererProps {
 //       ↓   ↓
 //       F   G → H (FIN C)
 //    (FIN B)
-const COLS = [90, 220, 350, 480] as const;
-const ROWS = [55, 145, 235] as const;
-const HALF_W = 30;
-const HALF_H = 15;
+const COLS = [100, 250, 400, 550] as const;
+const ROWS = [70, 190, 310] as const;
+/** Casillas más grandes para escribir a mano. */
+const HALF_W = 44;
+const HALF_H = 26;
 
 const NODE_GRID: Record<string, [number, number]> = {
   S: [0, 0],
@@ -46,17 +47,17 @@ function EdgeArrow({ edge }: { edge: LaberintoSheetExercise["edges"][number] }):
   const x2 = horizontal ? b.x - HALF_W : b.x;
   const y2 = horizontal ? b.y : b.y - HALF_H;
   const head = horizontal
-    ? `${x2},${y2} ${x2 - 9},${y2 - 5} ${x2 - 9},${y2 + 5}`
-    : `${x2},${y2} ${x2 - 5},${y2 - 9} ${x2 + 5},${y2 - 9}`;
+    ? `${x2},${y2} ${x2 - 10},${y2 - 6} ${x2 - 10},${y2 + 6}`
+    : `${x2},${y2} ${x2 - 6},${y2 - 10} ${x2 + 6},${y2 - 10}`;
   const mx = (x1 + x2) / 2;
   const my = (y1 + y2) / 2;
   const symbol = edge.op === "-" ? "−" : "+";
   return (
-    <g>
-      <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#1a2a6c" strokeWidth="2.5" />
-      <polygon points={head} fill="#1a2a6c" />
-      <circle cx={mx} cy={my} r="16" fill="#fff" stroke="#1a2a6c" strokeWidth="2" />
-      <text x={mx} y={my + 4.5} fontSize="13" fontWeight="800" textAnchor="middle" fill="#1a2a6c">
+    <g className="ficha-laberinto__edge">
+      <line x1={x1} y1={y1} x2={x2} y2={y2} strokeWidth="2.5" />
+      <polygon points={head} />
+      <circle cx={mx} cy={my} r="18" strokeWidth="2" />
+      <text x={mx} y={my + 5} fontSize="14" fontWeight="800" textAnchor="middle">
         {symbol}
         {edge.value}
       </text>
@@ -64,47 +65,52 @@ function EdgeArrow({ edge }: { edge: LaberintoSheetExercise["edges"][number] }):
   );
 }
 
-/** Tablero del laberinto en SVG (casillas en blanco, inicio con su número). */
-function LaberintoBoard({ ex }: { ex: LaberintoSheetExercise }): JSX.Element {
+/** Tablero del laberinto en SVG. En soluciones rellena cada casilla con su número. */
+function LaberintoBoard({
+  ex,
+  showAnswer,
+}: {
+  ex: LaberintoSheetExercise;
+  showAnswer: boolean;
+}): JSX.Element {
   const start = nodePos("S");
   return (
     <svg
       className="ficha-laberinto__svg"
-      viewBox="0 0 600 285"
+      viewBox="0 0 660 380"
       role="img"
-      aria-label="Laberinto matemático"
+      aria-label={showAnswer ? "Laberinto matemático con soluciones" : "Laberinto matemático"}
     >
       {ex.edges.map((edge, i) => (
         <EdgeArrow key={`${edge.from}-${edge.to}-${i}`} edge={edge} />
       ))}
 
       <text
+        className="ficha-laberinto__label"
         x={start.x}
-        y={start.y - 24}
-        fontSize="12"
+        y={start.y - 34}
+        fontSize="13"
         fontWeight="700"
         textAnchor="middle"
-        fill="#334155"
       >
         INICIO
       </text>
       <rect
+        className="ficha-laberinto__node ficha-laberinto__node--start"
         x={start.x - HALF_W}
         y={start.y - HALF_H}
         width={HALF_W * 2}
         height={HALF_H * 2}
-        rx="6"
-        fill="#e0e7ff"
-        stroke="#1a2a6c"
+        rx="8"
         strokeWidth="2.5"
       />
       <text
+        className="ficha-laberinto__digit"
         x={start.x}
-        y={start.y + 6}
-        fontSize="18"
+        y={start.y + 7}
+        fontSize="22"
         fontWeight="800"
         textAnchor="middle"
-        fill="#0f172a"
       >
         {ex.start}
       </text>
@@ -112,27 +118,48 @@ function LaberintoBoard({ ex }: { ex: LaberintoSheetExercise }): JSX.Element {
       {FILLABLE.map((id) => {
         const p = nodePos(id);
         const fin = FIN_LABEL[id];
+        const value = showAnswer ? ex.answers[id] : undefined;
+        const isCorrectFin = showAnswer && id === ex.correctFin;
+        const nodeClass = [
+          "ficha-laberinto__node",
+          fin ? "ficha-laberinto__node--fin" : "ficha-laberinto__node--blank",
+          isCorrectFin ? "ficha-laberinto__node--answer" : "",
+          showAnswer ? "ficha-laberinto__node--filled" : "",
+        ]
+          .filter(Boolean)
+          .join(" ");
         return (
           <g key={id}>
             <rect
+              className={nodeClass}
               x={p.x - HALF_W}
               y={p.y - HALF_H}
               width={HALF_W * 2}
               height={HALF_H * 2}
-              rx="6"
-              fill="#fff"
-              stroke={fin ? "#1a2a6c" : "#64748b"}
-              strokeWidth={fin ? 3 : 1.8}
-              strokeDasharray={fin ? undefined : "5 3"}
+              rx="8"
+              strokeWidth={fin || isCorrectFin ? 3 : 2}
+              strokeDasharray={fin || showAnswer ? undefined : "5 3"}
             />
-            {fin && (
+            {value !== undefined && (
               <text
+                className="ficha-laberinto__digit"
                 x={p.x}
-                y={p.y + HALF_H + 14}
-                fontSize="11"
+                y={p.y + 7}
+                fontSize="22"
                 fontWeight="800"
                 textAnchor="middle"
-                fill="#1a2a6c"
+              >
+                {value}
+              </text>
+            )}
+            {fin && (
+              <text
+                className="ficha-laberinto__fin-label"
+                x={p.x}
+                y={p.y + HALF_H + 16}
+                fontSize="12"
+                fontWeight="800"
+                textAnchor="middle"
               >
                 {fin}
               </text>
@@ -145,24 +172,33 @@ function LaberintoBoard({ ex }: { ex: LaberintoSheetExercise }): JSX.Element {
 }
 
 /**
- * Alumno: tablero SVG del laberinto (operaciones en las flechas, casillas en blanco)
- * + pregunta final con casilla. Soluciones: las maneja ExerciseRenderer.
+ * Alumno: tablero SVG (casillas en blanco) + pregunta final.
+ * Soluciones: mismo tablero relleno con los números (sin enunciado).
+ * Colores: familia de `--color-primary` (color de clase).
  */
 export function LaberintoRenderer({ ex, showAnswer }: LaberintoRendererProps): JSX.Element {
-  if (showAnswer) {
-    return <div className="ficha-answer ficha-answer--long">{ex.answer ?? "?"}</div>;
-  }
+  const finalValue =
+    typeof ex.answers[ex.correctFin] === "number" ? ex.answers[ex.correctFin] : undefined;
 
   return (
-    <div className="ficha-laberinto">
-      <p className="ficha-laberinto__hint">
-        Haz cada operación y escribe el resultado en su casilla.
-      </p>
-      <LaberintoBoard ex={ex} />
-      <div className="ficha-laberinto__final">
-        <span className="ficha-laberinto__question">{ex.question}</span>
-        <span className="ficha-laberinto__blank" aria-label="Respuesta final" />
-      </div>
+    <div className={`ficha-laberinto${showAnswer ? " ficha-laberinto--sol" : ""}`}>
+      {!showAnswer && (
+        <p className="ficha-laberinto__hint">
+          Haz cada operación y escribe el resultado en su casilla.
+        </p>
+      )}
+      <LaberintoBoard ex={ex} showAnswer={showAnswer} />
+      {!showAnswer ? (
+        <div className="ficha-laberinto__final">
+          <span className="ficha-laberinto__question">{ex.question}</span>
+          <span className="ficha-laberinto__blank" aria-label="Respuesta final" />
+        </div>
+      ) : (
+        <div className="ficha-laberinto__final">
+          <span className="ficha-laberinto__question">Respuesta</span>
+          <span className="ficha-laberinto__sol-answer">{finalValue ?? "?"}</span>
+        </div>
+      )}
     </div>
   );
 }

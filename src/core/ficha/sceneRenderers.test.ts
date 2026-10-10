@@ -32,13 +32,16 @@ function everyDifficulty(activityId: string, check: (alumno: string, soluciones:
 }
 
 describe("fichas con escena dibujada", () => {
-  it("laberintoMatematico dibuja el tablero SVG; soluciones solo la respuesta", () => {
+  it("laberintoMatematico dibuja el tablero; soluciones rellenan casillas (sin enunciado alumno)", () => {
     for (const id of ["laberintoMatematico", "laberintoMatematico2"]) {
       everyDifficulty(id, (alumno, soluciones) => {
         expect(alumno).toContain("ficha-laberinto__svg");
-        expect(alumno).not.toContain("ficha-answer");
-        expect(soluciones).toContain("ficha-answer");
-        expect(soluciones).not.toContain("ficha-laberinto__svg");
+        expect(alumno).toContain("ficha-laberinto__blank");
+        expect(alumno).not.toContain("ficha-laberinto--sol");
+        expect(soluciones).toContain("ficha-laberinto__svg");
+        expect(soluciones).toContain("ficha-laberinto--sol");
+        expect(soluciones).not.toContain("ficha-laberinto__blank");
+        expect(soluciones).not.toContain("Haz cada operación");
       });
     }
   });

@@ -2,6 +2,7 @@ export * from "./types";
 export * from "./renderers";
 export * from "./generators";
 export { buildAccentCssVars } from "./accentCss";
+export { defaultFichaCount } from "./defaultFichaCount";
 export { difficultyStars } from "./difficultyStars";
 export { generatePDF, printElement } from "./pdf";
 export { downloadHtmlAsPdf } from "./pdfExport";

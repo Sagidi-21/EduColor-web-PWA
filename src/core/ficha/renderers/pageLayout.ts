@@ -91,8 +91,8 @@ export function pageSizeForExercises(
     return options.showAnswer ? 16 : 8;
   }
   if (first.kind === "laberintoMatematico") {
-    // Alumno: tablero a ancho completo (pocos por hoja). Soluciones: solo valores.
-    return options.showAnswer ? 10 : 3;
+    // Alumno y soluciones: 2 laberintos grandes por hoja (tablero dibujado).
+    return 2;
   }
   if (first.kind === "rutaCuadricula" || first.kind === "capacidad") {
     return options.showAnswer ? 16 : 8;
@@ -149,8 +149,8 @@ export function isFullWidthExercise(
   if (ex.kind === "graficoBarras" || ex.kind === "balanza" || ex.kind === "intervalosTiempo") {
     return !options.showAnswer;
   }
-  // Escenas anchas dibujadas en SVG: tablero del laberinto y personaje (izq. | personaje | der.).
-  if (ex.kind === "laberintoMatematico") return !options.showAnswer;
+  // Laberinto: ancho completo en alumno y soluciones (tablero grande).
+  if (ex.kind === "laberintoMatematico") return true;
   if (ex.kind === "leftRight") {
     return !options.showAnswer && ex.variant !== undefined && ex.variant.startsWith("char-");
   }

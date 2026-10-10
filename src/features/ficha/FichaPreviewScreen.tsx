@@ -3,6 +3,7 @@ import { useClassProfile } from "../../core/context/ClassProfileContext";
 import {
   buildFichaDocument,
   buildPrintDocumentHtml,
+  defaultFichaCount,
   type FichaMode,
   type SheetConfig,
 } from "../../core/ficha";
@@ -40,7 +41,13 @@ function readParams(): {
     activityId: params.get("activity") ?? "suma",
     modes: parseModes(params.get("mode")),
     difficulty: ["easy", "medium", "hard", "expert"].includes(difficulty) ? difficulty : "easy",
-    count: Math.max(1, Math.min(30, Number(params.get("count") ?? 10) || 10)),
+    count: Math.max(
+      1,
+      Math.min(
+        30,
+        Number(params.get("count") ?? defaultFichaCount(params.get("activity") ?? "suma")) || 10,
+      ),
+    ),
     seed: Math.max(1, Number(params.get("seed") ?? 42) || 42),
     withImages: params.get("withImages") !== "0",
     grade: params.get("grade") ?? "Primaria",

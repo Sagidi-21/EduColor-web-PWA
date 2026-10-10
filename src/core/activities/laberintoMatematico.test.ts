@@ -32,10 +32,10 @@ function cumpleAristas(ex: LaberintoExercise): boolean {
 }
 
 describe("generateSession", () => {
-  it("devuelve una sesion de 5 ejercicios en las 4 dificultades y los 2 cursos", () => {
+  it("devuelve una sesion de 4 ejercicios en las 4 dificultades y los 2 cursos", () => {
     for (const { grade, d, s } of todasLasSesiones()) {
       const sesion = generateSession(d, s, grade);
-      expect(sesion.length, `${grade}/${d}/semilla ${s}`).toBe(5);
+      expect(sesion.length, `${grade}/${d}/semilla ${s}`).toBe(4);
     }
   });
 

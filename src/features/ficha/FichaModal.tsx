@@ -4,6 +4,7 @@ import {
   A4_WIDTH_MM,
   buildFichaDocument,
   buildPrintDocumentHtml,
+  defaultFichaCount,
   difficultyStars,
   downloadHtmlAsPdf,
   getGenerator,
@@ -53,7 +54,15 @@ export function FichaModal({
   accentColor,
   onClose,
 }: FichaModalProps): JSX.Element {
-  const [count, setCount] = useState(10);
+  const [countDraft, setCountDraft] = useState(() => ({
+    activityId: activity.id,
+    count: defaultFichaCount(activity.id),
+  }));
+  const count =
+    countDraft.activityId === activity.id ? countDraft.count : defaultFichaCount(activity.id);
+  const setCount = (next: number) => {
+    setCountDraft({ activityId: activity.id, count: next });
+  };
   const [withImages, setWithImages] = useState(true);
   const [includeAlumno, setIncludeAlumno] = useState(true);
   const [includeSoluciones, setIncludeSoluciones] = useState(true);

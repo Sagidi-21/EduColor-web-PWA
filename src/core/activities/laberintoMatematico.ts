@@ -177,7 +177,7 @@ export function generateSession(
   const out: LaberintoExercise[] = [];
   let tries = 0;
 
-  while (out.length < 5 && tries < 1000) {
+  while (out.length < 4 && tries < 1000) {
     tries++;
 
     const start = ri(rng, cfg.startRange[0], cfg.startRange[1]);
