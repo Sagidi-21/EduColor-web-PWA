@@ -28,6 +28,13 @@
   flex-wrap: wrap;
 }
 
+/* Sin imágenes (medium/hard/expert): operación centrada en la caja */
+.ficha-tres-sumandos--solo {
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .ficha-tres-sumandos__images {
   display: flex;
   flex-direction: column;

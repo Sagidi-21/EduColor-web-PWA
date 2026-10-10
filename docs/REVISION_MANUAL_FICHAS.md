@@ -104,7 +104,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 
 - [x] **suma** — La suma _(2026-10-10: OK — imágenes a la izquierda + operación vertical a la derecha, sin casillas discontinuas, espacio 32px bajo la línea, tamaño thumbs en `.ficha-operation`)_
 - [x] **resta** — La resta _(2026-10-10: OK — mismo layout que suma; objetos tachados)_
-- [ ] **tresSumandos** — Sumas con tres sumandos
+- [x] **tresSumandos** — Sumas con tres sumandos _(2026-10-10: OK — easy imágenes+op más grandes; gap imágenes/op; medium+ operación centrada)_
 - [ ] **algoritmoVertical** — Sumas en columna
 - [ ] **tresSumandosColumna** — Sumas en columna (3 sumandos)
 - [ ] **sumaLlevando** — Sumamos llevando
@@ -203,7 +203,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | ID                                   | Cambio principal                                            |
 | ------------------------------------ | ----------------------------------------------------------- |
 | `suma` / `resta`                     | Algoritmo vertical con casillas de cifra                    |
-| `tresSumandos`                       | Idem + filas de objetos                                     |
+| `tresSumandos`                       | OK navegador 2026-10-10 — ver checklist Operaciones         |
 | `algoritmoVertical` / `restaColumna` | Cuadrícula D·U + casillas                                   |
 | `tresSumandosColumna`                | Cuadrícula D·U 3 sumandos                                   |
 | `igualdad`                           | OK navegador 2026-10-10 — ver checklist Operaciones         |

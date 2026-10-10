@@ -35,7 +35,7 @@ export function TresSumandosRenderer({ ex, showAnswer }: TresSumandosRendererPro
   const cDigits = padDigits(ex.c, cols);
 
   return (
-    <div className="ficha-tres-sumandos">
+    <div className={`ficha-tres-sumandos${showImages ? "" : " ficha-tres-sumandos--solo"}`}>
       {showImages && (
         <div className="ficha-tres-sumandos__images">
           <ObjectImageRow count={ex.a} imageUrl={ex.imageUrl} />
