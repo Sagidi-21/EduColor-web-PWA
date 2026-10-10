@@ -134,8 +134,8 @@
 }
 
 .ficha-relacionar--compact .ficha-relacionar__thumb {
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
 }
 
 .ficha-relacionar--compact .ficha-relacionar__num-value {
@@ -159,8 +159,8 @@
 }
 
 .ficha-relacionar--dense .ficha-relacionar__thumb {
-  width: 18px;
-  height: 18px;
+  width: 28px;
+  height: 28px;
 }
 
 .ficha-relacionar--dense .ficha-relacionar__num-value {
