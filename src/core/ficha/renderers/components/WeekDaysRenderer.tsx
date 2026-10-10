@@ -15,8 +15,24 @@ const WEEK_STRIP: { day: string; abbr: string }[] = [
   { day: "domingo", abbr: "D" },
 ];
 
+function questionWithHighlight(question: string, highlightDay?: string): JSX.Element {
+  if (!highlightDay) return <>{question}</>;
+  const idx = question.toLowerCase().indexOf(highlightDay.toLowerCase());
+  if (idx < 0) return <>{question}</>;
+  const before = question.slice(0, idx);
+  const match = question.slice(idx, idx + highlightDay.length);
+  const after = question.slice(idx + highlightDay.length);
+  return (
+    <>
+      {before}
+      <span className="ficha-weekdays__day-name">{match}</span>
+      {after}
+    </>
+  );
+}
+
 /**
- * Alumno: tira L-M-X-J-V-S-D (día del enunciado resaltado) + pregunta + • opciones.
+ * Alumno: pregunta + tira L-M-X-J-V-S-D (día del enunciado resaltado) + • opciones.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function WeekDaysRenderer({ ex, showAnswer }: WeekDaysRendererProps): JSX.Element {
@@ -28,6 +44,9 @@ export function WeekDaysRenderer({ ex, showAnswer }: WeekDaysRendererProps): JSX
 
   return (
     <div className="ficha-weekdays">
+      <p className="ficha-weekdays__question">
+        {questionWithHighlight(ex.question, ex.highlightDay)}
+      </p>
       <div className="ficha-weekdays__strip" aria-label="Días de la semana">
         {WEEK_STRIP.map(({ day, abbr }) => (
           <span
@@ -38,7 +57,6 @@ export function WeekDaysRenderer({ ex, showAnswer }: WeekDaysRendererProps): JSX
           </span>
         ))}
       </div>
-      <p className="ficha-weekdays__question">{ex.question}</p>
       {choices.length > 0 && (
         <div className="ficha-weekdays__choices">
           {choices.map((label, i) => (

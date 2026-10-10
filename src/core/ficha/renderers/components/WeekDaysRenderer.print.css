@@ -1,31 +1,13 @@
-/* Días de la semana — tira + opciones ○ */
+/* Días de la semana — pregunta + tira + • opciones */
 
-.ficha-weekdays__strip {
+.ficha-weekdays {
   display: flex;
-  gap: 4px;
-  margin-bottom: 6px;
-}
-
-.ficha-weekdays__day {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  line-height: 22px;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 700;
-  color: #475569;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  background: #f8fafc;
+  flex-direction: column;
+  align-items: stretch;
+  /* Separación enunciado / tira / opciones — edita aquí */
+  gap: 18px;
+  width: 100%;
   box-sizing: border-box;
-}
-
-/* Borde grueso + fondo: se distingue aunque se imprima en blanco y negro. */
-.ficha-weekdays__day--active {
-  color: #0f172a;
-  border: 2px solid #0284c7;
-  background: #e0f2fe;
 }
 
 .ficha-weekdays__question {
@@ -34,13 +16,51 @@
   font-weight: 600;
   color: #1e293b;
   line-height: 1.25;
+  text-align: center;
+}
+
+/* Día citado en el enunciado — color de clase */
+.ficha-weekdays__day-name {
+  color: var(--color-primary, #0284c7);
+  font-weight: 800;
+}
+
+.ficha-weekdays__strip {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+}
+
+.ficha-weekdays__day {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  line-height: 30px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  background: #f8fafc;
+  box-sizing: border-box;
+}
+
+/* Día del enunciado en la tira — color de clase */
+.ficha-weekdays__day--active {
+  color: var(--color-primary, #0284c7);
+  border: 2px solid var(--color-primary, #0284c7);
+  background: color-mix(in srgb, var(--color-primary, #0284c7) 18%, #fff);
+  line-height: 28px;
 }
 
 .ficha-weekdays__choices {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 4px 16px;
-  margin-top: 8px;
+  margin-top: 0;
 }
 
 .ficha-weekdays__choice {

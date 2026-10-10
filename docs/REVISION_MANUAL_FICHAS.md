@@ -166,7 +166,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [ ] **reloj** — El reloj
 - [ ] **relojPonerHora** — Pon la hora
 - [ ] **intervalosTiempo** — Intervalos de tiempo
-- [ ] **weekDays** — Días de la semana
+- [x] **weekDays** — Días de la semana _(2026-10-10: OK — enunciado→tira→opciones; color de clase en día; gap 18px; recuadros 32px)_
 - [ ] **monedasBilletes** — Monedas y billetes
 - [ ] **menuCafeteria** — En la cafetería
 - [ ] **balanza** — La balanza y el peso
@@ -217,7 +217,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | `vecinosNumero`                      | OK navegador 2026-10-10 — ver checklist Numeración          |
 | `problemas`                          | Emoji + historia + `a ± b = □`                              |
 | `datosInnecesarios`                  | Frases con ○ (mapeo `historia`/`pregunta` arreglado)        |
-| `weekDays`                           | Tira L-M-X-J-V-S-D + ○                                      |
+| `weekDays`                           | OK navegador 2026-10-10 — ver checklist Medidas y tiempo    |
 | `relojPonerHora`                     | Cara vacía + enunciado con hora objetivo (no revela agujas) |
 | `elKilo` / `elLitro`                 | ○ opciones MC                                               |
 | `problemas2pasos`                    | Solución: `correctAnswer` (antes vacío/mal)                 |
