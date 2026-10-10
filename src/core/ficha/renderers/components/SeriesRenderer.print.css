@@ -25,26 +25,34 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 36px;
-  min-height: 34px;
-  padding: 3px 5px;
   margin-right: 12px;
   border-radius: 6px;
   border: 1.5px solid #cbd5e1;
   background: #fff;
-  font-size: 16px;
   font-weight: 800;
   color: #0f172a;
   font-variant-numeric: tabular-nums;
   box-sizing: border-box;
 }
 
+/* Recuadro CON número — edita tamaño aquí */
+.ficha-series__box:not(.ficha-series__box--blank) {
+  min-width: 40px;
+  min-height: 40px;
+  padding: 3px 5px;
+  font-size: 22px;
+}
+
+/* Recuadro SIN número (hueco) — edita tamaño aquí */
 .ficha-series__box--blank {
+  min-width: 58px;
+  min-height: 58px;
+  padding: 3px 5px;
+  font-size: 16px;
   border-style: dashed;
   border-color: #94a3b8;
   background: #f1f5f9;
   color: #94a3b8;
-  min-width: 40px;
 }
 
 .ficha-series__arrow {

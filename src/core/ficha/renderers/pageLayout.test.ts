@@ -108,7 +108,7 @@ describe("pageLayout", () => {
     expect(pageSizeForExercises([many], { showAnswer: true })).toBe(10);
   });
 
-  it("series: 10 por hoja a ancho completo; soluciones solo número más densas", () => {
+  it("series: 10 por hoja en 2 columnas; soluciones solo número más densas", () => {
     const ex: SeriesNumericasSheetExercise = {
       kind: "seriesNumericas",
       sequence: [1, 2, -1, 4, 5],
@@ -120,7 +120,7 @@ describe("pageLayout", () => {
     };
     expect(pageSizeForExercises([ex])).toBe(10);
     expect(pageSizeForExercises([ex], { showAnswer: true })).toBe(20);
-    expect(isFullWidthExercise(ex)).toBe(true);
+    expect(isFullWidthExercise(ex)).toBe(false);
     expect(isFullWidthExercise(ex, { showAnswer: true })).toBe(false);
   });
 });

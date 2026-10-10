@@ -62,7 +62,7 @@ export function pageSizeForExercises(
     return options.showAnswer ? 12 : 10;
   }
   if (first.kind === "seriesNumericas" || first.kind === "series3Cifras") {
-    // Alumno: 10 series por hoja. Soluciones: solo el número (más densas).
+    // Alumno: 2 por fila (10/hoja). Soluciones: solo el número (más densas).
     return options.showAnswer ? 20 : 10;
   }
   if (first.kind === "ordenar") {
@@ -82,10 +82,6 @@ export function isFullWidthExercise(
   if (ex.kind === "relacionar") return !options.showAnswer;
   if (ex.kind === "relacionarCantidades") return !options.showAnswer;
   if (ex.kind === "comparison") return !options.showAnswer;
-  // Serie en una sola fila (cajas + flechas), como en pizarra.
-  if (ex.kind === "seriesNumericas" || ex.kind === "series3Cifras") {
-    return !options.showAnswer;
-  }
   if (ex.kind === "elKilo" || ex.kind === "elLitro" || ex.kind === "ordinales") {
     return !options.showAnswer;
   }
