@@ -1,0 +1,62 @@
+/* Series numéricas — layout alumno */
+
+.ficha-series {
+  width: 100%;
+}
+
+.ficha-series__question {
+  margin: 0 0 4px;
+  line-height: 1.25;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-series__sequence {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  justify-content: flex-start;
+}
+
+.ficha-series__box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 34px;
+  padding: 3px 5px;
+  margin-right: 12px;
+  border-radius: 6px;
+  border: 1.5px solid #cbd5e1;
+  background: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  box-sizing: border-box;
+}
+
+.ficha-series__box--blank {
+  border-style: dashed;
+  border-color: #94a3b8;
+  background: #f1f5f9;
+  color: #94a3b8;
+  min-width: 40px;
+}
+
+.ficha-series__arrow {
+  position: absolute;
+  right: -12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.ficha-exercise--series {
+  min-height: 0;
+  padding: 6px 10px;
+}

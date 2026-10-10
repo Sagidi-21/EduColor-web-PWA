@@ -4,6 +4,13 @@ export * from "./generators";
 export { difficultyStars } from "./difficultyStars";
 export { generatePDF, printElement } from "./pdf";
 export { downloadHtmlAsPdf } from "./pdfExport";
+export {
+  A4_HEIGHT_MM,
+  A4_WIDTH_MM,
+  buildPrintDocumentHtml,
+  buildPrintDocumentShellCss,
+} from "./printDocument";
+export type { BuildPrintDocumentHtmlInput, PrintDocumentVariant } from "./printDocument";
 export { downloadHtmlAsWord } from "./wordHtmlExport";
 export {
   buildFichaDocument,

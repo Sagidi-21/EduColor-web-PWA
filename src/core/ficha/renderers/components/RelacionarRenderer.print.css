@@ -1,0 +1,199 @@
+/* Relacionar número y cantidad — layout alumno */
+
+.ficha-relacionar {
+  width: 100%;
+}
+
+.ficha-relacionar__instruction {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__instruction {
+  margin-bottom: 2px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-relacionar__board {
+  display: grid;
+  grid-template-columns: auto minmax(28px, 1fr) minmax(0, 1fr);
+  gap: 4px 8px;
+  align-items: stretch;
+}
+
+.ficha-relacionar__left,
+.ficha-relacionar__right {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: space-around;
+}
+
+.ficha-relacionar__num,
+.ficha-relacionar__group {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 28px;
+}
+
+.ficha-relacionar__num {
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.ficha-relacionar__group {
+  min-width: 0;
+}
+
+.ficha-relacionar__num-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  width: 32px;
+  height: 32px;
+  line-height: 1;
+  padding: 0;
+  border: 1.5px solid #94a3b8;
+  border-radius: 6px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  background: #fff;
+  text-align: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.ficha-relacionar__letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  width: 26px;
+  height: 26px;
+  line-height: 1;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #f8fafc;
+  text-align: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.ficha-relacionar__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid #64748b;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.ficha-relacionar__gap {
+  min-width: 28px;
+}
+
+.ficha-relacionar__strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px 2px;
+  align-items: center;
+  align-content: flex-start;
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.ficha-relacionar__thumb {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.ficha-relacionar__count-badge {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ficha-relacionar__answers {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.ficha-relacionar--compact .ficha-relacionar__thumb {
+  width: 22px;
+  height: 22px;
+}
+
+.ficha-relacionar--compact .ficha-relacionar__num-value {
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+}
+
+.ficha-relacionar--compact .ficha-relacionar__letter {
+  min-width: 22px;
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+}
+
+.ficha-relacionar--compact .ficha-relacionar__num,
+.ficha-relacionar--compact .ficha-relacionar__group {
+  min-height: 24px;
+  gap: 4px;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__thumb {
+  width: 18px;
+  height: 18px;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__num-value {
+  min-width: 28px;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  padding: 0;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__letter {
+  min-width: 20px;
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__num,
+.ficha-relacionar--dense .ficha-relacionar__group {
+  min-height: 20px;
+  gap: 3px;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__left,
+.ficha-relacionar--dense .ficha-relacionar__right {
+  gap: 3px;
+}
+
+.ficha-relacionar--dense .ficha-relacionar__board {
+  gap: 2px 6px;
+}
+
+.ficha-exercise--relacionar {
+  padding: 6px 8px;
+  min-height: 0;
+}

@@ -1,0 +1,129 @@
+/* Relacionar cantidades (base 10) — layout alumno */
+
+.ficha-relcant {
+  width: 100%;
+}
+
+.ficha-relcant__instruction {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-relcant__board {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.ficha-relcant__left,
+.ficha-relcant__right {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.ficha-relcant__gap {
+  min-width: 24px;
+}
+
+.ficha-relcant__card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  position: relative;
+}
+
+.ficha-relcant__card--right {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.ficha-relcant__text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.ficha-relcant__letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  min-height: 22px;
+  font-size: 12px;
+  font-weight: 800;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #f8fafc;
+}
+
+.ficha-relcant__rotulo {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.ficha-relcant__figuras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.ficha-relcant__cajas,
+.ficha-relcant__unidades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: flex-end;
+}
+
+.ficha-relcant__bloque {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px 3px;
+  border: 1px solid #94a3b8;
+  border-radius: 4px;
+  background: #f8fafc;
+}
+
+.ficha-relcant__bloque--cien {
+  border-color: #64748b;
+  background: #e2e8f0;
+}
+
+.ficha-relcant__bloque-rotulo {
+  font-size: 8px;
+  font-weight: 800;
+  color: #475569;
+}
+
+.ficha-relcant__img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.ficha-relcant__dot,
+.ficha-relcant__dot-end,
+.ficha-relcant__dot-start {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid #64748b;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.ficha-relcant__dot-end {
+  align-self: flex-end;
+}

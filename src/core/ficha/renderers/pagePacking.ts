@@ -9,7 +9,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import type { SheetExercise } from "../types";
 import { ExerciseGrid } from "./components/ExerciseGrid";
 import { chunkByPageSize, isFullWidthExercise, pageSizeForExercises } from "./pageLayout";
-import printCss from "./print.css?inline";
+import printCss from "./print/print-bundle";
 
 const A4_WIDTH_MM = 210;
 const A4_HEIGHT_MM = 297;

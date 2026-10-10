@@ -64,7 +64,7 @@ function triggerDownload(blob: Blob, filename: string): void {
 export interface DownloadHtmlAsWordInput {
   /** Cuerpo HTML (p. ej. una o más `.ficha-page`). */
   html: string;
-  /** CSS de impresión (print.css inline). */
+  /** CSS de impresión (bundle print-base + ejercicios). */
   css: string;
   filename: string;
 }

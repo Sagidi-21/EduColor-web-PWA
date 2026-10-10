@@ -1,0 +1,52 @@
+/* elKilo / elLitro — layout alumno */
+
+.ficha-photo__question {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-photo__ref {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.ficha-photo__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ficha-photo__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
+}
+
+.ficha-photo__img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.ficha-photo__placeholder {
+  width: 56px;
+  height: 56px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+}
+
+.ficha-photo__name {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  color: #334155;
+}

@@ -1,17 +1,15 @@
 .ficha-preview {
   height: 100%;
   max-height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: #e2e8f0;
-  padding-bottom: 48px;
   box-sizing: border-box;
 }
 
 .ficha-preview__toolbar {
-  position: sticky;
-  top: 0;
+  flex-shrink: 0;
   z-index: 10;
   display: flex;
   align-items: center;
@@ -38,11 +36,12 @@
   text-align: center;
 }
 
-.ficha-preview__sheets {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding-top: 16px;
+.ficha-preview__frame {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  background: #e2e8f0;
 }
 
 .ficha-preview__error {
@@ -52,19 +51,4 @@
   background: #fef2f2;
   color: #991b1b;
   border-radius: 8px;
-}
-
-@media print {
-  .ficha-preview {
-    height: auto;
-    max-height: none;
-    overflow: visible;
-    background: #fff;
-    padding: 0;
-  }
-
-  .ficha-preview__sheets {
-    gap: 0;
-    padding-top: 0;
-  }
 }

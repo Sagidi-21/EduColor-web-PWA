@@ -1,0 +1,82 @@
+/* ===== Ficha A4 — base de impresión ===== */
+
+@page {
+  size: A4;
+  margin: 2mm 4mm;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .ficha-exercise {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .ficha-header,
+  .ficha-footer {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+
+.ficha-page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 6mm 8mm;
+  background: #fff;
+  color: #111;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+
+.ficha-print-break {
+  page-break-before: always;
+  break-before: page;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.ficha-page--continued {
+  page-break-before: always;
+  break-before: page;
+}
+
+.ficha-page__continued {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.ficha-center {
+  text-align: center;
+}
+
+.ficha-mt-0 {
+  margin-top: 0;
+}
+
+/* Enunciado por defecto (QuestionRenderer / clases genéricas) */
+.ficha-exercise__question {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}

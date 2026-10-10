@@ -1,0 +1,17 @@
+/* Par / impar — layout alumno */
+
+.ficha-parimpar__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.ficha-parimpar__question {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}

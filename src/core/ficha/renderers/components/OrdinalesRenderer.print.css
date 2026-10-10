@@ -1,0 +1,21 @@
+/* Ordinales — layout alumno */
+
+.ficha-ordinales__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.ficha-ordinales__question {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-ordinales__cell--star {
+  filter: drop-shadow(0 0 1px #f59e0b);
+}

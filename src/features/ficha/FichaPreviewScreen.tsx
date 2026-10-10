@@ -1,7 +1,11 @@
 import type { ActivityDifficulty } from "../../core/content/contracts";
-import { buildFichaDocument, type FichaMode, type SheetConfig } from "../../core/ficha";
+import {
+  buildFichaDocument,
+  buildPrintDocumentHtml,
+  type FichaMode,
+  type SheetConfig,
+} from "../../core/ficha";
 import { getActivityManifest } from "../../manifests/content-registry";
-import printCss from "../../core/ficha/renderers/print.css?inline";
 import colegioLogoUrl from "../../assets/logo-ficha.png";
 import "./FichaPreviewScreen.css";
 
@@ -45,7 +49,8 @@ function readParams(): {
 }
 
 /**
- * Vista previa = mismo HTML/CSS que se exporta a PDF (`buildFichaDocument`).
+ * Ruta de depuración `/ficha-preview`.
+ * Usa el mismo shell HTML/CSS que el PDF y el modal (WYSIWYG).
  */
 export function FichaPreviewScreen(): JSX.Element {
   const opts = readParams();
@@ -61,10 +66,10 @@ export function FichaPreviewScreen(): JSX.Element {
     seed: opts.seed,
   };
 
-  let doc: ReturnType<typeof buildFichaDocument> | null = null;
+  let srcDoc: string | null = null;
   let error: string | null = null;
   try {
-    doc = buildFichaDocument({
+    const doc = buildFichaDocument({
       activityId: opts.activityId,
       config,
       modes: opts.modes,
@@ -76,11 +81,14 @@ export function FichaPreviewScreen(): JSX.Element {
       },
       logoUrl: colegioLogoUrl,
     });
+    srcDoc = buildPrintDocumentHtml({
+      html: doc.html,
+      css: doc.css,
+      variant: "preview",
+    });
   } catch (err) {
     error = err instanceof Error ? err.message : "Error al generar la ficha";
   }
-
-  const css = doc?.css || printCss;
 
   return (
     <div className="ficha-preview">
@@ -93,13 +101,10 @@ export function FichaPreviewScreen(): JSX.Element {
         </span>
       </div>
 
-      {error || !doc ? (
+      {error || !srcDoc ? (
         <p className="ficha-preview__error">{error ?? "Error al generar la ficha"}</p>
       ) : (
-        <>
-          <style dangerouslySetInnerHTML={{ __html: css }} />
-          <div className="ficha-preview__sheets" dangerouslySetInnerHTML={{ __html: doc.html }} />
-        </>
+        <iframe className="ficha-preview__frame" title="Vista previa de la ficha" srcDoc={srcDoc} />
       )}
     </div>
   );

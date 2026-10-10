@@ -1,0 +1,9 @@
+/* Algoritmo vertical / tres sumandos columna — layout alumno */
+
+/* Algoritmo vertical (copia local del ejercicio) */
+.ficha-vertical {
+  font-family: "SF Mono", "Consolas", "Menlo", monospace;
+  font-size: 13px;
+  line-height: 1.3;
+  white-space: pre;
+}

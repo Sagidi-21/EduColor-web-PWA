@@ -1,0 +1,10 @@
+/* ===== Hoja de soluciones (compartida, caja uniforme) ===== */
+
+.ficha-answer {
+  margin-top: 4px;
+  min-height: 28px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  box-sizing: border-box;
+}

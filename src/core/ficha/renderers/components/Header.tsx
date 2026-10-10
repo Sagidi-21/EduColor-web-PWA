@@ -27,7 +27,7 @@ export function FichaHeader({ meta, logoUrl }: FichaHeaderProps): JSX.Element {
               {line ? <p className="ficha-header__meta">{line}</p> : null}
             </td>
             {logo ? (
-              <td className="ficha-header__logo-cell" valign="middle" width={96}>
+              <td className="ficha-header__logo-cell" valign="bottom" width={96}>
                 {logo}
               </td>
             ) : null}

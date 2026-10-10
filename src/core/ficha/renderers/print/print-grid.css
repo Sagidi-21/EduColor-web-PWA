@@ -1,0 +1,63 @@
+/* ===== Rejilla y tarjeta de ejercicio (compartida) ===== */
+
+.ficha-grid {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+  table-layout: fixed;
+  margin: 0;
+}
+
+.ficha-grid__cell {
+  width: 50%;
+  vertical-align: top;
+  padding: 6px 7px;
+  border: none;
+}
+
+.ficha-grid__cell--full {
+  width: 100%;
+}
+
+.ficha-grid__cell--empty {
+  width: 50%;
+  border: none;
+  padding: 6px 7px;
+}
+
+.ficha-exercise {
+  display: block;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  min-height: 96px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  box-sizing: border-box;
+}
+
+.ficha-exercise__number {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.ficha-exercise__body {
+  display: block;
+}
+
+.ficha-exercise__text {
+  display: block;
+}
+
+.ficha-exercise--full {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ficha-exercise--full .ficha-exercise__body {
+  align-items: stretch;
+  width: 100%;
+}

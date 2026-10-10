@@ -1,0 +1,12 @@
+/* ===== Pie de página (compartido) ===== */
+
+.ficha-footer {
+  margin-top: 14px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: #999;
+}

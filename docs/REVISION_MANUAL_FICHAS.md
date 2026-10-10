@@ -60,16 +60,16 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 
 Comparación captura vista previa vs Word (misma actividad «Ordenar números»). **No son iguales.**
 
-| Aspecto                      | Vista previa                                          | Word                                                           |
-| ---------------------------- | ----------------------------------------------------- | -------------------------------------------------------------- |
-| Caja de cada ejercicio       | Borde gris claro + `border-radius` visible            | Contenedor más débil / bordes redondeados perdidos o aplanados |
-| Tarjetas de números y huecos | Esquinas redondeadas (`border-radius: 6px`)           | Esquinas cuadradas (Word ignora `border-radius`)               |
-| Márgenes / caja A4           | Página ancha, padding generoso (`print.css`)          | Márgenes laterales más anchos / contenido más comprimido       |
-| Espaciado vertical           | Entre ejercicios y dentro de la tarjeta más «aireado» | Más apretado; tipografía y pesos distintos                     |
-| Tipografía                   | `system-ui` / Segoe UI del CSS                        | Fuente por defecto de Word (Calibri u otra)                    |
-| Cabecera / logo / título     | Layout web (logo absoluto + `transform`)              | Aproximación; línea y tamaños no coinciden del todo            |
+| Aspecto                      | Vista previa                                            | Word                                                           |
+| ---------------------------- | ------------------------------------------------------- | -------------------------------------------------------------- |
+| Caja de cada ejercicio       | Borde gris claro + `border-radius` visible              | Contenedor más débil / bordes redondeados perdidos o aplanados |
+| Tarjetas de números y huecos | Esquinas redondeadas (`border-radius: 6px`)             | Esquinas cuadradas (Word ignora `border-radius`)               |
+| Márgenes / caja A4           | Página ancha, padding generoso (`print/print-base.css`) | Márgenes laterales más anchos / contenido más comprimido       |
+| Espaciado vertical           | Entre ejercicios y dentro de la tarjeta más «aireado»   | Más apretado; tipografía y pesos distintos                     |
+| Tipografía                   | `system-ui` / Segoe UI del CSS                          | Fuente por defecto de Word (Calibri u otra)                    |
+| Cabecera / logo / título     | Layout web (logo absoluto + `transform`)                | Aproximación; línea y tamaños no coinciden del todo            |
 
-**Causa probable (no es bug del renderer de ordenar):** mismo HTML/CSS en teoría (`OrderingRenderer` + `print.css`), pero el motor HTML de Word no respeta grid/flex/`border-radius`/`@page` como el navegador. Encaja con Fase 2 (layout Word-safe) y Fase 3 (preview = HTML canónico).
+**Causa probable (no es bug del renderer de ordenar):** mismo HTML/CSS en teoría (`OrderingRenderer` + `OrderingRenderer.print.css`), pero el motor HTML de Word no respeta grid/flex/`border-radius`/`@page` como el navegador. Encaja con Fase 2 (layout Word-safe) y Fase 3 (preview = HTML canónico). Ver D-026.
 
 **Estado Fase 0 para `ordenar`:** fallo documentado — sirve de caso de regresión obligatorio tras las fases 1–4.
 

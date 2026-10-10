@@ -1,0 +1,39 @@
+/* Polígonos — layout alumno */
+
+.ficha-shape-svg {
+  display: block;
+  margin-top: 6px;
+}
+
+/* Imagen de ejercicio (copia local) */
+.ficha-exercise__image {
+  height: 56px;
+  width: 56px;
+  max-height: 56px;
+  max-width: 56px;
+  object-fit: contain;
+}
+
+.ficha-poligonos__figure {
+  margin-top: 6px;
+}
+
+.ficha-poligonos__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ficha-poligonos__option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.ficha-poligonos__opt-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #666;
+}

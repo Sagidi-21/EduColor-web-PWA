@@ -1,0 +1,32 @@
+/* Monedas y billetes — layout alumno */
+
+.ficha-money__question {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-money__product {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+.ficha-money__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.ficha-money__img {
+  height: 36px;
+  width: auto;
+  max-width: 64px;
+  object-fit: contain;
+}
+
+.ficha-money__label {
+  font-size: 12px;
+  font-weight: 700;
+}

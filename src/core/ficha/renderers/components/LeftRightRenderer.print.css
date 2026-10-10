@@ -1,0 +1,25 @@
+/* Izquierda / derecha — layout alumno */
+
+/* Imagen de ejercicio (copia local) */
+.ficha-exercise__image {
+  height: 56px;
+  width: 56px;
+  max-height: 56px;
+  max-width: 56px;
+  object-fit: contain;
+}
+
+.ficha-leftright__pair {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.ficha-leftright__side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+}

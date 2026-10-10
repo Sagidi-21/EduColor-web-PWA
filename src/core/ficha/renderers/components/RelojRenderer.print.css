@@ -1,0 +1,12 @@
+/* Reloj — layout alumno */
+
+.ficha-clock-svg {
+  display: block;
+  margin-top: 6px;
+}
+
+.ficha-reloj {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

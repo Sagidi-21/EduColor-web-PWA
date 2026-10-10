@@ -1,0 +1,38 @@
+/* Cinta métrica — layout alumno */
+
+.ficha-cinta__question {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.ficha-cinta__object {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.ficha-cinta__emoji {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.ficha-cinta__name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.ficha-cinta__tape {
+  height: 10px;
+  margin-bottom: 6px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    #fbbf24 0 6px,
+    #fef3c7 6px 12px
+  );
+  border: 1px solid #d97706;
+}

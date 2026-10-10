@@ -2,18 +2,16 @@
  * Descarga la ficha como PDF real (archivo .pdf).
  * No abre el diálogo de impresión ni intenta conectar con impresoras.
  *
- * - Ordenar: mismo override CSS del commit que centraba bien + foreignObjectRendering.
- * - Relacionar (muchas imágenes): sin FO (evita páginas negras) + centrado table-cell en onclone.
+ * - Ordenar: foreignObjectRendering solo aquí (centra números); FO+JPEG envejece en negro.
+ * - Relacionar / series / soluciones: sin FO; fondo blanco bajo el canvas antes del JPEG.
  * - Todas las hojas: caja A4 fija a ancho completo (márgenes laterales iguales).
  */
 
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { inlineImagesInHtml } from "./wordHtmlExport";
-import printCssFallback from "./renderers/print.css?inline";
-
-const A4_WIDTH_MM = 210;
-const A4_HEIGHT_MM = 297;
+import printCssFallback from "./renderers/print/print-bundle";
+import { A4_HEIGHT_MM, A4_WIDTH_MM, buildPrintDocumentHtml } from "./printDocument";
 
 /** Solo badges de Relacionar/similares (NO Ordenar: ese iba bien con CSS del commit). */
 const RELACIONAR_BADGE_SELECTORS = [
@@ -137,7 +135,18 @@ function centerRelacionarBadgesInClone(clonedDoc: Document, liveRoot: HTMLElemen
 }
 
 function addCanvasToPdf(pdf: jsPDF, canvas: HTMLCanvasElement, pageIndex: number): void {
-  const imgData = canvas.toDataURL("image/jpeg", 0.95);
+  // JPEG no soporta transparencia: si FO deja píxeles vacíos, salen negros.
+  // Pintamos fondo blanco debajo antes de serializar.
+  const flattened = document.createElement("canvas");
+  flattened.width = canvas.width;
+  flattened.height = canvas.height;
+  const ctx = flattened.getContext("2d");
+  if (ctx) {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, flattened.width, flattened.height);
+    ctx.drawImage(canvas, 0, 0);
+  }
+  const imgData = (ctx ? flattened : canvas).toDataURL("image/jpeg", 0.95);
   if (pageIndex > 0) pdf.addPage();
   pdf.addImage(imgData, "JPEG", 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
 }
@@ -164,75 +173,11 @@ export async function downloadHtmlAsPdf(input: DownloadHtmlAsPdfInput): Promise<
 
   document.body.appendChild(iframe);
 
-  const documentHtml = `<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #fff;
-      width: ${A4_WIDTH_MM}mm;
-    }
-    ${css}
-    .ficha-page {
-      width: ${A4_WIDTH_MM}mm !important;
-      height: ${A4_HEIGHT_MM}mm !important;
-      min-height: ${A4_HEIGHT_MM}mm !important;
-      max-height: ${A4_HEIGHT_MM}mm !important;
-      margin: 0 !important;
-      overflow: hidden !important;
-      box-shadow: none !important;
-      background: #fff !important;
-      box-sizing: border-box !important;
-    }
-    .ficha-print-break { display: none !important; }
-    /*
-     * Ordenar / Relacionar — line-height = height (html2canvas no centra flex).
-     */
-    .ficha-ordenar__card,
-    .ficha-ordenar__slot {
-      display: block !important;
-      width: 100% !important;
-      max-width: 56px !important;
-      height: 40px !important;
-      min-height: 40px !important;
-      line-height: 40px !important;
-      padding: 0 !important;
-      margin: 0 auto !important;
-      text-align: center !important;
-      font-size: 22px !important;
-      font-weight: 800 !important;
-      box-sizing: border-box !important;
-    }
-    .ficha-relacionar__num-value,
-    .ficha-relacionar__letter {
-      display: block !important;
-      padding: 0 !important;
-      margin: 0 !important;
-      text-align: center !important;
-      box-sizing: border-box !important;
-      align-items: unset !important;
-      justify-content: unset !important;
-    }
-    .ficha-relacionar__strip {
-      flex-wrap: wrap !important;
-      overflow: visible !important;
-    }
-    .ficha-answer {
-      color: #0f172a !important;
-      font-size: 22px !important;
-      font-weight: 800 !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-  </style>
-</head>
-<body>
-${bodyHtml}
-</body>
-</html>`;
+  const documentHtml = buildPrintDocumentHtml({
+    html: bodyHtml,
+    css,
+    variant: "pdf",
+  });
 
   try {
     const doc = await loadIframeDocument(iframe, documentHtml);
@@ -261,9 +206,11 @@ ${bodyHtml}
       await waitFrames(1);
 
       const hasRelacionar = Boolean(page.querySelector(".ficha-relacionar, .ficha-relcant"));
+      const hasOrdenar = Boolean(page.querySelector(".ficha-ordenar"));
       const imgCount = page.querySelectorAll("img").length;
-      // Commit: FO true centraba Ordenar. Con muchas imágenes FO saca páginas negras.
-      const useForeignObject = !hasRelacionar && imgCount <= 4;
+      // FO solo para Ordenar (centrado). En soluciones u otras hojas con pocas
+      // imágenes (solo logo) FO + JPEG pintaba la página entera de negro.
+      const useForeignObject = hasOrdenar && !hasRelacionar && imgCount <= 4;
 
       const w = Math.max(1, page.offsetWidth);
       const h = Math.max(1, page.offsetHeight);

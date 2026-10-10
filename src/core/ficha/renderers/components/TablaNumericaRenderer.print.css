@@ -1,0 +1,13 @@
+/* Tabla numérica — layout alumno */
+
+.ficha-table {
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.ficha-table td,
+.ficha-table th {
+  border: 1px solid #ccc;
+  padding: 3px 6px;
+  text-align: center;
+}

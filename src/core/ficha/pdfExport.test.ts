@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import html2canvas from "html2canvas";
 import { downloadHtmlAsPdf } from "./pdfExport";
 
 vi.mock("html2canvas", () => ({
@@ -69,5 +70,83 @@ describe("downloadHtmlAsPdf", () => {
     expect(first[3]).toBe(0);
     expect(first[4]).toBe(210);
     expect(first[5]).toBe(297);
+  });
+
+  it("no activa foreignObject en soluciones (pocas imgs) para evitar páginas negras", async () => {
+    const h2c = vi.mocked(html2canvas);
+    h2c.mockClear();
+
+    await downloadHtmlAsPdf({
+      html: `
+        <div class="ficha-page">
+          <div class="ficha-answer">Grupo A</div>
+          <div class="ficha-answer">Grupo B</div>
+        </div>
+      `,
+      css: "",
+      filename: "comparison-soluciones.pdf",
+    });
+
+    expect(h2c).toHaveBeenCalled();
+    const opts = h2c.mock.calls[0]?.[1] as { foreignObjectRendering?: boolean };
+    expect(opts.foreignObjectRendering).toBe(false);
+  });
+
+  it("sí activa foreignObject en Ordenar (pocas imgs)", async () => {
+    const h2c = vi.mocked(html2canvas);
+    h2c.mockClear();
+
+    await downloadHtmlAsPdf({
+      html: `
+        <div class="ficha-page">
+          <div class="ficha-ordenar"><span class="ficha-ordenar__card">3</span></div>
+        </div>
+      `,
+      css: "",
+      filename: "ordenar-alumno.pdf",
+    });
+
+    const opts = h2c.mock.calls[0]?.[1] as { foreignObjectRendering?: boolean };
+    expect(opts.foreignObjectRendering).toBe(true);
+  });
+
+  it("series (continuación + soluciones) no usan foreignObject — evita hojas negras", async () => {
+    const h2c = vi.mocked(html2canvas);
+    h2c.mockClear();
+
+    const jspdfMod = await import("jspdf");
+    const mocks = (
+      jspdfMod as unknown as {
+        __mocks: { addPage: ReturnType<typeof vi.fn>; addImage: ReturnType<typeof vi.fn> };
+      }
+    ).__mocks;
+    mocks.addPage.mockClear();
+    mocks.addImage.mockClear();
+
+    await downloadHtmlAsPdf({
+      html: `
+        <div class="ficha-page">
+          <div class="ficha-series"><p class="ficha-series__question">¿Qué número falta?</p></div>
+        </div>
+        <div class="ficha-page ficha-page--continued">
+          <p class="ficha-page__continued">continuación</p>
+          <div class="ficha-series"><p class="ficha-series__question">¿Qué número falta?</p></div>
+        </div>
+        <div class="ficha-page">
+          <div class="ficha-answer">7</div>
+          <div class="ficha-answer">12</div>
+        </div>
+      `,
+      css: "",
+      filename: "ficha-seriesNumericas-alumno+soluciones.pdf",
+    });
+
+    expect(h2c).toHaveBeenCalledTimes(3);
+    for (const call of h2c.mock.calls) {
+      const opts = call[1] as { foreignObjectRendering?: boolean };
+      expect(opts.foreignObjectRendering).toBe(false);
+    }
+    expect(mocks.addPage).toHaveBeenCalledTimes(2);
+    expect(mocks.addImage).toHaveBeenCalledTimes(3);
   });
 });

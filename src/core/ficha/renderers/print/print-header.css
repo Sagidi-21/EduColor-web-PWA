@@ -1,0 +1,82 @@
+/* ===== Cabecera de ficha (compartida) ===== */
+
+.ficha-header {
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+  border-bottom: 2px solid #e5e7eb;
+  overflow: visible;
+}
+
+.ficha-header__table {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+  margin-bottom: 4px;
+  overflow: visible;
+}
+
+.ficha-header__meta-cell {
+  vertical-align: bottom;
+  padding: 0;
+  border: none;
+}
+
+.ficha-header__logo-cell {
+  width: 96px;
+  vertical-align: bottom;
+  text-align: right;
+  padding: 0 0 0 8px;
+  border: none;
+}
+
+.ficha-header__title {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0;
+  color: #111;
+  line-height: 1.4;
+  min-height: 36px;
+  /* Hueco a la derecha: la mitad inferior del logo cruza la doble línea */
+  padding-right: 100px;
+}
+
+.ficha-header__stars {
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+}
+
+.ficha-header__meta {
+  font-size: 16px;
+  color: #555;
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 3px double #111;
+}
+
+.ficha-header__logo {
+  height: 90px;
+  width: 90px;
+  max-width: 90px;
+  object-fit: contain;
+  display: block;
+  margin-left: auto;
+}
+
+/* Centro vertical del logo alineado con la doble línea del meta */
+.ficha-header__logo-cell .ficha-header__logo {
+  position: relative;
+  top: 45px; /* mitad de 90px */
+}
+
+.ficha-name-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+.ficha-name-line__label {
+  white-space: nowrap;
+}

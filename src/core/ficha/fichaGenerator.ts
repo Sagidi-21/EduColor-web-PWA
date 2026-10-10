@@ -5,7 +5,7 @@ import { difficultyStars } from "./difficultyStars";
 import { getGenerator } from "./generators/registry";
 import { FichaAlumno } from "./renderers/alumno";
 import { FichaSoluciones } from "./renderers/soluciones";
-import printCss from "./renderers/print.css?inline";
+import printCss from "./renderers/print/print-bundle";
 import { downloadHtmlAsPdf } from "./pdfExport";
 import { downloadHtmlAsWord } from "./wordHtmlExport";
 import type { FichaMeta, FichaMode, SheetConfig, SheetExercise } from "./types";

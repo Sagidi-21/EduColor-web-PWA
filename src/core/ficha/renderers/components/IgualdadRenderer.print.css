@@ -1,0 +1,41 @@
+/* Igualdad — layout alumno */
+
+/* Miniaturas (copia local del ejercicio) */
+.ficha-img-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  align-items: center;
+}
+
+.ficha-img-row__thumb {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.ficha-img-row__thumb--crossed {
+  opacity: 0.35;
+  filter: grayscale(1);
+}
+
+.ficha-igualdad__images {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.ficha-igualdad__plus {
+  font-weight: 800;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.ficha-igualdad__formula {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
