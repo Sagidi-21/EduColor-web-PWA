@@ -150,6 +150,7 @@ function mapComparison(ex: Record<string, unknown>, config: SheetConfig): Compar
     objectLabel,
     questionType,
     allowEqual: Boolean(ex.allowEqual),
+    difficulty: config.difficulty,
     answer,
   };
 }

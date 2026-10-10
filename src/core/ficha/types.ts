@@ -38,8 +38,10 @@ export interface ComparisonSheetExercise {
   imageUrl: string;
   objectLabel: string;
   questionType: "mas" | "menos";
-  /** true en hard/expert (misma regla que pizarra): pueden ser iguales. */
+  /** true en hard/expert: hueco entre barras para que el alumno escriba = si son iguales. */
   allowEqual: boolean;
+  /** Nivel de la ficha; controla el tamaño de los dibujos en CSS. */
+  difficulty: Difficulty;
   answer?: "A" | "B" | "iguales";
 }
 

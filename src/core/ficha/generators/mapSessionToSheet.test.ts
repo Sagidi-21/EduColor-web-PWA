@@ -81,6 +81,7 @@ describe("mapSessionToSheet", () => {
       countB: 5,
       questionType: "mas",
       allowEqual: false,
+      difficulty: "easy",
       answer: "B",
     });
     if (ex.kind === "comparison") {

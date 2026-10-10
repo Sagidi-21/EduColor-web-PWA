@@ -5,16 +5,16 @@ export interface ComparisonRendererProps {
   showAnswer: boolean;
 }
 
-function densityClass(countA: number, countB: number): string {
-  const max = Math.max(countA, countB);
-  if (max >= 15) return "ficha-compare--dense";
-  if (max >= 8) return "ficha-compare--compact";
-  return "";
+function sizeClass(difficulty: ComparisonSheetExercise["difficulty"]): string {
+  return `ficha-compare--${difficulty}`;
 }
 
 function questionText(ex: ComparisonSheetExercise): string {
-  const base = ex.questionType === "mas" ? "¿Dónde hay más?" : "¿Dónde hay menos?";
-  return ex.allowEqual ? `${base} (pueden ser iguales)` : base;
+  const base =
+    ex.questionType === "mas"
+      ? "Redondea la letra donde hay más"
+      : "Redondea la letra donde hay menos";
+  return ex.allowEqual ? `${base}. Si son iguales pon un signo igual entre las barras` : base;
 }
 
 function answerText(ex: ComparisonSheetExercise): string {
@@ -46,7 +46,7 @@ function ObjectStrip({
 }
 
 /**
- * Alumno: pregunta + grupos A/B + casilla.
+ * Alumno: pregunta + grupos A | | B (hueco para = si allowEqual).
  * Soluciones: las maneja ExerciseRenderer (solo texto de respuesta).
  */
 export function ComparisonRenderer({ ex, showAnswer }: ComparisonRendererProps): JSX.Element {
@@ -55,19 +55,25 @@ export function ComparisonRenderer({ ex, showAnswer }: ComparisonRendererProps):
   }
 
   return (
-    <div className={`ficha-compare ${densityClass(ex.countA, ex.countB)}`.trim()}>
+    <div className={`ficha-compare ${sizeClass(ex.difficulty)}`}>
       <p className="ficha-compare__question">{questionText(ex)}</p>
       <div className="ficha-compare__groups">
         <div className="ficha-compare__group">
           <span className="ficha-compare__letter">A</span>
           <ObjectStrip count={ex.countA} imageUrl={ex.imageUrl} label={ex.objectLabel} />
         </div>
+        {ex.allowEqual ? (
+          <>
+            <span className="ficha-compare__sep" aria-hidden="true" />
+            <span className="ficha-compare__equal-slot" aria-label="Espacio para el signo igual" />
+            <span className="ficha-compare__sep" aria-hidden="true" />
+          </>
+        ) : null}
         <div className="ficha-compare__group">
           <span className="ficha-compare__letter">B</span>
           <ObjectStrip count={ex.countB} imageUrl={ex.imageUrl} label={ex.objectLabel} />
         </div>
       </div>
-      <div className="ficha-compare__answer-blank" aria-label="Espacio para la respuesta" />
     </div>
   );
 }

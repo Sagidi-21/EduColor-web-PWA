@@ -72,6 +72,7 @@ describe("pageLayout", () => {
       objectLabel: "globos",
       questionType: "menos",
       allowEqual: true,
+      difficulty: "hard",
       answer: "A",
     };
     expect(pageSizeForExercises([ex])).toBe(10);

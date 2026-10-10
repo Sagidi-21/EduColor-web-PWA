@@ -55,10 +55,29 @@
 }
 
 .ficha-compare__thumb {
-  width: 40px;
-  height: 40px;
   object-fit: contain;
   flex-shrink: 0;
+}
+
+/* Tamaño de objetos por nivel — edita width/height de cada uno */
+.ficha-compare--easy .ficha-compare__thumb {
+  width: 48px;
+  height: 48px;
+}
+
+.ficha-compare--medium .ficha-compare__thumb {
+  width: 42px;
+  height: 42px;
+}
+
+.ficha-compare--hard .ficha-compare__thumb {
+  width: 32px;
+  height: 32px;
+}
+
+.ficha-compare--expert .ficha-compare__thumb {
+  width: 32px;
+  height: 32px;
 }
 
 .ficha-compare__count {
@@ -66,26 +85,20 @@
   font-weight: 800;
 }
 
-.ficha-compare--compact .ficha-compare__thumb {
-  width: 30px;
-  height: 30px;
+.ficha-compare__sep {
+  align-self: stretch;
+  width: 1px;
+  background: #cbd5e1;
+  flex-shrink: 0;
 }
 
-.ficha-compare--dense .ficha-compare__thumb {
-  width: 11px;
-  height: 11px;
+.ficha-compare__equal-slot {
+  flex-shrink: 0;
+  width: 22px;
+  min-height: 1em;
 }
 
-.ficha-compare__answer-blank {
-  margin-top: 6px;
-  width: 72px;
-  height: 28px;
-  border: 1.5px solid #94a3b8;
-  border-radius: 4px;
-  background: #fff;
-  box-sizing: border-box;
-}
-
-.ficha-compare--dense .ficha-compare__groups {
+.ficha-compare--hard .ficha-compare__groups,
+.ficha-compare--expert .ficha-compare__groups {
   gap: 20px;
 }

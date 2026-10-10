@@ -143,8 +143,11 @@ describe("fichaGenerator", () => {
       config: { ...baseConfig("comparison"), withImages: true, count: 4, difficulty: "medium" },
       mode: "alumno",
     });
-    expect(medium.html).not.toContain("pueden ser iguales");
-    expect(medium.html).toContain("ficha-compare__answer-blank");
+    expect(medium.html).toContain("Redondea la letra donde hay");
+    expect(medium.html).toContain("ficha-compare--medium");
+    expect(medium.html).not.toContain("Si son iguales pon un signo igual entre las barras");
+    expect(medium.html).not.toContain("ficha-compare__equal-slot");
+    expect(medium.html).not.toContain("ficha-compare__answer-blank");
 
     const alumno = generateFicha({
       activityId: "comparison",
@@ -153,9 +156,12 @@ describe("fichaGenerator", () => {
     });
     expect(alumno.exercises.every((ex) => ex.kind === "comparison")).toBe(true);
     expect(alumno.html).toContain("ficha-compare__strip");
+    expect(alumno.html).toContain("ficha-compare--hard");
     expect(alumno.html).not.toContain("ficha-compare__more");
     expect(alumno.html).toContain("ficha-exercise--full");
-    expect(alumno.html).toContain("pueden ser iguales");
+    expect(alumno.html).toContain("Si son iguales pon un signo igual entre las barras");
+    expect(alumno.html).toContain("ficha-compare__equal-slot");
+    expect(alumno.html).not.toContain("ficha-compare__answer-blank");
 
     let seedWithEqual = 1;
     for (let s = 1; s < 400; s += 1) {
@@ -186,7 +192,8 @@ describe("fichaGenerator", () => {
     expect(soluciones.html).toContain("Iguales");
     expect(soluciones.html).not.toContain("ficha-compare__strip");
     expect(soluciones.html).not.toContain("ficha-compare__thumb");
-    expect(soluciones.html).not.toContain("pueden ser iguales");
+    expect(soluciones.html).not.toContain("Si son iguales pon un signo igual entre las barras");
+    expect(soluciones.html).not.toContain("ficha-compare__equal-slot");
     expect(soluciones.html).toMatch(/Soluciones/i);
   });
 

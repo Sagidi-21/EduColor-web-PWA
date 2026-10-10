@@ -13,6 +13,7 @@ describe("solutionAnswerOf", () => {
         objectLabel: "x",
         questionType: "mas",
         allowEqual: false,
+        difficulty: "easy",
         answer: "B",
       }),
     ).toBe("Grupo B");
