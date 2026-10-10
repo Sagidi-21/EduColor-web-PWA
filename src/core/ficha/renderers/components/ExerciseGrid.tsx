@@ -24,7 +24,7 @@ export function ExerciseGrid({
     ex,
     number: pageOffset + i + 1,
     full: isFullWidthExercise(ex, pageOpts),
-    variant: exerciseCardVariant(ex),
+    variant: exerciseCardVariant(ex, pageOpts),
   }));
   const rows = pairIntoRows(cells);
 

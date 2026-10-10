@@ -9,7 +9,10 @@ export interface ExerciseGridCell {
 }
 
 /** Clase explícita por tipo de ejercicio para CSS Word-safe. */
-export function exerciseCardVariant(ex: SheetExercise): string {
+export function exerciseCardVariant(
+  ex: SheetExercise,
+  options: { showAnswer?: boolean } = {},
+): string {
   switch (ex.kind) {
     case "counting":
       return "counting";
@@ -29,7 +32,8 @@ export function exerciseCardVariant(ex: SheetExercise): string {
     case "tablaNumerica":
       return "tabla";
     case "algoritmoVertical":
-      return "algcol";
+      // Alumno: caja alta. Soluciones: tarjeta compacta (solo el número).
+      return options.showAnswer ? "" : "algcol";
     default:
       return "";
   }
