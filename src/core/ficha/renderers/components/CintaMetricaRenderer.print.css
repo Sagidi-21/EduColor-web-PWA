@@ -29,10 +29,6 @@
   height: 10px;
   margin-bottom: 6px;
   border-radius: 2px;
-  background: repeating-linear-gradient(
-    90deg,
-    #fbbf24 0 6px,
-    #fef3c7 6px 12px
-  );
+  background: repeating-linear-gradient(90deg, #fbbf24 0 6px, #fef3c7 6px 12px);
   border: 1px solid #d97706;
 }
