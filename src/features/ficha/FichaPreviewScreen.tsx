@@ -1,4 +1,5 @@
 import type { ActivityDifficulty } from "../../core/content/contracts";
+import { useClassProfile } from "../../core/context/ClassProfileContext";
 import {
   buildFichaDocument,
   buildPrintDocumentHtml,
@@ -54,6 +55,7 @@ function readParams(): {
  */
 export function FichaPreviewScreen(): JSX.Element {
   const opts = readParams();
+  const { profile } = useClassProfile();
   const manifest = getActivityManifest(opts.activityId);
   const title = manifest?.title ?? opts.activityId;
   const modeLabel = opts.modes.join(" + ");
@@ -77,9 +79,10 @@ export function FichaPreviewScreen(): JSX.Element {
         title,
         grade: opts.grade,
         subject: opts.subject,
-        className: opts.className || undefined,
+        className: opts.className || profile.className || undefined,
       },
       logoUrl: colegioLogoUrl,
+      accentColor: profile.accentColor,
     });
     srcDoc = buildPrintDocumentHtml({
       html: doc.html,

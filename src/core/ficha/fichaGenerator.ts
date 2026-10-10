@@ -1,6 +1,7 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { getActivityManifest } from "../../manifests/content-registry";
+import { buildAccentCssVars } from "./accentCss";
 import { difficultyStars } from "./difficultyStars";
 import { getGenerator } from "./generators/registry";
 import { FichaAlumno } from "./renderers/alumno";
@@ -37,6 +38,8 @@ export interface BuildFichaDocumentInput {
   modes: readonly FichaMode[];
   meta?: Partial<FichaMeta>;
   logoUrl?: string;
+  /** Color de acento de la clase (`#rrggbb`) para números / UI de ficha. */
+  accentColor?: string;
 }
 
 export interface FichaDocumentChunk {
@@ -121,7 +124,9 @@ export function buildFichaDocument(input: BuildFichaDocumentInput): FichaDocumen
     .map((c) => c.html)
     .join('<div class="ficha-print-break" aria-hidden="true"></div>');
 
-  return { exercises, config, modes, css: printCss, html, chunks };
+  const css = `${buildAccentCssVars(input.accentColor)}${printCss}`;
+
+  return { exercises, config, modes, css, html, chunks };
 }
 
 /** Genera ejercicios + HTML estático listo para imprimir. */
@@ -153,6 +158,7 @@ export interface DownloadFichasInput {
   modes: readonly FichaMode[];
   meta?: Partial<FichaMeta>;
   logoUrl?: string;
+  accentColor?: string;
 }
 
 /**

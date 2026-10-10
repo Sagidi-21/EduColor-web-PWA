@@ -7,7 +7,7 @@ export interface IgualdadRendererProps {
 }
 
 /**
- * Alumno: imágenes (resultado) + fórmula con huecos como en pizarra + ○ opciones.
+ * Alumno: imágenes + fórmula en la misma línea (resultado) + ○ opciones.
  * Soluciones: las maneja ExerciseRenderer.
  */
 export function IgualdadRenderer({ ex, showAnswer }: IgualdadRendererProps): JSX.Element {
@@ -55,17 +55,19 @@ export function IgualdadRenderer({ ex, showAnswer }: IgualdadRendererProps): JSX
 
   return (
     <div className="ficha-igualdad">
-      {showImages && (
-        <div className="ficha-igualdad__images">
-          <ObjectImageRow count={ex.a} imageUrl={ex.imageUrl} />
-          <span className="ficha-igualdad__plus" aria-hidden="true">
-            +
-          </span>
-          <ObjectImageRow count={ex.b} imageUrl={ex.imageUrl} />
+      <div className="ficha-igualdad__row">
+        {showImages && (
+          <div className="ficha-igualdad__images">
+            <ObjectImageRow count={ex.a} imageUrl={ex.imageUrl} />
+            <span className="ficha-igualdad__plus" aria-hidden="true">
+              +
+            </span>
+            <ObjectImageRow count={ex.b} imageUrl={ex.imageUrl} />
+          </div>
+        )}
+        <div className="ficha-igualdad__formula" aria-label="Operación">
+          {formula}
         </div>
-      )}
-      <div className="ficha-igualdad__formula" aria-label="Operación">
-        {formula}
       </div>
       {choices.length > 0 && (
         <div className="ficha-igualdad__choices">

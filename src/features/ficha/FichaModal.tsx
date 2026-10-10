@@ -35,6 +35,8 @@ export interface FichaModalProps {
   className?: string;
   /** Mascota de la clase (configuración), para la cabecera del Word. */
   mascotUrl?: string;
+  /** Color de acento de la clase (configuración). */
+  accentColor?: string;
   onClose: () => void;
 }
 
@@ -48,6 +50,7 @@ export function FichaModal({
   subjectTitle = "Matemáticas",
   className,
   mascotUrl,
+  accentColor,
   onClose,
 }: FichaModalProps): JSX.Element {
   const [count, setCount] = useState(10);
@@ -95,6 +98,7 @@ export function FichaModal({
           className,
           mascotUrl,
         },
+        accentColor,
       });
       return { doc };
     } catch (err) {
@@ -103,6 +107,7 @@ export function FichaModal({
       };
     }
   }, [
+    accentColor,
     activity.id,
     activity.title,
     className,

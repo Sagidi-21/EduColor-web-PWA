@@ -13,7 +13,7 @@ const PAD = 2;
 
 /**
  * Bloques de decenas y unidades (TensBlock de pizarra) en SVG apto para impresión.
- * Decena = rectángulo azul «10»; unidad = círculo naranja.
+ * Decena = rectángulo «10» con color de clase (`--color-primary`); unidad = círculo naranja.
  */
 export function TensBlocksSvg({ number }: TensBlocksSvgProps): JSX.Element {
   const n = Math.max(0, Math.floor(number));
@@ -50,8 +50,9 @@ export function TensBlocksSvg({ number }: TensBlocksSvgProps): JSX.Element {
             width={TEN_W}
             height={TEN_H}
             rx={6}
-            fill="#3b82f6"
-            stroke="#1d4ed8"
+            className="ficha-tens-blocks__ten"
+            fill="var(--color-primary, #3b82f6)"
+            stroke="var(--color-primary-dark, #1d4ed8)"
             strokeWidth={1.5}
           />
           <text

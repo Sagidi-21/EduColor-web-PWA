@@ -19,12 +19,22 @@
   filter: grayscale(1);
 }
 
+/* Imágenes a la izquierda, operación a la derecha (misma línea). */
+.ficha-igualdad__row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .ficha-igualdad__images {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
-  margin-bottom: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .ficha-igualdad__plus {
@@ -39,6 +49,8 @@
   flex-wrap: wrap;
   gap: 6px;
   margin: 0;
+  margin-left: auto;
+  flex: 0 0 auto;
   font-size: 20px;
   font-weight: 800;
   color: #0f172a;
@@ -46,22 +58,24 @@
 }
 
 .ficha-igualdad__num {
-  color: #0284c7;
+  color: var(--color-primary, #2563eb);
 }
 
 .ficha-igualdad__op {
   color: #334155;
 }
 
+/* Hueco = línea baja (edita width para alargar/acortar). */
 .ficha-igualdad__blank {
   display: inline-block;
-  width: 36px;
-  height: 32px;
-  border: 1.5px dashed #94a3b8;
-  border-radius: 3px;
-  background: #f8fafc;
+  width: 56px;
+  height: 1em;
+  border: none;
+  border-bottom: 2px solid #334155;
+  background: transparent;
+  border-radius: 0;
   box-sizing: border-box;
-  vertical-align: middle;
+  vertical-align: baseline;
 }
 
 .ficha-igualdad__choices {
