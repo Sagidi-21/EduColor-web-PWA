@@ -174,7 +174,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 
 ## Otros
 
-- [ ] **leftRight** — Izquierda y derecha
+- [x] **leftRight** — Izquierda y derecha _(2026-10-10: OK — opciones centradas; hint redondea; expert char-click con hint «x» en recuadro)_
 - [x] **posicionesAula** — Posiciones en el aula _(2026-10-10: OK — escena SVG + ○ opciones, soluciones solo respuesta)_
 - [ ] **rutaCuadricula** — Taller de programación
 - [ ] **repartoIgual** — Repartos en partes iguales

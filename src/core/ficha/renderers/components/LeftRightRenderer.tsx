@@ -44,18 +44,12 @@ function SideObject({
 /** Personaje entre dos cajas de mano (izquierda | personaje | derecha del papel). */
 function CharScene({ ex }: { ex: LeftRightSheetExercise }): JSX.Element {
   const char = ex.char;
-  const isClick = ex.variant === "char-click";
   const objects = ex.dragObjects ?? [];
   return (
     <>
       <div className="ficha-leftright__scene" aria-label="Escena con personaje">
         <div className="ficha-leftright__hand">
           <span className="ficha-leftright__box" />
-          {isClick && (
-            <span className="ficha-leftright__box-mark" aria-hidden>
-              •
-            </span>
-          )}
         </div>
         {char?.imageUrl ? (
           <img src={char.imageUrl} alt={char.name} className="ficha-leftright__char" />
@@ -64,11 +58,6 @@ function CharScene({ ex }: { ex: LeftRightSheetExercise }): JSX.Element {
         )}
         <div className="ficha-leftright__hand">
           <span className="ficha-leftright__box" />
-          {isClick && (
-            <span className="ficha-leftright__box-mark" aria-hidden>
-              •
-            </span>
-          )}
         </div>
       </div>
       {objects.length > 0 && (
@@ -98,9 +87,15 @@ export function LeftRightRenderer({ ex, showAnswer }: LeftRightRendererProps): J
   }
 
   if (ex.variant && ex.variant.startsWith("char-")) {
+    const isClick = ex.variant === "char-click";
     return (
       <div className="ficha-leftright ficha-leftright--char">
-        <p className="ficha-leftright__question">{ex.question}</p>
+        <p className="ficha-leftright__question">
+          {ex.question}{" "}
+          {isClick ? (
+            <span className="ficha-leftright__hint">(pon una «x» en el recuadro correcto)</span>
+          ) : null}
+        </p>
         <CharScene ex={ex} />
       </div>
     );
@@ -109,7 +104,12 @@ export function LeftRightRenderer({ ex, showAnswer }: LeftRightRendererProps): J
   const choices = ex.choiceLabels ?? [];
   return (
     <div className="ficha-leftright">
-      <p className="ficha-leftright__question">{ex.question}</p>
+      <p className="ficha-leftright__question">
+        {ex.question}{" "}
+        {choices.length > 0 ? (
+          <span className="ficha-leftright__hint">(redondea la correcta)</span>
+        ) : null}
+      </p>
       <div className="ficha-leftright__pair">
         <SideObject
           imageUrl={ex.leftImgUrl}
