@@ -3,7 +3,14 @@ import { pairIntoRows } from "./ExerciseGrid";
 
 function cell(number: number, full = false) {
   return {
-    ex: { kind: "operation" as const, a: 1, b: 1, op: "+" as const, answer: 2 },
+    ex: {
+      kind: "operation" as const,
+      a: 1,
+      b: 1,
+      op: "+" as const,
+      imageUrl: "",
+      answer: 2,
+    },
     number,
     full,
     variant: "",
