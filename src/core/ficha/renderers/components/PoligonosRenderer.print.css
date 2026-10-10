@@ -1,23 +1,69 @@
-/* Polígonos — layout alumno */
+/* Polígonos / Formas y tamaños — layout alumno */
 
 .ficha-shape-svg {
   display: block;
   margin-top: 6px;
 }
 
-/* Imagen de ejercicio (copia local) */
-.ficha-exercise__image {
-  height: 56px;
-  width: 56px;
-  max-height: 56px;
-  max-width: 56px;
+/* Foto real (nivel experto). Ajusta aquí el tamaño. */
+.ficha-poligonos__photo {
+  height: 110px;
+  width: 110px;
+  max-height: 110px;
+  max-width: 110px;
   object-fit: contain;
+  display: block;
 }
 
-.ficha-poligonos__figure {
+.ficha-poligonos__question {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.25;
+}
+
+.ficha-poligonos__body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 120px;
   margin-top: 6px;
 }
 
+.ficha-poligonos__figure {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ficha-poligonos__choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* Círculo tipográfico (○) en la misma línea: html2canvas alinea mal cajas vacías/flex. */
+.ficha-poligonos__choice {
+  display: block;
+  font-size: 16px;
+  line-height: 1.35;
+  color: #222;
+  min-width: 0;
+}
+
+.ficha-poligonos__choice-mark {
+  margin-right: 6px;
+}
+
+.ficha-poligonos__choice-text {
+  text-transform: capitalize;
+}
+
+/* Opciones figurativas (actividad polígonos) */
 .ficha-poligonos__options {
   display: flex;
   flex-wrap: wrap;

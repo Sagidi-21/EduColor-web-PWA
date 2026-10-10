@@ -123,4 +123,16 @@ describe("pageLayout", () => {
     expect(isFullWidthExercise(ex)).toBe(false);
     expect(isFullWidthExercise(ex, { showAnswer: true })).toBe(false);
   });
+
+  it("poligonos/shapes: menos por hoja en alumno; soluciones más densas", () => {
+    const ex = {
+      kind: "poligonos" as const,
+      question: "¿Cómo se llama esta figura?",
+      answer: "círculo",
+      choiceLabels: ["círculo", "cuadrado", "triángulo"],
+    };
+    expect(pageSizeForExercises([ex])).toBe(8);
+    expect(pageSizeForExercises([ex], { showAnswer: true })).toBe(16);
+    expect(isFullWidthExercise(ex)).toBe(false);
+  });
 });

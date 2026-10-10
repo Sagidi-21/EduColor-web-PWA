@@ -69,6 +69,10 @@ export function pageSizeForExercises(
     // Siempre 10 por hoja A4 (2×5), alumno y soluciones.
     return 10;
   }
+  if (first.kind === "poligonos") {
+    // Alumno: figura + opciones de texto (más altos). Soluciones: solo etiqueta.
+    return options.showAnswer ? 16 : 8;
+  }
   return exercises.length || 1;
 }
 

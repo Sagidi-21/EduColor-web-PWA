@@ -215,12 +215,40 @@ function mapShapes(ex: Record<string, unknown>, config: SheetConfig): PoligonosS
     rotation: asNumber(ex.rotation),
     label: asString(shapeRaw.label),
   };
+
+  const optionsRaw = Array.isArray(ex.options) ? ex.options : [];
+  const choiceLabels = optionsRaw
+    .map((opt) => {
+      if (opt && typeof opt === "object") {
+        const o = opt as Record<string, unknown>;
+        return asString(o.label) || asString(o.id);
+      }
+      return asString(opt);
+    })
+    .filter(Boolean);
+
+  const correctId = asString(ex.correctAnswer ?? ex.answer);
+  const answerFromOptions = optionsRaw.find((opt) => {
+    if (!opt || typeof opt !== "object") return false;
+    return asString((opt as Record<string, unknown>).id) === correctId;
+  });
+  const answerFromOptLabel =
+    answerFromOptions && typeof answerFromOptions === "object"
+      ? asString((answerFromOptions as Record<string, unknown>).label)
+      : "";
+  const answerLabel = asString(shapeRaw.label) || answerFromOptLabel || correctId;
+
+  const imageUrl = config.withImages ? asString(ex.imageUrl) || undefined : undefined;
+  const question =
+    questionOf(ex) || (imageUrl ? "¿Qué forma tiene este objeto?" : "¿Cómo se llama esta figura?");
+
   return {
     kind: "poligonos",
-    question: questionOf(ex) || "¿Qué forma es?",
-    answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
+    question,
+    answer: answerLabel || undefined,
     shape,
-    imageUrl: config.withImages ? asString(ex.imageUrl) || undefined : undefined,
+    imageUrl,
+    choiceLabels: choiceLabels.length > 0 ? choiceLabels : undefined,
   };
 }
 

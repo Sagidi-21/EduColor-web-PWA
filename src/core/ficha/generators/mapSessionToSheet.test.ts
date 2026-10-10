@@ -140,6 +140,57 @@ describe("mapSessionToSheet", () => {
     }
   });
 
+  it("mapea shapes con opciones de texto como en pizarra", () => {
+    const ex = mapSessionToSheet(
+      "shapes",
+      {
+        shape: { id: "circulo", label: "círculo", type: "circle" },
+        color: "#ef4444",
+        rotation: 0,
+        options: [
+          { id: "circulo", label: "círculo", type: "circle" },
+          { id: "cuadrado", label: "cuadrado", type: "square" },
+          { id: "triangulo", label: "triángulo", type: "triangle" },
+        ],
+        correctAnswer: "circulo",
+      },
+      config,
+    );
+    expect(ex.kind).toBe("poligonos");
+    if (ex.kind === "poligonos") {
+      expect(ex.question).toBe("¿Cómo se llama esta figura?");
+      expect(ex.answer).toBe("círculo");
+      expect(ex.shape?.primitive).toBe("circle");
+      expect(ex.choiceLabels).toEqual(["círculo", "cuadrado", "triángulo"]);
+      expect(ex.imageUrl).toBeUndefined();
+    }
+  });
+
+  it("mapea shapes expert con foto y pregunta de objeto", () => {
+    const ex = mapSessionToSheet(
+      "shapes",
+      {
+        shape: { id: "ovalo", label: "óvalo", type: "oval" },
+        color: "#3b82f6",
+        rotation: 0,
+        options: [
+          { id: "ovalo", label: "óvalo", type: "oval" },
+          { id: "circulo", label: "círculo", type: "circle" },
+        ],
+        correctAnswer: "ovalo",
+        imageUrl: "/shapes/ovalo.jpg",
+      },
+      { ...config, withImages: true },
+    );
+    expect(ex.kind).toBe("poligonos");
+    if (ex.kind === "poligonos") {
+      expect(ex.question).toBe("¿Qué forma tiene este objeto?");
+      expect(ex.answer).toBe("óvalo");
+      expect(ex.imageUrl).toBe("/shapes/ovalo.jpg");
+      expect(ex.choiceLabels).toEqual(["óvalo", "círculo"]);
+    }
+  });
+
   it("mapea lineTypes con svg del line", () => {
     const ex = mapSessionToSheet(
       "lineTypes",

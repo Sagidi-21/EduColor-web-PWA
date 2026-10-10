@@ -217,6 +217,31 @@ describe("fichaGenerator", () => {
     expect(soluciones.html).not.toContain("ficha-img-row__thumb");
   });
 
+  it("shapes muestra figura, pregunta y opciones; soluciones solo el nombre", () => {
+    const alumno = generateFicha({
+      activityId: "shapes",
+      config: { ...baseConfig("shapes"), withImages: true, count: 4, difficulty: "easy" },
+      mode: "alumno",
+    });
+    expect(alumno.exercises.every((ex) => ex.kind === "poligonos")).toBe(true);
+    expect(alumno.html).toContain("¿Cómo se llama esta figura?");
+    expect(alumno.html).toContain("ficha-poligonos__choices");
+    expect(alumno.html).toContain("ficha-poligonos__choice-mark");
+    expect(alumno.html).toMatch(/círculo|cuadrado|triángulo/);
+    expect(alumno.html).not.toContain("ficha-answer");
+
+    const soluciones = generateFicha({
+      activityId: "shapes",
+      config: { ...baseConfig("shapes"), withImages: true, count: 4, difficulty: "easy" },
+      mode: "soluciones",
+    });
+    expect(soluciones.html).toContain("ficha-answer");
+    expect(soluciones.html).toMatch(/círculo|cuadrado|triángulo/);
+    expect(soluciones.html).not.toContain("ficha-poligonos__choices");
+    expect(soluciones.html).not.toContain("¿Cómo se llama esta figura?");
+    expect(soluciones.html).toMatch(/Soluciones/i);
+  });
+
   it("counting muestra objetos y casilla en alumno; soluciones solo el número", () => {
     const alumno = generateFicha({
       activityId: "counting",

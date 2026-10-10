@@ -212,8 +212,10 @@ export interface PoligonosSheetExercise {
   shape?: SheetShapeVisual;
   /** Foto real (p. ej. shapes expert) en lugar del SVG. */
   imageUrl?: string;
-  /** Rejilla de opciones (nivel experto). */
+  /** Rejilla de opciones figurativas (actividad polígonos). */
   optionsList?: SheetShapeVisual[];
+  /** Opciones de texto para marcar (p. ej. Formas y tamaños, como en pizarra). */
+  choiceLabels?: string[];
 }
 
 export interface RelacionSumaRestaSheetExercise {

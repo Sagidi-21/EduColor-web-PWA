@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 5 / 62
+**Progreso:** 6 / 62
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -58,6 +58,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `relacionar` | Relacionar número y cantidad | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**         |
 | `ordenar`    | Ordenar números              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                          |
 | `amigos10`   | Los amigos del 10            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: ten-frame + operación a la derecha, casilla de respuesta, soluciones solo número, **Word=vista previa**. |
+| `shapes`     | Formas y tamaños             | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: figura/foto + opciones texto como pizarra, soluciones solo nombre, PDF alineado (○ tipográfico).         |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
@@ -137,7 +138,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 ## Geometría
 
 - [ ] **poligonos** — Los polígonos
-- [ ] **shapes** — Formas y tamaños
+- [x] **shapes** — Formas y tamaños _(2026-10-10: OK — figura/foto + opciones como pizarra, soluciones solo nombre, PDF alineado)_
 - [ ] **simetria** — Simetría
 - [ ] **cuerpos3d** — Cuerpos geométricos
 - [ ] **circuloCircunferencia** — Círculo y circunferencia
