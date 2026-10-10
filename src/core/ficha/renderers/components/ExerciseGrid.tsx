@@ -1,6 +1,7 @@
 import type { SheetExercise } from "../../types";
+import { exerciseCardVariant, pairIntoRows } from "../exerciseLayout";
 import { isFullWidthExercise } from "../pageLayout";
-import { ExerciseCard, exerciseCardVariant } from "./ExerciseCard";
+import { ExerciseCard } from "./ExerciseCard";
 import { ExerciseRenderer } from "./ExerciseRenderer";
 
 export interface ExerciseGridProps {
@@ -8,36 +9,6 @@ export interface ExerciseGridProps {
   /** Índice global del primer ejercicio de la página (0-based). */
   pageOffset: number;
   showAnswer: boolean;
-}
-
-interface GridCell {
-  ex: SheetExercise;
-  number: number;
-  full: boolean;
-  variant: string;
-}
-
-/** Empareja celdas en filas de 2; full-width ocupa fila completa. */
-export function pairIntoRows(cells: GridCell[]): GridCell[][] {
-  const rows: GridCell[][] = [];
-  let i = 0;
-  while (i < cells.length) {
-    const cur = cells[i]!;
-    if (cur.full) {
-      rows.push([cur]);
-      i += 1;
-      continue;
-    }
-    const next = cells[i + 1];
-    if (next && !next.full) {
-      rows.push([cur, next]);
-      i += 2;
-    } else {
-      rows.push([cur]);
-      i += 1;
-    }
-  }
-  return rows;
 }
 
 /**
@@ -49,7 +20,7 @@ export function ExerciseGrid({
   showAnswer,
 }: ExerciseGridProps): JSX.Element {
   const pageOpts = { showAnswer };
-  const cells: GridCell[] = exercises.map((ex, i) => ({
+  const cells = exercises.map((ex, i) => ({
     ex,
     number: pageOffset + i + 1,
     full: isFullWidthExercise(ex, pageOpts),

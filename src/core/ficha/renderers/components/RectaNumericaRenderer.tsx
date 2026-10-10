@@ -6,7 +6,7 @@ export interface RectaNumericaRendererProps {
 }
 
 /** hard (max 50) / expert (max 100): una por fila, recta más ancha. */
-export function isWideRectaNumerica(ex: RectaNumericaSheetExercise): boolean {
+function isWideRectaNumerica(ex: RectaNumericaSheetExercise): boolean {
   return ex.max >= 50;
 }
 

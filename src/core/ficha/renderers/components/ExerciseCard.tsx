@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import type { SheetExercise } from "../../types";
 
 export interface ExerciseCardProps {
   number: number;
@@ -8,31 +7,6 @@ export interface ExerciseCardProps {
   /** Variante de layout (sustituye selectores `:has()` poco fiables en Word). */
   variant?: string;
   className?: string;
-}
-
-/** Clase explícita por tipo de ejercicio para CSS Word-safe. */
-export function exerciseCardVariant(ex: SheetExercise): string {
-  switch (ex.kind) {
-    case "counting":
-      return "counting";
-    case "comparison":
-      return "compare";
-    case "seriesNumericas":
-    case "series3Cifras":
-      return "series";
-    case "ordenar":
-      return "ordenar";
-    case "relacionar":
-      return "relacionar";
-    case "multiplicacion":
-      return "multiplicacion";
-    case "amigos10":
-      return "amigos10";
-    case "tablaNumerica":
-      return "tabla";
-    default:
-      return "";
-  }
 }
 
 export function ExerciseCard({
