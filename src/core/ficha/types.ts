@@ -650,13 +650,15 @@ export interface Amigos10SheetExercise {
 export interface LecturaNumerosSheetExercise {
   kind: "lecturaNumeros";
   variant: "cifra-to-palabra" | "palabra-to-cifra";
-  /** Consigna («Elige cómo se escribe este número:»). */
+  /** Consigna («¿Cómo se escribe este número?»). */
   question: string;
   /** Texto grande: la cifra o la palabra entre comillas. */
   display: string;
   number: number;
   word: string;
   choiceLabels: string[];
+  /** Nivel de ficha (tamaños de display en hard/expert). */
+  difficulty: Difficulty;
   answer?: string | number;
 }
 

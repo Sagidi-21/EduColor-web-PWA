@@ -133,7 +133,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [ ] **numeracion6099** — Números del 60 al 99
 - [ ] **numeracion999** — Numeración hasta 999
 - [ ] **tablaNumerica** — La tabla de los números
-- [ ] **lecturaNumeros** — Lectura de números
+- [x] **lecturaNumeros** — Lectura de números _(2026-10-10: OK — enunciado ½ + número dcha.; color de clase; hint redondea; opciones space-between; hard/expert 1/fila y display más pequeño)_
 - [x] **ordenar** — Ordenar números _(2026-10-09: OK — alumno+soluciones, impresión A4, cabecera/logo)_
 - [ ] **seriesNumericas** — Series numéricas
 - [ ] **series3cifras** — Series de 3 cifras

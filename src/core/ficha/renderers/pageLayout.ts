@@ -112,6 +112,11 @@ export function pageSizeForExercises(
     const wide = first.max >= 50;
     return wide ? 6 : 10;
   }
+  if (first.kind === "lecturaNumeros") {
+    // easy/medium: 2 cols. hard/expert: 1 por fila (más ancho para opciones).
+    const wide = first.difficulty === "hard" || first.difficulty === "expert";
+    return options.showAnswer ? 16 : wide ? 8 : 10;
+  }
   if (first.kind === "sumaLlevando" || first.kind === "algoritmo3Cifras") {
     // Alumno: cuadrícula con casillas (más alta que una operación suelta).
     return options.showAnswer ? 20 : 10;
@@ -147,5 +152,9 @@ export function isFullWidthExercise(
   }
   // hard/expert: una recta por fila (alumno y soluciones).
   if (ex.kind === "rectaNumerica") return ex.max >= 50;
+  // hard/expert: un ejercicio de lectura por fila (alumno).
+  if (ex.kind === "lecturaNumeros") {
+    return !options.showAnswer && (ex.difficulty === "hard" || ex.difficulty === "expert");
+  }
   return false;
 }

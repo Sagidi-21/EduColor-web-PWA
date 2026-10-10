@@ -1,39 +1,91 @@
-/* Lectura de números — cifra/palabra grande + ○ opciones */
+/* Lectura de números — enunciado ½ + número dcha.; opciones a ancho completo debajo */
+/* Tamaños del display: edita font-size aquí (base, --word, --hard/--expert). */
+
+.ficha-lectura {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ficha-lectura__top {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
 
 .ficha-lectura__question {
-  margin: 0 0 6px;
+  flex: 0 0 50%;
+  max-width: 50%;
+  margin: 0;
   font-size: 16px;
   font-weight: 600;
   color: #1e293b;
-  line-height: 1.25;
+  line-height: 1.3;
+  box-sizing: border-box;
 }
 
-/* Número / palabra grande — edita font-size aquí */
+.ficha-lectura__hint {
+  display: inline;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.ficha-lectura__display-slot {
+  flex: 1 1 50%;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Número grande (easy/medium) — color de clase */
 .ficha-lectura__display {
   display: inline-block;
-  margin: 0 0 8px;
+  margin: 0;
   padding: 4px 22px;
   font-size: 40px;
   font-weight: 900;
   line-height: 1.15;
-  color: #0284c7;
-  background: #e0f2fe;
-  border: 1.5px solid #0284c7;
+  color: var(--color-primary, #0284c7);
+  background: color-mix(in srgb, var(--color-primary, #0284c7) 18%, #fff);
+  border: 1.5px solid var(--color-primary, #0284c7);
   border-radius: 8px;
+  box-sizing: border-box;
+  text-align: center;
 }
 
+/* Palabra (no cifra): más pequeño que el número */
 .ficha-lectura__display--word {
-  font-size: 26px;
+  font-size: 22px;
   font-style: italic;
-  color: #6d28d9;
-  background: #ede9fe;
-  border-color: #7c3aed;
+  padding: 6px 14px;
+}
+
+/* Hard / expert: números más pequeños */
+.ficha-lectura--hard .ficha-lectura__display,
+.ficha-lectura--expert .ficha-lectura__display {
+  font-size: 28px;
+  padding: 3px 14px;
+}
+
+/* Hard / expert + palabra: aún más pequeño */
+.ficha-lectura--hard .ficha-lectura__display--word,
+.ficha-lectura--expert .ficha-lectura__display--word {
+  font-size: 16px;
+  padding: 4px 10px;
 }
 
 .ficha-lectura__choices {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 18px;
+  box-sizing: border-box;
 }
 
 .ficha-lectura__choice {

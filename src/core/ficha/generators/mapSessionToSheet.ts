@@ -1475,7 +1475,7 @@ function mapAbaco3Cifras(ex: Record<string, unknown>): SheetExercise {
   };
 }
 
-function mapLecturaNumeros(ex: Record<string, unknown>): SheetExercise {
+function mapLecturaNumeros(ex: Record<string, unknown>, config: SheetConfig): SheetExercise {
   const variant: "cifra-to-palabra" | "palabra-to-cifra" =
     asString(ex.type) === "palabra-to-cifra" ? "palabra-to-cifra" : "cifra-to-palabra";
   const number = asNumber(ex.number);
@@ -1484,11 +1484,12 @@ function mapLecturaNumeros(ex: Record<string, unknown>): SheetExercise {
   return {
     kind: "lecturaNumeros",
     variant,
-    question: isCifraToWord ? "Elige cómo se escribe este número:" : "¿Qué número es este?",
+    question: isCifraToWord ? "¿Cómo se escribe este número?" : "¿Qué número es este?",
     display: isCifraToWord ? String(number) : `"${word}"`,
     number,
     word,
     choiceLabels: asStringArray(ex.options),
+    difficulty: config.difficulty,
     answer: asString(ex.correctAnswer) || undefined,
   };
 }
@@ -1643,7 +1644,7 @@ export function mapSessionToSheet(
     case "amigos10":
       return mapAmigos10(ex, config);
     case "lecturaNumeros":
-      return mapLecturaNumeros(ex);
+      return mapLecturaNumeros(ex, config);
     case "dobleYMitad":
       return mapDobleYMitad(ex);
     case "abaco3cifras":

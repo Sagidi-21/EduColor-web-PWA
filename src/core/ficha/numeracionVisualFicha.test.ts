@@ -241,6 +241,16 @@ describe("lecturaNumeros ficha", () => {
     const sol = html(createElement(LecturaNumerosRenderer, { ex: w!, showAnswer: true }));
     expect(sol).not.toContain("ficha-lectura__display");
   });
+
+  it("hard/expert: un ejercicio por fila en alumno; easy en 2 columnas", () => {
+    const easy = generate<LecturaNumerosSheetExercise>("lecturaNumeros", "easy")[0]!;
+    const hard = generate<LecturaNumerosSheetExercise>("lecturaNumeros", "hard")[0]!;
+    const expert = generate<LecturaNumerosSheetExercise>("lecturaNumeros", "expert")[0]!;
+    expect(isFullWidthExercise(easy)).toBe(false);
+    expect(isFullWidthExercise(hard)).toBe(true);
+    expect(isFullWidthExercise(expert)).toBe(true);
+    expect(isFullWidthExercise(hard, { showAnswer: true })).toBe(false);
+  });
 });
 
 describe("redondeo ficha", () => {

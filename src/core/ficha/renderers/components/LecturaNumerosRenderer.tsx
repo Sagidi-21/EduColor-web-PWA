@@ -6,8 +6,9 @@ export interface LecturaNumerosRendererProps {
 }
 
 /**
- * Alumno: consigna + número o palabra en grande + • opciones.
+ * Alumno: consigna (mitad izq.) + número a la derecha; • opciones a ancho completo debajo.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
+ * Tamaños: editar `LecturaNumerosRenderer.print.css` (base, --word, --hard/--expert).
  */
 export function LecturaNumerosRenderer({
   ex,
@@ -19,10 +20,16 @@ export function LecturaNumerosRenderer({
 
   const isWord = ex.variant === "palabra-to-cifra";
   return (
-    <div className="ficha-lectura">
-      <p className="ficha-lectura__question">{ex.question}</p>
-      <div className={`ficha-lectura__display${isWord ? " ficha-lectura__display--word" : ""}`}>
-        {ex.display}
+    <div className={`ficha-lectura ficha-lectura--${ex.difficulty}`}>
+      <div className="ficha-lectura__top">
+        <p className="ficha-lectura__question">
+          {ex.question} <span className="ficha-lectura__hint">(redondea la correcta)</span>
+        </p>
+        <div className="ficha-lectura__display-slot">
+          <div className={`ficha-lectura__display${isWord ? " ficha-lectura__display--word" : ""}`}>
+            {ex.display}
+          </div>
+        </div>
       </div>
       <div className="ficha-lectura__choices">
         {ex.choiceLabels.map((label, i) => (
