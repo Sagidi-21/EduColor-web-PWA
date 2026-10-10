@@ -10,6 +10,8 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
+>
+> Si el profesor marca una actividad como revisada/OK, se da por **completa**: alumno, soluciones, print A4 y Word = preview (todas las casillas `[x]` en la tabla de regresión).
 
 ---
 
@@ -49,13 +51,13 @@ Usar **siempre** la misma semilla y parámetros:
 Estas son las únicas actividades marcadas OK en la revisión manual de fichas a 2026-10-10.
 Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 
-| ID           | Actividad                    | Alumno | Soluciones | Print A4 | Word = preview | Notas / baseline                                                                                                                   |
-| ------------ | ---------------------------- | ------ | ---------- | -------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `counting`   | Contamos objetos             | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: objetos+pregunta, 10/hoja, soluciones con número. **Revalidar Word=preview.**                                 |
-| `comparison` | Mayor y menor                | [x]    | [x]        | [x]      | [x]            | OK 2026-10-09: fila A\|B, sin +N, hard/expert con iguales, soluciones sin dibujos, **Word=vista previa** ya anotado.               |
-| `relacionar` | Relacionar número y cantidad | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**                    |
-| `ordenar`    | Ordenar números              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                                     |
-| `amigos10`   | Los amigos del 10            | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-10: ten-frame + operación a la derecha, casilla de respuesta, soluciones solo número. **Revalidar Word=preview.** |
+| ID           | Actividad                    | Alumno | Soluciones | Print A4 | Word = preview | Notas / baseline                                                                                                        |
+| ------------ | ---------------------------- | ------ | ---------- | -------- | -------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `counting`   | Contamos objetos             | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: objetos+pregunta, 10/hoja, soluciones con número. **Revalidar Word=preview.**                      |
+| `comparison` | Mayor y menor                | [x]    | [x]        | [x]      | [x]            | OK 2026-10-09: fila A\|B, sin +N, hard/expert con iguales, soluciones sin dibujos, **Word=vista previa** ya anotado.    |
+| `relacionar` | Relacionar número y cantidad | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**         |
+| `ordenar`    | Ordenar números              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                          |
+| `amigos10`   | Los amigos del 10            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: ten-frame + operación a la derecha, casilla de respuesta, soluciones solo número, **Word=vista previa**. |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
