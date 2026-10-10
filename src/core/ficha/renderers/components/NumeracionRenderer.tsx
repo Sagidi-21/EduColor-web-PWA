@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   Numeracion1119SheetExercise,
   Numeracion4059SheetExercise,
   Numeracion6099SheetExercise,
@@ -15,7 +15,7 @@ export interface NumeracionRendererProps {
 
 /**
  * Alumno:
- * - MC: enunciado arriba; imagen + opciones a la derecha (11–19 sin ○).
+ * - MC: enunciado arriba; imagen + opciones a la derecha (11–19 sin •).
  * - 11–19 medium+: imagen y enunciado debajo (sin casillas).
  * - Resto sin MC: casillas discontinuas si `showAnswerBoxes !== false`.
  */
@@ -49,7 +49,7 @@ export function NumeracionRenderer({ ex, showAnswer }: NumeracionRendererProps):
               <span key={`${label}-${i}`} className="ficha-numeracion__choice">
                 {showChoiceMarks && (
                   <span className="ficha-numeracion__choice-mark" aria-hidden>
-                    ○
+                    •
                   </span>
                 )}
                 <span>{label}</span>

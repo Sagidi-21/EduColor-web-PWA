@@ -63,14 +63,16 @@ export function IgualdadRenderer({ ex, showAnswer }: IgualdadRendererProps): JSX
 
   const question =
     ex.type === "decompose"
-      ? "Redondea la opción correcta"
+      ? "Completa la igualdad"
       : ex.type === "addend"
         ? "Escribe el número correcto"
         : "Resuelve la operación";
 
   return (
     <div className={rootClass}>
-      {question && <p className="ficha-igualdad__question">{question}</p>}
+      <p className="ficha-igualdad__question">
+        {question} <span className="ficha-igualdad__hint">(redondea la correcta)</span>
+      </p>
       <div className="ficha-igualdad__row">
         {showImages && (
           <div className="ficha-igualdad__images">

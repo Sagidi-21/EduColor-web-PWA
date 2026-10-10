@@ -1,4 +1,4 @@
-import type { PoligonosSheetExercise } from "../../types";
+﻿import type { PoligonosSheetExercise } from "../../types";
 import { ShapeSvg } from "./ShapeSvg";
 
 export interface PoligonosRendererProps {
@@ -40,7 +40,7 @@ export function PoligonosRenderer({ ex, showAnswer }: PoligonosRendererProps): J
             {ex.choiceLabels!.map((label, i) => (
               <div key={`${label}-${i}`} className="ficha-poligonos__choice">
                 <span className="ficha-poligonos__choice-mark" aria-hidden>
-                  ○
+                  •
                 </span>
                 <span className="ficha-poligonos__choice-text">{label}</span>
               </div>

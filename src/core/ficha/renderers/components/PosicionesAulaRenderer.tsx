@@ -247,7 +247,9 @@ export function PosicionesAulaRenderer({
         <Scene ex={ex} />
       </div>
       <div className="ficha-posiciones__text">
-        <p className="ficha-posiciones__question">{ex.question}</p>
+        <p className="ficha-posiciones__question">
+          {ex.question} <span className="ficha-posiciones__hint">(redondea la correcta)</span>
+        </p>
         {choices.map((label, i) => (
           <div key={`${label}-${i}`} className="ficha-posiciones__choice">
             <span className="ficha-posiciones__choice-mark" aria-hidden>

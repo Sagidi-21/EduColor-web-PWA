@@ -1,4 +1,4 @@
-import type { CirculoCircunferenciaSheetExercise } from "../../types";
+﻿import type { CirculoCircunferenciaSheetExercise } from "../../types";
 
 export interface CirculoCircunferenciaRendererProps {
   ex: CirculoCircunferenciaSheetExercise;
@@ -35,7 +35,7 @@ function CirculoSvg({
 }
 
 /**
- * Alumno: figura SVG (o objeto real) + pregunta + opciones ○ (como en pizarra).
+ * Alumno: figura SVG (o objeto real) + pregunta + opciones • (como en pizarra).
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function CirculoCircunferenciaRenderer({
@@ -68,7 +68,7 @@ export function CirculoCircunferenciaRenderer({
             {choices.map((label, i) => (
               <div key={`${label}-${i}`} className="ficha-cc__choice">
                 <span className="ficha-cc__choice-mark" aria-hidden>
-                  ○
+                  •
                 </span>
                 <span>{label}</span>
               </div>

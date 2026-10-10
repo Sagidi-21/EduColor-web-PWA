@@ -1,4 +1,4 @@
-import type { DatosInnecesariosSheetExercise } from "../../types";
+﻿import type { DatosInnecesariosSheetExercise } from "../../types";
 
 export interface DatosInnecesariosRendererProps {
   ex: DatosInnecesariosSheetExercise;
@@ -6,7 +6,7 @@ export interface DatosInnecesariosRendererProps {
 }
 
 /**
- * Alumno: pregunta + frases numeradas con ○ para marcar la que sobra (como pizarra).
+ * Alumno: pregunta + frases numeradas con • para marcar la que sobra (como pizarra).
  */
 export function DatosInnecesariosRenderer({
   ex,
@@ -24,7 +24,7 @@ export function DatosInnecesariosRenderer({
         {ex.story.map((frase, i) => (
           <div key={i} className="ficha-datos-innec__frase">
             <span className="ficha-datos-innec__mark" aria-hidden>
-              ○
+              •
             </span>
             <span className="ficha-datos-innec__num">{i + 1}.</span>
             <span className="ficha-datos-innec__texto">{frase}</span>

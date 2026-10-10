@@ -1,4 +1,4 @@
-import type { DobleYMitadSheetExercise } from "../../types";
+﻿import type { DobleYMitadSheetExercise } from "../../types";
 
 export interface DobleYMitadRendererProps {
   ex: DobleYMitadSheetExercise;
@@ -6,7 +6,7 @@ export interface DobleYMitadRendererProps {
 }
 
 /**
- * Alumno: pregunta + cajas Número ×2/÷2 Doble|Mitad (hueco donde falta el dato) + ○ opciones.
+ * Alumno: pregunta + cajas Número ×2/÷2 Doble|Mitad (hueco donde falta el dato) + • opciones.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function DobleYMitadRenderer({ ex, showAnswer }: DobleYMitadRendererProps): JSX.Element {
@@ -52,7 +52,7 @@ export function DobleYMitadRenderer({ ex, showAnswer }: DobleYMitadRendererProps
           {choices.map((label, i) => (
             <span key={`${label}-${i}`} className="ficha-doble__choice">
               <span className="ficha-doble__choice-mark" aria-hidden>
-                ○
+                •
               </span>
               <span>{label}</span>
             </span>

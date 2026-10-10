@@ -7,11 +7,17 @@
   color: #1e293b;
 }
 
+.ficha-linetypes__hint {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+}
+
 .ficha-linetypes__body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 16px;
+  gap: 120px;
   flex-wrap: wrap;
 }
 

@@ -80,3 +80,12 @@
   font-weight: 600;
   color: #1e293b;
 }
+
+/* Marcador de opción (•): puntito negro pequeño.
+   Validados con ○ tipográfico (posiciones / igualdad no-decompose) se excluyen. */
+[class*="__choice-mark"]:not(.ficha-posiciones__choice-mark):not(.ficha-igualdad__choice-mark),
+.ficha-datos-innec__mark {
+  font-size: 11px;
+  line-height: 1;
+  color: #0f172a;
+}

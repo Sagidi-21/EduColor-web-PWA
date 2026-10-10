@@ -1,4 +1,4 @@
-import type { Numeracion999SheetExercise } from "../../types";
+﻿import type { Numeracion999SheetExercise } from "../../types";
 
 export interface Numeracion999RendererProps {
   ex: Numeracion999SheetExercise;
@@ -6,7 +6,7 @@ export interface Numeracion999RendererProps {
 }
 
 /**
- * Alumno: número grande o tarjeta C·D·U + ○ opciones (como pizarra).
+ * Alumno: número grande o tarjeta C·D·U + • opciones (como pizarra).
  */
 export function Numeracion999Renderer({ ex, showAnswer }: Numeracion999RendererProps): JSX.Element {
   if (showAnswer) {
@@ -43,7 +43,7 @@ export function Numeracion999Renderer({ ex, showAnswer }: Numeracion999RendererP
           {choices.map((label, i) => (
             <span key={`${label}-${i}`} className="ficha-n999__choice">
               <span className="ficha-n999__choice-mark" aria-hidden>
-                ○
+                •
               </span>
               <span>{label}</span>
             </span>

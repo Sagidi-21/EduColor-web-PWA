@@ -31,6 +31,12 @@
   color: #1e293b;
 }
 
+.ficha-posiciones__hint {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+}
+
 .ficha-posiciones__choice {
   display: block;
   margin: 3px 0;

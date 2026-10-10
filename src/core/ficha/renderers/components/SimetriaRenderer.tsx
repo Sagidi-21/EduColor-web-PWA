@@ -1,4 +1,4 @@
-import type { SimetriaSheetExercise } from "../../types";
+﻿import type { SimetriaSheetExercise } from "../../types";
 
 export interface SimetriaRendererProps {
   ex: SimetriaSheetExercise;
@@ -110,7 +110,7 @@ function SimetriaShapeSvg({ shape, size = 84 }: { shape: SimShape; size?: number
 }
 
 /**
- * Alumno: pregunta + figura SVG (si aplica) + opciones ○ (como en pizarra).
+ * Alumno: pregunta + figura SVG (si aplica) + opciones • (como en pizarra).
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function SimetriaRenderer({ ex, showAnswer }: SimetriaRendererProps): JSX.Element {
@@ -134,7 +134,7 @@ export function SimetriaRenderer({ ex, showAnswer }: SimetriaRendererProps): JSX
             {choices.map((label, i) => (
               <div key={`${label}-${i}`} className="ficha-simetria__choice">
                 <span className="ficha-simetria__choice-mark" aria-hidden>
-                  ○
+                  •
                 </span>
                 <span>{label}</span>
               </div>

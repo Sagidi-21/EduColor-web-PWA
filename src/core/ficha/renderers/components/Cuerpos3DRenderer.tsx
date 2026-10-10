@@ -1,4 +1,4 @@
-import type { Cuerpos3DSheetExercise } from "../../types";
+﻿import type { Cuerpos3DSheetExercise } from "../../types";
 
 export interface Cuerpos3DRendererProps {
   ex: Cuerpos3DSheetExercise;
@@ -138,7 +138,7 @@ function Cuerpos3DSvg({ shape, size = 110 }: { shape: Cuerpo; size?: number }): 
 }
 
 /**
- * Alumno: pregunta + cuerpo SVG + opciones ○ (como en pizarra).
+ * Alumno: pregunta + cuerpo SVG + opciones • (como en pizarra).
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function Cuerpos3DRenderer({ ex, showAnswer }: Cuerpos3DRendererProps): JSX.Element {
@@ -162,7 +162,7 @@ export function Cuerpos3DRenderer({ ex, showAnswer }: Cuerpos3DRendererProps): J
             {choices.map((label, i) => (
               <div key={`${label}-${i}`} className="ficha-cuerpos3d__choice">
                 <span className="ficha-cuerpos3d__choice-mark" aria-hidden>
-                  ○
+                  •
                 </span>
                 <span>{label}</span>
               </div>

@@ -1,4 +1,4 @@
-import type { RedondeoSheetExercise } from "../../types";
+﻿import type { RedondeoSheetExercise } from "../../types";
 
 export interface RedondeoRendererProps {
   ex: RedondeoSheetExercise;
@@ -52,7 +52,7 @@ function DecadeNumberLine({
 }
 
 /**
- * Alumno: badge con el número + recta de decenas + pregunta + ○ opciones.
+ * Alumno: badge con el número + recta de decenas + pregunta + • opciones.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function RedondeoRenderer({ ex, showAnswer }: RedondeoRendererProps): JSX.Element {
@@ -79,7 +79,7 @@ export function RedondeoRenderer({ ex, showAnswer }: RedondeoRendererProps): JSX
         {ex.choiceLabels.map((label, i) => (
           <span key={`${label}-${i}`} className="ficha-redondeo__choice">
             <span className="ficha-redondeo__choice-mark" aria-hidden>
-              ○
+              •
             </span>
             <span>{label}</span>
           </span>

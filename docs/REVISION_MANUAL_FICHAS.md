@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 11 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 12 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -64,6 +64,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `posicionesAula` | Posiciones en el aula        | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: escena aula SVG + ○ opciones, soluciones solo respuesta. **Revalidar Word=preview.**                                      |
 | `numeracion1119` | Números del 11 al 19         | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: easy/expert identify con opciones; medium+ enunciado bajo imagen; huecos dobles solo ficha. **Revalidar Word.**           |
 | `igualdad`       | El signo igual               | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: enunciados por tipo; imágenes+op en fila (easy); centrado sin imágenes; hard opciones en línea con •. **Revalidar Word.** |
+| `lineTypes`      | Tipos de líneas              | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: SVG + opciones •; hint «(redondea la correcta)»; gap 120px línea↔opciones. **Revalidar Word.**                            |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
@@ -147,7 +148,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [ ] **simetria** — Simetría
 - [ ] **cuerpos3d** — Cuerpos geométricos
 - [ ] **circuloCircunferencia** — Círculo y circunferencia
-- [ ] **lineTypes** — Tipos de líneas
+- [x] **lineTypes** — Tipos de líneas _(2026-10-10: OK — SVG + • opciones; hint «(redondea la correcta)» 14px; gap 120px; soluciones solo respuesta)_
 
 ## Problemas
 
@@ -210,7 +211,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | `parImpar`                           | ○ Par/Impar (o opciones del motor)                          |
 | `ordinales`                          | «Desde la derecha», etiquetas 1º…, casilla                  |
 | `poligonos`                          | ○ opciones de texto (como shapes)                           |
-| `lineTypes`                          | ○ opciones marcables                                        |
+| `lineTypes`                          | OK navegador 2026-10-10 — ver checklist Geometría           |
 | `series3cifras`                      | Cajas más anchas                                            |
 | `vecinosNumero`                      | Vía antes/número/después + ○                                |
 | `problemas`                          | Emoji + historia + `a ± b = □`                              |

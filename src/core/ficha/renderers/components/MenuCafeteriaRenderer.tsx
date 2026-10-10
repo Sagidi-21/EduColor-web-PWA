@@ -1,4 +1,4 @@
-import type { MenuCafeteriaSheetExercise, MenuItemSheet } from "../../types";
+﻿import type { MenuCafeteriaSheetExercise, MenuItemSheet } from "../../types";
 
 export interface MenuCafeteriaRendererProps {
   ex: MenuCafeteriaSheetExercise;
@@ -11,7 +11,7 @@ function formatPrice(price: number): string {
 
 /**
  * Alumno: carta completa de precios (como «Carta del menú» en pizarra, con los platos
- * del pedido resaltados) + enunciado + opciones ○.
+ * del pedido resaltados) + enunciado + opciones •.
  * Si el motor no trae la carta (datos antiguos), se dibuja la bandeja.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
@@ -53,7 +53,7 @@ export function MenuCafeteriaRenderer({ ex, showAnswer }: MenuCafeteriaRendererP
           {choices.map((label, i) => (
             <span key={`${label}-${i}`} className="ficha-menu__choice">
               <span className="ficha-menu__choice-mark" aria-hidden>
-                ○
+                •
               </span>
               {label}
             </span>

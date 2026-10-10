@@ -1,4 +1,4 @@
-import type { CapacidadSheetExercise } from "../../types";
+﻿import type { CapacidadSheetExercise } from "../../types";
 
 export interface CapacidadRendererProps {
   ex: CapacidadSheetExercise;
@@ -143,7 +143,7 @@ function Visual({ ex }: { ex: CapacidadSheetExercise }): JSX.Element | null {
 }
 
 /**
- * Alumno: recipientes graduados / vasos de 1 L dibujados + pregunta + ○ (A/B/Igual) o casilla «L».
+ * Alumno: recipientes graduados / vasos de 1 L dibujados + pregunta + • (A/B/Igual) o casilla «L».
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function CapacidadRenderer({ ex, showAnswer }: CapacidadRendererProps): JSX.Element {
@@ -162,7 +162,7 @@ export function CapacidadRenderer({ ex, showAnswer }: CapacidadRendererProps): J
           {choices.map((label, i) => (
             <span key={`${label}-${i}`} className="ficha-capacidad__choice">
               <span className="ficha-capacidad__choice-mark" aria-hidden>
-                ○
+                •
               </span>
               {label}
             </span>

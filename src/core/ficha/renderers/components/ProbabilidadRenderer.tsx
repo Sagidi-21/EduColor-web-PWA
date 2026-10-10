@@ -1,4 +1,4 @@
-import type { ProbabilidadBallSheet, ProbabilidadSheetExercise } from "../../types";
+﻿import type { ProbabilidadBallSheet, ProbabilidadSheetExercise } from "../../types";
 
 export interface ProbabilidadRendererProps {
   ex: ProbabilidadSheetExercise;
@@ -85,7 +85,7 @@ function BagSvg({ balls }: { balls: ProbabilidadBallSheet[] }): JSX.Element {
 }
 
 /**
- * Alumno: suceso (clasificar) o bolsa dibujada con pelotas + pregunta + ○ Seguro/Posible/Imposible.
+ * Alumno: suceso (clasificar) o bolsa dibujada con pelotas + pregunta + • Seguro/Posible/Imposible.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function ProbabilidadRenderer({ ex, showAnswer }: ProbabilidadRendererProps): JSX.Element {
@@ -111,7 +111,7 @@ export function ProbabilidadRenderer({ ex, showAnswer }: ProbabilidadRendererPro
         {choices.map((label, i) => (
           <span key={`${label}-${i}`} className="ficha-prob__choice">
             <span className="ficha-prob__choice-mark" aria-hidden>
-              ○
+              •
             </span>
             {label}
           </span>

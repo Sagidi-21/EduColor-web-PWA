@@ -1,4 +1,4 @@
-import type { ParImparSheetExercise } from "../../types";
+﻿import type { ParImparSheetExercise } from "../../types";
 
 export interface ParImparRendererProps {
   ex: ParImparSheetExercise;
@@ -6,7 +6,7 @@ export interface ParImparRendererProps {
 }
 
 /**
- * Alumno: fila de emojis (si hay) + pregunta + ○ opciones o casilla de escritura.
+ * Alumno: fila de emojis (si hay) + pregunta + • opciones o casilla de escritura.
  */
 export function ParImparRenderer({ ex, showAnswer }: ParImparRendererProps): JSX.Element {
   if (showAnswer) {
@@ -41,7 +41,7 @@ export function ParImparRenderer({ ex, showAnswer }: ParImparRendererProps): JSX
           {choices.map((label, i) => (
             <div key={`${label}-${i}`} className="ficha-parimpar__choice">
               <span className="ficha-parimpar__choice-mark" aria-hidden>
-                ○
+                •
               </span>
               <span>{label}</span>
             </div>

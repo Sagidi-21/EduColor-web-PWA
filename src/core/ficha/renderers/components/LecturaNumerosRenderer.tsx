@@ -1,4 +1,4 @@
-import type { LecturaNumerosSheetExercise } from "../../types";
+﻿import type { LecturaNumerosSheetExercise } from "../../types";
 
 export interface LecturaNumerosRendererProps {
   ex: LecturaNumerosSheetExercise;
@@ -6,7 +6,7 @@ export interface LecturaNumerosRendererProps {
 }
 
 /**
- * Alumno: consigna + número o palabra en grande + ○ opciones.
+ * Alumno: consigna + número o palabra en grande + • opciones.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function LecturaNumerosRenderer({
@@ -28,7 +28,7 @@ export function LecturaNumerosRenderer({
         {ex.choiceLabels.map((label, i) => (
           <span key={`${label}-${i}`} className="ficha-lectura__choice">
             <span className="ficha-lectura__choice-mark" aria-hidden>
-              ○
+              •
             </span>
             <span>{label}</span>
           </span>

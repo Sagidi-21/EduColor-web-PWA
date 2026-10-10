@@ -1,4 +1,4 @@
-import type { RelojSheetExercise } from "../../types";
+﻿import type { RelojSheetExercise } from "../../types";
 import { ClockSvg } from "./ClockSvg";
 
 export interface RelojRendererProps {
@@ -9,7 +9,7 @@ export interface RelojRendererProps {
 function ChoiceMark(): JSX.Element {
   return (
     <span className="ficha-reloj__choice-mark" aria-hidden>
-      ○
+      •
     </span>
   );
 }
@@ -18,7 +18,7 @@ function ChoiceMark(): JSX.Element {
  * Alumno (como en pizarra):
  * - Reloj digital cuando el ejercicio lo necesita (leer en palabras, pasar a agujas, pon la hora).
  * - Esfera analógica con agujas (leer la hora) o vacía (el alumno dibuja las agujas).
- * - Opciones ○ de texto o minirelojes A–D con agujas.
+ * - Opciones • de texto o minirelojes A–D con agujas.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function RelojRenderer({ ex, showAnswer }: RelojRendererProps): JSX.Element {

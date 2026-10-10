@@ -1,4 +1,4 @@
-import type { LineTypesSheetExercise } from "../../types";
+﻿import type { LineTypesSheetExercise } from "../../types";
 
 export interface LineTypesRendererProps {
   ex: LineTypesSheetExercise;
@@ -6,7 +6,7 @@ export interface LineTypesRendererProps {
 }
 
 /**
- * Alumno: SVG de la línea + pregunta + ○ opciones (como pizarra / shapes).
+ * Alumno: SVG de la línea + pregunta + • opciones (como pizarra / shapes).
  */
 export function LineTypesRenderer({ ex, showAnswer }: LineTypesRendererProps): JSX.Element {
   if (showAnswer) {
@@ -15,7 +15,11 @@ export function LineTypesRenderer({ ex, showAnswer }: LineTypesRendererProps): J
 
   return (
     <div className="ficha-linetypes">
-      {ex.question ? <p className="ficha-linetypes__question">{ex.question}</p> : null}
+      {ex.question ? (
+        <p className="ficha-linetypes__question">
+          {ex.question} <span className="ficha-linetypes__hint">(redondea la correcta)</span>
+        </p>
+      ) : null}
       <div className="ficha-linetypes__body">
         {ex.svg && (
           <svg
@@ -32,7 +36,7 @@ export function LineTypesRenderer({ ex, showAnswer }: LineTypesRendererProps): J
             {ex.options.map((label, i) => (
               <div key={`${label}-${i}`} className="ficha-linetypes__choice">
                 <span className="ficha-linetypes__choice-mark" aria-hidden>
-                  ○
+                  •
                 </span>
                 <span>{label}</span>
               </div>

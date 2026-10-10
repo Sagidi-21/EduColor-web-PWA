@@ -1,4 +1,4 @@
-import type { Problemas2PasosSheetExercise } from "../../types";
+﻿import type { Problemas2PasosSheetExercise } from "../../types";
 
 export interface Problemas2PasosRendererProps {
   ex: Problemas2PasosSheetExercise;
@@ -10,7 +10,7 @@ function opSymbol(op: "+" | "-"): string {
 }
 
 /**
- * Alumno: historia + tracker de pasos con huecos (como en pizarra) + pregunta + opciones ○.
+ * Alumno: historia + tracker de pasos con huecos (como en pizarra) + pregunta + opciones •.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function Problemas2PasosRenderer({
@@ -58,7 +58,7 @@ export function Problemas2PasosRenderer({
           {choices.map((label, i) => (
             <span key={`${label}-${i}`} className="ficha-p2p__choice">
               <span className="ficha-p2p__choice-mark" aria-hidden>
-                ○
+                •
               </span>
               <span>{label}</span>
             </span>

@@ -1,4 +1,4 @@
-import type { Abaco3CifrasSheetExercise } from "../../types";
+﻿import type { Abaco3CifrasSheetExercise } from "../../types";
 import { AbacoSvg } from "./AbacoSvg";
 
 export interface Abaco3CifrasRendererProps {
@@ -8,8 +8,8 @@ export interface Abaco3CifrasRendererProps {
 
 /**
  * Alumno:
- * - read-abaco / valor-posicional: ábaco SVG + pregunta + ○ opciones.
- * - find-abaco: número en badge + 4 ábacos (A-D) con ○ para marcar.
+ * - read-abaco / valor-posicional: ábaco SVG + pregunta + • opciones.
+ * - find-abaco: número en badge + 4 ábacos (A-D) con • para marcar.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta; letra en find-abaco).
  */
 export function Abaco3CifrasRenderer({ ex, showAnswer }: Abaco3CifrasRendererProps): JSX.Element {
@@ -30,7 +30,7 @@ export function Abaco3CifrasRenderer({ ex, showAnswer }: Abaco3CifrasRendererPro
                   <AbacoSvg c={opt.c} d={opt.d} u={opt.u} size="mini" />
                   <div className="ficha-abaco__option-label">
                     <span className="ficha-abaco__choice-mark" aria-hidden>
-                      ○
+                      •
                     </span>
                     <span>{opt.letter}</span>
                   </div>
@@ -58,7 +58,7 @@ export function Abaco3CifrasRenderer({ ex, showAnswer }: Abaco3CifrasRendererPro
                 {choices.map((label, i) => (
                   <div key={`${label}-${i}`} className="ficha-abaco__choice">
                     <span className="ficha-abaco__choice-mark" aria-hidden>
-                      ○
+                      •
                     </span>
                     <span>{label}</span>
                   </div>

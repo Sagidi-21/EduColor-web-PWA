@@ -171,7 +171,7 @@ describe("numeración con bloques decenas/unidades", () => {
 });
 
 describe("abaco3cifras ficha", () => {
-  it("read-abaco: SVG con bolitas C/D/U y ○ opciones", () => {
+  it("read-abaco: SVG con bolitas C/D/U y • opciones", () => {
     const list = generate<Abaco3CifrasSheetExercise>("abaco3cifras", "easy");
     for (const ex of list) {
       expect(ex.variant).toBe("read-abaco");
@@ -180,7 +180,7 @@ describe("abaco3cifras ficha", () => {
       expect(ex.answer).toBe(String(ex.number));
       const markup = html(createElement(Abaco3CifrasRenderer, { ex, showAnswer: false }));
       expect(markup).toContain("ficha-abaco-svg");
-      expect(markup).toContain("○");
+      expect(markup).toContain("•");
       expect((markup.match(/<circle/g) ?? []).length).toBe(
         ex.columns.c + ex.columns.d + ex.columns.u,
       );
@@ -218,7 +218,7 @@ describe("abaco3cifras ficha", () => {
 });
 
 describe("lecturaNumeros ficha", () => {
-  it("cifra→palabra: número grande + ○ palabras", () => {
+  it("cifra→palabra: número grande + • palabras", () => {
     const list = generate<LecturaNumerosSheetExercise>("lecturaNumeros", "easy");
     for (const ex of list) {
       expect(ex.variant).toBe("cifra-to-palabra");
@@ -226,7 +226,7 @@ describe("lecturaNumeros ficha", () => {
       expect(ex.choiceLabels).toContain(String(ex.answer));
       const markup = html(createElement(LecturaNumerosRenderer, { ex, showAnswer: false }));
       expect(markup).toContain("ficha-lectura__display");
-      expect(markup).toContain("○");
+      expect(markup).toContain("•");
     }
   });
 
@@ -244,7 +244,7 @@ describe("lecturaNumeros ficha", () => {
 });
 
 describe("redondeo ficha", () => {
-  it("badge + recta de decenas + ○ opciones", () => {
+  it("badge + recta de decenas + • opciones", () => {
     for (const d of ["easy", "medium"] as const) {
       const list = generate<RedondeoSheetExercise>("redondeo", d);
       expect(list.length).toBeGreaterThan(0);
@@ -255,7 +255,7 @@ describe("redondeo ficha", () => {
         const markup = html(createElement(RedondeoRenderer, { ex, showAnswer: false }));
         expect(markup).toContain("ficha-redondeo__badge");
         expect(markup).toContain("ficha-redondeo__line");
-        expect(markup).toContain("○");
+        expect(markup).toContain("•");
       }
     }
   });

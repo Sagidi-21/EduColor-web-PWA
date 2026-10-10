@@ -1,4 +1,4 @@
-import type { VecinosNumeroSheetExercise } from "../../types";
+﻿import type { VecinosNumeroSheetExercise } from "../../types";
 
 export interface VecinosRendererProps {
   ex: VecinosNumeroSheetExercise;
@@ -6,7 +6,7 @@ export interface VecinosRendererProps {
 }
 
 /**
- * Alumno: pregunta + vía de 3 casas (antes / número / después) con hueco(s) + ○ opciones.
+ * Alumno: pregunta + vía de 3 casas (antes / número / después) con hueco(s) + • opciones.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function VecinosRenderer({ ex, showAnswer }: VecinosRendererProps): JSX.Element {
@@ -54,7 +54,7 @@ export function VecinosRenderer({ ex, showAnswer }: VecinosRendererProps): JSX.E
           {choices.map((label, i) => (
             <span key={`${label}-${i}`} className="ficha-vecinos__choice">
               <span className="ficha-vecinos__choice-mark" aria-hidden>
-                ○
+                •
               </span>
               <span>{label}</span>
             </span>

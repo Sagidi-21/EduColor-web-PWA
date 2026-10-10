@@ -1,4 +1,4 @@
-import type { LeftRightSheetExercise } from "../../types";
+﻿import type { LeftRightSheetExercise } from "../../types";
 
 export interface LeftRightRendererProps {
   ex: LeftRightSheetExercise;
@@ -11,7 +11,7 @@ function Choices({ labels }: { labels: string[] }): JSX.Element {
       {labels.map((label, i) => (
         <span key={`${label}-${i}`} className="ficha-leftright__choice">
           <span className="ficha-leftright__choice-mark" aria-hidden>
-            ○
+            •
           </span>
           <span className="ficha-leftright__choice-text">{label}</span>
         </span>
@@ -53,7 +53,7 @@ function CharScene({ ex }: { ex: LeftRightSheetExercise }): JSX.Element {
           <span className="ficha-leftright__box" />
           {isClick && (
             <span className="ficha-leftright__box-mark" aria-hidden>
-              ○
+              •
             </span>
           )}
         </div>
@@ -66,7 +66,7 @@ function CharScene({ ex }: { ex: LeftRightSheetExercise }): JSX.Element {
           <span className="ficha-leftright__box" />
           {isClick && (
             <span className="ficha-leftright__box-mark" aria-hidden>
-              ○
+              •
             </span>
           )}
         </div>
@@ -88,8 +88,8 @@ function CharScene({ ex }: { ex: LeftRightSheetExercise }): JSX.Element {
 }
 
 /**
- * Alumno: parejas con ○ (fácil → difícil) o escena de personaje imprimible (experto):
- * marcar la mano correcta (○) o unir objetos con la mano con flechas.
+ * Alumno: parejas con • (fácil → difícil) o escena de personaje imprimible (experto):
+ * marcar la mano correcta (•) o unir objetos con la mano con flechas.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function LeftRightRenderer({ ex, showAnswer }: LeftRightRendererProps): JSX.Element {

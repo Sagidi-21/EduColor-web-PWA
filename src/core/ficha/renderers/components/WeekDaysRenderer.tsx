@@ -1,4 +1,4 @@
-import type { WeekDaySheetExercise } from "../../types";
+﻿import type { WeekDaySheetExercise } from "../../types";
 
 export interface WeekDaysRendererProps {
   ex: WeekDaySheetExercise;
@@ -16,7 +16,7 @@ const WEEK_STRIP: { day: string; abbr: string }[] = [
 ];
 
 /**
- * Alumno: tira L-M-X-J-V-S-D (día del enunciado resaltado) + pregunta + ○ opciones.
+ * Alumno: tira L-M-X-J-V-S-D (día del enunciado resaltado) + pregunta + • opciones.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function WeekDaysRenderer({ ex, showAnswer }: WeekDaysRendererProps): JSX.Element {
@@ -44,7 +44,7 @@ export function WeekDaysRenderer({ ex, showAnswer }: WeekDaysRendererProps): JSX
           {choices.map((label, i) => (
             <span key={`${label}-${i}`} className="ficha-weekdays__choice">
               <span className="ficha-weekdays__choice-mark" aria-hidden>
-                ○
+                •
               </span>
               <span className="ficha-weekdays__choice-text">{label}</span>
             </span>

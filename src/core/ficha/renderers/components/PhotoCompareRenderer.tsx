@@ -1,4 +1,4 @@
-import type { ElKiloSheetExercise, ElLitroSheetExercise } from "../../types";
+﻿import type { ElKiloSheetExercise, ElLitroSheetExercise } from "../../types";
 
 export type PhotoCompareSheetExercise = ElKiloSheetExercise | ElLitroSheetExercise;
 
@@ -8,7 +8,7 @@ export interface PhotoCompareRendererProps {
 }
 
 /**
- * elKilo / elLitro alumno: pregunta + referencia (1 kg / 1 L) + fotos + ○ opciones.
+ * elKilo / elLitro alumno: pregunta + referencia (1 kg / 1 L) + fotos + • opciones.
  * Soluciones: SOLO la respuesta (sin enunciado ni imágenes).
  */
 export function PhotoCompareRenderer({ ex, showAnswer }: PhotoCompareRendererProps): JSX.Element {
@@ -44,7 +44,7 @@ export function PhotoCompareRenderer({ ex, showAnswer }: PhotoCompareRendererPro
           {choices.map((label, i) => (
             <span key={`${label}-${i}`} className="ficha-photo__choice">
               <span className="ficha-photo__choice-mark" aria-hidden>
-                ○
+                •
               </span>
               <span>{label}</span>
             </span>
