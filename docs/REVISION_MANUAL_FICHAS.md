@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 12 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 13 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -65,6 +65,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `numeracion1119` | Números del 11 al 19         | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: easy/expert identify con opciones; medium+ enunciado bajo imagen; huecos dobles solo ficha. **Revalidar Word.**           |
 | `igualdad`       | El signo igual               | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: enunciados por tipo; imágenes+op en fila (easy); centrado sin imágenes; hard opciones en línea con •. **Revalidar Word.** |
 | `lineTypes`      | Tipos de líneas              | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: SVG + opciones •; hint «(redondea la correcta)»; gap 120px línea↔opciones. **Revalidar Word.**                            |
+| `rectaNumerica`  | Coloca el número en la recta | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: sin flecha/recuadro; hard/expert 1/fila; soluciones con recta + marca vertical. **Revalidar Word.**                       |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
@@ -137,7 +138,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [ ] **seriesNumericas** — Series numéricas
 - [ ] **series3cifras** — Series de 3 cifras
 - [ ] **vecinosNumero** — Vecinos del número
-- [ ] **rectaNumerica** — Coloca el número en la recta
+- [x] **rectaNumerica** — Coloca el número en la recta _(2026-10-10: OK — número sin recuadro; hard/expert 1/fila recta ancha; soluciones con recta + marca vertical; sin flecha)_
 - [ ] **redondeo** — Redondeo a la decena
 - [ ] **abaco3cifras** — Ábaco de tres cifras
 
@@ -232,7 +233,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | 1   | `multiplicacion`                                                   | Emparejar columnas                          | Hecho         |
 | 2   | `sumaLlevando`                                                     | Casilla de llevada                          | Hecho         |
 | 3   | `algoritmo3cifras`                                                 | C·D·U + llevar/prestar                      | Hecho         |
-| 4   | `rectaNumerica`                                                    | SVG de recta                                | Hecho         |
+| 4   | `rectaNumerica`                                                    | SVG de recta                                | OK navegador  |
 | 5   | `tablaNumerica`                                                    | Rejilla 10×10 real                          | Hecho         |
 | 6   | `numeracion1119/4059/6099`                                         | Bloques decenas/unidades                    | Hecho         |
 | 7   | `abaco3cifras` / `lecturaNumeros` / `redondeo` (+ `numeracion999`) | Visuales pizarra                            | Hecho         |

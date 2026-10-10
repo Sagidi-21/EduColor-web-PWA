@@ -108,8 +108,9 @@ export function pageSizeForExercises(
     return options.showAnswer ? 12 : 8;
   }
   if (first.kind === "rectaNumerica") {
-    // Alumno: 2 por fila (10/hoja). Soluciones: solo el número.
-    return options.showAnswer ? 20 : 10;
+    // easy/medium: 2 cols. hard/expert: 1 por fila (recta ancha); soluciones también dibujan.
+    const wide = first.max >= 50;
+    return wide ? 6 : 10;
   }
   if (first.kind === "sumaLlevando" || first.kind === "algoritmo3Cifras") {
     // Alumno: cuadrícula con casillas (más alta que una operación suelta).
@@ -144,5 +145,7 @@ export function isFullWidthExercise(
   if (ex.kind === "leftRight") {
     return !options.showAnswer && ex.variant !== undefined && ex.variant.startsWith("char-");
   }
+  // hard/expert: una recta por fila (alumno y soluciones).
+  if (ex.kind === "rectaNumerica") return ex.max >= 50;
   return false;
 }

@@ -64,11 +64,14 @@ export interface ExerciseRendererProps {
 /**
  * Despacha cada `SheetExercise` a su componente según `ex.kind`.
  *
- * REGLA (siempre): en soluciones (`showAnswer`) SOLO la respuesta — sin enunciado,
- * sin instrucciones y sin imágenes. No reintroducir el layout del alumno aquí.
+ * REGLA: en soluciones (`showAnswer`) SOLO la respuesta — sin enunciado ni dibujos.
+ * Excepción: `rectaNumerica` dibuja la recta con marca vertical en la posición correcta.
  */
 export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): ReactNode {
   if (showAnswer) {
+    if (ex.kind === "rectaNumerica") {
+      return <RectaNumericaRenderer ex={ex} showAnswer />;
+    }
     const text = solutionAnswerOf(ex);
     // Respuestas largas (laberinto, escenas de personaje): letra más pequeña para que quepan.
     const className = text.length > 26 ? "ficha-answer ficha-answer--long" : "ficha-answer";

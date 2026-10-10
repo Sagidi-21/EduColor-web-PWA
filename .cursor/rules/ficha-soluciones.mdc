@@ -13,4 +13,6 @@ En modo **soluciones** (`showAnswer` / `FichaSoluciones` / PDF de soluciones):
 - El punto único de verdad es `ExerciseRenderer`: si `showAnswer`, renderizar únicamente `.ficha-answer` vía `solutionAnswerOf(ex)` (o equivalente mínimo). No reintroducir el renderer completo del alumno.
 - La hoja de **alumno** sí lleva enunciado, figuras y casillas en blanco; no mezclar ambos modos.
 
-Si una solución “no se ve” en el PDF, arreglar visibilidad de `.ficha-answer` / paginación — **no** volver a meter enunciados o imágenes en soluciones.
+**Excepción:** `rectaNumerica` — en soluciones se dibuja la recta con una línea vertical en la posición correcta (sin enunciado).
+
+Si una solución “no se ve” en el PDF, arreglar visibilidad de `.ficha-answer` / paginación — **no** volver a meter enunciados o imágenes en soluciones (salvo la excepción anterior).

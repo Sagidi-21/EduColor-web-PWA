@@ -5,25 +5,17 @@
 }
 
 .ficha-recta__question {
-  margin: 0 0 2px;
+  margin: 0 0 4px;
   font-size: 15px;
   font-weight: 600;
   color: #1e293b;
 }
 
+/* Número del enunciado sin recuadro */
 .ficha-recta__target {
-  display: inline-block;
-  min-width: 28px;
-  padding: 0 6px;
-  border: 1.5px solid #94a3b8;
-  border-radius: 6px;
-  background: #fff;
-  font-size: 18px;
+  font-size: 26px;
   font-weight: 800;
-  line-height: 1.3;
-  color: #0f172a;
-  text-align: center;
-  box-sizing: border-box;
+  color: var(--color-primary, #2563eb);
 }
 
 .ficha-recta__svg {
@@ -31,4 +23,17 @@
   width: 100%;
   height: auto;
   max-height: 80px;
+}
+
+/* hard / expert: una por fila → más alto */
+.ficha-recta--wide .ficha-recta__svg {
+  max-height: 120px;
+}
+
+.ficha-recta--wide .ficha-recta__question {
+  font-size: 17px;
+}
+
+.ficha-recta--wide .ficha-recta__target {
+  font-size: 28px;
 }

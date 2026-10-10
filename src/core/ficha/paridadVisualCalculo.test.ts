@@ -7,7 +7,7 @@ import { ExerciseRenderer } from "./renderers/components/ExerciseRenderer";
 import { MultiplicacionRenderer } from "./renderers/components/MultiplicacionRenderer";
 import { RectaNumericaRenderer } from "./renderers/components/RectaNumericaRenderer";
 import { SumaLlevandoRenderer } from "./renderers/components/SumaLlevandoRenderer";
-import { pageSizeForExercises } from "./renderers/pageLayout";
+import { isFullWidthExercise, pageSizeForExercises } from "./renderers/pageLayout";
 import { solutionAnswerOf } from "./renderers/solutionAnswer";
 import type {
   Algoritmo3CifrasSheetExercise,
@@ -138,18 +138,33 @@ describe("rectaNumerica ficha (SVG)", () => {
     }
   });
 
-  it("alumno: SVG con marcas y etiquetas; soluciones: solo el número", () => {
+  it("alumno: SVG con marcas y etiquetas; soluciones: recta con marca vertical", () => {
     const [ex] = generate<RectaNumericaSheetExercise>("rectaNumerica", "medium", 1);
     const alumno = html(createElement(RectaNumericaRenderer, { ex: ex!, showAnswer: false }));
     expect(alumno).toContain("<svg");
     expect(alumno).toContain("ficha-recta__target");
+    expect(alumno).not.toContain("ficha-recta__answer-mark");
     // 0..max → max + 1 marcas.
     expect(alumno.match(/<line /g)!.length).toBeGreaterThanOrEqual(ex!.max + 1);
     expect(alumno).toContain(`>${ex!.max}</text>`);
 
     const sol = html(createElement(ExerciseRenderer, { ex: ex!, showAnswer: true }));
-    expect(sol).toBe(`<div class="ficha-answer">${ex!.target}</div>`);
-    expect(sol).not.toContain("<svg");
+    expect(sol).toContain("<svg");
+    expect(sol).toContain("ficha-recta__answer-mark");
+    expect(sol).not.toContain("ficha-recta__question");
+    expect(sol).not.toContain("Marca el");
+  });
+
+  it("hard/expert: una por fila (ancha); easy/medium: dos columnas", () => {
+    const easy = generate<RectaNumericaSheetExercise>("rectaNumerica", "easy", 1)[0]!;
+    const hard = generate<RectaNumericaSheetExercise>("rectaNumerica", "hard", 1)[0]!;
+    expect(isFullWidthExercise(easy)).toBe(false);
+    expect(isFullWidthExercise(hard)).toBe(true);
+    expect(isFullWidthExercise(hard, { showAnswer: true })).toBe(true);
+    expect(pageSizeForExercises([easy])).toBe(10);
+    expect(pageSizeForExercises([hard])).toBe(6);
+    const hardAlumno = html(createElement(RectaNumericaRenderer, { ex: hard, showAnswer: false }));
+    expect(hardAlumno).toContain("ficha-recta--wide");
   });
 });
 
