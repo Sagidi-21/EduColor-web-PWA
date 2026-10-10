@@ -26,8 +26,12 @@ describe("buildPrintDocumentHtml", () => {
     expect(previewCss).toContain("overflow: hidden");
     expect(pdfCss).toContain(`max-height: ${A4_HEIGHT_MM}mm`);
     expect(previewCss).toContain(`max-height: ${A4_HEIGHT_MM}mm`);
-    expect(pdfCss).toContain(".ficha-ordenar__card");
-    expect(previewCss).toContain(".ficha-ordenar__card");
+    // Sin overrides de ejercicio: tamaños solo en *Renderer.print.css
+    expect(pdfCss).not.toContain(".ficha-ordenar__");
+    expect(pdfCss).not.toContain(".ficha-relacionar__");
+    expect(pdfCss).not.toContain(".ficha-answer");
+    expect(previewCss).not.toContain(".ficha-ordenar__");
+    expect(previewCss).not.toContain(".ficha-relacionar__");
   });
 
   it("preview añade chrome visual sin quitar overflow hidden", () => {

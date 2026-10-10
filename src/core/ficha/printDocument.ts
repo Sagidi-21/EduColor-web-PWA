@@ -1,6 +1,7 @@
 /**
  * Documento HTML canónico de ficha (preview = PDF).
- * Misma caja A4, overflow y overrides de centrado en ambos sitios.
+ * Solo caja A4 / saltos / chrome de preview.
+ * Tamaños y layout de cada ejercicio: su `*Renderer.print.css` (un solo sitio).
  */
 
 export const A4_WIDTH_MM = 210;
@@ -20,7 +21,7 @@ export interface BuildPrintDocumentHtmlInput {
   variant?: PrintDocumentVariant;
 }
 
-/** CSS de shell A4 + overrides compartidos preview/PDF. */
+/** CSS de shell A4 compartido preview/PDF (sin overrides por ejercicio). */
 export function buildPrintDocumentShellCss(
   printCss: string,
   variant: PrintDocumentVariant = "pdf",
@@ -64,46 +65,6 @@ export function buildPrintDocumentShellCss(
       box-sizing: border-box !important;
     }
     .ficha-print-break { display: none !important; }
-    /*
-     * Ordenar / Relacionar — line-height = height (html2canvas no centra flex).
-     * También en preview para que WYSIWYG coincida con el PDF.
-     */
-    .ficha-ordenar__card,
-    .ficha-ordenar__slot {
-      display: block !important;
-      width: 100% !important;
-      max-width: 56px !important;
-      height: 40px !important;
-      min-height: 40px !important;
-      line-height: 40px !important;
-      padding: 0 !important;
-      margin: 0 auto !important;
-      text-align: center !important;
-      font-size: 22px !important;
-      font-weight: 800 !important;
-      box-sizing: border-box !important;
-    }
-    .ficha-relacionar__num-value,
-    .ficha-relacionar__letter {
-      display: block !important;
-      padding: 0 !important;
-      margin: 0 !important;
-      text-align: center !important;
-      box-sizing: border-box !important;
-      align-items: unset !important;
-      justify-content: unset !important;
-    }
-    .ficha-relacionar__strip {
-      flex-wrap: wrap !important;
-      overflow: visible !important;
-    }
-    .ficha-answer {
-      color: #0f172a !important;
-      font-size: 22px !important;
-      font-weight: 800 !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
     ${previewChrome}
   `;
 }

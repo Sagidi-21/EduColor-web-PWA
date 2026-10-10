@@ -15,6 +15,7 @@ entre sí.
 | ¿Cómo se migra una actividad, paso a paso?            | [EJECUCION_PASO_A_PASO.md](./EJECUCION_PASO_A_PASO.md) y [AGENT_RULES.md](./AGENT_RULES.md)                                                                                                 |
 | ¿Qué falta y con qué calidad cierro?                  | [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) y [DEUDA_TECNICA.md](./DEUDA_TECNICA.md)                                                                                                   |
 | ¿Por qué se decidió así?                              | [DECISIONES.md](./DECISIONES.md)                                                                                                                                                            |
+| ¿Cuál es el ID en inglés y el título en castellano?   | [CATALOGO_IDS_ACTIVIDADES.md](./CATALOGO_IDS_ACTIVIDADES.md)                                                                                                                                |
 | ¿Qué puede reutilizar un renderer?                    | [COMPONENTES_COMPARTIDOS.md](./COMPONENTES_COMPARTIDOS.md)                                                                                                                                  |
 | ¿Hacia dónde va el producto a largo plazo?            | [ROADMAP_DE_EJECUCION_DETALLADO.md](./ROADMAP_DE_EJECUCION_DETALLADO.md) y [EJECUCION_PASO_A_PASO.md](./EJECUCION_PASO_A_PASO.md) ([ROADMAP_MAESTRO.md](./ROADMAP_MAESTRO.md) es histórico) |
 

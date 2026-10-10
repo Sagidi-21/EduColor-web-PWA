@@ -7,4 +7,6 @@
   font-weight: 800;
   color: #0f172a;
   box-sizing: border-box;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
