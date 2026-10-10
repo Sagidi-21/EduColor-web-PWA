@@ -7,7 +7,7 @@ export interface IgualdadRendererProps {
 }
 
 /**
- * Alumno: imágenes + fórmula en la misma línea (resultado) + ○ opciones.
+ * Alumno: enunciado + imágenes/fórmula + ○ opciones.
  * Soluciones: las maneja ExerciseRenderer.
  */
 export function IgualdadRenderer({ ex, showAnswer }: IgualdadRendererProps): JSX.Element {
@@ -53,8 +53,24 @@ export function IgualdadRenderer({ ex, showAnswer }: IgualdadRendererProps): JSX
 
   const choices = ex.choiceLabels ?? [];
 
+  const rootClass = [
+    "ficha-igualdad",
+    showImages ? "" : "ficha-igualdad--formula-only",
+    ex.type === "decompose" ? "ficha-igualdad--decompose" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const question =
+    ex.type === "decompose"
+      ? "Redondea la opción correcta"
+      : ex.type === "addend"
+        ? "Escribe el número correcto"
+        : "Resuelve la operación";
+
   return (
-    <div className="ficha-igualdad">
+    <div className={rootClass}>
+      {question && <p className="ficha-igualdad__question">{question}</p>}
       <div className="ficha-igualdad__row">
         {showImages && (
           <div className="ficha-igualdad__images">
@@ -74,7 +90,7 @@ export function IgualdadRenderer({ ex, showAnswer }: IgualdadRendererProps): JSX
           {choices.map((label, i) => (
             <div key={`${label}-${i}`} className="ficha-igualdad__choice">
               <span className="ficha-igualdad__choice-mark" aria-hidden>
-                ○
+                {ex.type === "decompose" ? "•" : "○"}
               </span>
               <span className="ficha-igualdad__choice-text">{label}</span>
             </div>

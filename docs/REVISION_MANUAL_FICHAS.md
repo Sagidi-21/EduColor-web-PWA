@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 10 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 11 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -51,18 +51,19 @@ Usar **siempre** la misma semilla y parámetros:
 Estas son las únicas actividades marcadas OK en la revisión manual de fichas a 2026-10-10.
 Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 
-| ID               | Actividad                    | Alumno | Soluciones | Print A4 | Word = preview | Notas / baseline                                                                                                               |
-| ---------------- | ---------------------------- | ------ | ---------- | -------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `counting`       | Contamos objetos             | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: objetos+pregunta, 10/hoja, soluciones con número. **Revalidar Word=preview.**                             |
-| `comparison`     | Mayor y menor                | [x]    | [x]        | [x]      | [x]            | OK 2026-10-09: fila A\|B, sin +N, hard/expert con iguales, soluciones sin dibujos, **Word=vista previa** ya anotado.           |
-| `relacionar`     | Relacionar número y cantidad | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**                |
-| `ordenar`        | Ordenar números              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                                 |
-| `amigos10`       | Los amigos del 10            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: ten-frame + operación a la derecha, casilla de respuesta, soluciones solo número, **Word=vista previa**.        |
-| `shapes`         | Formas y tamaños             | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: figura/foto + opciones texto como pizarra, soluciones solo nombre, PDF alineado (○ tipográfico).                |
-| `suma`           | La suma                      | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: imágenes izq. + algoritmo der., sin casillas discontinuas, 32px bajo línea, thumbs scoped. **Revalidar Word.**  |
-| `resta`          | La resta                     | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: mismo layout que suma (objetos tachados en resta). **Revalidar Word=preview.**                                  |
-| `posicionesAula` | Posiciones en el aula        | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: escena aula SVG + ○ opciones, soluciones solo respuesta. **Revalidar Word=preview.**                            |
-| `numeracion1119` | Números del 11 al 19         | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: easy/expert identify con opciones; medium+ enunciado bajo imagen; huecos dobles solo ficha. **Revalidar Word.** |
+| ID               | Actividad                    | Alumno | Soluciones | Print A4 | Word = preview | Notas / baseline                                                                                                                         |
+| ---------------- | ---------------------------- | ------ | ---------- | -------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `counting`       | Contamos objetos             | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: objetos+pregunta, 10/hoja, soluciones con número. **Revalidar Word=preview.**                                       |
+| `comparison`     | Mayor y menor                | [x]    | [x]        | [x]      | [x]            | OK 2026-10-09: fila A\|B, sin +N, hard/expert con iguales, soluciones sin dibujos, **Word=vista previa** ya anotado.                     |
+| `relacionar`     | Relacionar número y cantidad | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**                          |
+| `ordenar`        | Ordenar números              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                                           |
+| `amigos10`       | Los amigos del 10            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: ten-frame + operación a la derecha, casilla de respuesta, soluciones solo número, **Word=vista previa**.                  |
+| `shapes`         | Formas y tamaños             | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: figura/foto + opciones texto como pizarra, soluciones solo nombre, PDF alineado (○ tipográfico).                          |
+| `suma`           | La suma                      | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: imágenes izq. + algoritmo der., sin casillas discontinuas, 32px bajo línea, thumbs scoped. **Revalidar Word.**            |
+| `resta`          | La resta                     | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: mismo layout que suma (objetos tachados en resta). **Revalidar Word=preview.**                                            |
+| `posicionesAula` | Posiciones en el aula        | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: escena aula SVG + ○ opciones, soluciones solo respuesta. **Revalidar Word=preview.**                                      |
+| `numeracion1119` | Números del 11 al 19         | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: easy/expert identify con opciones; medium+ enunciado bajo imagen; huecos dobles solo ficha. **Revalidar Word.**           |
+| `igualdad`       | El signo igual               | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: enunciados por tipo; imágenes+op en fila (easy); centrado sin imágenes; hard opciones en línea con •. **Revalidar Word.** |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
@@ -107,7 +108,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [ ] **sumaLlevando** — Sumamos llevando
 - [ ] **restaColumna** — Resta en columna
 - [ ] **algoritmo3cifras** — Algoritmo de tres cifras
-- [ ] **igualdad** — El signo igual
+- [x] **igualdad** — El signo igual _(2026-10-10: OK — enunciados por tipo; easy imágenes+op misma línea; medium/hard centrados; hard opciones en línea con •; color de clase; soluciones solo respuesta)_
 - [ ] **relacionSumaResta** — Familia de operaciones
 - [ ] **multiplicacion** — Multiplicación
 - [ ] **dobleYMitad** — El doble y la mitad
@@ -203,7 +204,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | `tresSumandos`                       | Idem + filas de objetos                                     |
 | `algoritmoVertical` / `restaColumna` | Cuadrícula D·U + casillas                                   |
 | `tresSumandosColumna`                | Cuadrícula D·U 3 sumandos                                   |
-| `igualdad`                           | Huecos correctos (sin filtrar respuesta) + ○ opciones       |
+| `igualdad`                           | OK navegador 2026-10-10 — ver checklist Operaciones         |
 | `relacionSumaResta`                  | Tres ecuaciones con hueco                                   |
 | `dobleYMitad`                        | Cajas Número/Doble\|Mitad + ○                               |
 | `parImpar`                           | ○ Par/Impar (o opciones del motor)                          |

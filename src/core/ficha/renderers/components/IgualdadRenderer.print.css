@@ -1,5 +1,13 @@
 /* Igualdad — layout alumno */
 
+.ficha-igualdad__question {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.25;
+}
+
 .ficha-img-row {
   display: flex;
   flex-wrap: wrap;
@@ -9,8 +17,8 @@
 
 /* Tamaño propio (no pisa suma/resta). Edita aquí. */
 .ficha-igualdad .ficha-img-row__thumb {
-  width: 22px;
-  height: 22px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
 }
 
@@ -51,10 +59,19 @@
   margin: 0;
   margin-left: auto;
   flex: 0 0 auto;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 800;
   color: #0f172a;
   font-variant-numeric: tabular-nums;
+}
+
+/* Sin imágenes (medium/hard/…): operación centrada en la caja. */
+.ficha-igualdad--formula-only .ficha-igualdad__row {
+  justify-content: center;
+}
+
+.ficha-igualdad--formula-only .ficha-igualdad__formula {
+  margin-left: 0;
 }
 
 .ficha-igualdad__num {
@@ -86,13 +103,31 @@
   margin-top: 8px;
 }
 
+/* Hard (descomposición): opciones en una sola línea bajo la operación. */
+.ficha-igualdad--decompose .ficha-igualdad__choices {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px 14px;
+}
+
 .ficha-igualdad__choice {
   display: block;
   font-size: 15px;
   line-height: 1.35;
   color: #222;
+  white-space: nowrap;
 }
 
 .ficha-igualdad__choice-mark {
   margin-right: 6px;
+}
+
+/* Hard: puntito negro pequeño (sustituye el ○ grande). */
+.ficha-igualdad--decompose .ficha-igualdad__choice-mark {
+  font-size: 11px;
+  line-height: 1;
+  color: #0f172a;
+  margin-right: 4px;
 }
