@@ -9,8 +9,8 @@
 
 /* Tamaño propio (no pisa suma/resta). Edita aquí. */
 .ficha-tres-sumandos .ficha-img-row__thumb {
-  width: 22px;
-  height: 22px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
 }
 
@@ -23,7 +23,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 14px;
+  /* Separación imágenes ↔ operación — edita aquí */
+  gap: 180px;
   flex-wrap: wrap;
 }
 
@@ -31,11 +32,11 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
 }
 
 .ficha-tres-sumandos .ficha-vop {
   flex: 0 0 auto;
-  margin-left: auto;
+  margin-left: 0;
 }
