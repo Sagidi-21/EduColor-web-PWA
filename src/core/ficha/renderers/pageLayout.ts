@@ -143,8 +143,13 @@ export function isFullWidthExercise(
     return ex.variant === "find-abaco" && !options.showAnswer;
   }
   if (ex.kind === "comparison") return !options.showAnswer;
-  if (ex.kind === "elKilo" || ex.kind === "elLitro" || ex.kind === "ordinales") {
+  if (ex.kind === "elKilo" || ex.kind === "elLitro") {
     return !options.showAnswer;
+  }
+  // Ordinales: easy/medium 2 por fila; hard/expert 1 (casilla a la derecha).
+  if (ex.kind === "ordinales") {
+    const wide = ex.difficulty === "hard" || ex.difficulty === "expert";
+    return !options.showAnswer && wide;
   }
   if (ex.kind === "graficoBarras" || ex.kind === "balanza" || ex.kind === "intervalosTiempo") {
     return !options.showAnswer;

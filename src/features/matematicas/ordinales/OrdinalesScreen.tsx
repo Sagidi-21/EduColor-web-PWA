@@ -18,8 +18,6 @@ import { ActionButtons } from "../components/ActivityActionButtons";
 import "../operations/OperationsScreen.css";
 import "./OrdinalesScreen.css";
 
-const ROW_OBJECTS = ["🏀", "⚽", "🎾", "🏈", "🎱", "🏓", "🎯", "🏐", "⚾", "🏒"];
-
 type AnswerState = "idle" | "correct" | "wrong";
 
 interface SessionState {
@@ -46,16 +44,17 @@ function freshSession(seed: number, difficulty: EngineScreenProps["difficulty"])
   };
 }
 
-function OrdinalRow({ ex, sessionSeed }: { ex: OrdinalExercise; sessionSeed: number }) {
-  const objEmoji = ROW_OBJECTS[sessionSeed % ROW_OBJECTS.length];
+function OrdinalRow({ ex }: { ex: OrdinalExercise }) {
   const showLabels = ex.rowSize <= 7;
 
   return (
     <>
       {ex.fromRight && (
-        <div className="ord__direction">
-          <span className="ord__direction-arrow">→</span>
-          <span>Desde la derecha</span>
+        <div className="ord__direction" aria-label="De izquierda a derecha">
+          <span className="ord__direction-arrow" aria-hidden="true">
+            →
+          </span>
+          <span className="ord__direction-hint">(de izquierda a derecha)</span>
         </div>
       )}
       <div className="ord__row">
@@ -68,7 +67,7 @@ function OrdinalRow({ ex, sessionSeed }: { ex: OrdinalExercise; sessionSeed: num
                 className={`ord__object ${isHighlight ? "ord__object--highlight" : ""}`}
                 aria-hidden="true"
               >
-                {isHighlight ? "⭐" : objEmoji}
+                {ex.emoji}
               </span>
               {showLabels && (
                 <span
@@ -221,7 +220,7 @@ export function OrdinalesScreen({
       <div className={`ops__stage ${stageClass}`}>
         {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
 
-        <OrdinalRow ex={current} sessionSeed={sessionSeed} />
+        <OrdinalRow ex={current} />
         <p className="ord__question">{current.question}</p>
 
         {!isMultiChoice && (

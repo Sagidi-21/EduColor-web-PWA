@@ -1,9 +1,42 @@
 /* Ordinales — layout alumno */
 
+.ficha-ordinales {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ficha-ordinales--wide {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.ficha-ordinales__main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .ficha-ordinales__direction {
-  margin: 0 0 4px;
-  font-size: 12px;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 6px;
+  line-height: 1.2;
+}
+
+.ficha-ordinales__arrow {
+  display: inline-block;
+  font-size: 40px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.ficha-ordinales__hint {
+  font-size: 14px;
+  font-weight: 500;
   color: #64748b;
 }
 
@@ -14,6 +47,7 @@
   margin-bottom: 6px;
   font-size: 20px;
   line-height: 1;
+  justify-content: center;
 }
 
 .ficha-ordinales__item {
@@ -23,14 +57,30 @@
   gap: 2px;
 }
 
+.ficha-ordinales__cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.55em;
+  height: 1.55em;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.ficha-ordinales__item--marked .ficha-ordinales__cell {
+  outline: 2.5px solid var(--color-primary, #2563eb);
+  outline-offset: 1px;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 14%, #fff);
+}
+
 .ficha-ordinales__pos {
   font-size: 10px;
   font-weight: 700;
   color: #64748b;
 }
 
-.ficha-ordinales__item--star .ficha-ordinales__pos {
-  color: #d97706;
+.ficha-ordinales__item--marked .ficha-ordinales__pos {
+  color: var(--color-primary, #2563eb);
 }
 
 .ficha-ordinales__question {
@@ -40,13 +90,36 @@
   color: #1e293b;
 }
 
+.ficha-ordinales:not(.ficha-ordinales--wide) .ficha-ordinales__question {
+  text-align: center;
+}
+
+.ficha-ordinales--easy .ficha-ordinales__question {
+  margin: 0 0 8px;
+}
+
 .ficha-ordinales__blank {
   display: inline-block;
-  width: 48px;
-  height: 36px;
+  width: 72px;
+  height: 52px;
   margin-top: 6px;
-  border: 1.5px dashed #94a3b8;
-  border-radius: 3px;
+  border: 2px dashed #94a3b8;
+  border-radius: 6px;
   background: #f8fafc;
   box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.ficha-ordinales--wide .ficha-ordinales__blank {
+  width: 84px;
+  height: 64px;
+  margin-top: 0;
+  border-width: 2px;
+  border-radius: 6px;
+}
+
+.ficha-ordinales:not(.ficha-ordinales--wide) .ficha-ordinales__blank {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }

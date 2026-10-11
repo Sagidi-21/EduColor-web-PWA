@@ -173,13 +173,18 @@ export interface CapacidadSheetExercise {
 export interface OrdinalesSheetExercise {
   kind: "ordinales";
   question: string;
+  /** identify = redondear en la serie; position/fromRight = casilla. */
+  variant?: "identify" | "position" | "fromRight";
   /** Tamaño de la fila de objetos. */
   count: number;
   /** Emoji de cada objeto (como en pizarra). */
   emoji: string;
-  /** Posición 1-based de la estrella (desde la izquierda). */
+  /** Posición 1-based del dibujo marcado (desde la izquierda). */
   target: number;
+  /** Muestra flecha de dirección (izquierda → derecha). */
   fromRight: boolean;
+  /** Nivel de la ficha (layout: easy/medium 2 cols; hard/expert casilla a la dcha.). */
+  difficulty?: "easy" | "medium" | "hard" | "expert";
   imageUrl: string;
   answer?: number;
 }

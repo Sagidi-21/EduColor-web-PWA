@@ -87,11 +87,20 @@ describe("ordinales — generateSession", () => {
     });
   });
 
-  it("fromRight: la respuesta es la simétrica de la estrella", () => {
+  it("fromRight: cuenta de izquierda a derecha (respuesta = posición dibujada)", () => {
     generateSession("hard", 42).forEach((ex) => {
       expect(ex.fromRight).toBe(true);
-      expect(ex.answer).toBe(ex.rowSize - ex.target + 1);
-      expect(ex.question).toContain("desde la derecha");
+      expect(ex.answer).toBe(ex.target);
+      expect(ex.question).not.toMatch(/derecha/i);
+    });
+  });
+
+  it("asigna un emoji distinto a cada ejercicio de la sesión (mientras quepa el pool)", () => {
+    DIFFICULTIES.forEach((diff) => {
+      const session = generateSession(diff, 42);
+      const emojis = session.map((ex) => ex.emoji);
+      expect(emojis.every((e) => e.length > 0)).toBe(true);
+      expect(new Set(emojis).size).toBe(session.length);
     });
   });
 

@@ -69,7 +69,28 @@ import type {
   TresSumandosSheetExercise,
 } from "../types";
 
-const ORDINAL_EMOJIS = ["🏀", "⚽", "🎾", "🏈", "🎱", "🏓", "🎯", "🏐", "⚾", "🏒"];
+const ORDINAL_EMOJIS_FALLBACK = [
+  "🏀",
+  "⚽",
+  "🎾",
+  "🏈",
+  "🎱",
+  "🏓",
+  "🎯",
+  "🏐",
+  "⚾",
+  "🏒",
+  "🏉",
+  "🎳",
+  "🏸",
+  "🥊",
+  "⛸️",
+  "🎿",
+  "🥇",
+  "🏆",
+  "🎽",
+  "🧢",
+];
 
 function asRecord(ex: unknown): Record<string, unknown> {
   return ex && typeof ex === "object" ? (ex as Record<string, unknown>) : { value: ex };
@@ -572,16 +593,32 @@ function mapParImpar(ex: Record<string, unknown>, config: SheetConfig): ParImpar
 function mapOrdinales(ex: Record<string, unknown>, config: SheetConfig): OrdinalesSheetExercise {
   const rowSize = asNumber(ex.rowSize, asNumber(ex.count, 5));
   const target = asNumber(ex.target, 1);
-  const emoji = config.withImages ? ORDINAL_EMOJIS[(target + rowSize) % ORDINAL_EMOJIS.length] : "";
+  const answer = asNumber(ex.answer);
+  const rawType = asString(ex.type);
+  const variant: "identify" | "position" | "fromRight" =
+    rawType === "position" || rawType === "fromRight" ? rawType : "identify";
+  const fromEngine = asString(ex.emoji);
+  const emoji = config.withImages
+    ? fromEngine ||
+      ORDINAL_EMOJIS_FALLBACK[(target + rowSize + answer) % ORDINAL_EMOJIS_FALLBACK.length]!
+    : "";
+  const ordinalLabel =
+    answer >= 1 && answer <= 10
+      ? ["1º", "2º", "3º", "4º", "5º", "6º", "7º", "8º", "9º", "10º"][answer - 1]
+      : `${answer}º`;
+  // Identify (easy y expert en ficha): redondear sobre la serie; sin casilla ni marca.
+  const question = variant === "identify" ? `Redondea la posición ${ordinalLabel}` : questionOf(ex);
   return {
     kind: "ordinales",
-    question: questionOf(ex),
+    variant,
+    question,
     count: rowSize,
     emoji,
     target,
     fromRight: Boolean(ex.fromRight),
+    difficulty: config.difficulty,
     imageUrl: "",
-    answer: asNumber(ex.answer),
+    answer,
   };
 }
 

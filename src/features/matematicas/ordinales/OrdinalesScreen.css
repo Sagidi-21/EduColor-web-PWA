@@ -22,8 +22,10 @@
 }
 
 .ord__object--highlight {
-  filter: drop-shadow(0 0 8px #f59e0b);
-  transform: scale(1.18);
+  outline: 3px solid var(--color-primary, #2563eb);
+  outline-offset: 3px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 14%, #fff);
 }
 
 .ord__pos-label {
@@ -33,7 +35,7 @@
 }
 
 .ord__pos-label--highlight {
-  color: #f59e0b;
+  color: var(--color-primary, #2563eb);
 }
 
 /* ── Pregunta ────────────────────────────────────────────────────────── */
@@ -83,17 +85,24 @@
   color: #ef4444;
 }
 
-/* ── Dirección ───────────────────────────────────────────────────────── */
+/* ── Dirección (flecha + hint gris, izquierda → derecha) ─────────────── */
 .ord__direction {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #64748b;
-  margin-bottom: 2px;
+  gap: 10px;
+  margin-bottom: 6px;
 }
 
 .ord__direction-arrow {
-  font-size: 16px;
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1;
+  color: #0f172a;
+}
+
+.ord__direction-hint {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
 }

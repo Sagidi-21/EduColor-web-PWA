@@ -6,15 +6,17 @@ export interface OrdinalExercise {
   type: OrdinalType;
   /** Número de objetos de la fila */
   rowSize: number;
-  /** Posición (1-based desde la izquierda) donde se dibuja la estrella */
+  /** Posición (1-based desde la izquierda) del dibujo marcado */
   target: number;
-  /** Si es true, la pregunta pide contar desde la derecha */
+  /** Si es true, se muestra la flecha de dirección (izquierda → derecha) */
   fromRight: boolean;
   question: string;
   /** Opciones para el tipo `identify` */
   options?: number[];
-  /** Posición ordinal correcta (1-based) */
+  /** Posición ordinal correcta (1-based, de izquierda a derecha) */
   answer: number;
+  /** Emoji de la fila (distinto por ejercicio en la sesión). */
+  emoji: string;
 }
 
 export const ORDINAL_LABELS = [
@@ -28,6 +30,35 @@ export const ORDINAL_LABELS = [
   "8º",
   "9º",
   "10º",
+] as const;
+
+/** Pool amplio para variar el dibujo entre ejercicios de la misma ficha/sesión. */
+export const ORDINAL_EMOJIS = [
+  "🏀",
+  "⚽",
+  "🎾",
+  "🏈",
+  "🎱",
+  "🏓",
+  "🎯",
+  "🏐",
+  "⚾",
+  "🏒",
+  "🏉",
+  "🎳",
+  "🏸",
+  "🥊",
+  "⛸️",
+  "🎿",
+  "🥇",
+  "🏆",
+  "🎽",
+  "🧢",
+  "👟",
+  "🧘",
+  "🚴",
+  "🏊",
+  "🤸",
 ] as const;
 
 // ── LCG determinista ────────────────────────────────────────────────────────
@@ -67,8 +98,8 @@ const TYPES: Record<ActivityDifficulty, OrdinalType[]> = {
  * Genera ejercicios de números ordinales.
  *
  * - easy:   identifica el ordinal entre 4 opciones (hasta el 5º).
- * - medium: pregunta la posición de la estrella (hasta el 7º).
- * - hard:   pregunta la posición contando desde la derecha (hasta el 10º).
+ * - medium: pregunta la posición del dibujo marcado (hasta el 7º).
+ * - hard:   misma lógica con flecha → (izquierda a derecha), hasta el 10º.
  * - expert: los tres tipos mezclados, hasta el 10º.
  */
 export function generateSession(difficulty: ActivityDifficulty, seed = 42): OrdinalExercise[] {
@@ -77,6 +108,13 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Ordi
   const used = new Set<string>();
   const out: OrdinalExercise[] = [];
   let tries = 0;
+  const emojiDeck = shuffle([...ORDINAL_EMOJIS], rng);
+  let emojiIdx = 0;
+  const nextEmoji = () => {
+    const emoji = emojiDeck[emojiIdx % emojiDeck.length]!;
+    emojiIdx += 1;
+    return emoji;
+  };
 
   const maxPos = difficulty === "easy" ? 5 : difficulty === "medium" ? 7 : 10;
   const rowSize = maxPos;
@@ -105,6 +143,7 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Ordi
         question: `¿Cuál es el ${ORDINAL_LABELS[pos - 1]}?`,
         options: shuffle([...distSet].slice(0, 4), rng),
         answer: pos,
+        emoji: nextEmoji(),
       });
     } else if (activeType === "position") {
       const key = `pos-${pos}`;
@@ -116,23 +155,24 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Ordi
         rowSize,
         target: pos,
         fromRight: false,
-        question: "¿Qué posición ocupa la estrella?",
+        question: "¿Qué posición ocupa el dibujo marcado?",
         answer: pos,
+        emoji: nextEmoji(),
       });
     } else {
-      // La estrella se dibuja en la posición equivalente desde la izquierda,
-      // pero la respuesta se cuenta desde la derecha.
-      const key = `right-${pos}`;
+      // Contar de izquierda a derecha (flecha →). Misma respuesta que la posición dibujada.
+      const key = `ltr-${pos}`;
       if (used.has(key)) continue;
       used.add(key);
 
       out.push({
         type: "fromRight",
         rowSize,
-        target: rowSize - pos + 1,
+        target: pos,
         fromRight: true,
-        question: "¿Qué posición ocupa la estrella contando desde la derecha?",
+        question: "¿Qué posición ocupa el dibujo marcado?",
         answer: pos,
+        emoji: nextEmoji(),
       });
     }
   }

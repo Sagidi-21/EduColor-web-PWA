@@ -17,7 +17,7 @@
     "difficultyDescriptions": {
       "easy": "Señala cuál es el 1º al 5º (multi-choice)",
       "medium": "¿Qué posición ocupa? Del 1º al 7º",
-      "hard": "Contando desde la derecha, hasta el 10º",
+      "hard": "Contando de izquierda a derecha, hasta el 10º",
       "expert": "Los 3 tipos mezclados, hasta el 10º"
     }
   },

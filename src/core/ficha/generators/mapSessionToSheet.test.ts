@@ -813,7 +813,7 @@ describe("mapSessionToSheet", () => {
     });
   });
 
-  it("mapea ordinales con fila y estrella", () => {
+  it("mapea ordinales con fila y emoji", () => {
     const ex = mapSessionToSheet(
       "ordinales",
       {
@@ -823,6 +823,7 @@ describe("mapSessionToSheet", () => {
         fromRight: false,
         question: "¿En qué posición está la estrella?",
         answer: 3,
+        emoji: "🏀",
       },
       config,
     );
@@ -835,6 +836,30 @@ describe("mapSessionToSheet", () => {
     });
     if (ex.kind === "ordinales") {
       expect(ex.emoji.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("identify (easy/expert) pide redondear la posición en la ficha", () => {
+    for (const difficulty of ["easy", "expert"] as const) {
+      const ex = mapSessionToSheet(
+        "ordinales",
+        {
+          type: "identify",
+          rowSize: 5,
+          target: 3,
+          fromRight: false,
+          question: "¿Cuál es el 3º?",
+          answer: 3,
+          emoji: "⚽",
+        },
+        { ...config, difficulty },
+      );
+      expect(ex).toMatchObject({
+        kind: "ordinales",
+        variant: "identify",
+        question: "Redondea la posición 3º",
+        difficulty,
+      });
     }
   });
 
