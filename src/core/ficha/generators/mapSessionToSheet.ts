@@ -1444,31 +1444,38 @@ function mapNumeracion1119(ex: Record<string, unknown>, _config: SheetConfig): S
   };
 }
 
-/** Numeración 40-59 / 60-99: bloques de decenas+unidades como TensBlock de pizarra. */
+/**
+ * Numeración 40-59 / 60-99: misma visual de ficha que 11-19.
+ * Diferencias de motor: `jump` (ambos) y `word` (solo 60-99, MC sin bloques).
+ */
 function mapNumeracionDecenas(
   kind: "numeracion4059" | "numeracion6099",
   ex: Record<string, unknown>,
-  config: SheetConfig,
 ): SheetExercise {
   const type = asString(ex.type, "identify");
-  const options = asStringArray(ex.options);
-  // 4059: MC solo en easy. 6099: MC en identify y word (cualquier nivel).
-  const isChoice =
-    kind === "numeracion4059"
-      ? config.difficulty === "easy"
-      : type === "identify" || type === "word";
-  // 4059: bloques en todos los tipos. 6099: solo identify (como pizarra).
-  const showBlocks = kind === "numeracion4059" ? true : type === "identify";
-  const base = {
+  const options = Array.isArray(ex.options)
+    ? ex.options.map((o) => String(o)).filter(Boolean)
+    : asStringArray(ex.options);
+  // identify / word traen opciones del motor → MC a la derecha.
+  const hasChoices = (type === "identify" || type === "word") && options.length > 0;
+  // Bloques siempre salvo word (pregunta en letras, sin imagen de bloques).
+  const showBlocks = type !== "word";
+  const question =
+    type === "identify"
+      ? "Redondea el número que representa la imagen."
+      : questionOf(ex).replace(/_+/g, "______");
+  return {
     kind,
     type,
     number: asNumber(ex.number),
-    question: questionOf(ex),
+    question,
     showBlocks,
-    choiceLabels: isChoice && options.length > 0 ? options : undefined,
+    choiceLabels: hasChoices ? options : undefined,
+    showAnswerBoxes: false,
+    // Con bloques y sin MC: enunciado debajo (units / sequence / jump).
+    questionBelowImage: showBlocks && !hasChoices,
     answer: answerOf(ex),
-  };
-  return base as SheetExercise;
+  } as SheetExercise;
 }
 
 function mapAbaco3Cifras(ex: Record<string, unknown>): SheetExercise {
@@ -1631,9 +1638,9 @@ export function mapSessionToSheet(
     case "ordinales":
       return mapOrdinales(ex, config);
     case "numeracion4059":
-      return mapNumeracionDecenas("numeracion4059", ex, config);
+      return mapNumeracionDecenas("numeracion4059", ex);
     case "numeracion6099":
-      return mapNumeracionDecenas("numeracion6099", ex, config);
+      return mapNumeracionDecenas("numeracion6099", ex);
     case "numeracion999":
       return mapNumeracion999(ex);
     case "poligonos":

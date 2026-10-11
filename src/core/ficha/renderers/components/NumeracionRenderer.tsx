@@ -15,8 +15,8 @@ export interface NumeracionRendererProps {
 
 /**
  * Alumno:
- * - MC: enunciado arriba; imagen + opciones a la derecha (11–19 sin •).
- * - 11–19 medium+: imagen y enunciado debajo (sin casillas).
+ * - MC: enunciado arriba; imagen + opciones a la derecha (sin •).
+ * - Sin MC con bloques: imagen y enunciado debajo (sin casillas).
  * - Resto sin MC: casillas discontinuas si `showAnswerBoxes !== false`.
  */
 export function NumeracionRenderer({ ex, showAnswer }: NumeracionRendererProps): JSX.Element {
@@ -26,15 +26,16 @@ export function NumeracionRenderer({ ex, showAnswer }: NumeracionRendererProps):
 
   const choices = ex.choiceLabels ?? [];
   const digits = Math.max(1, String(ex.answer ?? "00").length);
-  const showChoiceMarks = ex.kind !== "numeracion1119";
   const hasChoices = choices.length > 0;
   const questionBelow = Boolean(ex.questionBelowImage);
   const showBoxes = !hasChoices && ex.showAnswerBoxes !== false;
 
   const questionEl = <p className="ficha-numeracion__question">{ex.question}</p>;
+  // MC (easy/identify): decenas en columna. Medium/hard/jump: en fila (menos altura).
+  const blocksLayout = hasChoices ? "stack" : "row";
   const blocksEl = ex.showBlocks ? (
     <div className="ficha-numeracion__blocks">
-      <TensBlocksSvg number={ex.number} />
+      <TensBlocksSvg number={ex.number} layout={blocksLayout} />
     </div>
   ) : null;
 
@@ -47,11 +48,6 @@ export function NumeracionRenderer({ ex, showAnswer }: NumeracionRendererProps):
           <div className="ficha-numeracion__choices">
             {choices.map((label, i) => (
               <span key={`${label}-${i}`} className="ficha-numeracion__choice">
-                {showChoiceMarks && (
-                  <span className="ficha-numeracion__choice-mark" aria-hidden>
-                    •
-                  </span>
-                )}
                 <span>{label}</span>
               </span>
             ))}

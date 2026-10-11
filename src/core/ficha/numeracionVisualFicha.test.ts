@@ -132,33 +132,92 @@ describe("numeración con bloques decenas/unidades", () => {
     }
   });
 
-  it("4059: bloques con decenas y unidades correctas", () => {
-    const list = generate<Numeracion4059SheetExercise>("numeracion4059", "easy");
-    expect(list.length).toBeGreaterThan(0);
-    for (const ex of list) {
+  it("4059: misma visual que 1119 (MC identify; units/sequence/jump debajo)", () => {
+    const easy = generate<Numeracion4059SheetExercise>("numeracion4059", "easy");
+    expect(easy.length).toBeGreaterThan(0);
+    for (const ex of easy) {
       expect(ex.kind).toBe("numeracion4059");
       expect(ex.type).toBe("identify");
       expect(ex.showBlocks).toBe(true);
+      expect(ex.choiceLabels).toHaveLength(4);
+      expect(ex.question).toBe("Redondea el número que representa la imagen.");
       const markup = html(createElement(NumeracionRenderer, { ex, showAnswer: false }));
+      expect(markup).toContain("ficha-tens-blocks--stack");
+      expect(markup).not.toContain("•");
       expect((markup.match(/<rect/g) ?? []).length).toBe(Math.floor(ex.number / 10));
       expect((markup.match(/<circle/g) ?? []).length).toBe(ex.number % 10);
+      // Misma disposición que 11–19: body con bloques + columna de opciones.
+      expect(markup).toContain("ficha-numeracion__body");
+      expect(markup).toContain("ficha-numeracion__choices");
+      const bodyAt = markup.indexOf("ficha-numeracion__body");
+      const blocksAt = markup.indexOf("ficha-numeracion__blocks");
+      const choicesAt = markup.indexOf("ficha-numeracion__choices");
+      expect(blocksAt).toBeGreaterThan(bodyAt);
+      expect(choicesAt).toBeGreaterThan(blocksAt);
+    }
+
+    const medium = generate<Numeracion4059SheetExercise>("numeracion4059", "medium");
+    for (const ex of medium) {
+      expect(ex.showBlocks).toBe(true);
+      expect(ex.choiceLabels).toBeUndefined();
+      expect(ex.showAnswerBoxes).toBe(false);
+      expect(ex.questionBelowImage).toBe(true);
+      const markup = html(createElement(NumeracionRenderer, { ex, showAnswer: false }));
+      expect(markup).not.toContain("ficha-numeracion__box");
+      expect(markup).toContain("ficha-numeracion--prompt-below");
+      expect(markup).toContain("ficha-tens-blocks--row");
+    }
+
+    const expert = generate<Numeracion4059SheetExercise>("numeracion4059", "expert");
+    const identify = expert.filter((ex) => ex.type === "identify");
+    const jump = expert.filter((ex) => ex.type === "jump");
+    expect(identify.length).toBeGreaterThan(0);
+    for (const ex of identify) {
+      expect(ex.choiceLabels?.length).toBe(4);
+      expect(ex.questionBelowImage).toBe(false);
+      const markup = html(createElement(NumeracionRenderer, { ex, showAnswer: false }));
+      expect(markup).toContain("ficha-numeracion__body");
+      expect(markup).toContain("ficha-numeracion__choices");
+      expect(markup).not.toContain("•");
+    }
+    expect(jump.length).toBeGreaterThan(0);
+    for (const ex of jump) {
+      expect(ex.showBlocks).toBe(true);
+      expect(ex.choiceLabels).toBeUndefined();
+      expect(ex.questionBelowImage).toBe(true);
+      expect(ex.showAnswerBoxes).toBe(false);
+      const markup = html(createElement(NumeracionRenderer, { ex, showAnswer: false }));
+      expect(markup).toContain("ficha-tens-blocks--row");
     }
   });
 
-  it("6099: identify con bloques y MC; word con MC sin bloques", () => {
+  it("6099: identify/word MC; units/sequence/jump con enunciado debajo", () => {
     const easy = generate<Numeracion6099SheetExercise>("numeracion6099", "easy");
     for (const ex of easy) {
       expect(ex.type).toBe("identify");
       expect(ex.showBlocks).toBe(true);
       expect(ex.choiceLabels?.length).toBeGreaterThan(0);
+      expect(ex.question).toBe("Redondea el número que representa la imagen.");
+      const markup = html(createElement(NumeracionRenderer, { ex, showAnswer: false }));
+      expect(markup).not.toContain("•");
     }
+
     const medium = generate<Numeracion6099SheetExercise>("numeracion6099", "medium");
     const units = medium.find((e) => e.type === "units");
     const word = medium.find((e) => e.type === "word");
-    expect(units?.showBlocks).toBe(false);
+    expect(units?.showBlocks).toBe(true);
     expect(units?.choiceLabels).toBeUndefined();
+    expect(units?.questionBelowImage).toBe(true);
+    expect(units?.showAnswerBoxes).toBe(false);
     expect(word?.showBlocks).toBe(false);
     expect(word?.choiceLabels?.length).toBeGreaterThan(0);
+    expect(word?.questionBelowImage).toBe(false);
+
+    const expert = generate<Numeracion6099SheetExercise>("numeracion6099", "expert");
+    const jump = expert.find((e) => e.type === "jump");
+    expect(jump?.showBlocks).toBe(true);
+    expect(jump?.questionBelowImage).toBe(true);
+    expect(jump?.showAnswerBoxes).toBe(false);
   });
 
   it("soluciones: solo la respuesta", () => {

@@ -8,7 +8,7 @@
   line-height: 1.25;
 }
 
-/* Medium+ 11–19: enunciado debajo de la imagen */
+/* Sin MC: enunciado debajo de la imagen (units / sequence / jump) */
 .ficha-numeracion--prompt-below .ficha-numeracion__blocks {
   margin-bottom: 6px;
 }
@@ -19,13 +19,13 @@
   margin-left: 56px; /* edita aquí el desplazamiento */
 }
 
-/* Imagen a la izquierda, posibilidades a la derecha en vertical. */
+/* Imagen a la izquierda, posibilidades a la derecha en vertical (como 11–19). */
 .ficha-numeracion__body {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 140px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .ficha-numeracion__blocks {
@@ -46,7 +46,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 14px; /* edita aquí el espacio entre opciones */
   flex: 0 0 auto;
 }
 
@@ -57,10 +57,6 @@
   line-height: 1.35;
   color: #0f172a;
   font-variant-numeric: tabular-nums;
-}
-
-.ficha-numeracion__choice-mark {
-  margin-right: 5px;
 }
 
 .ficha-numeracion__boxes {

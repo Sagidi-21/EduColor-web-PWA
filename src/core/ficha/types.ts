@@ -80,10 +80,10 @@ export interface NumeracionBlocksFields {
   choiceLabels?: string[];
   /**
    * Casillas discontinuas para escribir.
-   * false = sin casillas (p. ej. 11–19 medium: imagen + enunciado debajo).
+   * false = sin casillas (p. ej. units/sequence/jump: imagen + enunciado debajo).
    */
   showAnswerBoxes?: boolean;
-  /** Enunciado debajo de la imagen (11–19 medium+). */
+  /** Enunciado debajo de la imagen (units / sequence / jump). */
   questionBelowImage?: boolean;
   answer?: number | string;
 }

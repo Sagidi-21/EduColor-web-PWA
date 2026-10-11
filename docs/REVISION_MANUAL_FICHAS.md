@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 16 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 18 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -63,6 +63,8 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `resta`               | La resta                     | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: mismo layout que suma (objetos tachados en resta). **Revalidar Word=preview.**                                            |
 | `posicionesAula`      | Posiciones en el aula        | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: escena aula SVG + ○ opciones, soluciones solo respuesta. **Revalidar Word=preview.**                                      |
 | `numeracion1119`      | Números del 11 al 19         | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: easy/expert identify con opciones; medium+ enunciado bajo imagen; huecos dobles solo ficha. **Revalidar Word.**           |
+| `numeracion4059`      | Números del 40 al 59         | [x]    | [x]        | [x]      | [x]            | OK 2026-10-11: visual como 1119; identify MC sin • (stack); medium/hard/jump bloques en fila; huecos dobles; soluciones solo respuesta.  |
+| `numeracion6099`      | Números del 60 al 99         | [x]    | [x]        | [x]      | [x]            | OK 2026-10-11: misma visual que 4059; `word` MC sin bloques; jump/units/sequence en fila.                                                |
 | `igualdad`            | El signo igual               | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: enunciados por tipo; imágenes+op en fila (easy); centrado sin imágenes; hard opciones en línea con •. **Revalidar Word.** |
 | `lineTypes`           | Tipos de líneas              | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: SVG + opciones •; hint «(redondea la correcta)»; gap 120px línea↔opciones. **Revalidar Word.**                            |
 | `rectaNumerica`       | Coloca el número en la recta | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: sin flecha/recuadro; hard/expert 1/fila; soluciones con recta + marca vertical. **Revalidar Word.**                       |
@@ -132,8 +134,8 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 ## Numeración
 
 - [x] **numeracion1119** — Números del 11 al 19 _(2026-10-10: OK — redondea + opciones sin ○; medium/hard imagen+enunciado; huecos dobles; expert con MC en identify)_
-- [ ] **numeracion4059** — Números del 40 al 59
-- [ ] **numeracion6099** — Números del 60 al 99
+- [x] **numeracion4059** — Números del 40 al 59 _(2026-10-11: OK — visual como 1119; identify MC sin • (decenas en columna); medium/hard/jump bloques en fila; huecos dobles; soluciones solo respuesta)_
+- [x] **numeracion6099** — Números del 60 al 99 _(2026-10-11: OK — misma visual que 4059; word MC sin bloques; jump/units/sequence en fila)_
 - [ ] **numeracion999** — Numeración hasta 999
 - [ ] **tablaNumerica** — La tabla de los números
 - [x] **lecturaNumeros** — Lectura de números _(2026-10-10: OK — enunciado ½ + número dcha.; color de clase; hint redondea; opciones space-between; hard/expert 1/fila y display más pequeño)_
@@ -232,20 +234,20 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 
 ### 2ª vuelta (2026-10-10) — decisiones del profesor aplicadas
 
-| #   | ID                                                                 | Decisión                                    | Estado código |
-| --- | ------------------------------------------------------------------ | ------------------------------------------- | ------------- |
-| 1   | `multiplicacion`                                                   | Emparejar columnas                          | Hecho         |
-| 2   | `sumaLlevando`                                                     | Casilla de llevada                          | Hecho         |
-| 3   | `algoritmo3cifras`                                                 | C·D·U + llevar/prestar                      | Hecho         |
-| 4   | `rectaNumerica`                                                    | SVG de recta                                | OK navegador  |
-| 5   | `tablaNumerica`                                                    | Rejilla 10×10 real                          | Hecho         |
-| 6   | `numeracion1119/4059/6099`                                         | Bloques decenas/unidades                    | Hecho         |
-| 7   | `abaco3cifras` / `lecturaNumeros` / `redondeo` (+ `numeracion999`) | Visuales pizarra                            | Hecho         |
-| 8   | `repartoIgual` / `problemas2pasos`                                 | Diagramas                                   | Hecho         |
-| 9   | laberinto, ruta, posiciones, probabilidad, capacidad               | Dibujar escena                              | Hecho         |
-| 10  | simetría / cuerpos3d / círculo                                     | SVG + ○                                     | Hecho         |
-| 11  | `reloj`                                                            | Digital si aplica; analógico con/sin agujas | Hecho         |
-| 12  | menu / balanzaEquilibra / leftRight hard                           | Extras pizarra                              | Hecho         |
+| #   | ID                                                                 | Decisión                                    | Estado código                       |
+| --- | ------------------------------------------------------------------ | ------------------------------------------- | ----------------------------------- |
+| 1   | `multiplicacion`                                                   | Emparejar columnas                          | Hecho                               |
+| 2   | `sumaLlevando`                                                     | Casilla de llevada                          | Hecho                               |
+| 3   | `algoritmo3cifras`                                                 | C·D·U + llevar/prestar                      | Hecho                               |
+| 4   | `rectaNumerica`                                                    | SVG de recta                                | OK navegador                        |
+| 5   | `tablaNumerica`                                                    | Rejilla 10×10 real                          | Hecho                               |
+| 6   | `numeracion1119/4059/6099`                                         | Bloques decenas/unidades                    | OK navegador (4059/6099 2026-10-11) |
+| 7   | `abaco3cifras` / `lecturaNumeros` / `redondeo` (+ `numeracion999`) | Visuales pizarra                            | Hecho                               |
+| 8   | `repartoIgual` / `problemas2pasos`                                 | Diagramas                                   | Hecho                               |
+| 9   | laberinto, ruta, posiciones, probabilidad, capacidad               | Dibujar escena                              | Hecho                               |
+| 10  | simetría / cuerpos3d / círculo                                     | SVG + ○                                     | Hecho                               |
+| 11  | `reloj`                                                            | Digital si aplica; analógico con/sin agujas | Hecho                               |
+| 12  | menu / balanzaEquilibra / leftRight hard                           | Extras pizarra                              | Hecho                               |
 
 **Nota Word:** muchas escenas usan SVG inline; en vista previa/PDF deberían verse bien; Word puede degradar SVG.
 
