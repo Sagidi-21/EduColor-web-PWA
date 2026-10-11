@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 14 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 15 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -67,6 +67,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `lineTypes`           | Tipos de líneas              | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: SVG + opciones •; hint «(redondea la correcta)»; gap 120px línea↔opciones. **Revalidar Word.**                            |
 | `rectaNumerica`       | Coloca el número en la recta | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: sin flecha/recuadro; hard/expert 1/fila; soluciones con recta + marca vertical. **Revalidar Word.**                       |
 | `laberintoMatematico` | Laberinto matemático (1.º)   | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: tablero grande color de clase; nodo INICIO soft; soluciones con casillas rellenas (sin enunciado); modal ficha afinado.   |
+| `capacidad`           | Capacidad y litros           | [x]    | [x]        | [x]      | [x]            | OK 2026-10-11: easy opciones centradas; medium/hard pregunta izq. + medida dcha. y casilla grande; plural vaso/vasos; expert por tipo.   |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
@@ -122,7 +123,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **counting** — Contamos objetos _(2026-10-09: OK — objetos+pregunta, 10/hoja todos los niveles, soluciones con número)_
 - [x] **comparison** — Mayor y menor _(2026-10-09: OK — fila completa A|B, sin +N, hard/expert con iguales, soluciones sin dibujos, Word=vista previa)_
 - [ ] **parImpar** — Pares e impares
-- [ ] **capacidad** — Capacidad y litros
+- [x] **capacidad** — Capacidad y litros _(2026-10-11: OK — easy opciones centradas; medium/hard pregunta izq. + medida dcha.; plural vaso/vasos; expert por tipo)_
 - [ ] **ordinales** — Números ordinales
 - [x] **relacionar** — Relacionar número y cantidad _(2026-10-09: OK — alumno con líneas+figuras, soluciones solo número→letra, paginación por nivel)_
 - [ ] **relacionarCantidades** — Relacionar cantidades

@@ -112,9 +112,10 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Capa
       if (used.has(key)) continue;
       used.add(key);
 
+      const vasoWord = cups === 1 ? "vaso" : "vasos";
       out.push({
         type: "fill",
-        question: `Tienes ${cups} vasos de 1 litro.\n¿Cuántos litros hay en total?`,
+        question: `Tienes ${cups} ${vasoWord} de 1 litro.\n¿Cuántos litros hay en total?`,
         cups,
         answer: String(cups),
       });

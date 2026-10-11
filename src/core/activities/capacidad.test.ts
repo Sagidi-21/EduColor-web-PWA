@@ -72,6 +72,22 @@ describe("capacidad — generateSession", () => {
     });
   });
 
+  it("fill: usa singular/plural correcto en vaso/vasos", () => {
+    for (const seed of [1, 2, 3, 7, 11, 21, 33, 42, 99]) {
+      for (const diff of ["hard", "expert"] as const) {
+        generateSession(diff, seed).forEach((ex) => {
+          if (ex.type !== "fill") return;
+          if (ex.cups === 1) {
+            expect(ex.question).toMatch(/Tienes 1 vaso de 1 litro/);
+            expect(ex.question).not.toMatch(/1 vasos/);
+          } else {
+            expect(ex.question).toMatch(new RegExp(`Tienes ${ex.cups} vasos de 1 litro`));
+          }
+        });
+      }
+    }
+  });
+
   it("expert llega hasta 8 litros", () => {
     const maxes = new Set(
       generateSession("expert", 42).flatMap((ex) => [ex.maxLiters, ex.cups].filter(Boolean)),

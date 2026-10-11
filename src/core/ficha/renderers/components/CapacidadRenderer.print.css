@@ -1,5 +1,10 @@
 /* Capacidad y litros — layout alumno (recipientes SVG) */
 
+.ficha-capacidad {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .ficha-capacidad__vessels {
   text-align: center;
 }
@@ -64,14 +69,25 @@
   white-space: pre-wrap;
 }
 
-/* Opciones ○ (círculo tipográfico, como el resto de fichas) */
-.ficha-capacidad__choices {
-  margin-top: 6px;
+/* Easy (compare): pregunta y opciones centradas, más separación entre • */
+.ficha-capacidad--compare .ficha-capacidad__question {
+  text-align: center;
 }
 
-.ficha-capacidad__choice {
+.ficha-capacidad--compare .ficha-capacidad__choices {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 36px;
+  width: 100%;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+.ficha-capacidad--compare .ficha-capacidad__choice {
   display: inline-block;
-  margin: 2px 16px 2px 0;
+  margin: 0;
   font-size: 15px;
   line-height: 1.35;
   color: #222;
@@ -81,8 +97,49 @@
   margin-right: 6px;
 }
 
-/* Casilla de respuesta numérica */
+/* Medium / hard (y expert con esos tipos): pregunta izq. + medida dcha. */
+.ficha-capacidad__top {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ficha-capacidad__prompt {
+  flex: 1 1 52%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.ficha-capacidad--read .ficha-capacidad__question,
+.ficha-capacidad--fill .ficha-capacidad__question {
+  margin: 0;
+}
+
+.ficha-capacidad__visual {
+  flex: 0 1 48%;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.ficha-capacidad__visual .ficha-capacidad__vessels,
+.ficha-capacidad__visual .ficha-capacidad__cups {
+  width: 100%;
+}
+
+/* Casilla de respuesta numérica (más grande bajo la pregunta en read/fill) */
 .ficha-capacidad__write {
+  margin-top: 0;
+}
+
+.ficha-capacidad--compare .ficha-capacidad__write {
   margin-top: 6px;
 }
 
@@ -97,10 +154,23 @@
   vertical-align: middle;
 }
 
+.ficha-capacidad--read .ficha-capacidad__blank,
+.ficha-capacidad--fill .ficha-capacidad__blank {
+  width: 88px;
+  height: 48px;
+  border-width: 2px;
+  border-radius: 6px;
+}
+
 .ficha-capacidad__unit {
   margin-left: 6px;
   font-size: 16px;
   font-weight: 700;
   color: #1e293b;
   vertical-align: middle;
+}
+
+.ficha-capacidad--read .ficha-capacidad__unit,
+.ficha-capacidad--fill .ficha-capacidad__unit {
+  font-size: 20px;
 }

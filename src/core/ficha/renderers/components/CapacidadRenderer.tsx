@@ -142,8 +142,19 @@ function Visual({ ex }: { ex: CapacidadSheetExercise }): JSX.Element | null {
   return null;
 }
 
+function WriteBlank(): JSX.Element {
+  return (
+    <div className="ficha-capacidad__write">
+      <span className="ficha-capacidad__blank" aria-label="Espacio para la respuesta" />
+      <span className="ficha-capacidad__unit">L</span>
+    </div>
+  );
+}
+
 /**
- * Alumno: recipientes graduados / vasos de 1 L dibujados + pregunta + • (A/B/Igual) o casilla «L».
+ * Alumno:
+ * - compare: recipientes arriba; pregunta + • A/B/Igual centrados debajo.
+ * - read/fill: pregunta + casilla a la izquierda; medida (recipiente/vasos) a la derecha.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function CapacidadRenderer({ ex, showAnswer }: CapacidadRendererProps): JSX.Element {
@@ -151,29 +162,39 @@ export function CapacidadRenderer({ ex, showAnswer }: CapacidadRendererProps): J
     return <div className="ficha-answer">{ex.answer ?? "?"}</div>;
   }
 
+  const variant = ex.variant ?? "compare";
   const choices = ex.choiceLabels ?? [];
-  const writeIn = ex.variant === "read" || ex.variant === "fill";
+  const split = variant === "read" || variant === "fill";
+
   return (
-    <div className="ficha-capacidad">
-      <Visual ex={ex} />
-      <p className="ficha-capacidad__question">{ex.question}</p>
-      {choices.length > 0 && (
-        <div className="ficha-capacidad__choices">
-          {choices.map((label, i) => (
-            <span key={`${label}-${i}`} className="ficha-capacidad__choice">
-              <span className="ficha-capacidad__choice-mark" aria-hidden>
-                •
-              </span>
-              {label}
-            </span>
-          ))}
+    <div className={`ficha-capacidad ficha-capacidad--${variant}`}>
+      {split ? (
+        <div className="ficha-capacidad__top">
+          <div className="ficha-capacidad__prompt">
+            <p className="ficha-capacidad__question">{ex.question}</p>
+            <WriteBlank />
+          </div>
+          <div className="ficha-capacidad__visual">
+            <Visual ex={ex} />
+          </div>
         </div>
-      )}
-      {writeIn && (
-        <div className="ficha-capacidad__write">
-          <span className="ficha-capacidad__blank" aria-label="Espacio para la respuesta" />
-          <span className="ficha-capacidad__unit">L</span>
-        </div>
+      ) : (
+        <>
+          <Visual ex={ex} />
+          <p className="ficha-capacidad__question">{ex.question}</p>
+          {choices.length > 0 && (
+            <div className="ficha-capacidad__choices">
+              {choices.map((label, i) => (
+                <span key={`${label}-${i}`} className="ficha-capacidad__choice">
+                  <span className="ficha-capacidad__choice-mark" aria-hidden>
+                    •
+                  </span>
+                  {label}
+                </span>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
