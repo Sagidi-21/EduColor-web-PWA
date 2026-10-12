@@ -1,6 +1,6 @@
 import type { ActivityDifficulty } from "../content/contracts";
 
-const SYMBOLS = ["★", "♥", "☾", "⚡"];
+const SYMBOLS = ["★", "♥", "☾", "⚡", "◆", "●", "▲", "■", "✚", "◇"];
 
 export type TablaNumericaType = "missing" | "symbol" | "colorear";
 
@@ -11,9 +11,13 @@ export interface TablaNumericaExercise {
   question: string;
   gridState: TablaNumericaCellState[];
   symbolMap?: Record<number, string>;
+  /** Símbolo(s) a buscar; en medium puede ser varios unidos con espacio. */
   targetSymbol?: string;
+  /** Símbolos concretos a localizar (medium: 2–4). */
+  targetSymbols?: string[];
   targetIndex: number;
   answer: string;
+  /** Casillas correctas a pulsar (medium símbolos / hard-expert colorear). */
   validSet?: number[];
   ruleLabel?: string;
 }
@@ -43,12 +47,14 @@ function shuffle<T>(arr: T[], rng: () => number): T[] {
 
 const GRID_SIZE = 100;
 const EXERCISE_COUNT = 10;
+/** En easy, la tabla llega hasta la respuesta + este margen (no hasta 99). */
+const EASY_EXTRA = 10;
 
 /**
- * Genera 10 ejercicios sobre la tabla del 1 al 99.
+ * Genera 10 ejercicios sobre la tabla del 0 al 99.
  *
- * - easy:   casilla amarilla oculta (`missing`), respuesta con el número.
- * - medium: 4 símbolos colocados en la tabla, hay que indicar la casilla.
+ * - easy:   casilla amarilla oculta (`missing`); tabla solo hasta respuesta + 10.
+ * - medium: 4–10 símbolos en la tabla; hay que localizar 2–4 de ellos.
  * - hard:   colorear todos los números con una misma unidad.
  * - expert: alterna coloreado por unidades y por decenas.
  */
@@ -67,9 +73,11 @@ export function generateSession(
       if (used.has(target)) continue;
       used.add(target);
 
-      const gridState: TablaNumericaCellState[] = new Array(GRID_SIZE).fill("visible");
+      // p. ej. respuesta 10 → casillas 0…20 (no hasta 99)
+      const gridLen = Math.min(GRID_SIZE, target + EASY_EXTRA + 1);
+      const gridState: TablaNumericaCellState[] = new Array(gridLen).fill("visible");
       gridState[target] = "target";
-      for (let i = 0; i < GRID_SIZE; i++) {
+      for (let i = 0; i < gridLen; i++) {
         if (i !== target && rng() < 0.12) gridState[i] = "blank";
       }
 
@@ -86,31 +94,35 @@ export function generateSession(
   }
 
   if (difficulty === "medium") {
-    const used = new Set<number>();
+    const usedAsk = new Set<number>();
 
     while (out.length < EXERCISE_COUNT) {
+      const gridCount = randInt(rng, 4, 10);
+      const askCount = randInt(rng, 2, Math.min(4, gridCount));
+
       const positions: number[] = [];
       const posSet = new Set<number>();
       let tries = 0;
-      while (positions.length < 4 && tries++ < 200) {
+      while (positions.length < gridCount && tries++ < 400) {
         const pos = randInt(rng, 2, 97);
         if (!posSet.has(pos)) {
           posSet.add(pos);
           positions.push(pos);
         }
       }
-      if (positions.length < 4) continue;
+      if (positions.length < gridCount) continue;
 
-      const syms = shuffle([...SYMBOLS], rng).slice(0, 4);
+      const syms = shuffle([...SYMBOLS], rng).slice(0, gridCount);
       const symbolMap: Record<number, string> = {};
       positions.forEach((pos, i) => {
         symbolMap[pos] = syms[i];
       });
 
-      const askPos = positions[randInt(rng, 0, 3)];
-      if (used.has(askPos)) continue;
-      used.add(askPos);
+      const askPositions = shuffle([...positions], rng).slice(0, askCount);
+      if (askPositions.some((p) => usedAsk.has(p))) continue;
+      askPositions.forEach((p) => usedAsk.add(p));
 
+      const targetSymbols = askPositions.map((p) => symbolMap[p]);
       const gridState: TablaNumericaCellState[] = new Array(GRID_SIZE).fill("visible");
       positions.forEach((pos) => {
         gridState[pos] = "symbol";
@@ -118,12 +130,14 @@ export function generateSession(
 
       out.push({
         type: "symbol",
-        question: `¿En qué casilla está el símbolo ${symbolMap[askPos]}?`,
+        question: `Busca estos símbolos: ${targetSymbols.join(" ")}`,
         gridState,
         symbolMap,
-        targetSymbol: symbolMap[askPos],
-        targetIndex: askPos,
-        answer: String(askPos),
+        targetSymbol: targetSymbols.join(" "),
+        targetSymbols,
+        targetIndex: askPositions[0],
+        answer: askPositions.join(", "),
+        validSet: askPositions,
       });
     }
 

@@ -1130,30 +1130,41 @@ function mapTablaNumerica(ex: Record<string, unknown>): TablaNumericaSheetExerci
 
   const validSet = Array.isArray(ex.validSet) ? ex.validSet.map((n) => asNumber(n)) : [];
   const targetSymbol = asString(ex.targetSymbol) || undefined;
+  const targetSymbols = Array.isArray(ex.targetSymbols)
+    ? ex.targetSymbols.map((s) => asString(s)).filter(Boolean)
+    : targetSymbol
+      ? targetSymbol.split(/\s+/).filter(Boolean)
+      : undefined;
   const ruleLabel = asString(ex.ruleLabel) || undefined;
-  // Colorear: la respuesta es la lista de números a pintar (no la regla).
+  // Colorear / medium símbolos: respuesta = lista de casillas (no la regla).
   const answer =
-    variant === "colorear" && validSet.length > 0
+    (variant === "colorear" || variant === "symbol") && validSet.length > 0
       ? validSet.join(", ")
       : (answerOf(ex) ?? undefined);
 
   const question =
     asString(ex.question) ||
-    (variant === "symbol" && targetSymbol
-      ? `¿En qué casilla está el símbolo ${targetSymbol}?`
+    (variant === "symbol" && targetSymbols && targetSymbols.length > 0
+      ? `Busca estos símbolos y escribe en qué casilla está cada uno: ${targetSymbols.join(" ")}`
       : variant === "colorear" && ruleLabel
         ? `Colorea todos los números con ${ruleLabel}.`
         : "¿Qué número falta en la casilla amarilla?");
 
+  // En papel los símbolos van como iconos encima de cada recuadro (color de clase).
+  const paperQuestion =
+    variant === "symbol"
+      ? "Busca estos símbolos y escribe en qué casilla está cada uno."
+      : question.replace(/^Haz clic en todos/i, "Colorea todos");
+
   return {
     kind: "tablaNumerica",
     variant,
-    // El motor dice «Haz clic…»; en papel se colorea.
-    question: question.replace(/^Haz clic en todos/i, "Colorea todos"),
+    question: paperQuestion,
     cells,
     cols: 10,
     rows: Math.max(1, Math.ceil(cells.length / 10)),
-    targetSymbol,
+    targetSymbol: targetSymbols?.join(" ") || targetSymbol,
+    targetSymbols,
     ruleLabel,
     answer,
   };

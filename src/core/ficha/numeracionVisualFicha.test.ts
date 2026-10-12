@@ -34,15 +34,18 @@ function generate<T>(id: string, difficulty: Difficulty): T[] {
 const html = (el: Parameters<typeof renderToStaticMarkup>[0]) => renderToStaticMarkup(el);
 
 describe("tablaNumerica ficha", () => {
-  it("easy: rejilla 10×10 con casilla amarilla y respuesta numérica", () => {
+  it("easy: tabla hasta respuesta+10 con casilla amarilla y respuesta numérica", () => {
     const list = generate<TablaNumericaSheetExercise>("tablaNumerica", "easy");
     expect(list).toHaveLength(10);
     for (const ex of list) {
       expect(ex.kind).toBe("tablaNumerica");
       expect(ex.variant).toBe("missing");
-      expect(ex.cells).toHaveLength(100);
+      const answer = Number(ex.answer);
+      const expectedLen = Math.min(100, answer + 10 + 1);
+      expect(ex.cells).toHaveLength(expectedLen);
       expect(ex.cols).toBe(10);
-      expect(ex.rows).toBe(10);
+      expect(ex.rows).toBe(Math.ceil(expectedLen / 10));
+      expect(ex.cells.length).toBeLessThanOrEqual(100);
       const targets = ex.cells.filter((c) => c.state === "target");
       expect(targets).toHaveLength(1);
       expect(String(targets[0]!.value)).toBe(String(ex.answer));
@@ -50,17 +53,24 @@ describe("tablaNumerica ficha", () => {
     const markup = html(createElement(TablaNumericaRenderer, { ex: list[0]!, showAnswer: false }));
     expect(markup).toContain("ficha-tabla__cell--target");
     expect(markup).toContain("ficha-tabla__cell--blank");
-    expect((markup.match(/<tr>/g) ?? []).length).toBeGreaterThanOrEqual(11);
+    expect((markup.match(/<tr>/g) ?? []).length).toBeGreaterThanOrEqual(2);
   });
 
-  it("medium: 4 símbolos y respuesta = casilla preguntada", () => {
+  it("medium: 4–10 en rejilla, 2–4 a buscar y respuesta = casillas", () => {
     const [ex] = generate<TablaNumericaSheetExercise>("tablaNumerica", "medium");
     expect(ex!.variant).toBe("symbol");
     const symbols = ex!.cells.filter((c) => c.state === "symbol");
-    expect(symbols).toHaveLength(4);
-    expect(symbols.some((c) => c.symbol === ex!.targetSymbol)).toBe(true);
-    const asked = symbols.find((c) => c.symbol === ex!.targetSymbol)!;
-    expect(String(ex!.answer)).toBe(String(asked.value));
+    expect(symbols.length).toBeGreaterThanOrEqual(4);
+    expect(symbols.length).toBeLessThanOrEqual(10);
+    expect(ex!.targetSymbols!.length).toBeGreaterThanOrEqual(2);
+    expect(ex!.targetSymbols!.length).toBeLessThanOrEqual(4);
+    expect(String(ex!.answer)).toMatch(/^\d+(, \d+)+$/);
+    const askedCells = String(ex!.answer).split(", ").map(Number);
+    expect(askedCells).toHaveLength(ex!.targetSymbols!.length);
+    askedCells.forEach((value, i) => {
+      const cell = symbols.find((c) => c.value === value);
+      expect(cell?.symbol).toBe(ex!.targetSymbols![i]);
+    });
   });
 
   it("hard: colorear, soluciones = lista de números (no la regla)", () => {

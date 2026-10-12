@@ -31,28 +31,42 @@
   line-height: 1.25;
 }
 
+/* Símbolo del enunciado / encima del recuadro — color de clase */
 .ficha-tabla__symbol {
-  margin: 0 0 6px;
-  font-size: 34px;
+  margin: 0;
+  font-size: 28px;
   font-weight: 900;
   line-height: 1;
-  color: #6d28d9;
+  color: var(--color-primary, #2563eb);
 }
 
 .ficha-tabla__rule {
   margin: 0 0 6px;
   font-size: 18px;
   font-weight: 800;
-  color: #0284c7;
+  color: var(--color-primary, #2563eb);
+}
+
+.ficha-tabla__blanks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ficha-tabla__answer-slot {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
 /* Casilla de respuesta — edita width/height aquí */
 .ficha-tabla__blank {
   display: inline-block;
-  width: 60px;
-  height: 40px;
+  width: 88px;
+  height: 56px;
   border: 1.5px dashed #94a3b8;
-  border-radius: 4px;
+  border-radius: 6px;
   background: #f8fafc;
   box-sizing: border-box;
 }
@@ -97,9 +111,9 @@
 }
 
 .ficha-tabla__cell--symbol {
-  background: #ede9fe;
-  border-color: #7c3aed;
-  color: #6d28d9;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 14%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
   font-size: 15px;
   font-weight: 900;
 }

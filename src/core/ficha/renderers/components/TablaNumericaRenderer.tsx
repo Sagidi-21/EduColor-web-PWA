@@ -35,7 +35,16 @@ export function TablaNumericaRenderer({ ex, showAnswer }: TablaNumericaRendererP
   for (let r = 0; r < ex.rows; r += 1) {
     rows.push(ex.cells.slice(r * ex.cols, (r + 1) * ex.cols));
   }
-  const needsAnswerBox = ex.variant !== "colorear";
+  const askedSymbols =
+    ex.variant === "symbol"
+      ? ex.targetSymbols?.length
+        ? ex.targetSymbols
+        : ex.targetSymbol
+          ? ex.targetSymbol.split(/\s+/).filter(Boolean)
+          : []
+      : [];
+  const blankCount =
+    ex.variant === "symbol" ? Math.max(1, askedSymbols.length) : ex.variant === "missing" ? 1 : 0;
 
   return (
     <table className="ficha-tabla" cellPadding={0} cellSpacing={0} role="presentation">
@@ -43,16 +52,29 @@ export function TablaNumericaRenderer({ ex, showAnswer }: TablaNumericaRendererP
         <tr>
           <td className="ficha-tabla__info" valign="top">
             <p className="ficha-tabla__question">{ex.question}</p>
-            {ex.variant === "symbol" && ex.targetSymbol ? (
-              <p className="ficha-tabla__symbol" aria-hidden>
-                {ex.targetSymbol}
-              </p>
-            ) : null}
             {ex.variant === "colorear" && ex.ruleLabel ? (
               <p className="ficha-tabla__rule">{ex.ruleLabel}</p>
             ) : null}
-            {needsAnswerBox ? (
-              <span className="ficha-tabla__blank" aria-label="Espacio para la respuesta" />
+            {blankCount > 0 ? (
+              <span className="ficha-tabla__blanks">
+                {Array.from({ length: blankCount }, (_, i) => (
+                  <span key={i} className="ficha-tabla__answer-slot">
+                    {askedSymbols[i] ? (
+                      <span className="ficha-tabla__symbol" aria-hidden>
+                        {askedSymbols[i]}
+                      </span>
+                    ) : null}
+                    <span
+                      className="ficha-tabla__blank"
+                      aria-label={
+                        askedSymbols[i]
+                          ? `Casilla del símbolo ${askedSymbols[i]}`
+                          : "Espacio para la respuesta"
+                      }
+                    />
+                  </span>
+                ))}
+              </span>
             ) : null}
           </td>
           <td className="ficha-tabla__grid-cell" valign="top">

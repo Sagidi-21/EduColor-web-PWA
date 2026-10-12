@@ -7,7 +7,7 @@
   "gradeIds": ["grade-1", "grade-2"],
   "curriculumBlockIds": ["mathematics-grade-1-unit-7", "mathematics-grade-2-unit-7"],
   "title": "La tabla de los números",
-  "description": "Completa la tabla del 0 al 99 y busca números según condiciones",
+  "description": "Completa la tabla numérica, localiza símbolos y colorea según condiciones",
   "status": "available",
   "parameters": [],
   "boardCard": {
@@ -16,7 +16,7 @@
     "unitLabel": "¡A cocinar!",
     "difficultyDescriptions": {
       "easy": "¿Qué número falta en la casilla amarilla?",
-      "medium": "Localiza el símbolo que pide la pregunta",
+      "medium": "Localiza 2–4 símbolos entre los 4–10 de la tabla",
       "hard": "Colorea todos los números con una misma unidad",
       "expert": "Colorea por unidades y por decenas"
     }

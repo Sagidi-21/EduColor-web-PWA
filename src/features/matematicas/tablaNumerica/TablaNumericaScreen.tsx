@@ -63,6 +63,10 @@ export function TablaNumericaScreen({
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
   const isColorear = current?.type === "colorear";
+  /** Medium (símbolos) y hard/expert: pulsar casillas correctas. */
+  const isClickFind =
+    isColorear || (current?.type === "symbol" && (current.validSet?.length ?? 0) > 0);
+  const isMissing = current?.type === "missing";
 
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
@@ -129,7 +133,7 @@ export function TablaNumericaScreen({
     return () => clearTimeout(t);
   }, [session.input.length, mode, session.answerState, confirm]);
 
-  const handleColorClick = useCallback(
+  const handleFindClick = useCallback(
     (index: number) => {
       if (session.colorDone || session.found.has(index) || !current?.validSet) return;
       if (current.validSet.includes(index)) {
@@ -145,7 +149,7 @@ export function TablaNumericaScreen({
         }));
       } else {
         playFeedback(false);
-        setSession((s) => ({ ...s, flashWrong: index }));
+        setSession((s) => ({ ...s, flashWrong: index, alreadyFailed: true }));
         setTimeout(
           () =>
             setSession((s) => ({ ...s, flashWrong: s.flashWrong === index ? null : s.flashWrong })),
@@ -193,13 +197,10 @@ export function TablaNumericaScreen({
     } else if (state === "symbol") {
       const sym = current.symbolMap?.[index] ?? "?";
       cls += " tbl__cell--symbol";
-      if (index === current.targetIndex) {
-        cls += " tbl__cell--asked";
-        if (session.answerState === "correct") cls += " tbl__cell--ok";
-        if (session.answerState === "wrong") cls += " tbl__cell--fail";
-      }
+      if (session.found.has(index)) cls += " tbl__cell--found";
+      else if (session.flashWrong === index) cls += " tbl__cell--flash";
       content = sym;
-    } else if (isColorear) {
+    } else if (isClickFind) {
       if (session.found.has(index)) cls += " tbl__cell--found";
       else if (session.flashWrong === index) cls += " tbl__cell--flash";
     }
@@ -209,8 +210,8 @@ export function TablaNumericaScreen({
         key={index}
         id={`tbl-cell-${index}`}
         className={cls}
-        onClick={isColorear ? () => handleColorClick(index) : undefined}
-        disabled={!isColorear || session.found.has(index) || session.colorDone}
+        onClick={isClickFind ? () => handleFindClick(index) : undefined}
+        disabled={!isClickFind || session.found.has(index) || session.colorDone}
       >
         {content}
       </button>
@@ -235,7 +236,7 @@ export function TablaNumericaScreen({
         mascotUrl={mascotUrl}
         progress={`${session.currentIndex + 1}/${total}`}
       >
-        {!isColorear && <InputModeToggle mode={mode} onToggle={toggle} />}
+        {isMissing && <InputModeToggle mode={mode} onToggle={toggle} />}
       </ActivityHeader>
 
       <div className={`tbl__stage ${stageClass}`}>
@@ -245,7 +246,15 @@ export function TablaNumericaScreen({
 
         {current.type === "symbol" && (
           <div className="tbl__symbol-prompt">
-            ¿Dónde está <span className="tbl__big-symbol">{current.targetSymbol}</span>?
+            Busca{" "}
+            {(current.targetSymbols ?? [current.targetSymbol]).filter(Boolean).map((sym) => (
+              <span key={sym} className="tbl__big-symbol">
+                {sym}
+              </span>
+            ))}
+            <span className="tbl__color-rule-count">
+              {session.found.size} / {current.validSet?.length}
+            </span>
           </div>
         )}
 
@@ -263,7 +272,7 @@ export function TablaNumericaScreen({
         </div>
       </div>
 
-      {!isColorear && (
+      {isMissing && (
         <footer className="tbl__footer">
           <p className="tbl__question">{current.question}</p>
 

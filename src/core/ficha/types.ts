@@ -286,15 +286,17 @@ export interface TablaNumericaSheetExercise {
   kind: "tablaNumerica";
   variant: "missing" | "symbol" | "colorear";
   question: string;
-  /** Rejilla completa (100 celdas en filas de `cols`). */
+  /** Rejilla en filas de `cols` (easy: hasta respuesta+10; resto: 0–99). */
   cells: TablaNumericaSheetCell[];
   cols: number;
   rows: number;
-  /** Símbolo preguntado (variant symbol). */
+  /** Símbolo(s) preguntados (variant symbol); varios unidos con espacio. */
   targetSymbol?: string;
+  /** Símbolos a localizar uno a uno (medium: 2–4). */
+  targetSymbols?: string[];
   /** Regla a colorear (variant colorear), p. ej. «3 unidades». */
   ruleLabel?: string;
-  /** Soluciones: número / casilla / lista de números a colorear. */
+  /** Soluciones: número / casillas / lista de números a colorear. */
   answer?: string | number;
 }
 

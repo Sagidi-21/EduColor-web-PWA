@@ -143,7 +143,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **numeracion4059** — Números del 40 al 59 _(2026-10-11: OK — visual como 1119; identify MC sin • (decenas en columna); medium/hard/jump bloques en fila; huecos dobles; soluciones solo respuesta)_
 - [x] **numeracion6099** — Números del 60 al 99 _(2026-10-11: OK — misma visual que 4059; word MC sin bloques; jump/units/sequence en fila)_
 - [ ] **numeracion999** — Numeración hasta 999
-- [ ] **tablaNumerica** — La tabla de los números
+- [x] **tablaNumerica** — La tabla de los números _(2026-10-12: OK — easy tabla hasta respuesta+10; medium 4–10 símbolos / busca 2–4; hard/expert color de clase; ficha iconos+recuadros)_
 - [x] **lecturaNumeros** — Lectura de números _(2026-10-10: OK — enunciado ½ + número dcha.; color de clase; hint redondea; opciones space-between; hard/expert 1/fila y display más pequeño)_
 - [x] **ordenar** — Ordenar números _(2026-10-09: OK — alumno+soluciones, impresión A4, cabecera/logo)_
 - [ ] **seriesNumericas** — Series numéricas

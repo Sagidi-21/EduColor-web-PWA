@@ -57,16 +57,20 @@ describe("TablaNumericaScreen smoke", () => {
     expect(container.querySelector(".tbl__celebration")?.textContent).toContain("¡Muy bien!");
   });
 
-  it("acepta el número como dos cifras también con el teclado del Numpad", () => {
+  it("medium: al pulsar las casillas de los símbolos pedidos celebra", () => {
     const seed = 4242;
     const session = generateSession("medium", seed);
     const ex = session[0];
+    expect(ex.validSet!.length).toBeGreaterThanOrEqual(2);
 
     const { container } = render(<TablaNumericaScreen {...props("medium", seed)} />);
 
-    expect(ex.answer).toHaveLength(2);
-    ex.answer.split("").forEach((d) => fireEvent.click(numpadKey(container, d)));
-    fireEvent.click(numpadKey(container, "✓"));
+    expect(container.querySelector(".shared-numpad")).toBeNull();
+    expect(container.textContent).toContain(`0 / ${ex.validSet!.length}`);
+
+    ex.validSet!.forEach((pos) => {
+      fireEvent.click(container.querySelector(`#tbl-cell-${pos}`)!);
+    });
 
     expect(container.querySelector(".tbl__celebration")?.textContent).toContain("¡Muy bien!");
   });

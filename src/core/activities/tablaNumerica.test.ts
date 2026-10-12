@@ -22,8 +22,8 @@ describe("tablaNumerica — generateSession", () => {
     });
   });
 
-  it("la rejilla siempre tiene 100 casillas", () => {
-    for (const diff of DIFFICULTIES) {
+  it("medium/hard/expert: rejilla de 100 casillas", () => {
+    for (const diff of ["medium", "hard", "expert"] as const) {
       generateSession(diff, 7).forEach((ex) => {
         expect(ex.gridState).toHaveLength(100);
       });
@@ -36,29 +36,49 @@ describe("tablaNumerica — generateSession", () => {
     expect(new Set(targets).size).toBe(targets.length);
   });
 
-  it("easy: una única casilla target y respuesta coherente", () => {
+  it("easy: una única casilla target y tabla solo hasta respuesta + 10", () => {
     generateSession("easy", 9).forEach((ex) => {
       expect(ex.type).toBe("missing");
       const targets = ex.gridState.filter((s) => s === "target");
       expect(targets).toHaveLength(1);
       expect(ex.answer).toBe(String(ex.targetIndex));
+      const expectedLen = Math.min(100, ex.targetIndex + 10 + 1);
+      expect(ex.gridState).toHaveLength(expectedLen);
+      expect(ex.gridState.length - 1).toBe(Math.min(99, ex.targetIndex + 10));
     });
   });
 
-  it("medium: coloca 4 símbolos y pregunta por uno de ellos", () => {
+  it("medium: 4–10 símbolos en la tabla y pregunta por 2–4 de ellos", () => {
+    const gridCounts = new Set<number>();
+    const askCounts = new Set<number>();
     generateSession("medium", 11).forEach((ex) => {
       expect(ex.type).toBe("symbol");
       const symbolCells = ex.gridState.filter((s) => s === "symbol");
-      expect(symbolCells).toHaveLength(4);
+      expect(symbolCells.length).toBeGreaterThanOrEqual(4);
+      expect(symbolCells.length).toBeLessThanOrEqual(10);
+      gridCounts.add(symbolCells.length);
+
+      expect(ex.validSet).toBeDefined();
+      expect(ex.validSet!.length).toBeGreaterThanOrEqual(2);
+      expect(ex.validSet!.length).toBeLessThanOrEqual(4);
+      expect(ex.validSet!.length).toBeLessThanOrEqual(symbolCells.length);
+      askCounts.add(ex.validSet!.length);
+
+      expect(ex.targetSymbols).toHaveLength(ex.validSet!.length);
       expect(ex.symbolMap).toBeDefined();
-      expect(ex.symbolMap?.[ex.targetIndex]).toBe(ex.targetSymbol);
-      expect(ex.answer).toBe(String(ex.targetIndex));
+      expect(Object.keys(ex.symbolMap ?? {})).toHaveLength(symbolCells.length);
+      ex.validSet!.forEach((pos, i) => {
+        expect(ex.symbolMap?.[pos]).toBe(ex.targetSymbols![i]);
+      });
+      expect(ex.answer).toBe(ex.validSet!.join(", "));
     });
+    expect(gridCounts.size).toBeGreaterThan(1);
+    expect(askCounts.size).toBeGreaterThan(1);
   });
 
-  it("medium: no repite la casilla preguntada", () => {
+  it("medium: no repite casillas preguntadas entre ejercicios", () => {
     const session = generateSession("medium", 3);
-    const asks = session.map((ex) => ex.targetIndex);
+    const asks = session.flatMap((ex) => ex.validSet ?? []);
     expect(new Set(asks).size).toBe(asks.length);
   });
 
