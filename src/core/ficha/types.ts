@@ -619,7 +619,7 @@ export interface ElLitroSheetExercise {
   question: string;
   items: PhotoItemSheet[];
   referenceUrl?: string;
-  /** Opciones MC como en pizarra. */
+  /** Solo classify (Más/Menos de 1 L). En which-more/less no: el nombre va bajo la foto. */
   choiceLabels?: string[];
   answer?: string | number;
 }

@@ -116,7 +116,9 @@ describe("elLitro — generateSession", () => {
         expect(ex.items).toHaveLength(1);
         expect(ex.options).toEqual(["Más de 1 L", "Menos de 1 L"]);
         expect(ex.answer).toBe(item.category === "mas" ? "Más de 1 L" : "Menos de 1 L");
-        expect(ex.question).toContain(item.name.charAt(0).toUpperCase() + item.name.slice(1));
+        expect(ex.question).toMatch(/^¿(El|La) /);
+        expect(ex.question).toContain(item.name);
+        expect(ex.question).toContain("tiene más o menos de 1 litro?");
       });
     });
   });

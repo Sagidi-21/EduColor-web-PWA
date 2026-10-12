@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 21 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 22 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -168,7 +168,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 
 ## Medidas y tiempo
 
-- [ ] **elLitro** — El litro
+- [x] **elLitro** — El litro _(2026-10-12: OK — 2/fila; artículo El/La; classify opciones+hint; which-more/less sin opciones; expert sin referencia; nombres mayúscula)_
 - [ ] **elKilo** — El kilo
 - [ ] **cintaMetrica** — Cinta métrica
 - [ ] **reloj** — El reloj
@@ -228,12 +228,12 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | `datosInnecesarios`   | Frases con ○ (mapeo `historia`/`pregunta` arreglado)        |
 | `weekDays`            | OK navegador 2026-10-10 — ver checklist Medidas y tiempo    |
 | `relojPonerHora`      | Cara vacía + enunciado con hora objetivo (no revela agujas) |
-| `elKilo` / `elLitro`  | ○ opciones MC                                               |
+| `elKilo` / `elLitro`  | elLitro OK navegador 2026-10-12 — ver checklist Medidas     |
 | `problemas2pasos`     | Solución: `correctAnswer` (antes vacío/mal)                 |
 
 ### Ya alineadas (código) — candidatos a marcar OK tras mirar preview
 
-`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `inventarProblema`, `elLitro`, `elKilo`, `cintaMetrica`, `intervalosTiempo`, `monedasBilletes`, `graficoBarras`, `balanza`
+`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `inventarProblema`, `elKilo`, `cintaMetrica`, `intervalosTiempo`, `monedasBilletes`, `graficoBarras`, `balanza`
 
 ### 2ª vuelta (2026-10-10) — decisiones del profesor aplicadas
 

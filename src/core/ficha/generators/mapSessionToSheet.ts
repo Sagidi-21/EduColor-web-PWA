@@ -707,6 +707,12 @@ function mapElKilo(ex: Record<string, unknown>, config: SheetConfig): ElKiloShee
 }
 
 function mapElLitro(ex: Record<string, unknown>, config: SheetConfig): ElLitroSheetExercise {
+  const type = asString(ex.type, "classify");
+  // classify (easy y mezclas): Más/Menos de 1 L.
+  // which-more / which-less: el nombre ya va bajo cada foto → sin opciones.
+  const showChoices = type === "classify";
+  // Expert: sin botella de referencia en ninguna pregunta del nivel.
+  const showReference = config.withImages && config.difficulty !== "expert";
   return {
     kind: "elLitro",
     question: questionOf(ex),
@@ -715,8 +721,8 @@ function mapElLitro(ex: Record<string, unknown>, config: SheetConfig): ElLitroSh
       (item) => litroImageUrl(item as unknown as LitroItem),
       config.withImages,
     ),
-    referenceUrl: config.withImages ? litroReferenceUrl() : undefined,
-    choiceLabels: optionLabels(ex.options),
+    referenceUrl: showReference ? litroReferenceUrl() : undefined,
+    choiceLabels: showChoices ? optionLabels(ex.options) : undefined,
     answer: asString(ex.answer) || undefined,
   };
 }

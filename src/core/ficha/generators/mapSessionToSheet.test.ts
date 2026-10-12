@@ -520,6 +520,59 @@ describe("mapSessionToSheet", () => {
     expect(ex).toMatchObject({ kind: "elKilo", choiceLabels: ["Sandía", "Pluma"] });
   });
 
+  it("elLitro: opciones solo en classify; which-more/less sin choiceLabels", () => {
+    const classify = mapSessionToSheet(
+      "elLitro",
+      {
+        type: "classify",
+        items: [{ name: "botella grande", file: "x.png", category: "mas" }],
+        question: "¿La botella grande tiene más o menos de 1 litro?",
+        options: ["Más de 1 L", "Menos de 1 L"],
+        answer: "Más de 1 L",
+      },
+      config,
+    );
+    expect(classify).toMatchObject({
+      kind: "elLitro",
+      choiceLabels: ["Más de 1 L", "Menos de 1 L"],
+    });
+
+    const compare = mapSessionToSheet(
+      "elLitro",
+      {
+        type: "which-more",
+        items: [
+          { name: "cubo", file: "a.png", category: "mas" },
+          { name: "vaso", file: "b.png", category: "menos" },
+        ],
+        question: "¿Cuál tiene más de 1 litro?",
+        options: ["Cubo", "Vaso"],
+        answer: "Cubo",
+      },
+      { ...config, difficulty: "hard" },
+    );
+    expect(compare.kind).toBe("elLitro");
+    if (compare.kind === "elLitro") {
+      expect(compare.choiceLabels).toBeUndefined();
+    }
+
+    const expert = mapSessionToSheet(
+      "elLitro",
+      {
+        type: "classify",
+        items: [{ name: "vaso", file: "v.png", category: "menos" }],
+        question: "¿El vaso tiene más o menos de 1 litro?",
+        options: ["Más de 1 L", "Menos de 1 L"],
+        answer: "Menos de 1 L",
+      },
+      { ...config, difficulty: "expert", withImages: true },
+    );
+    expect(expert.kind).toBe("elLitro");
+    if (expert.kind === "elLitro") {
+      expect(expert.referenceUrl).toBeUndefined();
+    }
+  });
+
   it("mapea repartoIgual", () => {
     const ex = mapSessionToSheet(
       "repartoIgual",

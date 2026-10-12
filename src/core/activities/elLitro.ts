@@ -7,6 +7,8 @@ export interface LitroItem {
   name: string;
   file: string;
   category: LitroCategory;
+  /** Género gramatical para el artículo (El / La) en classify. */
+  gender: "m" | "f";
 }
 
 export interface LitroExercise {
@@ -19,38 +21,38 @@ export interface LitroExercise {
 }
 
 export const MAS_ITEMS: LitroItem[] = [
-  { name: "acuario", file: "acuario.png", category: "mas" },
-  { name: "botella grande", file: "botella grande.png", category: "mas" },
-  { name: "cubo", file: "cubo.png", category: "mas" },
-  { name: "fuente", file: "fuente.png", category: "mas" },
-  { name: "garrafa", file: "garrafa.png", category: "mas" },
-  { name: "lechera", file: "lechera.png", category: "mas" },
-  { name: "nevera", file: "nevera.png", category: "mas" },
-  { name: "olla", file: "olla.png", category: "mas" },
+  { name: "acuario", file: "acuario.png", category: "mas", gender: "m" },
+  { name: "botella grande", file: "botella grande.png", category: "mas", gender: "f" },
+  { name: "cubo", file: "cubo.png", category: "mas", gender: "m" },
+  { name: "fuente", file: "fuente.png", category: "mas", gender: "f" },
+  { name: "garrafa", file: "garrafa.png", category: "mas", gender: "f" },
+  { name: "lechera", file: "lechera.png", category: "mas", gender: "f" },
+  { name: "nevera", file: "nevera.png", category: "mas", gender: "f" },
+  { name: "olla", file: "olla.png", category: "mas", gender: "f" },
 ];
 
 /** Recipientes de exactamente 1 litro: se usan como referencia visual. */
 export const LITRO_ITEMS: LitroItem[] = [
-  { name: "botella de litro", file: "botella de litro.png", category: "litro" },
-  { name: "jarra de litro", file: "jarra de litro.png", category: "litro" },
-  { name: "leche de litro", file: "leche de litro.png", category: "litro" },
-  { name: "probeta de litro", file: "probeta de litro.png", category: "litro" },
-  { name: "termo de litro", file: "termo de litro.png", category: "litro" },
+  { name: "botella de litro", file: "botella de litro.png", category: "litro", gender: "f" },
+  { name: "jarra de litro", file: "jarra de litro.png", category: "litro", gender: "f" },
+  { name: "leche de litro", file: "leche de litro.png", category: "litro", gender: "f" },
+  { name: "probeta de litro", file: "probeta de litro.png", category: "litro", gender: "f" },
+  { name: "termo de litro", file: "termo de litro.png", category: "litro", gender: "m" },
 ];
 
 export const MENOS_ITEMS: LitroItem[] = [
-  { name: "bote", file: "bote.png", category: "menos" },
-  { name: "cáscara de nuez", file: "cascara de nuez.png", category: "menos" },
-  { name: "chupito", file: "chupito.png", category: "menos" },
-  { name: "cuchara", file: "cuchara.png", category: "menos" },
-  { name: "cuenco de desayuno", file: "cuenco desayuno.png", category: "menos" },
-  { name: "dedal", file: "dedal.png", category: "menos" },
-  { name: "jabonera", file: "jabonera.png", category: "menos" },
-  { name: "tacita", file: "tacita.png", category: "menos" },
-  { name: "tapón", file: "tapon.png", category: "menos" },
-  { name: "taza", file: "taza.png", category: "menos" },
-  { name: "vaso", file: "vaso.png", category: "menos" },
-  { name: "yogur", file: "yogur.png", category: "menos" },
+  { name: "bote", file: "bote.png", category: "menos", gender: "m" },
+  { name: "cáscara de nuez", file: "cascara de nuez.png", category: "menos", gender: "f" },
+  { name: "chupito", file: "chupito.png", category: "menos", gender: "m" },
+  { name: "cuchara", file: "cuchara.png", category: "menos", gender: "f" },
+  { name: "cuenco de desayuno", file: "cuenco desayuno.png", category: "menos", gender: "m" },
+  { name: "dedal", file: "dedal.png", category: "menos", gender: "m" },
+  { name: "jabonera", file: "jabonera.png", category: "menos", gender: "f" },
+  { name: "tacita", file: "tacita.png", category: "menos", gender: "f" },
+  { name: "tapón", file: "tapon.png", category: "menos", gender: "m" },
+  { name: "taza", file: "taza.png", category: "menos", gender: "f" },
+  { name: "vaso", file: "vaso.png", category: "menos", gender: "m" },
+  { name: "yogur", file: "yogur.png", category: "menos", gender: "m" },
 ];
 
 const CATEGORY_FOLDER: Record<LitroCategory, string> = {
@@ -68,6 +70,10 @@ export const MENOS_LABEL = "Menos de 1 L";
 
 function cap(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function article(item: LitroItem): string {
+  return item.gender === "f" ? "La" : "El";
 }
 
 // ── LCG determinista ────────────────────────────────────────────────────────
@@ -111,7 +117,7 @@ function classifyExercise(item: LitroItem): LitroExercise {
   return {
     type: "classify",
     items: [item],
-    question: `¿${cap(item.name)} tiene más o menos de 1 litro?`,
+    question: `¿${article(item)} ${item.name} tiene más o menos de 1 litro?`,
     options: [MAS_LABEL, MENOS_LABEL],
     answer: item.category === "mas" ? MAS_LABEL : MENOS_LABEL,
   };
