@@ -5,6 +5,15 @@
  * `../operations/OperationsScreen.css`. Aquí solo el listado de frases.
  */
 
+.di__instruccion {
+  margin: 0 0 0.5rem;
+  max-width: 48rem;
+  font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-primary, #6366f1);
+}
+
 .di__pregunta {
   margin: 0 0 1.2rem;
   max-width: 48rem;
@@ -91,6 +100,10 @@
 
 /* Pantallas estrechas */
 @media (max-width: 560px) {
+  .di__instruccion {
+    font-size: 0.95rem;
+  }
+
   .di__pregunta {
     font-size: 1.1rem;
   }

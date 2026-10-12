@@ -52,6 +52,7 @@ describe("datosInnecesarios — las frases", () => {
     const { container } = render(<DatosInnecesariosScreen {...props("easy")} />);
 
     expect(frases(container)).toHaveLength(3);
+    expect(container.querySelector(".di__instruccion")?.textContent).toMatch(/tacha/i);
     expect(container.querySelector(".di__pregunta")?.textContent).toBe(ex.pregunta);
     for (let i = 0; i < 3; i++) {
       expect(frases(container)[i]!.dataset.indice).toBe(String(i));

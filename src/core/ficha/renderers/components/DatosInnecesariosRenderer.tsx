@@ -6,7 +6,8 @@ export interface DatosInnecesariosRendererProps {
 }
 
 /**
- * Alumno: pregunta + frases numeradas con • para marcar la que sobra (como pizarra).
+ * Alumno: instrucción de tachar primero + pregunta como contexto + frases con •.
+ * Soluciones: solo la frase innecesaria (regla ficha-soluciones).
  */
 export function DatosInnecesariosRenderer({
   ex,
@@ -18,8 +19,13 @@ export function DatosInnecesariosRenderer({
 
   return (
     <div className="ficha-datos-innec">
-      {ex.question ? <p className="ficha-datos-innec__question">{ex.question}</p> : null}
-      <p className="ficha-datos-innec__hint">Tacha la frase que no hace falta:</p>
+      <p className="ficha-datos-innec__task">Tacha con una raya la frase que no hace falta.</p>
+      {ex.question ? (
+        <p className="ficha-datos-innec__question">
+          <span className="ficha-datos-innec__question-label">Para este problema:</span>{" "}
+          {ex.question}
+        </p>
+      ) : null}
       <div className="ficha-datos-innec__frases">
         {ex.story.map((frase, i) => (
           <div key={i} className="ficha-datos-innec__frase">

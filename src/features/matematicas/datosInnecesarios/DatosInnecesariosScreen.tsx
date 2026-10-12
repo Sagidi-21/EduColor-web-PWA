@@ -179,6 +179,7 @@ export function DatosInnecesariosScreen({
           <div className="ops__celebration">¡Correcto! 📖⭐</div>
         )}
 
+        <p className="di__instruccion">Tacha la frase que no hace falta para responder</p>
         <p className="di__pregunta">{current.pregunta}</p>
 
         <div className="di__historia" role="group" aria-label="Lee las frases y tacha la que sobra">
