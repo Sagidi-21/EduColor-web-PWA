@@ -15,7 +15,7 @@
     "unit": 8,
     "unitLabel": "Nuestro colegio",
     "difficultyDescriptions": {
-      "easy": "Cuadrícula 3x3 sin obstáculos",
+      "easy": "Cuadrícula 3x3 con 1 obstáculo",
       "medium": "Cuadrícula 4x4 con 2 obstáculos",
       "hard": "Cuadrícula 5x5 con 4 obstáculos",
       "expert": "Cuadrícula 6x5 con 6 obstáculos"

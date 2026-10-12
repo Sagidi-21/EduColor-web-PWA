@@ -2,12 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { RutaCuadriculaScreen } from "./RutaCuadriculaScreen";
 import { generateSession, validateAnswer } from "../../../core/activities/rutaCuadricula";
-import type { Direction } from "../../../core/activities/rutaCuadricula";
+import type { Direction, RutaCuadriculaExercise } from "../../../core/activities/rutaCuadricula";
+import { shortestRouteDirections } from "../../../core/ficha/generators/sceneHelpers";
 import type { EngineScreenProps } from "../engine-screens";
 import { smokeProps } from "../testing/smoke";
 
 const mockOnExit = vi.fn();
-const props = (difficulty: EngineScreenProps["difficulty"], seed = 4242) =>
+const SEED = 4242;
+const props = (difficulty: EngineScreenProps["difficulty"], seed = SEED) =>
   smokeProps("rutaCuadricula", mockOnExit, difficulty, seed);
 
 const PASO_MS = 400;
@@ -67,14 +69,17 @@ const retryBtn = (container: HTMLElement) =>
 const nextBtn = (container: HTMLElement) =>
   container.querySelector<HTMLButtonElement>(".activity-action--next");
 
-/** Ruta válida para easy (3x3, sin obstáculos): (0,2)→(0,1)→(0,0)→(1,0)→(2,0). */
-const RUTA_CORRECTA: Direction[] = ["up", "up", "right", "right"];
+/** Ruta más corta válida según el motor (esquiva obstáculos). */
+const rutaDe = (ex: RutaCuadriculaExercise): Direction[] =>
+  shortestRouteDirections(ex.gridSize, ex.start, ex.end, ex.obstacles);
 
-/** Completa el ejercicio actual con la ruta correcta y avanza. */
-const acertar = (container: HTMLElement) => {
-  addSequence(container, RUTA_CORRECTA);
+/** Completa el ejercicio `index` con su ruta correcta y avanza. */
+const acertar = (container: HTMLElement, exercises: RutaCuadriculaExercise[], index: number) => {
+  const ruta = rutaDe(exercises[index]!);
+  expect(ruta.length, `ruta del ejercicio ${index}`).toBeGreaterThan(0);
+  addSequence(container, ruta);
   clickPlay(container);
-  runTimers(PASO_MS * (RUTA_CORRECTA.length + 1));
+  runTimers(PASO_MS * (ruta.length + 1));
   runTimers(AUTOAVANCE_MS);
 };
 
@@ -173,13 +178,15 @@ describe("RutaCuadriculaScreen — validación", () => {
   });
 
   it("una ruta correcta marca acierto, celebra y avanza solo", () => {
+    const ejercicios = generateSession("easy", SEED);
+    const ruta = rutaDe(ejercicios[0]!);
     const { container } = render(<RutaCuadriculaScreen {...props("easy")} />);
 
-    addSequence(container, RUTA_CORRECTA);
+    addSequence(container, ruta);
     clickPlay(container);
 
     // Avanzar la animación completa: delay inicial + un paso por dirección.
-    runTimers(PASO_MS * (RUTA_CORRECTA.length + 1));
+    runTimers(PASO_MS * (ruta.length + 1));
 
     expect(stageClass(container)).toContain("ops__stage--correct");
     expect(container.querySelector(".ops__celebration")).not.toBeNull();
@@ -287,6 +294,7 @@ describe("RutaCuadriculaScreen — interacción post-error", () => {
   });
 
   it("fallar y acertar al reintentar no suma puntos (alreadyFailed)", () => {
+    const ejercicios = generateSession("easy", SEED);
     const { container } = render(<RutaCuadriculaScreen {...props("easy")} />);
 
     // Ejercicio 1: fallar.
@@ -297,13 +305,13 @@ describe("RutaCuadriculaScreen — interacción post-error", () => {
 
     // Reintentar y acertar: no puntúa.
     fireEvent.click(retryBtn(container)!);
-    acertar(container);
+    acertar(container, ejercicios, 0);
     // El avatar vuelve al inicio del ejercicio 2.
     expect(progreso(container)).toBe("2 / 10");
 
     // Ejercicios 2-10: acertar todos → 9 aciertos (no 10, el primero no cuenta).
-    for (let i = 0; i < 9; i++) {
-      acertar(container);
+    for (let i = 1; i < 10; i++) {
+      acertar(container, ejercicios, i);
     }
 
     expect(container.querySelector(".summary")).not.toBeNull();
@@ -324,10 +332,11 @@ describe("RutaCuadriculaScreen — resumen y salida", () => {
   });
 
   it("acertar los diez muestra el resumen con 10/10", () => {
+    const ejercicios = generateSession("easy", SEED);
     const { container } = render(<RutaCuadriculaScreen {...props("easy")} />);
 
     for (let i = 0; i < 10; i++) {
-      acertar(container);
+      acertar(container, ejercicios, i);
     }
 
     expect(container.querySelector(".summary")).not.toBeNull();
@@ -336,10 +345,11 @@ describe("RutaCuadriculaScreen — resumen y salida", () => {
   });
 
   it("el botón de salir del resumen avisa al padre", () => {
+    const ejercicios = generateSession("easy", SEED);
     const { container } = render(<RutaCuadriculaScreen {...props("easy")} />);
 
     for (let i = 0; i < 10; i++) {
-      acertar(container);
+      acertar(container, ejercicios, i);
     }
 
     const volver = Array.from(container.querySelectorAll<HTMLButtonElement>("button")).find((b) =>
@@ -352,10 +362,11 @@ describe("RutaCuadriculaScreen — resumen y salida", () => {
   });
 
   it("repetir desde el resumen recarga la misma hoja con la misma semilla", () => {
-    const ejercicios = generateSession("easy", 4242);
+    const ejercicios = generateSession("easy", SEED);
+    const ruta0 = rutaDe(ejercicios[0]!);
 
     const { container } = render(<RutaCuadriculaScreen {...props("easy")} />);
-    for (let i = 0; i < 10; i++) acertar(container);
+    for (let i = 0; i < 10; i++) acertar(container, ejercicios, i);
 
     const repetir = Array.from(container.querySelectorAll<HTMLButtonElement>("button")).find((b) =>
       b.textContent?.includes("Repetir"),
@@ -366,11 +377,11 @@ describe("RutaCuadriculaScreen — resumen y salida", () => {
     expect(progreso(container)).toBe("1 / 10");
     expect(container.querySelector(".rutac__cell")).not.toBeNull();
     // La ruta correcta sigue funcionando: validamos contra el primer ejercicio.
-    addSequence(container, RUTA_CORRECTA);
+    addSequence(container, ruta0);
     clickPlay(container);
-    runTimers(PASO_MS * (RUTA_CORRECTA.length + 1));
+    runTimers(PASO_MS * (ruta0.length + 1));
     expect(stageClass(container)).toContain("ops__stage--correct");
     // El primer ejercicio es el mismo con la misma semilla.
-    expect(validateAnswer(ejercicios[0], RUTA_CORRECTA)).toBe(true);
+    expect(validateAnswer(ejercicios[0]!, ruta0)).toBe(true);
   });
 });

@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  cellsAlongRoute,
+  exampleRouteLabel,
   handForBox,
   parseBagContext,
   printDragQuestion,
@@ -32,6 +34,17 @@ describe("sceneHelpers", () => {
     expect(shortestRouteDirections(grid, { x: 0, y: 0 }, { x: 2, y: 0 }, [{ x: 1, y: 0 }])).toEqual(
       [],
     );
+  });
+
+  it("cellsAlongRoute e exampleRouteLabel", () => {
+    expect(cellsAlongRoute({ x: 0, y: 2 }, ["up", "right"])).toEqual([
+      { x: 0, y: 2 },
+      { x: 0, y: 1 },
+      { x: 1, y: 1 },
+    ]);
+    expect(exampleRouteLabel("→ → ↑")).toBe("Ej.: → → ↑");
+    expect(exampleRouteLabel("Ej.: ↑")).toBe("Ej.: ↑");
+    expect(exampleRouteLabel("")).toBe("Ej.: ?");
   });
 
   it("handForBox invierte la mano cuando el personaje está de frente", () => {

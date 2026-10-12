@@ -83,7 +83,7 @@ interface DiffConfig {
 }
 
 const CONFIGS: Record<ActivityDifficulty, DiffConfig> = {
-  easy: { cols: 3, rows: 3, obstacles: 0 },
+  easy: { cols: 3, rows: 3, obstacles: 1 },
   medium: { cols: 4, rows: 4, obstacles: 2 },
   hard: { cols: 5, rows: 5, obstacles: 4 },
   expert: { cols: 6, rows: 5, obstacles: 6 },

@@ -1,4 +1,10 @@
 import type { RutaCuadriculaSheetExercise } from "../../types";
+import {
+  cellsAlongRoute,
+  exampleRouteLabel,
+  shortestRouteArrows,
+  shortestRouteDirections,
+} from "../../generators/sceneHelpers";
 
 export interface RutaCuadriculaRendererProps {
   ex: RutaCuadriculaSheetExercise;
@@ -10,17 +16,34 @@ const PAD = 2;
 const MIN_BOXES = 6;
 const MAX_BOXES = 14;
 
+/** Colores de casilla alineados con la pizarra (`RutaCuadriculaScreen.css`). */
+const FILL_START = "#f1fcf0";
+const FILL_END = "#fff5f5";
+const FILL_PATH = "#dbeafe";
+const FILL_EMPTY = "#fff";
+const STROKE = "#64748b";
+
 function routeLength(answer: string | undefined): number {
-  return answer ? answer.split(/\s+/).filter(Boolean).length : 0;
+  return answer
+    ? answer
+        .replace(/^Ej\.:\s*/i, "")
+        .split(/\s+/)
+        .filter(Boolean).length
+    : 0;
 }
 
-/** Cuadrícula SVG: inicio abajo-izquierda, meta arriba-derecha, árboles como obstáculos. */
-function RutaGrid({ ex }: { ex: RutaCuadriculaSheetExercise }): JSX.Element {
+function RutaGrid({
+  ex,
+  pathKeys,
+}: {
+  ex: RutaCuadriculaSheetExercise;
+  pathKeys?: Set<string>;
+}): JSX.Element {
   const { cols, rows } = ex.gridSize;
-  const emoji = ex.showEmoji !== false;
   const width = cols * CELL + PAD * 2;
   const height = rows * CELL + PAD * 2;
   const isObstacle = (x: number, y: number) => ex.obstacles.some((o) => o.x === x && o.y === y);
+  const onPath = (x: number, y: number) => pathKeys?.has(`${x},${y}`) ?? false;
 
   const cells: JSX.Element[] = [];
   for (let y = 0; y < rows; y += 1) {
@@ -32,6 +55,7 @@ function RutaGrid({ ex }: { ex: RutaCuadriculaSheetExercise }): JSX.Element {
       const py = PAD + y * CELL;
       const cx = px + CELL / 2;
       const cy = py + CELL / 2;
+      const fill = isStart ? FILL_START : isEnd ? FILL_END : onPath(x, y) ? FILL_PATH : FILL_EMPTY;
       cells.push(
         <g key={`${x}-${y}`}>
           <rect
@@ -39,56 +63,25 @@ function RutaGrid({ ex }: { ex: RutaCuadriculaSheetExercise }): JSX.Element {
             y={py}
             width={CELL}
             height={CELL}
-            fill={isStart ? "#dcfce7" : isEnd ? "#fef9c3" : obstacle && !emoji ? "#cbd5e1" : "#fff"}
-            stroke="#64748b"
+            fill={fill}
+            stroke={STROKE}
             strokeWidth="1.5"
           />
-          {obstacle &&
-            (emoji ? (
-              <text x={cx} y={cy + 7} fontSize="20" textAnchor="middle">
-                🌳
-              </text>
-            ) : (
-              <g stroke="#475569" strokeWidth="2">
-                <line x1={px + 8} y1={py + 8} x2={px + CELL - 8} y2={py + CELL - 8} />
-                <line x1={px + CELL - 8} y1={py + 8} x2={px + 8} y2={py + CELL - 8} />
-              </g>
-            ))}
-          {isStart &&
-            (emoji ? (
-              <text x={cx} y={cy + 7} fontSize="20" textAnchor="middle">
-                🚶
-              </text>
-            ) : (
-              <text
-                x={cx}
-                y={cy + 6}
-                fontSize="17"
-                fontWeight="800"
-                textAnchor="middle"
-                fill="#14532d"
-              >
-                S
-              </text>
-            ))}
-          {isEnd &&
-            !obstacle &&
-            (emoji ? (
-              <text x={cx} y={cy + 7} fontSize="20" textAnchor="middle">
-                🏫
-              </text>
-            ) : (
-              <text
-                x={cx}
-                y={cy + 6}
-                fontSize="17"
-                fontWeight="800"
-                textAnchor="middle"
-                fill="#713f12"
-              >
-                F
-              </text>
-            ))}
+          {obstacle && (
+            <text x={cx} y={cy + 7} fontSize="20" textAnchor="middle">
+              🌳
+            </text>
+          )}
+          {isStart && !obstacle && (
+            <text x={cx} y={cy + 7} fontSize="20" textAnchor="middle">
+              🚶
+            </text>
+          )}
+          {isEnd && !obstacle && (
+            <text x={cx} y={cy + 7} fontSize="20" textAnchor="middle">
+              🏫
+            </text>
+          )}
         </g>,
       );
     }
@@ -109,20 +102,26 @@ function RutaGrid({ ex }: { ex: RutaCuadriculaSheetExercise }): JSX.Element {
 }
 
 /**
- * Alumno: cuadrícula dibujada (inicio, meta, obstáculos) + casillas para escribir
- * las flechas del camino. Soluciones: las maneja ExerciseRenderer (solo la ruta).
+ * Alumno: cuadrícula + casillas de flechas.
+ * Soluciones (excepción): cuadrícula con un camino de ejemplo marcado + «Ej.: …».
  */
 export function RutaCuadriculaRenderer({
   ex,
   showAnswer,
 }: RutaCuadriculaRendererProps): JSX.Element {
   if (showAnswer) {
-    return <div className="ficha-answer">{ex.answer ?? "?"}</div>;
+    const dirs = shortestRouteDirections(ex.gridSize, ex.start, ex.end, ex.obstacles);
+    const arrows = shortestRouteArrows(ex.gridSize, ex.start, ex.end, ex.obstacles) || ex.answer;
+    const pathKeys = new Set(cellsAlongRoute(ex.start, dirs).map((p) => `${p.x},${p.y}`));
+    return (
+      <div className="ficha-ruta ficha-ruta--sol">
+        <RutaGrid ex={ex} pathKeys={pathKeys} />
+        <div className="ficha-answer">{exampleRouteLabel(arrows ?? "")}</div>
+      </div>
+    );
   }
 
-  const emoji = ex.showEmoji !== false;
   const boxes = Math.min(MAX_BOXES, Math.max(MIN_BOXES, routeLength(ex.answer) + 3));
-  const legend = emoji ? "🚶 inicio · 🏫 meta · 🌳 obstáculo" : "S inicio · F meta · ✕ obstáculo";
 
   return (
     <div className="ficha-ruta">
@@ -130,7 +129,7 @@ export function RutaCuadriculaRenderer({
         Escribe con flechas (↑ ↓ ← →) el camino hasta la meta sin pisar los obstáculos.
       </p>
       <RutaGrid ex={ex} />
-      <p className="ficha-ruta__legend">{legend}</p>
+      <p className="ficha-ruta__legend">🚶 inicio · 🏫 meta · 🌳 obstáculo</p>
       <div className="ficha-ruta__boxes" aria-label="Casillas para las flechas">
         {Array.from({ length: boxes }, (_, i) => (
           <span key={i} className="ficha-ruta__box" />

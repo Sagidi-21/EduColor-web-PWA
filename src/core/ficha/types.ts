@@ -374,7 +374,10 @@ export interface RutaCuadriculaSheetExercise {
   start: { x: number; y: number };
   end: { x: number; y: number };
   obstacles: { x: number; y: number }[];
-  /** Dibujar 🚶 🏫 🌳 (con «Incluir imágenes»); si no, letras S / F y casillas grises. */
+  /**
+   * Reservado (legado). La ficha siempre dibuja 🚶 🏫 🌳 como en la pizarra.
+   * @deprecated
+   */
   showEmoji?: boolean;
   /** Ruta válida de ejemplo para soluciones, p. ej. «→ → ↑ ↑». */
   answer?: string;

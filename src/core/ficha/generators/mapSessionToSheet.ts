@@ -1231,6 +1231,7 @@ function mapRuta(ex: Record<string, unknown>, config?: SheetConfig): RutaCuadric
       ? (ex.end as { x: number; y: number })
       : { x: gridSize.cols - 1, y: gridSize.rows - 1 };
   const obstacles = Array.isArray(ex.obstacles) ? (ex.obstacles as { x: number; y: number }[]) : [];
+  const arrows = asString(ex.answer) || shortestRouteArrows(gridSize, start, end, obstacles) || "";
   return {
     kind: "rutaCuadricula",
     gridSize,
@@ -1238,9 +1239,8 @@ function mapRuta(ex: Record<string, unknown>, config?: SheetConfig): RutaCuadric
     end,
     obstacles,
     showEmoji: config ? config.withImages : true,
-    // El motor no trae solución: ruta más corta (BFS) como ejemplo válido.
-    answer:
-      asString(ex.answer) || shortestRouteArrows(gridSize, start, end, obstacles) || undefined,
+    // Ejemplo (BFS): hay varios caminos válidos; la hoja lo marca como «Ej.:».
+    answer: arrows ? (arrows.startsWith("Ej.") ? arrows : `Ej.: ${arrows}`) : undefined,
   };
 }
 

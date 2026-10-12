@@ -29,6 +29,11 @@ export function solutionAnswerOf(ex: SheetExercise): string {
       const finalValue = ex.answers?.[ex.correctFin];
       return typeof finalValue === "number" ? String(finalValue) : "?";
     }
+    case "rutaCuadricula": {
+      const raw = ex.answer?.trim();
+      if (!raw) return "Ej.: ?";
+      return raw.startsWith("Ej.") ? raw : `Ej.: ${raw}`;
+    }
     case "reloj":
       return String(ex.answer ?? "?");
     default: {

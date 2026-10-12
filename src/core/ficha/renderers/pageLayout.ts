@@ -94,7 +94,11 @@ export function pageSizeForExercises(
     // Alumno y soluciones: 2 laberintos grandes por hoja (tablero dibujado).
     return 2;
   }
-  if (first.kind === "rutaCuadricula" || first.kind === "capacidad") {
+  if (first.kind === "rutaCuadricula") {
+    // Alumno y soluciones dibujan la cuadrícula → misma densidad.
+    return 8;
+  }
+  if (first.kind === "capacidad") {
     return options.showAnswer ? 16 : 8;
   }
   if (first.kind === "posicionesAula" || first.kind === "probabilidad") {

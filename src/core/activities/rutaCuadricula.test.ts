@@ -16,7 +16,7 @@ const GRID_SIZES: Record<ActivityDifficulty, { cols: number; rows: number }> = {
 
 /** Número esperado de obstáculos por dificultad. */
 const OBSTACLE_COUNTS: Record<ActivityDifficulty, number> = {
-  easy: 0,
+  easy: 1,
   medium: 2,
   hard: 4,
   expert: 6,
@@ -40,7 +40,7 @@ describe("rutaCuadricula — generateSession", () => {
       const obs = OBSTACLE_COUNTS[difficulty];
       for (const [i, ex] of exercises.entries()) {
         expect(ex.gridSize, `${difficulty}/${i}`).toEqual(size);
-        expect(ex.obstacles.length, `${difficulty}/${i}`).toBeLessThanOrEqual(obs);
+        expect(ex.obstacles.length, `${difficulty}/${i}`).toBe(obs);
       }
     }
   });

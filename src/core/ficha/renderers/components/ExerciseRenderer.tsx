@@ -65,7 +65,8 @@ export interface ExerciseRendererProps {
  * Despacha cada `SheetExercise` a su componente según `ex.kind`.
  *
  * REGLA: en soluciones (`showAnswer`) SOLO la respuesta — sin enunciado ni dibujos.
- * Excepciones: `rectaNumerica` (recta + marca) y `laberintoMatematico` (tablero relleno).
+ * Excepciones: `rectaNumerica` (recta + marca), `laberintoMatematico` (tablero relleno)
+ * y `rutaCuadricula` (cuadrícula con un camino de ejemplo).
  */
 export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): ReactNode {
   if (showAnswer) {
@@ -75,8 +76,11 @@ export function ExerciseRenderer({ ex, showAnswer }: ExerciseRendererProps): Rea
     if (ex.kind === "laberintoMatematico") {
       return <LaberintoRenderer ex={ex} showAnswer />;
     }
+    if (ex.kind === "rutaCuadricula") {
+      return <RutaCuadriculaRenderer ex={ex} showAnswer />;
+    }
     const text = solutionAnswerOf(ex);
-    // Respuestas largas (laberinto, escenas de personaje): letra más pequeña para que quepan.
+    // Misma tipografía en todas las soluciones; --long solo marca textos largos (wrap).
     const className = text.length > 26 ? "ficha-answer ficha-answer--long" : "ficha-answer";
     return <div className={className}>{text}</div>;
   }

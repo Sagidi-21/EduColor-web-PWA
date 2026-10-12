@@ -1,4 +1,16 @@
-/* Taller de programación (ruta en cuadrícula) — layout alumno */
+/* Taller de programación (ruta en cuadrícula) — alumno y soluciones */
+
+.ficha-ruta--sol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ficha-ruta--sol .ficha-answer {
+  margin-top: 2px;
+  text-align: center;
+}
 
 .ficha-ruta__question {
   margin: 0 0 4px;

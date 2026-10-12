@@ -78,6 +78,31 @@ export function shortestRouteArrows(
     .join(" ");
 }
 
+/** Casillas visitadas (incluye start) al aplicar la secuencia de direcciones. */
+export function cellsAlongRoute(
+  start: GridPoint,
+  dirs: readonly ("up" | "down" | "left" | "right")[],
+): GridPoint[] {
+  const cells: GridPoint[] = [{ x: start.x, y: start.y }];
+  let x = start.x;
+  let y = start.y;
+  for (const dir of dirs) {
+    if (dir === "up") y -= 1;
+    if (dir === "down") y += 1;
+    if (dir === "left") x -= 1;
+    if (dir === "right") x += 1;
+    cells.push({ x, y });
+  }
+  return cells;
+}
+
+/** Prefijo de solución de ejemplo (hay varios caminos válidos). */
+export function exampleRouteLabel(arrows: string): string {
+  const trimmed = arrows.trim();
+  if (!trimmed) return "Ej.: ?";
+  return trimmed.startsWith("Ej.") ? trimmed : `Ej.: ${trimmed}`;
+}
+
 /** Mano del personaje que corresponde a la caja izquierda/derecha del papel. */
 export function handForBox(
   box: "box-left" | "box-right",

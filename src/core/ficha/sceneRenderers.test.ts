@@ -46,19 +46,28 @@ describe("fichas con escena dibujada", () => {
     }
   });
 
-  it("rutaCuadricula dibuja la cuadrícula y casillas de flechas; soluciones solo la ruta", () => {
+  it("rutaCuadricula dibuja la cuadrícula; soluciones = tablero con camino ejemplo + Ej.", () => {
     everyDifficulty("rutaCuadricula", (alumno, soluciones) => {
       expect(alumno).toContain("ficha-ruta__svg");
       expect(alumno).toContain("ficha-ruta__box");
+      expect(soluciones).toContain("ficha-ruta__svg");
+      expect(soluciones).toContain("ficha-ruta--sol");
       expect(soluciones).toContain("ficha-answer");
-      expect(soluciones).not.toContain("ficha-ruta__svg");
+      expect(soluciones).toMatch(/Ej\.:/);
+      expect(soluciones).not.toContain("ficha-ruta__box");
+      expect(soluciones).not.toContain("ficha-ruta__question");
     });
   });
 
-  it("rutaCuadricula sin imágenes no usa emojis en la leyenda", () => {
-    const alumno = html("rutaCuadricula", "easy", "alumno", false);
-    expect(alumno).toContain("ficha-ruta__svg");
-    expect(alumno).not.toContain("🚶");
+  it("rutaCuadricula siempre dibuja iconos como en pizarra (🚶 🏫 🌳)", () => {
+    const conImg = html("rutaCuadricula", "easy", "alumno", true);
+    const sinImg = html("rutaCuadricula", "easy", "alumno", false);
+    for (const alumno of [conImg, sinImg]) {
+      expect(alumno).toContain("ficha-ruta__svg");
+      expect(alumno).toContain("🚶");
+      expect(alumno).toContain("🏫");
+      expect(alumno).toContain("🌳");
+    }
   });
 
   it("posicionesAula dibuja la escena del aula con opciones ○", () => {
