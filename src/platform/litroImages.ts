@@ -25,6 +25,7 @@ export const REFERENCE_ITEM: LitroItem = {
   name: "botella de litro",
   file: "botella de litro.png",
   category: "litro",
+  gender: "f",
 };
 
 export function litroReferenceUrl(): string {
