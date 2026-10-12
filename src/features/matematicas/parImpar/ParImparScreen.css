@@ -24,6 +24,10 @@
   max-width: 720px;
 }
 
+.pi__parity {
+  color: var(--color-primary, #2563eb);
+}
+
 /* ── Opciones ────────────────────────────────────────────────────────── */
 .pi__options {
   display: flex;

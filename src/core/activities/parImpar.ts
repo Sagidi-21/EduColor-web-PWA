@@ -108,7 +108,7 @@ const TYPES: Record<ActivityDifficulty, ParImparType[]> = {
  * - easy:   cuenta de 2 a 10 objetos y decide si sobran o tienen pareja.
  * - medium: elige, entre cuatro números, el par o el impar que se pide.
  * - hard:   clasifica un número del 30 al 99.
- * - expert: alterna teoría de par/impar y escritura de un número en un rango.
+ * - expert: alterna teoría de par/impar y escritura de todos los del rango.
  */
 export function generateSession(difficulty: ActivityDifficulty, seed = 42): ParImparExercise[] {
   const rng = lcg(seed);
@@ -202,7 +202,7 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): ParI
 
       out.push({
         type: "write",
-        question: `Escribe un número ${wantsOdd ? "IMPAR" : "PAR"} que esté entre ${start} y ${end}.`,
+        question: `Escribe todos los números ${wantsOdd ? "IMPARES" : "PARES"} que haya entre ${start} y ${end}.`,
         number: 0,
         answer: validAnswers[0],
         extraData: { validAnswers },

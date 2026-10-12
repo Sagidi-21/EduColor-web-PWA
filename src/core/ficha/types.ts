@@ -310,8 +310,9 @@ export interface ParImparSheetExercise {
   imageUrl: string;
   /** Opciones MC (Par/Impar, números, etc.). Si vacío y no es escritura → Par/Impar. */
   choiceLabels?: string[];
-  /** true = casilla en blanco (modo write), sin ○. */
+  /** true = casilla en blanco (legacy); expert escritura ya no la usa. */
   writeIn?: boolean;
+  /** Solución: par/impar, o lista de números válidos en escritura (p. ej. «52, 54»). */
   answer?: "par" | "impar" | string;
 }
 

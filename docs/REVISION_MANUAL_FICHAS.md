@@ -131,7 +131,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 
 - [x] **counting** — Contamos objetos _(2026-10-09: OK — objetos+pregunta, 10/hoja todos los niveles, soluciones con número)_
 - [x] **comparison** — Mayor y menor _(2026-10-09: OK — fila completa A|B, sin +N, hard/expert con iguales, soluciones sin dibujos, Word=vista previa)_
-- [ ] **parImpar** — Pares e impares
+- [x] **parImpar** — Pares e impares _(2026-10-12: OK — enunciado→imagen→opciones centradas; PAR/IMPAR color de clase; expert escritura sin recuadro, 1 línea, solución con todas las posibilidades)_
 - [x] **capacidad** — Capacidad y litros _(2026-10-11: OK — easy opciones centradas; medium/hard pregunta izq. + medida dcha.; plural vaso/vasos; expert por tipo)_
 - [x] **ordinales** — Números ordinales _(2026-10-11: OK — mismo emoji+anillo; LTR; identify redondea; easy 2/fila; hard/expert casilla dcha.; flecha+hint)_
 - [x] **relacionar** — Relacionar número y cantidad _(2026-10-09: OK — alumno con líneas+figuras, soluciones solo número→letra, paginación por nivel)_

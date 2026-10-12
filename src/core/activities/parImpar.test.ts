@@ -167,7 +167,7 @@ describe("parImpar — expert", () => {
           const valid = ex.extraData?.validAnswers ?? [];
           expect(valid.length).toBeGreaterThan(0);
 
-          const wantsOdd = ex.question.includes("IMPAR");
+          const wantsOdd = /IMPARES?/i.test(ex.question);
           const bounds = ex.question.match(/entre (\d+) y (\d+)/);
           expect(bounds).not.toBeNull();
           const start = Number(bounds![1]);
@@ -195,7 +195,7 @@ describe("parImpar — expert", () => {
           const valid = ex.extraData?.validAnswers ?? [];
           // El rango va de start+1 a start+5 y `start` es múltiplo de 10, así
           // que start+1 es impar: 3 impares y 2 pares.
-          expect(valid).toHaveLength(ex.question.includes("IMPAR") ? 3 : 2);
+          expect(valid).toHaveLength(/IMPARES?/i.test(ex.question) ? 3 : 2);
           valid.forEach((v) => expect(v).toHaveLength(2));
         });
     });

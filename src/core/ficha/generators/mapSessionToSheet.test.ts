@@ -922,6 +922,26 @@ describe("mapSessionToSheet", () => {
     });
   });
 
+  it("parImpar write: sin recuadro ni opciones; solución con todas las posibilidades", () => {
+    const ex = mapSessionToSheet(
+      "parImpar",
+      {
+        type: "write",
+        question: "Escribe todos los números PARES que haya entre 50 y 56.",
+        number: 0,
+        answer: "52",
+        extraData: { validAnswers: ["52", "54"] },
+      },
+      config,
+    );
+    expect(ex).toMatchObject({
+      kind: "parImpar",
+      writeIn: false,
+      choiceLabels: [],
+      answer: "52, 54",
+    });
+  });
+
   it("mapea ordinales con fila y emoji", () => {
     const ex = mapSessionToSheet(
       "ordinales",

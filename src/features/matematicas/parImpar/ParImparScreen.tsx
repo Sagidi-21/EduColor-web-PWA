@@ -1,10 +1,24 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, type ReactNode } from "react";
 import {
   generateSession,
   validateAnswer,
   requiresWriting,
 } from "../../../core/activities/parImpar";
 import type { ParImparExercise } from "../../../core/activities/parImpar";
+
+/** Resalta PAR / IMPAR (y plurales) con el color de clase; solo en enunciados. */
+function questionWithParityWords(question: string): ReactNode {
+  const parts = question.split(/(\b(?:IMPARES|PARES|IMPAR|PAR)\b)/gi);
+  return parts.map((part, i) =>
+    /^(?:IMPARES|PARES|IMPAR|PAR)$/i.test(part) ? (
+      <span key={i} className="pi__parity">
+        {part}
+      </span>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
+}
 import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
 import { useInputMode } from "../../shared/hooks/useInputMode";
@@ -202,7 +216,7 @@ export function ParImparScreen({
           </div>
         )}
 
-        <p className="pi__question">{current.question}</p>
+        <p className="pi__question">{questionWithParityWords(current.question)}</p>
 
         {isWriting && (
           <div className="ops__formula">

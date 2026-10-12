@@ -1,12 +1,28 @@
-﻿import type { ParImparSheetExercise } from "../../types";
+﻿import type { ReactNode } from "react";
+import type { ParImparSheetExercise } from "../../types";
 
 export interface ParImparRendererProps {
   ex: ParImparSheetExercise;
   showAnswer: boolean;
 }
 
+/** Resalta PAR / IMPAR (y plurales) con el color de clase; solo en enunciados. */
+function questionWithParityWords(question: string): ReactNode {
+  const parts = question.split(/(\b(?:IMPARES|PARES|IMPAR|PAR)\b)/gi);
+  return parts.map((part, i) =>
+    /^(?:IMPARES|PARES|IMPAR|PAR)$/i.test(part) ? (
+      <span key={i} className="ficha-parimpar__parity">
+        {part}
+      </span>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
+}
+
 /**
- * Alumno: fila de emojis (si hay) + pregunta + • opciones o casilla de escritura.
+ * Alumno: enunciado → imágenes debajo → • opciones en horizontal centradas
+ * (o casilla de escritura).
  */
 export function ParImparRenderer({ ex, showAnswer }: ParImparRendererProps): JSX.Element {
   if (showAnswer) {
@@ -15,16 +31,17 @@ export function ParImparRenderer({ ex, showAnswer }: ParImparRendererProps): JSX
 
   const count = ex.emojiCount ?? ex.number;
   const showEmoji = Boolean(ex.emoji) && count > 0;
+  const showImage = Boolean(ex.imageUrl);
+  // `[]` = escritura (sin opciones). `undefined` = clasificar → Par/Impar por defecto.
   const choices =
-    ex.choiceLabels && ex.choiceLabels.length > 0
-      ? ex.choiceLabels
-      : ex.writeIn
-        ? []
-        : ["Par", "Impar"];
+    ex.choiceLabels !== undefined ? ex.choiceLabels : ex.writeIn ? [] : ["Par", "Impar"];
+  const question = ex.question || `¿${ex.number} es par o impar?`;
 
   return (
     <div className="ficha-parimpar">
-      {showEmoji && (
+      <p className="ficha-parimpar__question">{questionWithParityWords(question)}</p>
+
+      {showEmoji ? (
         <div className="ficha-parimpar__row" aria-label={`${count} objetos`}>
           {Array.from({ length: count }, (_, i) => (
             <span key={i} className="ficha-parimpar__emoji">
@@ -32,20 +49,30 @@ export function ParImparRenderer({ ex, showAnswer }: ParImparRendererProps): JSX
             </span>
           ))}
         </div>
-      )}
-      <p className="ficha-parimpar__question">{ex.question || `¿${ex.number} es par o impar?`}</p>
+      ) : null}
+
+      {showImage && !showEmoji ? (
+        <div className="ficha-parimpar__media">
+          <img src={ex.imageUrl} alt="" className="ficha-parimpar__img" />
+        </div>
+      ) : null}
+
       {ex.writeIn ? (
         <span className="ficha-parimpar__blank" aria-label="Espacio para la respuesta" />
-      ) : (
+      ) : choices.length > 0 ? (
         <div className="ficha-parimpar__choices">
           {choices.map((label, i) => (
-            <div key={`${label}-${i}`} className="ficha-parimpar__choice">
+            <span key={`${label}-${i}`} className="ficha-parimpar__choice">
               <span className="ficha-parimpar__choice-mark" aria-hidden>
                 •
               </span>
               <span>{label}</span>
-            </div>
+            </span>
           ))}
+        </div>
+      ) : (
+        <div className="ficha-parimpar__write" aria-label="Espacio para escribir las respuestas">
+          <span className="ficha-parimpar__write-line" />
         </div>
       )}
     </div>

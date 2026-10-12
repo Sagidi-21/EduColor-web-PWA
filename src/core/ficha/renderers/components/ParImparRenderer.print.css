@@ -1,12 +1,11 @@
-/* Par / impar — layout alumno */
+/* Par / impar — enunciado → imágenes → opciones horizontales centradas */
 
-.ficha-parimpar__row {
+.ficha-parimpar {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 6px;
-  font-size: 20px;
-  line-height: 1;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ficha-parimpar__question {
@@ -14,18 +13,51 @@
   font-size: 18px;
   font-weight: 600;
   color: #1e293b;
+  text-align: center;
 }
 
-.ficha-parimpar__choices {
+/* PAR / IMPAR del enunciado — color de clase (no las opciones) */
+.ficha-parimpar__parity {
+  color: var(--color-primary, #2563eb);
+  font-weight: 800;
+}
+
+.ficha-parimpar__row {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.ficha-parimpar__media {
+  display: flex;
+  justify-content: center;
   margin-top: 8px;
 }
 
+.ficha-parimpar__img {
+  max-height: 64px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Opciones • centradas en la caja */
+.ficha-parimpar__choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 24px;
+  width: 100%;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
 .ficha-parimpar__choice {
-  display: block;
+  display: inline-block;
+  margin: 0;
   font-size: 15px;
   line-height: 1.35;
   color: #222;
@@ -36,12 +68,30 @@
 }
 
 .ficha-parimpar__blank {
-  display: inline-block;
+  display: block;
   width: 48px;
   height: 36px;
-  margin-top: 8px;
+  margin: 10px auto 0;
   border: 1.5px dashed #94a3b8;
   border-radius: 3px;
   background: #f8fafc;
   box-sizing: border-box;
+}
+
+/* Escritura (expert): líneas suaves bajo el enunciado, sin recuadro discontinuo */
+.ficha-parimpar__write {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 70%;
+  max-width: 280px;
+  min-height: 36px;
+  margin: 14px auto 0;
+  box-sizing: border-box;
+}
+
+.ficha-parimpar__write-line {
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid #cbd5e1;
 }

@@ -562,9 +562,23 @@ function mapLeftRight(ex: Record<string, unknown>, config: SheetConfig): LeftRig
 }
 
 function mapParImpar(ex: Record<string, unknown>, config: SheetConfig): ParImparSheetExercise {
+  const isWrite = asString(ex.type) === "write";
+  const extra =
+    ex.extraData && typeof ex.extraData === "object"
+      ? (ex.extraData as Record<string, unknown>)
+      : null;
+  const validAnswers =
+    isWrite && Array.isArray(extra?.validAnswers)
+      ? extra.validAnswers.map((v) => asString(v)).filter(Boolean)
+      : [];
+
   const raw = asString(ex.answer).toLowerCase();
-  const answer: "par" | "impar" | string | undefined =
-    raw === "par" || raw === "even"
+  // Escritura: la solución lista todas las posibilidades (p. ej. 52, 54).
+  const answer: "par" | "impar" | string | undefined = isWrite
+    ? validAnswers.length > 0
+      ? validAnswers.join(", ")
+      : asString(ex.answer) || undefined
+    : raw === "par" || raw === "even"
       ? "par"
       : raw === "impar" || raw === "odd"
         ? "impar"
@@ -576,7 +590,6 @@ function mapParImpar(ex: Record<string, unknown>, config: SheetConfig): ParImpar
   const emoji = config.withImages && visual ? asString(visual.emoji) || undefined : undefined;
   const emojiCount =
     config.withImages && visual ? asNumber(visual.count, asNumber(ex.number)) : undefined;
-  const writeIn = asString(ex.type) === "write";
   const choiceLabels = choiceLabelsFromOptions(ex.options);
   return {
     kind: "parImpar",
@@ -585,8 +598,10 @@ function mapParImpar(ex: Record<string, unknown>, config: SheetConfig): ParImpar
     emoji,
     emojiCount,
     imageUrl: config.withImages ? asString(ex.imageUrl) : "",
-    choiceLabels: !writeIn && choiceLabels.length > 0 ? choiceLabels : undefined,
-    writeIn,
+    // Escritura: sin • Par/Impar ni recuadro; el alumno escribe los números.
+    // `[]` evita el fallback a Par/Impar del renderer.
+    choiceLabels: isWrite ? [] : choiceLabels.length > 0 ? choiceLabels : undefined,
+    writeIn: false,
     answer,
   };
 }
