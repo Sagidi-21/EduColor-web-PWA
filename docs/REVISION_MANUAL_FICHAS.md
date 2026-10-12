@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 39 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 40 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -177,7 +177,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **elKilo** — El kilo _(2026-10-12: OK — alineado a elLitro: 2/fila; El/La/Las + pesa/pesan; classify opciones+hint; compare sin opciones+hint; expert sin ref.)_
 - [ ] **cintaMetrica** — Cinta métrica
 - [x] **reloj** — El reloj _(2026-10-12: OK — easy centrado+hint+aguja min color clase; medium sin digital duplicado+hint; hard digital_read opciones aside; expert dibujar sin digital; hora/digital color clase)_
-- [ ] **relojPonerHora** — Pon la hora
+- [x] **relojPonerHora** — Pon la hora _(2026-10-12: OK — esfera vacía; hora en enunciado color clase + digital; soluciones solo respuesta)_
 - [ ] **intervalosTiempo** — Intervalos de tiempo
 - [x] **weekDays** — Días de la semana _(2026-10-10: OK — enunciado→tira→opciones; color de clase en día; gap 18px; recuadros 32px)_
 - [ ] **monedasBilletes** — Monedas y billetes
@@ -213,29 +213,29 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 
 ### Mejoradas en esta pasada (listas para revisar en preview)
 
-| ID                    | Cambio principal                                            |
-| --------------------- | ----------------------------------------------------------- |
-| `suma` / `resta`      | Algoritmo vertical con casillas de cifra                    |
-| `tresSumandos`        | OK navegador 2026-10-10 — ver checklist Operaciones         |
-| `algoritmoVertical`   | OK navegador 2026-10-10 — ver checklist Operaciones         |
-| `restaColumna`        | OK navegador 2026-10-12 — ver checklist Operaciones         |
-| `tresSumandosColumna` | OK navegador 2026-10-12 — ver checklist Operaciones         |
-| `igualdad`            | OK navegador 2026-10-10 — ver checklist Operaciones         |
-| `relacionSumaResta`   | Tres ecuaciones con hueco                                   |
-| `dobleYMitad`         | Cajas Número/Doble\|Mitad + ○                               |
-| `parImpar`            | ○ Par/Impar (o opciones del motor)                          |
-| `ordinales`           | «Desde la derecha», etiquetas 1º…, casilla                  |
-| `poligonos`           | ○ opciones de texto (como shapes)                           |
-| `lineTypes`           | OK navegador 2026-10-10 — ver checklist Geometría           |
-| `series3cifras`       | Cajas más anchas                                            |
-| `vecinosNumero`       | OK navegador 2026-10-10 — ver checklist Numeración          |
-| `problemas`           | OK navegador 2026-10-12 — ver checklist Problemas           |
-| `datosInnecesarios`   | OK navegador 2026-10-12 — ver checklist Problemas           |
-| `weekDays`            | OK navegador 2026-10-10 — ver checklist Medidas y tiempo    |
-| `reloj`               | OK navegador 2026-10-12 — ver checklist Medidas y tiempo    |
-| `relojPonerHora`      | Cara vacía + enunciado con hora objetivo (no revela agujas) |
-| `elKilo` / `elLitro`  | OK navegador 2026-10-12 — ver checklist Medidas             |
-| `problemas2pasos`     | Solución: `correctAnswer` (antes vacío/mal)                 |
+| ID                    | Cambio principal                                         |
+| --------------------- | -------------------------------------------------------- |
+| `suma` / `resta`      | Algoritmo vertical con casillas de cifra                 |
+| `tresSumandos`        | OK navegador 2026-10-10 — ver checklist Operaciones      |
+| `algoritmoVertical`   | OK navegador 2026-10-10 — ver checklist Operaciones      |
+| `restaColumna`        | OK navegador 2026-10-12 — ver checklist Operaciones      |
+| `tresSumandosColumna` | OK navegador 2026-10-12 — ver checklist Operaciones      |
+| `igualdad`            | OK navegador 2026-10-10 — ver checklist Operaciones      |
+| `relacionSumaResta`   | Tres ecuaciones con hueco                                |
+| `dobleYMitad`         | Cajas Número/Doble\|Mitad + ○                            |
+| `parImpar`            | ○ Par/Impar (o opciones del motor)                       |
+| `ordinales`           | «Desde la derecha», etiquetas 1º…, casilla               |
+| `poligonos`           | ○ opciones de texto (como shapes)                        |
+| `lineTypes`           | OK navegador 2026-10-10 — ver checklist Geometría        |
+| `series3cifras`       | Cajas más anchas                                         |
+| `vecinosNumero`       | OK navegador 2026-10-10 — ver checklist Numeración       |
+| `problemas`           | OK navegador 2026-10-12 — ver checklist Problemas        |
+| `datosInnecesarios`   | OK navegador 2026-10-12 — ver checklist Problemas        |
+| `weekDays`            | OK navegador 2026-10-10 — ver checklist Medidas y tiempo |
+| `reloj`               | OK navegador 2026-10-12 — ver checklist Medidas y tiempo |
+| `relojPonerHora`      | OK navegador 2026-10-12 — ver checklist Medidas y tiempo |
+| `elKilo` / `elLitro`  | OK navegador 2026-10-12 — ver checklist Medidas          |
+| `problemas2pasos`     | Solución: `correctAnswer` (antes vacío/mal)              |
 
 ### Ya alineadas (código) — candidatos a marcar OK tras mirar preview
 
