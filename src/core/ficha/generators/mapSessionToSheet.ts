@@ -6,6 +6,7 @@ import type { MoneyItem } from "../../activities/monedasBilletes";
 import type { KiloItem } from "../../activities/elKilo";
 import type { LitroItem } from "../../activities/elLitro";
 import { formatWeightSolutions } from "../../activities/balanzaEquilibra";
+import { timeLabel } from "../../activities/shared/timeLabel";
 import {
   capitalizeFirst,
   handForBox,
@@ -1010,12 +1011,22 @@ function digitalTime(hours: number, minutes: number): string {
   return `${hours}:${String(minutes).padStart(2, "0")}`;
 }
 
+/** Hora digital o verbal presente en el enunciado (para color de clase). */
+function relojHighlightTime(question: string, hours: number, minutes: number): string | undefined {
+  const digital = digitalTime(hours, minutes);
+  if (question.includes(digital)) return digital;
+  const verbal = timeLabel(hours, minutes);
+  if (question.includes(verbal)) return verbal;
+  return undefined;
+}
+
 /**
  * Reloj (como en pizarra):
  * - analog_to_digital / match_scene: esfera con agujas + opciones ○ (horas digitales).
- * - digital_read: display digital + opciones ○ en palabras (sin esfera).
- * - digital_to_analog: display digital; medium → minirelojes A–D con agujas (○);
- *   hard/expert → esfera vacía para dibujar las agujas.
+ * - digital_read: display digital + opciones ○ en palabras (sin esfera);
+ *   hard → opciones en vertical a la derecha de la caja.
+ * - digital_to_analog: medium → minirelojes A–D (hora ya en enunciado, sin digital);
+ *   hard/expert → esfera vacía para dibujar las agujas (+ digital de apoyo).
  */
 function mapReloj(ex: Record<string, unknown>, config?: SheetConfig): RelojSheetExercise {
   const type = asString(ex.type);
@@ -1024,12 +1035,13 @@ function mapReloj(ex: Record<string, unknown>, config?: SheetConfig): RelojSheet
   const digital = digitalTime(hours, minutes);
   const correct = asString(ex.correctAnswer ?? ex.answer) || undefined;
   const labels = choiceLabelsFromOptions(ex.options);
+  const question = questionOf(ex);
   const base = {
     kind: "reloj" as const,
     hours,
     minutes,
     type: type || undefined,
-    question: questionOf(ex),
+    question,
   };
 
   if (type === "digital_read") {
@@ -1040,6 +1052,8 @@ function mapReloj(ex: Record<string, unknown>, config?: SheetConfig): RelojSheet
       showDigital: true,
       digitalLabel: digital,
       choiceLabels: labels.length > 0 ? labels : undefined,
+      choiceLayout: config?.difficulty === "hard" ? "aside" : "below",
+      highlightTime: relojHighlightTime(question, hours, minutes),
       answer: correct,
     };
   }
@@ -1047,14 +1061,18 @@ function mapReloj(ex: Record<string, unknown>, config?: SheetConfig): RelojSheet
   if (type === "digital_to_analog") {
     const higherLevel = config?.difficulty === "hard" || config?.difficulty === "expert";
     if (higherLevel || labels.length === 0) {
+      // Expert: la hora ya va en el enunciado → sin reloj digital duplicado.
+      const showDigital = config?.difficulty !== "expert";
+      const drawQuestion = `Dibuja las agujas para que el reloj marque las ${digital}.`;
       return {
         ...base,
-        question: `Dibuja las agujas para que el reloj marque las ${digital}.`,
+        question: drawQuestion,
         showAnalog: true,
         showHands: false,
         drawHands: true,
-        showDigital: true,
-        digitalLabel: digital,
+        showDigital,
+        digitalLabel: showDigital ? digital : undefined,
+        highlightTime: digital,
         answer: correct ?? digital,
       };
     }
@@ -1068,13 +1086,14 @@ function mapReloj(ex: Record<string, unknown>, config?: SheetConfig): RelojSheet
       };
     });
     const correctChoice = clockChoices.find((c) => c.label === correct);
+    // Medium: la hora ya va en el enunciado → sin reloj digital duplicado.
     return {
       ...base,
       showAnalog: false,
       showHands: false,
-      showDigital: true,
-      digitalLabel: digital,
+      showDigital: false,
       clockChoices,
+      highlightTime: relojHighlightTime(question, hours, minutes),
       answer: correctChoice ? `${correctChoice.letter} (${correctChoice.label})` : correct,
     };
   }
@@ -1085,6 +1104,7 @@ function mapReloj(ex: Record<string, unknown>, config?: SheetConfig): RelojSheet
     showAnalog: true,
     showHands: ex.showHands !== false,
     choiceLabels: labels.length > 0 ? labels : undefined,
+    highlightTime: relojHighlightTime(question, hours, minutes),
     answer: correct,
   };
 }
@@ -1094,6 +1114,7 @@ function mapRelojPonerHora(ex: Record<string, unknown>): RelojSheetExercise {
   const target = asString(ex.target);
   const hours = asNumber(ex.hours);
   const minutes = asNumber(ex.minutes);
+  const question = target ? `Pon las agujas a las ${target}` : "Pon la hora en el reloj";
   return {
     kind: "reloj",
     type: "poner_hora",
@@ -1104,7 +1125,8 @@ function mapRelojPonerHora(ex: Record<string, unknown>): RelojSheetExercise {
     drawHands: true,
     showDigital: Boolean(target),
     digitalLabel: target || undefined,
-    question: target ? `Pon las agujas a las ${target}` : "Pon la hora en el reloj",
+    question,
+    highlightTime: target || undefined,
     answer: target || undefined,
   };
 }

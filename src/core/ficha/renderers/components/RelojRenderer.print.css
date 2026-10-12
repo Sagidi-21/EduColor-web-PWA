@@ -4,6 +4,11 @@
   display: block;
 }
 
+/* Aguja de minutos — color de clase */
+.ficha-clock-svg__minute {
+  stroke: var(--color-primary, #0284c7);
+}
+
 .ficha-reloj {
   display: flex;
   flex-direction: column;
@@ -15,6 +20,17 @@
   font-size: 15px;
   font-weight: 600;
   color: #1e293b;
+}
+
+.ficha-reloj__hint {
+  font-weight: 500;
+  color: #64748b;
+}
+
+/* Hora del enunciado — color de clase */
+.ficha-reloj__time {
+  color: var(--color-primary, #0284c7);
+  font-weight: 800;
 }
 
 .ficha-reloj__body {
@@ -34,11 +50,11 @@
   box-sizing: border-box;
 }
 
-/* Reloj digital del enunciado (monocromo: sale bien en blanco y negro) */
+/* Reloj digital del enunciado — color de clase (medium / hard / expert digital_read) */
 .ficha-reloj__digital {
   display: inline-block;
   padding: 4px 12px;
-  border: 2px solid #1e293b;
+  border: 2px solid var(--color-primary, #0284c7);
   border-radius: 6px;
   background: #fff;
   font-family: "Courier New", Courier, monospace;
@@ -46,7 +62,7 @@
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: 1px;
-  color: #0f172a;
+  color: var(--color-primary, #0284c7);
 }
 
 /* Opciones ○ (círculo tipográfico: html2canvas alinea mal cajas vacías) */
@@ -71,6 +87,7 @@
 .ficha-reloj__clock-choices {
   display: block;
   margin-top: 2px;
+  text-align: center;
 }
 
 .ficha-reloj__clock-choice {
@@ -86,4 +103,83 @@
   font-size: 14px;
   font-weight: 700;
   color: #222;
+}
+
+/* Easy (analog_to_digital): reloj y opciones centrados, más separación */
+.ficha-reloj--analog_to_digital.ficha-reloj--mc {
+  gap: 16px;
+  align-items: center;
+}
+
+.ficha-reloj--analog_to_digital.ficha-reloj--mc .ficha-reloj__question {
+  text-align: center;
+  width: 100%;
+}
+
+.ficha-reloj--analog_to_digital.ficha-reloj--mc .ficha-reloj__body {
+  justify-content: center;
+  width: 100%;
+}
+
+.ficha-reloj--analog_to_digital.ficha-reloj--mc .ficha-reloj__choices {
+  text-align: center;
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* Medium / digital_read below: opciones centradas */
+.ficha-reloj--mc:not(.ficha-reloj--aside) .ficha-reloj__choices {
+  text-align: center;
+  width: 100%;
+}
+
+.ficha-reloj--digital_read.ficha-reloj--mc:not(.ficha-reloj--aside) {
+  align-items: center;
+  gap: 12px;
+}
+
+.ficha-reloj--digital_read.ficha-reloj--mc:not(.ficha-reloj--aside) .ficha-reloj__body {
+  justify-content: center;
+  width: 100%;
+}
+
+.ficha-reloj--digital_to_analog.ficha-reloj--mc {
+  align-items: center;
+  gap: 12px;
+}
+
+.ficha-reloj--digital_to_analog.ficha-reloj--mc .ficha-reloj__question {
+  text-align: center;
+  width: 100%;
+}
+
+/* Hard digital_read: caja a la izq., opciones en vertical a la derecha */
+.ficha-reloj--aside .ficha-reloj__row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ficha-reloj--aside .ficha-reloj__body {
+  flex: 0 0 auto;
+}
+
+.ficha-reloj--aside .ficha-reloj__choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 0;
+  text-align: left;
+  width: auto;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ficha-reloj--aside .ficha-reloj__choice {
+  display: block;
+  margin: 0;
 }

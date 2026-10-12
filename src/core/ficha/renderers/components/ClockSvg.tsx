@@ -54,11 +54,12 @@ export function ClockSvg({
             strokeLinecap="round"
           />
           <line
+            className="ficha-clock-svg__minute"
             x1="50"
             y1="50"
             x2={50 + Math.sin((m * Math.PI) / 180) * 32}
             y2={50 - Math.cos((m * Math.PI) / 180) * 32}
-            stroke="#2563eb"
+            stroke="var(--color-primary, #0284c7)"
             strokeWidth="2.5"
             strokeLinecap="round"
           />

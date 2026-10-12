@@ -536,6 +536,111 @@ describe("mapSessionToSheet", () => {
     });
   });
 
+  it("reloj: medium digital_to_analog sin digital; hard digital_read aside; expert dibujar sin digital", () => {
+    const medium = mapSessionToSheet(
+      "reloj",
+      {
+        type: "digital_to_analog",
+        hours: 7,
+        minutes: 30,
+        question: "El reloj digital marca 7:30. ¿Cuál es la hora?",
+        options: ["7:30", "7:00", "8:30", "6:30"],
+        correctAnswer: "7:30",
+      },
+      { ...config, difficulty: "medium" },
+    );
+    expect(medium).toMatchObject({
+      kind: "reloj",
+      type: "digital_to_analog",
+      showDigital: false,
+      showAnalog: false,
+    });
+    if (medium.kind === "reloj") {
+      expect(medium.clockChoices?.length).toBe(4);
+      expect(medium.digitalLabel).toBeUndefined();
+    }
+
+    const expertDraw = mapSessionToSheet(
+      "reloj",
+      {
+        type: "digital_to_analog",
+        hours: 5,
+        minutes: 20,
+        question: "El reloj digital marca 5:20. ¿Cuál es la hora?",
+        options: [],
+        correctAnswer: "5:20",
+      },
+      { ...config, difficulty: "expert" },
+    );
+    expect(expertDraw).toMatchObject({
+      kind: "reloj",
+      drawHands: true,
+      showAnalog: true,
+      showHands: false,
+      showDigital: false,
+      highlightTime: "5:20",
+    });
+    if (expertDraw.kind === "reloj") {
+      expect(expertDraw.digitalLabel).toBeUndefined();
+      expect(expertDraw.question).toContain("5:20");
+    }
+
+    const matchScene = mapSessionToSheet(
+      "reloj",
+      {
+        type: "match_scene",
+        hours: 7,
+        minutes: 0,
+        question: "Son las 7 en punto. ☀️ Hora de despertarse. ¿Qué hora es?",
+        options: ["7:00", "8:00", "7:30", "6:00"],
+        correctAnswer: "7:00",
+      },
+      { ...config, difficulty: "hard" },
+    );
+    expect(matchScene).toMatchObject({
+      kind: "reloj",
+      highlightTime: "las 7 en punto",
+    });
+
+    const hardRead = mapSessionToSheet(
+      "reloj",
+      {
+        type: "digital_read",
+        hours: 3,
+        minutes: 15,
+        question: "¿Cómo se lee esta hora?",
+        options: ["las 3 y cuarto", "las 3 en punto", "las 3 y media", "las 4 menos cuarto"],
+        correctAnswer: "las 3 y cuarto",
+      },
+      { ...config, difficulty: "hard" },
+    );
+    expect(hardRead).toMatchObject({
+      kind: "reloj",
+      type: "digital_read",
+      showDigital: true,
+      digitalLabel: "3:15",
+      choiceLayout: "aside",
+    });
+
+    const mediumRead = mapSessionToSheet(
+      "reloj",
+      {
+        type: "digital_read",
+        hours: 4,
+        minutes: 0,
+        question: "¿Cómo se lee esta hora?",
+        options: ["las 4 en punto", "las 4 y media"],
+        correctAnswer: "las 4 en punto",
+      },
+      { ...config, difficulty: "medium" },
+    );
+    expect(mediumRead).toMatchObject({
+      kind: "reloj",
+      choiceLayout: "below",
+      showDigital: true,
+    });
+  });
+
   it("elKilo/elLitro: opciones solo en classify; compare sin choiceLabels; expert sin ref", () => {
     const kiloClassify = mapSessionToSheet(
       "elKilo",

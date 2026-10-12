@@ -411,6 +411,14 @@ export interface RelojSheetExercise {
   choiceLabels?: string[];
   /** Opciones como minirelojes con agujas (digital_to_analog nivel medio). */
   clockChoices?: RelojClockChoiceSheet[];
+  /**
+   * Disposición de las opciones de texto:
+   * - below (defecto): debajo del reloj/caja
+   * - aside: vertical a la derecha de la caja digital (digital_read hard)
+   */
+  choiceLayout?: "below" | "aside";
+  /** Fragmento del enunciado con la hora (digital o verbal) a resaltar con color de clase. */
+  highlightTime?: string;
   /** El alumno dibuja las agujas en una esfera vacía (nivel alto / pon la hora). */
   drawHands?: boolean;
   answer?: string;

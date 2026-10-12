@@ -165,6 +165,23 @@ describe("fichas con escena dibujada", () => {
     }
   });
 
+  it("reloj: easy pide redondear centrado; hard digital_read en aside", () => {
+    const easy = html("reloj", "easy", "alumno");
+    expect(easy).toContain("redondea la correcta");
+    expect(easy).toContain("ficha-reloj--analog_to_digital");
+    expect(easy).toContain("ficha-reloj--mc");
+
+    const medium = html("reloj", "medium", "alumno");
+    expect(medium).toContain("redondea la correcta");
+
+    // Seed 7 en hard suele incluir digital_read; si no, el mapa unitario lo cubre.
+    const hard = html("reloj", "hard", "alumno");
+    if (hard.includes("¿Cómo se lee esta hora?")) {
+      expect(hard).toContain("ficha-reloj--aside");
+      expect(hard).toContain("redondea la correcta");
+    }
+  });
+
   it("leftRight: alumno con ○ / cajas; soluciones solo la respuesta", () => {
     everyDifficulty("leftRight", (alumno, soluciones) => {
       expect(alumno).toContain("ficha-leftright");
