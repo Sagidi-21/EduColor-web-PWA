@@ -988,7 +988,7 @@ describe("mapSessionToSheet", () => {
     });
   });
 
-  it("mapea monedasBilletes identify con URL de moneda", () => {
+  it("mapea monedasBilletes identify con URL de moneda y opciones", () => {
     const ex = mapSessionToSheet(
       "monedasBilletes",
       {
@@ -1000,7 +1000,8 @@ describe("mapSessionToSheet", () => {
           tipo: "moneda",
           fichero: "1euro.png",
         },
-        question: "¿Cuánto vale?",
+        question: "¿Cuánto vale esta moneda?",
+        options: ["1€", "2€", "50c", "20c"],
         answer: "1€",
       },
       config,
@@ -1008,12 +1009,77 @@ describe("mapSessionToSheet", () => {
     expect(ex).toMatchObject({
       kind: "monedasBilletes",
       type: "identify",
-      question: "¿Cuánto vale?",
+      question: "¿Cuánto vale esta moneda?",
+      choiceLabels: ["1€", "2€", "50c", "20c"],
       answer: "1€",
     });
     if (ex.kind === "monedasBilletes") {
       expect(ex.money.length).toBe(1);
       expect(ex.money[0]?.url.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("mapea monedasBilletes hard/expert: opciones en change; shopping sin choiceLabels", () => {
+    const change = mapSessionToSheet(
+      "monedasBilletes",
+      {
+        type: "change",
+        pagado: [
+          {
+            valor: 100,
+            etiqueta: "1 euro",
+            corta: "1€",
+            tipo: "moneda",
+            fichero: "1euro.png",
+          },
+        ],
+        producto: { emoji: "🍬", nombre: "Caramelo", precio: 5 },
+        precioLabel: "5c",
+        question: "¿Cuánto cambio recibes?",
+        options: ["95c", "1€", "50c", "5c"],
+        answer: "95c",
+      },
+      { ...config, difficulty: "hard" },
+    );
+    expect(change).toMatchObject({
+      kind: "monedasBilletes",
+      type: "change",
+      choiceLabels: ["95c", "1€", "50c", "5c"],
+    });
+
+    const shopping = mapSessionToSheet(
+      "monedasBilletes",
+      {
+        type: "shopping",
+        disponibles: [
+          {
+            valor: 50,
+            etiqueta: "50 céntimos",
+            corta: "50c",
+            tipo: "moneda",
+            fichero: "50cent.png",
+          },
+          {
+            valor: 100,
+            etiqueta: "1 euro",
+            corta: "1€",
+            tipo: "moneda",
+            fichero: "1euro.png",
+          },
+        ],
+        producto: { emoji: "🍫", nombre: "Chocolate", precio: 100 },
+        precioLabel: "1€",
+      },
+      { ...config, difficulty: "expert" },
+    );
+    expect(shopping).toMatchObject({
+      kind: "monedasBilletes",
+      type: "shopping",
+    });
+    if (shopping.kind === "monedasBilletes") {
+      expect(shopping.choiceLabels).toBeUndefined();
+      expect(shopping.question.length).toBeGreaterThan(0);
+      expect(shopping.money.length).toBe(2);
     }
   });
 

@@ -192,6 +192,25 @@ describe("fichas con escena dibujada", () => {
     });
   });
 
+  it("monedasBilletes: easy/medium/hard con opciones; expert en 2 filas", () => {
+    for (const d of ["easy", "medium", "hard"] as const) {
+      const alumno = html("monedasBilletes", d, "alumno");
+      expect(alumno).toContain("ficha-money__choices");
+      expect(alumno).toContain("redondea la correcta");
+      expect(html("monedasBilletes", d, "soluciones")).toContain("ficha-answer");
+      expect(html("monedasBilletes", d, "soluciones")).not.toContain("ficha-money__choices");
+    }
+    const easy = html("monedasBilletes", "easy", "alumno");
+    expect(easy).toContain("ficha-money--centered");
+    expect(easy).toContain("ficha-money--identify");
+
+    const expert = html("monedasBilletes", "expert", "alumno");
+    expect(expert).toContain("ficha-money--shopping");
+    expect(expert).toContain("ficha-money__grid");
+    expect(expert).toContain("ficha-money__row--shop");
+    expect(expert).not.toContain("ficha-money__choices");
+  });
+
   it("elKilo/elLitro: siempre pide redondear (también compare en expert)", () => {
     for (const id of ["elKilo", "elLitro"] as const) {
       everyDifficulty(id, (alumno, soluciones) => {

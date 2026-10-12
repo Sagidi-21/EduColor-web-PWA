@@ -677,12 +677,19 @@ function mapMonedasBilletes(
   }
 
   const producto = ex.producto && typeof ex.producto === "object" ? asRecord(ex.producto) : null;
+  // identify / equivalence / change: MC. shopping (expert): rodear monedas, sin opciones.
+  const choiceLabels = type === "shopping" ? undefined : optionLabels(ex.options);
+  const question =
+    type === "shopping" && !asString(ex.question)
+      ? "Rodea las monedas o billetes para pagar exactamente el precio."
+      : questionOf(ex);
 
   return {
     kind: "monedasBilletes",
     type,
-    question: questionOf(ex),
+    question,
     money,
+    choiceLabels,
     productEmoji: producto ? asString(producto.emoji) || undefined : undefined,
     productName: producto ? asString(producto.nombre) || undefined : undefined,
     productPriceLabel: asString(ex.precioLabel) || undefined,

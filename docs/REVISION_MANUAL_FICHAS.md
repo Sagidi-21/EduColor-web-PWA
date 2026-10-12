@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 40 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 41 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -78,6 +78,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `elKilo`              | El kilo                       | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: alineado a elLitro — 2/fila; El/La/Las+pesa/pesan; classify opciones+hint; compare sin opciones+hint; expert sin ref.      |
 | `reloj`               | El reloj                      | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy centrado+hint+aguja min color; medium sin digital duplicado; hard read aside; expert dibujar sin digital; hora color. |
 | `relojPonerHora`      | Pon la hora                   | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: esfera vacía para dibujar; hora objetivo en enunciado (color clase) + digital; soluciones solo respuesta.                  |
+| `monedasBilletes`     | Monedas y billetes            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy/medium centrado+opciones; hard opciones; expert 2 filas más separadas; gap opciones amplio.                           |
 | `balanza`             | La balanza y el peso          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy MC+artículo mayúsc.; medium/hard MENOS/IGUAL/MÁS; hard sin inclinación (vs); expert sandía+pesas y «escribe el nº».   |
 | `balanzaEquilibra`    | Equilibra la balanza          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: sin ?/Pongo; hueco en platillo; expert 2 huecos+soluciones con ambos tipos (                                               | ); iconos fiables. |
 
@@ -181,7 +182,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **relojPonerHora** — Pon la hora _(2026-10-12: OK — esfera vacía; hora en enunciado color clase + digital; soluciones solo respuesta)_
 - [ ] **intervalosTiempo** — Intervalos de tiempo
 - [x] **weekDays** — Días de la semana _(2026-10-10: OK — enunciado→tira→opciones; color de clase en día; gap 18px; recuadros 32px)_
-- [ ] **monedasBilletes** — Monedas y billetes
+- [x] **monedasBilletes** — Monedas y billetes _(2026-10-12: OK — easy/medium centrado+opciones+hint; hard opciones; expert 2 filas separadas; gap opciones amplio)_
 - [ ] **menuCafeteria** — En la cafetería
 - [x] **balanza** — La balanza y el peso _(2026-10-12: OK — easy redondea+artículo mayúsc.; medium/hard MENOS/IGUAL/MÁS; hard grupo vs pesa sin inclinación; expert sandía+pesas y «escribe el nº»; sin `?`)_
 - [x] **balanzaEquilibra** — Equilibra la balanza _(2026-10-12: OK — sin ?/Pongo; respuesta en platillo; expert 2 huecos 1kg/2kg; soluciones con ambos tipos separadas por \|; iconos fiables)_
@@ -235,12 +236,13 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | `weekDays`            | OK navegador 2026-10-10 — ver checklist Medidas y tiempo |
 | `reloj`               | OK navegador 2026-10-12 — ver checklist Medidas y tiempo |
 | `relojPonerHora`      | OK navegador 2026-10-12 — ver checklist Medidas y tiempo |
+| `monedasBilletes`     | OK navegador 2026-10-12 — ver checklist Medidas y tiempo |
 | `elKilo` / `elLitro`  | OK navegador 2026-10-12 — ver checklist Medidas          |
 | `problemas2pasos`     | Solución: `correctAnswer` (antes vacío/mal)              |
 
 ### Ya alineadas (código) — candidatos a marcar OK tras mirar preview
 
-`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `inventarProblema`, `cintaMetrica`, `intervalosTiempo`, `monedasBilletes`, `graficoBarras`
+`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `inventarProblema`, `cintaMetrica`, `intervalosTiempo`, `graficoBarras`
 
 ### 2ª vuelta (2026-10-10) — decisiones del profesor aplicadas
 

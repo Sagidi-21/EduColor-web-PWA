@@ -1,32 +1,128 @@
 /* Monedas y billetes — layout alumno */
 
+.ficha-money {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .ficha-money__question {
-  margin: 0 0 6px;
-  font-size: 20px;
+  margin: 0;
+  font-size: 16px;
   font-weight: 600;
   color: #1e293b;
 }
 
+.ficha-money__hint {
+  font-weight: 500;
+  color: #64748b;
+}
+
 .ficha-money__product {
-  margin: 0 0 6px;
-  font-size: 13px;
+  margin: 0;
+  font-size: 14px;
+  color: #334155;
 }
 
 .ficha-money__row {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 6px;
   align-items: center;
 }
 
 .ficha-money__img {
-  height: 36px;
+  height: 40px;
   width: auto;
-  max-width: 64px;
+  max-width: 72px;
   object-fit: contain;
 }
 
 .ficha-money__label {
   font-size: 12px;
   font-weight: 700;
+}
+
+.ficha-money__choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 28px;
+  margin-top: 6px;
+  width: 100%;
+}
+
+.ficha-money__choice {
+  display: inline-block;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-money__choice-mark {
+  margin-right: 6px;
+}
+
+/* Easy / medium (identify): imagen y opciones centradas */
+.ficha-money--centered {
+  align-items: center;
+}
+
+.ficha-money--centered .ficha-money__question {
+  text-align: center;
+  width: 100%;
+}
+
+.ficha-money--centered .ficha-money__row {
+  justify-content: center;
+  width: 100%;
+}
+
+.ficha-money--centered .ficha-money__choices {
+  text-align: center;
+  width: 100%;
+}
+
+.ficha-money--centered .ficha-money__img {
+  height: 52px;
+  max-width: 96px;
+}
+
+/* Hard (equivalence / change): opciones centradas bajo el dinero */
+.ficha-money--equivalence .ficha-money__choices,
+.ficha-money--change .ficha-money__choices {
+  text-align: center;
+  width: 100%;
+}
+
+.ficha-money--equivalence .ficha-money__row,
+.ficha-money--change .ficha-money__row {
+  justify-content: center;
+}
+
+/* Expert (shopping): monedas en dos filas, más separadas */
+.ficha-money--shopping .ficha-money__product {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.ficha-money__grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.ficha-money__row--shop {
+  justify-content: center;
+  gap: 14px 18px;
+  width: 100%;
+}
+
+.ficha-money__row--shop .ficha-money__img {
+  height: 44px;
+  max-width: 80px;
 }

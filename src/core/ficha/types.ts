@@ -817,6 +817,8 @@ export interface MonedasBilletesSheetExercise {
   type: "identify" | "equivalence" | "change" | "shopping";
   question: string;
   money: MonedasMoneySheetItem[];
+  /** Opciones MC (identify / equivalence / change). Shopping no lleva. */
+  choiceLabels?: string[];
   productEmoji?: string;
   productName?: string;
   productPriceLabel?: string;
