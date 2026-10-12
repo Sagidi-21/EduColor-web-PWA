@@ -74,6 +74,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `problemas`           | Problemas con una operación   | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy/medium enunciado+op columna; hard/expert centrado+hueco; números color clase (salvo expert); sin recuadro respuesta. |
 | `tresSumandosColumna` | Sumas en columna (3 sumandos) | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: D·U sin casillas; hueco bajo la línea; caja algcol.                                                                       |
 | `restaColumna`        | Resta en columna              | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: mismo layout que algoritmoVertical (−); sin casillas; 3/fila; hueco bajo la línea.                                        |
+| `elLitro`             | El litro                      | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: 2/fila; artículo El/La; classify con opciones+hint; compare sin opciones; expert sin ref.; nombres con mayúscula.         |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
