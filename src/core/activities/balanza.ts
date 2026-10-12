@@ -34,7 +34,8 @@ import type { ActivityDifficulty } from "../content/contracts";
  *    una vez.
  * 5. `expert` de tipo peso pintaba `+N kg` a la izquierda *y* N bloques de peso
  *    a la derecha, cuando la pregunta es justamente cuántos kilos hay a la
- *    derecha. Aquí el plato derecho se dibuja con `?`.
+ *    derecha. Aquí la izquierda dibuja sandía + N pesas 🧱 y la derecha queda
+ *    vacía (sin revelar la respuesta).
  * 6. El catálogo no declaraba la unidad de peso: el elefante valía 5000 y la
  *    hoja 0.005 en la misma escala, sin decir si eran gramos o kilos. Aquí
  *    `weightGrams` deja la unidad explícita, con pesos que un niño puede ordenar
@@ -83,9 +84,19 @@ export interface BalanzaPlate {
   emoji: string;
   /** Cuántas unidades de `emoji` hay. 0 cuando el plato está vacío. */
   count: number;
-  /** Texto de las pesas de referencia que acompañan al plato, si las hay. */
+  /**
+   * Etiqueta bajo el objeto principal (p. ej. «5 kg» de la sandía, o «1 kg»
+   * de una pesa de referencia en hard).
+   */
   weightLabel: string | null;
-  /** Plato derecho cuya cantidad hay que deducir: se dibuja con `?`. */
+  /**
+   * Bloques de 1 kg (🧱) dibujados junto al objeto.
+   * Expert/peso: sandía (con su kg) + N pesas (con el total de pesas).
+   */
+  weightBlocks?: number;
+  /** Etiqueta bajo las pesas 🧱 (p. ej. «2 kg»). */
+  weightBlocksLabel?: string | null;
+  /** Plato cuya cantidad hay que deducir: bandeja vacía (sin revelar la respuesta). */
   unknown: boolean;
 }
 
@@ -240,6 +251,12 @@ function articleOf(item: WeightItem): string {
   return item.gender === "m" ? `el ${item.name}` : `la ${item.name}`;
 }
 
+/** Artículo + nombre con mayúscula inicial (opciones MC de easy). */
+function articleChoiceOf(item: WeightItem): string {
+  const label = articleOf(item);
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
 /** `1 sandía` o `3 bicicletas`, en el género que corresponda al objeto. */
 function nounOf(item: WeightItem, count: number): string {
   return count === 1 ? item.name : item.plural;
@@ -273,8 +290,8 @@ function directExercise(left: WeightItem, right: WeightItem, asksMore: boolean):
     // izquierda, lo menos pesado está a la derecha.
     correctAnswer: asksMore ? heavierSide : heavierSide === "left" ? "right" : "left",
     options: [
-      { label: `${articleOf(left)}`, value: "left" },
-      { label: `${articleOf(right)}`, value: "right" },
+      { label: articleChoiceOf(left), value: "left" },
+      { label: articleChoiceOf(right), value: "right" },
     ],
     hint: "El plato que más baja es el que lleva el objeto más pesado.",
   };
@@ -291,7 +308,7 @@ function scaleExercise(item: WeightItem, countLeft: number, countRight: number):
 
   return {
     type: "scale",
-    question: `Observa la balanza. ¿El grupo de la IZQUIERDA (${countLeft} de ${item.emoji}) pesa MÁS, MENOS o IGUAL que el de la DERECHA (${countRight} de ${item.emoji})?`,
+    question: `Observa la balanza. ¿El grupo de la IZQUIERDA (${countLeft} ${nounOf(item, countLeft)} ${item.emoji}) pesa MÁS, MENOS o IGUAL que el de la DERECHA (${countRight} ${nounOf(item, countRight)} ${item.emoji})?`,
     left: plateOf(item, countLeft),
     right: plateOf(item, countRight),
     leftTotalGrams: leftTotal,
@@ -325,7 +342,7 @@ function kiloExercise(
 
   return {
     type: "kilo",
-    question: `¿El grupo de la izquierda (${count} ${nounOf(item, count)} de ${item.emoji}) pesa MÁS, MENOS o IGUAL que ${reference.label}?`,
+    question: `¿El grupo de la izquierda (${count} ${nounOf(item, count)} ${item.emoji}) pesa MÁS, MENOS o IGUAL que ${reference.label}?`,
     left: plateOf(item, count),
     right: { emoji: "🧱", count: 1, weightLabel: reference.label, unknown: false },
     leftTotalGrams: total,
@@ -337,7 +354,7 @@ function kiloExercise(
       { label: `Menos que ${reference.label}`, value: "less" },
       { label: `Igual que ${reference.label}`, value: "equal" },
     ],
-    hint: `${count} ${nounOf(item, count)} de ${item.emoji} pesan ${formatKg(total)}.`,
+    hint: `${count} ${nounOf(item, count)} ${item.emoji} pesan ${formatKg(total)}.`,
   };
 }
 
@@ -396,8 +413,16 @@ function weightMathExercise(extraKg: number): BalanzaExercise {
   return {
     type: "balance_math",
     question: `La balanza está equilibrada. A la izquierda hay 1 sandía 🍉 (de 5 kg) y pesas de ${extraKg} kg. ¿Cuántos kg de peso hay a la derecha?`,
-    left: { emoji: "🍉", count: 1, weightLabel: `${extraKg} kg`, unknown: false },
-    right: { emoji: "🧱", count: extraKg, weightLabel: null, unknown: true },
+    // Sandía (5 kg) + N ladrillos con su total; derecha vacía (respuesta).
+    left: {
+      emoji: "🍉",
+      count: 1,
+      weightLabel: "5 kg",
+      weightBlocks: extraKg,
+      weightBlocksLabel: `${extraKg} kg`,
+      unknown: false,
+    },
+    right: { emoji: "🧱", count: 0, weightLabel: null, unknown: true },
     leftTotalGrams: totalGrams,
     rightTotalGrams: totalGrams,
     tilt: "equal",

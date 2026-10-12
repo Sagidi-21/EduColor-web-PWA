@@ -95,7 +95,7 @@ const PLATE_ANCHO = 150;
 
 /**
  * Un plato de la balanza: donde se dibujan los objetos y, si los hay, las pesas
- * de referencia o el `?` de lo que hay que deducir.
+ * de referencia. Si `unknown`, la bandeja queda vacía (nivel experto).
  */
 function Plato({
   centro,
@@ -108,6 +108,12 @@ function Plato({
 }): JSX.Element {
   const izquierda = centro.x - PLATE_ANCHO / 2;
   const objects = Array.from({ length: plate.count }, (_, i) => i);
+  const weightBlocks = Math.max(0, plate.weightBlocks ?? 0);
+  const blocksLabel = plate.weightBlocksLabel || (weightBlocks > 0 ? `${weightBlocks} kg` : null);
+  // Expert con pesas: dos columnas (fruta | ladrillos); si no, una sola rejilla.
+  const split = weightBlocks > 0 && plate.count > 0;
+  const colObjX = split ? izquierda + 36 : izquierda + PLATE_ANCHO / 2;
+  const colBlkX = izquierda + PLATE_ANCHO - 36;
 
   return (
     <g className="blz__plato">
@@ -137,23 +143,21 @@ function Plato({
         className="blz__bandeja"
       />
 
-      {/* Los objetos se reparten en una o dos filas: con seis unidades en un
-          plato, ponerlas en fila única las haría diminutas. */}
-      <g transform={`translate(${izquierda + 8}, ${centro.y - 8})`}>
-        {plate.unknown ? (
-          <text x={PLATE_ANCHO / 2 - 8} y={-20} textAnchor="middle" className="blz__interrogacion">
-            ?
-          </text>
-        ) : (
-          objects.map((i) => {
-            const porFila = plate.count > 3 ? Math.ceil(plate.count / 2) : plate.count;
+      {/* Plato desconocido (expert): bandeja vacía, sin revelar la respuesta. */}
+      {!plate.unknown && (
+        <>
+          {objects.map((i) => {
+            const porFila =
+              !split && plate.count > 3 ? Math.ceil(plate.count / 2) : plate.count || 1;
             const columna = i % porFila;
             const fila = Math.floor(i / porFila);
+            const x = split ? colObjX : izquierda + 8 + 12 + columna * (porFila === 1 ? 0 : 44);
+            const y = centro.y - 8 - 22 - fila * 30;
             return (
               <text
-                key={i}
-                x={12 + columna * (porFila === 1 ? 0 : 44)}
-                y={-22 - fila * 30}
+                key={`o-${i}`}
+                x={x}
+                y={y}
                 textAnchor="middle"
                 className="blz__objeto"
                 data-lado={lado}
@@ -161,14 +165,44 @@ function Plato({
                 {plate.emoji}
               </text>
             );
-          })
-        )}
-      </g>
-
-      {plate.weightLabel && (
-        <text x={centro.x} y={centro.y + 34} textAnchor="middle" className="blz__pesa">
-          {plate.weightLabel}
-        </text>
+          })}
+          {split && plate.weightLabel ? (
+            <text x={colObjX} y={centro.y + 34} textAnchor="middle" className="blz__pesa">
+              {plate.weightLabel}
+            </text>
+          ) : null}
+          {Array.from({ length: weightBlocks }, (_, i) => {
+            const porFila = weightBlocks > 3 ? Math.ceil(weightBlocks / 2) : weightBlocks;
+            const columna = i % porFila;
+            const fila = Math.floor(i / porFila);
+            const x = split
+              ? colBlkX + (porFila === 1 ? 0 : (columna - (porFila - 1) / 2) * 28)
+              : izquierda + 8 + 12 + columna * (porFila === 1 ? 0 : 44);
+            const y = centro.y - 8 - 22 - fila * 30;
+            return (
+              <text
+                key={`w-${i}`}
+                x={x}
+                y={y}
+                textAnchor="middle"
+                className="blz__objeto"
+                data-lado={lado}
+              >
+                🧱
+              </text>
+            );
+          })}
+          {split && blocksLabel ? (
+            <text x={colBlkX} y={centro.y + 34} textAnchor="middle" className="blz__pesa">
+              {blocksLabel}
+            </text>
+          ) : null}
+          {!split && plate.weightLabel ? (
+            <text x={centro.x} y={centro.y + 34} textAnchor="middle" className="blz__pesa">
+              {plate.weightLabel}
+            </text>
+          ) : null}
+        </>
       )}
     </g>
   );

@@ -185,15 +185,19 @@ describe("balanza — direct (easy)", () => {
       const item = WEIGHT_ITEMS.find((i) => i.id === id)!;
       return item.gender === "m" ? `el ${item.name}` : `la ${item.name}`;
     };
+    const opcionDe = (id: string) => {
+      const label = articuloDe(id);
+      return label.charAt(0).toUpperCase() + label.slice(1);
+    };
     for (const semilla of SEMILLAS) {
       for (const ex of generateSession("easy", semilla)) {
         const izq = WEIGHT_ITEMS.find((i) => i.emoji === ex.left.emoji)!;
         const der = WEIGHT_ITEMS.find((i) => i.emoji === ex.right.emoji)!;
         expect(ex.question, ex.question).toContain(articuloDe(izq.id));
         expect(ex.question, ex.question).toContain(articuloDe(der.id));
-        // Y las dos opciones se nombran igual que el enunciado, para que el
-        // niño no tenga que aprender dos formas de leer lo mismo.
-        expect(ex.options.map((o) => o.label)).toEqual([articuloDe(izq.id), articuloDe(der.id)]);
+        // Opciones con artículo en mayúscula («El coche»), distinto del
+        // enunciado en minúscula («…el coche o…»).
+        expect(ex.options.map((o) => o.label)).toEqual([opcionDe(izq.id), opcionDe(der.id)]);
       }
     }
   });
@@ -359,10 +363,12 @@ describe("balanza — balance_math (expert)", () => {
     for (const semilla of SEMILLAS) {
       for (const ex of generateSession("expert", semilla)) {
         if (ex.left.emoji !== "🍉") continue;
-        const extraKg = Number(ex.left.weightLabel!.split(" ")[0]);
+        const extraKg = ex.left.weightBlocks ?? 0;
+        expect(extraKg).toBeGreaterThanOrEqual(1);
+        expect(ex.left.weightLabel).toBe("5 kg");
+        expect(ex.left.weightBlocksLabel).toBe(`${extraKg} kg`);
         expect(Number(ex.correctAnswer)).toBe(5 + extraKg);
-        // La derecha es lo que hay que deducir: se dibuja con `?`, no con los
-        // propios kilos que el enunciado pide todavía.
+        // La derecha es lo que hay que deducir: bandeja vacía.
         expect(ex.right.unknown).toBe(true);
       }
     }

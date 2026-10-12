@@ -97,6 +97,33 @@ describe("fichas con escena dibujada", () => {
     });
   });
 
+  it("balanza easy/medium/hard pide redondear; expert pide escribir el número", () => {
+    for (const d of ["easy", "medium"] as const) {
+      const alumno = html("balanza", d, "alumno");
+      expect(alumno).toContain("redondea la correcta");
+      expect(alumno).toContain("ficha-balanza__choices");
+      expect(alumno).toContain("ficha-balanza__beam");
+    }
+    const hard = html("balanza", "hard", "alumno");
+    expect(hard).toContain("redondea la correcta");
+    expect(hard).toContain("ficha-balanza__choices");
+    expect(hard).toContain("ficha-balanza__compare");
+    expect(hard).not.toContain("ficha-balanza__beam");
+    expect(hard).toContain("MENOS");
+    expect(hard).toContain("IGUAL");
+    expect(hard).toContain("MÁS");
+    const medium = html("balanza", "medium", "alumno");
+    expect(medium).toContain("MENOS");
+    expect(medium).toContain("IGUAL");
+    expect(medium).toContain("MÁS");
+    const expert = html("balanza", "expert", "alumno");
+    expect(expert).toContain("escribe el número correcto");
+    expect(expert).not.toContain("redondea la correcta");
+    expect(expert).not.toContain("ficha-balanza__choices");
+    expect(html("balanza", "easy", "soluciones")).toContain("ficha-answer");
+    expect(html("balanza", "easy", "soluciones")).not.toContain("ficha-balanza__beam");
+  });
+
   it("menuCafeteria muestra la carta de precios; soluciones solo la respuesta", () => {
     everyDifficulty("menuCafeteria", (alumno, soluciones) => {
       expect(alumno).toContain("ficha-menu__card");

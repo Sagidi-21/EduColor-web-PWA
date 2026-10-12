@@ -75,6 +75,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `tresSumandosColumna` | Sumas en columna (3 sumandos) | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: D·U sin casillas; hueco bajo la línea; caja algcol.                                                                       |
 | `restaColumna`        | Resta en columna              | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: mismo layout que algoritmoVertical (−); sin casillas; 3/fila; hueco bajo la línea.                                        |
 | `elLitro`             | El litro                      | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: 2/fila; artículo El/La; classify con opciones+hint; compare sin opciones; expert sin ref.; nombres con mayúscula.         |
+| `balanza`             | La balanza y el peso          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy MC+artículo mayúsc.; medium/hard MENOS/IGUAL/MÁS; hard sin inclinación (vs); expert sandía+pesas y «escribe el nº».  |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
@@ -178,7 +179,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **weekDays** — Días de la semana _(2026-10-10: OK — enunciado→tira→opciones; color de clase en día; gap 18px; recuadros 32px)_
 - [ ] **monedasBilletes** — Monedas y billetes
 - [ ] **menuCafeteria** — En la cafetería
-- [ ] **balanza** — La balanza y el peso
+- [x] **balanza** — La balanza y el peso _(2026-10-12: OK — easy redondea+artículo mayúsc.; medium/hard MENOS/IGUAL/MÁS; hard grupo vs pesa sin inclinación; expert sandía+pesas y «escribe el nº»; sin `?`)_
 - [ ] **balanzaEquilibra** — Equilibra la balanza
 
 ## Otros
@@ -234,7 +235,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 
 ### Ya alineadas (código) — candidatos a marcar OK tras mirar preview
 
-`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `inventarProblema`, `elKilo`, `cintaMetrica`, `intervalosTiempo`, `monedasBilletes`, `graficoBarras`, `balanza`
+`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `inventarProblema`, `elKilo`, `cintaMetrica`, `intervalosTiempo`, `monedasBilletes`, `graficoBarras`
 
 ### 2ª vuelta (2026-10-10) — decisiones del profesor aplicadas
 

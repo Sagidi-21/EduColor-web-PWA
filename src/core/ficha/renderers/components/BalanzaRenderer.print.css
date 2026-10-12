@@ -1,14 +1,19 @@
 /* Balanza — layout alumno */
 
 .ficha-balanza__question {
-  margin: 0 0 6px;
+  margin: 0 0 4px;
   font-size: 20px;
   font-weight: 600;
   color: #1e293b;
+  position: relative;
+  z-index: 1;
 }
 
 .ficha-balanza__scale {
+  /* Hueco superior: al inclinarse, un plato sube y no debe tapar el enunciado. */
   margin: 4px 0;
+  padding-top: 22px;
+  overflow: visible;
 }
 
 .ficha-balanza__beam {
@@ -18,6 +23,7 @@
   gap: 8px;
   padding-bottom: 4px;
   border-bottom: 3px solid #64748b;
+  transform-origin: center bottom;
 }
 
 .ficha-balanza__beam--left {
@@ -51,6 +57,21 @@
   background: #f8fafc;
 }
 
+/* Expert: fruta (+ kg) | pesas (+ kg) en el mismo plato. */
+.ficha-balanza__plate--split {
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+}
+
+.ficha-balanza__group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
 .ficha-balanza__emojis {
   display: flex;
   flex-wrap: wrap;
@@ -66,10 +87,59 @@
   color: #475569;
 }
 
-.ficha-balanza__unknown {
-  font-size: 22px;
-  font-weight: 800;
+/* Hard: grupo vs pesa, sin brazo ni inclinación. */
+.ficha-balanza__compare {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 16px;
+  margin: 10px 0 4px;
+}
+
+.ficha-balanza__compare .ficha-balanza__plate {
+  flex: 0 1 42%;
+  max-width: 200px;
+  min-height: 56px;
+  /* Iconos y pesas centrados en vertical dentro de la caja. */
+  justify-content: center;
+}
+
+.ficha-balanza__vs {
+  flex: 0 0 auto;
+  align-self: center;
+  font-size: 14px;
+  font-weight: 700;
   color: #94a3b8;
+}
+
+.ficha-balanza__round-hint {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.ficha-balanza__choices {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  /* Separación clara respecto a la balanza (inclinación incluida). */
+  margin-top: 28px;
+  padding: 0 12px;
+  gap: 24px;
+}
+
+.ficha-balanza__choice {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-balanza__choice-mark {
+  margin-right: 5px;
 }
 
 .ficha-balanza__hint {

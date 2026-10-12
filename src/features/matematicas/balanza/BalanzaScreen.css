@@ -93,13 +93,6 @@
   fill: #b45309;
 }
 
-.blz__interrogacion {
-  font-size: 46px;
-  font-weight: 900;
-  fill: #7c3aed;
-  animation: blzPulse 1.4s ease-in-out infinite;
-}
-
 /* -- Pie: enunciado, opciones y pista -- */
 .blz__footer {
   flex-shrink: 0;
@@ -211,16 +204,6 @@
   }
 }
 
-@keyframes blzPulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.45;
-  }
-}
-
 @keyframes blzCorrectPulse {
   0% {
     transform: scale(1);
@@ -254,7 +237,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .blz__celebration,
-  .blz__interrogacion,
   .blz__option {
     animation: none;
   }

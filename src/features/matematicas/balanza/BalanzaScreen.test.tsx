@@ -209,14 +209,13 @@ describe("BalanzaScreen smoke", () => {
     expect(pesas[0].textContent).toBe(ex.right.weightLabel);
   });
 
-  it("en expert dibuja un `?` en el plato que hay que deducir", () => {
-    // El original pintaba ahí los kilos que el enunciado pedía, con lo que la
-    // respuesta se leía en el dibujo antes de contestar.
+  it("en expert deja vacío el plato que hay que deducir", () => {
+    // Sin kilos ni `?`: el original revelaba la respuesta en el dibujo.
     const sesion = generateSession("expert", 4242);
     const { container } = render(<BalanzaScreen {...props("expert")} />);
 
     const [, derecho] = container.querySelectorAll(".blz__plato");
-    expect(derecho.querySelector(".blz__interrogacion")?.textContent).toBe("?");
+    expect(derecho.querySelector(".blz__interrogacion")).toBeNull();
     expect(derecho.querySelectorAll(".blz__objeto")).toHaveLength(0);
     sesion.forEach((ex) => expect(ex.right.unknown).toBe(true));
   });

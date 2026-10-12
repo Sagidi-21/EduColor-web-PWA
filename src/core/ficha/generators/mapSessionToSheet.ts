@@ -729,28 +729,77 @@ function mapElLitro(ex: Record<string, unknown>, config: SheetConfig): ElLitroSh
 
 function mapPlate(raw: unknown, withVisual: boolean): BalanzaPlateSheet {
   const p = asRecord(raw);
+  const blocks = asNumber(p.weightBlocks, 0);
+  const blocksLabel =
+    p.weightBlocksLabel === null || p.weightBlocksLabel === undefined
+      ? null
+      : asString(p.weightBlocksLabel);
   return {
     emoji: withVisual ? asString(p.emoji, "⬜") : "",
     count: asNumber(p.count, 1),
     weightLabel:
       p.weightLabel === null || p.weightLabel === undefined ? null : asString(p.weightLabel),
+    weightBlocks: blocks > 0 ? blocks : undefined,
+    weightBlocksLabel: blocks > 0 ? blocksLabel || `${blocks} kg` : undefined,
     unknown: Boolean(p.unknown),
   };
 }
 
+/**
+ * Medium/hard: MÁS / MENOS / IGUAL en ficha.
+ * Medium usa tilt (left/right/equal); hard usa more/less/equal.
+ */
+const BALANZA_TILT_SHORT: Record<string, string> = {
+  left: "MÁS",
+  right: "MENOS",
+  equal: "IGUAL",
+  more: "MÁS",
+  less: "MENOS",
+};
+
 function mapBalanza(ex: Record<string, unknown>, config: SheetConfig): BalanzaSheetExercise {
   const withVisual = config.withImages;
+  const optionsRaw = Array.isArray(ex.options) ? ex.options : [];
+  const choiceLabels = choiceLabelsFromOptions(optionsRaw);
+  const correct = asString(ex.correctAnswer ?? ex.answer);
+  const matched = optionsRaw.find((opt) => {
+    if (!opt || typeof opt !== "object") return false;
+    return asString((opt as Record<string, unknown>).value) === correct;
+  });
+  const answerFromOpt = matched
+    ? asString((matched as Record<string, unknown>).label) || correct
+    : correct;
+
+  // Easy: nombres de objetos. Medium/hard: MENOS / IGUAL / MÁS bajo la balanza.
+  // Expert: sin MC; hint «escribe el número correcto».
+  let sheetChoices: string[] | undefined;
+  let answerLabel = answerFromOpt;
+  if (config.difficulty === "easy" && choiceLabels.length > 0) {
+    sheetChoices = choiceLabels;
+  } else if (config.difficulty === "medium" || config.difficulty === "hard") {
+    sheetChoices = ["MENOS", "IGUAL", "MÁS"];
+    answerLabel = BALANZA_TILT_SHORT[correct] || answerFromOpt;
+  }
+
+  const isHard = config.difficulty === "hard";
   return {
     kind: "balanza",
     variant: "compare",
     question: questionOf(ex),
     left: mapPlate(ex.left, withVisual),
     right: mapPlate(ex.right, withVisual),
-    tilt:
-      asString(ex.tilt) === "left" || asString(ex.tilt) === "right" || asString(ex.tilt) === "equal"
+    // Hard: sin balanza inclinada (pesos del catálogo no son reales).
+    showScale: !isHard,
+    tilt: isHard
+      ? undefined
+      : asString(ex.tilt) === "left" ||
+          asString(ex.tilt) === "right" ||
+          asString(ex.tilt) === "equal"
         ? (asString(ex.tilt) as "left" | "right" | "equal")
         : undefined,
-    answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
+    choiceLabels: sheetChoices,
+    writeHint: config.difficulty === "expert",
+    answer: answerLabel || undefined,
   };
 }
 

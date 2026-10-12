@@ -993,6 +993,116 @@ describe("mapSessionToSheet", () => {
     });
   });
 
+  it("en easy de balanza añade opciones para redondear y etiqueta de respuesta", () => {
+    const ex = mapSessionToSheet(
+      "balanza",
+      {
+        question: "¿Qué pesa MÁS, el coche o el perrito?",
+        left: { emoji: "🚗", count: 1, weightLabel: null, unknown: false },
+        right: { emoji: "🐶", count: 1, weightLabel: null, unknown: false },
+        tilt: "left",
+        correctAnswer: "left",
+        options: [
+          { label: "El coche", value: "left" },
+          { label: "El perrito", value: "right" },
+        ],
+      },
+      { ...config, difficulty: "easy" },
+    );
+    expect(ex).toMatchObject({
+      kind: "balanza",
+      choiceLabels: ["El coche", "El perrito"],
+      answer: "El coche",
+    });
+  });
+
+  it("en medium de balanza añade MENOS / IGUAL / MÁS para redondear", () => {
+    const ex = mapSessionToSheet(
+      "balanza",
+      {
+        question: "¿Pesa MÁS, MENOS o IGUAL?",
+        left: { emoji: "🍎", count: 3, weightLabel: null, unknown: false },
+        right: { emoji: "🍎", count: 2, weightLabel: null, unknown: false },
+        tilt: "left",
+        correctAnswer: "left",
+        options: [
+          { label: "Pesa MÁS el de la izquierda", value: "left" },
+          { label: "Pesa MENOS el de la izquierda", value: "right" },
+          { label: "Pesan IGUAL", value: "equal" },
+        ],
+      },
+      { ...config, difficulty: "medium" },
+    );
+    expect(ex).toMatchObject({
+      kind: "balanza",
+      choiceLabels: ["MENOS", "IGUAL", "MÁS"],
+      answer: "MÁS",
+    });
+  });
+
+  it("en hard de balanza añade MENOS / IGUAL / MÁS y oculta la balanza inclinada", () => {
+    const ex = mapSessionToSheet(
+      "balanza",
+      {
+        question: "¿Pesa MÁS, MENOS o IGUAL que 1 kg?",
+        left: { emoji: "🍉", count: 2, weightLabel: null, unknown: false },
+        right: { emoji: "🧱", count: 1, weightLabel: "1 kg", unknown: false },
+        tilt: "left",
+        correctAnswer: "more",
+        options: [
+          { label: "Más que 1 kg", value: "more" },
+          { label: "Menos que 1 kg", value: "less" },
+          { label: "Igual que 1 kg", value: "equal" },
+        ],
+      },
+      { ...config, difficulty: "hard" },
+    );
+    expect(ex).toMatchObject({
+      kind: "balanza",
+      showScale: false,
+      choiceLabels: ["MENOS", "IGUAL", "MÁS"],
+      answer: "MÁS",
+    });
+    if (ex.kind === "balanza") expect(ex.tilt).toBeUndefined();
+  });
+
+  it("en expert de balanza marca writeHint y no añade opciones MC", () => {
+    const ex = mapSessionToSheet(
+      "balanza",
+      {
+        question: "¿Cuántos kg de peso hay a la derecha?",
+        left: {
+          emoji: "🍉",
+          count: 1,
+          weightLabel: "5 kg",
+          weightBlocks: 2,
+          weightBlocksLabel: "2 kg",
+          unknown: false,
+        },
+        right: { emoji: "🧱", count: 0, weightLabel: null, unknown: true },
+        tilt: "equal",
+        correctAnswer: "7",
+        options: [
+          { label: "6 kg", value: "6" },
+          { label: "7 kg", value: "7" },
+        ],
+      },
+      { ...config, difficulty: "expert" },
+    );
+    expect(ex).toMatchObject({
+      kind: "balanza",
+      writeHint: true,
+      answer: "7 kg",
+      left: {
+        emoji: "🍉",
+        weightLabel: "5 kg",
+        weightBlocks: 2,
+        weightBlocksLabel: "2 kg",
+      },
+    });
+    if (ex.kind === "balanza") expect(ex.choiceLabels).toBeUndefined();
+  });
+
   it("mapea graficoBarras con barras", () => {
     const ex = mapSessionToSheet(
       "graficoBarras",

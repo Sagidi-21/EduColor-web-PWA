@@ -231,7 +231,12 @@ export interface TresSumandosColumnaSheetExercise {
 export interface BalanzaPlateSheet {
   emoji: string;
   count: number;
+  /** Etiqueta bajo el objeto (p. ej. «5 kg»). */
   weightLabel?: string | null;
+  /** Bloques de 1 kg (🧱) junto al objeto (expert/peso). */
+  weightBlocks?: number;
+  /** Etiqueta bajo las pesas (p. ej. «2 kg»). */
+  weightBlocksLabel?: string | null;
   unknown: boolean;
 }
 
@@ -243,6 +248,16 @@ export interface BalanzaSheetExercise {
   left: BalanzaPlateSheet;
   right: BalanzaPlateSheet;
   tilt?: "left" | "right" | "equal";
+  /**
+   * Si false (hard), solo se muestran los dos platillos sin brazo ni inclinación:
+   * los pesos del catálogo no son reales (p. ej. bicis &lt; 1 kg) y la balanza
+   * inclinada afirmaría algo absurdo y adelantaría la respuesta.
+   */
+  showScale?: boolean;
+  /** Easy/medium/hard (compare): etiquetas MC para redondear a mano. */
+  choiceLabels?: string[];
+  /** Expert (compare): hint «escribe el número correcto» tras el enunciado. */
+  writeHint?: boolean;
   targetKg?: number;
   /** equilibra: paleta de pesas arrastrables en pizarra (p. ej. [1] o [1, 2]). */
   weightChips?: number[];
