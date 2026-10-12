@@ -1163,7 +1163,11 @@ function mapProblema(ex: Record<string, unknown>, config?: SheetConfig): Problem
       : opRaw === "resta" || opRaw === "-" || opRaw === "−"
         ? "-"
         : undefined;
-  const hasEquation = op !== undefined && typeof ex.a === "number" && typeof ex.b === "number";
+  const difficulty = config?.difficulty;
+  // Hard/expert: solo enunciado + hueco (el niño escribe operación y resultado).
+  const writeOnly = difficulty === "hard" || difficulty === "expert";
+  const hasEquation =
+    !writeOnly && op !== undefined && typeof ex.a === "number" && typeof ex.b === "number";
   const emoji = config?.withImages ? asString(ex.emoji) || undefined : undefined;
   return {
     kind: "problemas",
@@ -1171,6 +1175,9 @@ function mapProblema(ex: Record<string, unknown>, config?: SheetConfig): Problem
     question: questionOf(ex),
     emoji,
     ...(hasEquation ? { a: ex.a as number, b: ex.b as number, op } : {}),
+    showWriteArea: writeOnly ? true : undefined,
+    // Easy/medium/hard: números clave del enunciado con color de clase; expert sin resaltar.
+    highlightKeyNumbers: difficulty !== "expert" ? true : undefined,
     answer: answerOf(ex),
   };
 }

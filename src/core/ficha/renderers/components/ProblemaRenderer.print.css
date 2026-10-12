@@ -1,9 +1,43 @@
-/* Problemas (suma/resta con historia) — layout alumno */
+/* Problemas — easy/medium: enunciado izq. + op dcha.; hard/expert: centrado + hueco abajo */
 
-.ficha-problema__card {
+.ficha-problema__body {
   display: flex;
+  width: 100%;
+}
+
+/* easy / medium */
+.ficha-problema--with-op .ficha-problema__body {
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ficha-problema--with-op .ficha-problema__enunciado {
+  display: flex;
+  align-items: flex-start;
   gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* hard / expert: enunciado centrado */
+.ficha-problema--write .ficha-problema__body {
+  flex-direction: column;
+  align-items: center;
+}
+
+.ficha-problema--write .ficha-problema__enunciado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  max-width: 100%;
+}
+
+.ficha-problema--write .ficha-problema__texts {
+  text-align: center;
 }
 
 .ficha-problema__emoji {
@@ -12,41 +46,83 @@
   line-height: 1;
 }
 
+.ficha-problema--with-op .ficha-problema__emoji {
+  margin-top: 2px;
+}
+
+.ficha-problema__texts {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .ficha-problema__text {
   margin: 0;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #1e293b;
   line-height: 1.3;
-  white-space: pre-wrap;
 }
 
-/* Ecuación a + b = □ — edita font-size / tamaño del cuadro aquí */
-.ficha-problema__eq {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 6px;
-  font-size: 26px;
+.ficha-problema__text--q {
+  margin-top: 4px;
+}
+
+/* Easy/medium/hard: números clave con color de configuración de clase */
+.ficha-problema__key-num {
+  color: var(--color-primary, #0284c7);
   font-weight: 800;
+}
+
+/* Operación en columna (easy / medium) */
+.ficha-problema__col {
+  display: grid;
+  grid-template-columns: 18px 28px 28px;
+  gap: 2px 4px;
+  align-items: center;
+  flex: 0 0 auto;
+  font-family: "SF Mono", "Consolas", "Menlo", monospace;
+  font-size: 20px;
+  font-weight: 700;
   color: #0f172a;
-  font-variant-numeric: tabular-nums;
 }
 
-.ficha-problema__eq-n {
-  color: #0284c7;
+.ficha-problema__col-label {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.04em;
 }
 
-.ficha-problema__eq-op {
+.ficha-problema__col-digit {
+  text-align: center;
+  min-height: 26px;
+  line-height: 26px;
+}
+
+.ficha-problema__col-op {
+  text-align: center;
   color: #334155;
 }
 
-.ficha-problema__eq-blank {
-  display: inline-block;
-  width: 56px;
-  height: 44px;
-  border: 1.5px dashed #94a3b8;
-  border-radius: 4px;
-  background: #f8fafc;
+.ficha-problema__col-sep {
+  grid-column: 1 / -1;
+  height: 0;
+  border-top: 1.5px solid #334155;
+  margin: 2px 0 0;
+}
+
+/* Espacio bajo la línea para el resultado */
+.ficha-problema__col::after {
+  content: "";
+  grid-column: 1 / -1;
+  height: 32px;
+}
+
+/* Hard / expert: hueco debajo del enunciado */
+.ficha-problema__work {
+  margin-top: 10px;
+  width: 100%;
+  min-height: 100px; /* edita aquí la altura del hueco */
   box-sizing: border-box;
 }

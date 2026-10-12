@@ -375,13 +375,69 @@ describe("mapSessionToSheet", () => {
       },
       config,
     );
-    expect(ex).toMatchObject({ kind: "problemas", emoji: "🐶", a: 3, b: 2, op: "+", answer: 5 });
+    expect(ex).toMatchObject({
+      kind: "problemas",
+      emoji: "🐶",
+      a: 3,
+      b: 2,
+      op: "+",
+      answer: 5,
+      highlightKeyNumbers: true,
+    });
+    expect(ex).not.toMatchObject({ showWriteArea: true });
     const sin = mapSessionToSheet(
       "problemas",
       { story: "x", question: "y", emoji: "🐶", a: 3, b: 2, op: "resta", answer: 1 },
       { ...config, withImages: false },
     );
     expect(sin).toMatchObject({ op: "-", emoji: undefined });
+  });
+
+  it("problemas hard: solo enunciado + hueco; números clave resaltados (como easy/medium)", () => {
+    const ex = mapSessionToSheet(
+      "problemas",
+      {
+        story: "Hay 8 perros. Se van 3.",
+        question: "¿Cuántos perros quedan?",
+        emoji: "🐶",
+        a: 8,
+        b: 3,
+        op: "resta",
+        answer: 5,
+      },
+      { ...config, difficulty: "hard" },
+    );
+    expect(ex.kind).toBe("problemas");
+    if (ex.kind === "problemas") {
+      expect(ex.a).toBeUndefined();
+      expect(ex.b).toBeUndefined();
+      expect(ex.op).toBeUndefined();
+      expect(ex.showWriteArea).toBe(true);
+      expect(ex.highlightKeyNumbers).toBe(true);
+      expect(ex.answer).toBe(5);
+    }
+  });
+
+  it("problemas expert: solo enunciado + hueco; sin resaltar números", () => {
+    const ex = mapSessionToSheet(
+      "problemas",
+      {
+        story: "Hay 12 perros. Se van 5.",
+        question: "¿Cuántos perros quedan?",
+        a: 12,
+        b: 5,
+        op: "resta",
+        answer: 7,
+      },
+      { ...config, difficulty: "expert" },
+    );
+    expect(ex.kind).toBe("problemas");
+    if (ex.kind === "problemas") {
+      expect(ex.a).toBeUndefined();
+      expect(ex.op).toBeUndefined();
+      expect(ex.showWriteArea).toBe(true);
+      expect(ex.highlightKeyNumbers).toBeUndefined();
+    }
   });
 
   it("mapea weekDays con opciones y día resaltado", () => {

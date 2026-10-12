@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 18 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 19 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -71,6 +71,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `laberintoMatematico` | Laberinto matemático (1.º)   | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: tablero grande color de clase; nodo INICIO soft; soluciones con casillas rellenas (sin enunciado); modal ficha afinado.   |
 | `capacidad`           | Capacidad y litros           | [x]    | [x]        | [x]      | [x]            | OK 2026-10-11: easy opciones centradas; medium/hard pregunta izq. + medida dcha. y casilla grande; plural vaso/vasos; expert por tipo.   |
 | `ordinales`           | Números ordinales            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-11: mismo emoji+anillo; LTR; identify redondea; easy 2/fila; hard/expert casilla dcha.; flecha+hint; emojis variados.         |
+| `problemas`           | Problemas con una operación  | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy/medium enunciado+op columna; hard/expert centrado+hueco; números color clase (salvo expert); sin recuadro respuesta. |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
@@ -158,7 +159,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 
 ## Problemas
 
-- [ ] **problemas** — Problemas con una operación
+- [x] **problemas** — Problemas con una operación _(2026-10-12: OK — easy/medium enunciado izq. + op en columna; hard/expert enunciado centrado + hueco debajo; números color de clase salvo expert; sin recuadro de respuesta)_
 - [ ] **problemas2pasos** — Problemas de 2 pasos
 - [ ] **datosInnecesarios** — Desechar datos inútiles
 - [ ] **inventarProblema** — Laboratorio de problemas
@@ -221,7 +222,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | `lineTypes`           | OK navegador 2026-10-10 — ver checklist Geometría           |
 | `series3cifras`       | Cajas más anchas                                            |
 | `vecinosNumero`       | OK navegador 2026-10-10 — ver checklist Numeración          |
-| `problemas`           | Emoji + historia + `a ± b = □`                              |
+| `problemas`           | OK navegador 2026-10-12 — ver checklist Problemas           |
 | `datosInnecesarios`   | Frases con ○ (mapeo `historia`/`pregunta` arreglado)        |
 | `weekDays`            | OK navegador 2026-10-10 — ver checklist Medidas y tiempo    |
 | `relojPonerHora`      | Cara vacía + enunciado con hora objetivo (no revela agujas) |

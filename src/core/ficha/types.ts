@@ -200,10 +200,17 @@ export interface ProblemaSheetExercise {
   question: string;
   /** Emoji del tema (pizarra); solo con imágenes activadas. */
   emoji?: string;
-  /** Operandos y signo para la ecuación `a ± b = □` (solo actividad problemas). */
+  /**
+   * Operandos y signo para operación en columna (easy/medium).
+   * Ausentes en hard/expert: solo enunciado + hueco para escribir.
+   */
   a?: number;
   b?: number;
   op?: "+" | "-";
+  /** Hard/expert: hueco debajo del enunciado para operación + resultado. */
+  showWriteArea?: boolean;
+  /** Easy/medium/hard: números del enunciado con color de clase (expert no). */
+  highlightKeyNumbers?: boolean;
   answer?: string | number;
 }
 
