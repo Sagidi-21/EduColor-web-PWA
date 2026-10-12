@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 20 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 21 / 62 _(pasada código 2026-10-10: ~20 actividades mejoradas visualmente; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -73,6 +73,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `ordinales`           | Números ordinales             | [x]    | [x]        | [x]      | [x]            | OK 2026-10-11: mismo emoji+anillo; LTR; identify redondea; easy 2/fila; hard/expert casilla dcha.; flecha+hint; emojis variados.         |
 | `problemas`           | Problemas con una operación   | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy/medium enunciado+op columna; hard/expert centrado+hueco; números color clase (salvo expert); sin recuadro respuesta. |
 | `tresSumandosColumna` | Sumas en columna (3 sumandos) | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: D·U sin casillas; hueco bajo la línea; caja algcol.                                                                       |
+| `restaColumna`        | Resta en columna              | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: mismo layout que algoritmoVertical (−); sin casillas; 3/fila; hueco bajo la línea.                                        |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
@@ -115,7 +116,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **algoritmoVertical** — Sumas en columna _(2026-10-10: OK — operación centrada; sin casillas; 3/fila; números grandes; caja alta)_
 - [x] **tresSumandosColumna** — Sumas en columna (3 sumandos) _(2026-10-12: OK — D·U sin casillas; hueco bajo la línea; caja algcol)_
 - [ ] **sumaLlevando** — Sumamos llevando
-- [ ] **restaColumna** — Resta en columna
+- [x] **restaColumna** — Resta en columna _(2026-10-12: OK — mismo layout que Sumas en columna (−); sin casillas; 3/fila; hueco bajo la línea)_
 - [ ] **algoritmo3cifras** — Algoritmo de tres cifras
 - [x] **igualdad** — El signo igual _(2026-10-10: OK — enunciados por tipo; easy imágenes+op misma línea; medium/hard centrados; hard opciones en línea con •; color de clase; soluciones solo respuesta)_
 - [ ] **relacionSumaResta** — Familia de operaciones
@@ -212,7 +213,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | `suma` / `resta`      | Algoritmo vertical con casillas de cifra                    |
 | `tresSumandos`        | OK navegador 2026-10-10 — ver checklist Operaciones         |
 | `algoritmoVertical`   | OK navegador 2026-10-10 — ver checklist Operaciones         |
-| `restaColumna`        | Cuadrícula D·U + casillas                                   |
+| `restaColumna`        | OK navegador 2026-10-12 — ver checklist Operaciones         |
 | `tresSumandosColumna` | OK navegador 2026-10-12 — ver checklist Operaciones         |
 | `igualdad`            | OK navegador 2026-10-10 — ver checklist Operaciones         |
 | `relacionSumaResta`   | Tres ecuaciones con hueco                                   |
