@@ -32,6 +32,7 @@ export function exerciseCardVariant(
     case "tablaNumerica":
       return "tabla";
     case "algoritmoVertical":
+    case "tresSumandosColumna":
       // Alumno: caja alta. Soluciones: tarjeta compacta (solo el número).
       return options.showAnswer ? "" : "algcol";
     case "laberintoMatematico":

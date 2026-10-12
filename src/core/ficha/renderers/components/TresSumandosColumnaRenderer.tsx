@@ -6,7 +6,7 @@ export interface TresSumandosColumnaRendererProps {
 }
 
 /**
- * Cuadrícula D·U con tres sumandos, como en pizarra.
+ * Cuadrícula D·U con tres sumandos; sin casillas — espacio bajo la línea para escribir.
  */
 export function TresSumandosColumnaRenderer({
   ex,
@@ -20,7 +20,10 @@ export function TresSumandosColumnaRenderer({
   const u = (n: number) => String(n % 10);
 
   return (
-    <div className="ficha-algcol ficha-algcol--3" aria-label={`${ex.a} + ${ex.b} + ${ex.c}`}>
+    <div
+      className="ficha-algcol ficha-algcol--3 ficha-algcol--write"
+      aria-label={`${ex.a} + ${ex.b} + ${ex.c}`}
+    >
       <span />
       <span className="ficha-algcol__label">D</span>
       <span className="ficha-algcol__label">U</span>
@@ -38,10 +41,6 @@ export function TresSumandosColumnaRenderer({
       <span className="ficha-algcol__digit">{u(ex.c)}</span>
 
       <span className="ficha-algcol__sep" />
-
-      <span />
-      <span className="ficha-algcol__blank" aria-label="Decenas" />
-      <span className="ficha-algcol__blank" aria-label="Unidades" />
     </div>
   );
 }

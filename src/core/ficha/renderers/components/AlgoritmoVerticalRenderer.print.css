@@ -46,6 +46,11 @@
   height: 40px;
 }
 
+/* Tres sumandos: un poco más de hueco hasta el borde inferior de la caja */
+.ficha-algcol--3.ficha-algcol--write::after {
+  height: 48px; /* edita aquí el hueco bajo la línea */
+}
+
 .ficha-algcol__blank {
   display: block;
   width: 34px;
