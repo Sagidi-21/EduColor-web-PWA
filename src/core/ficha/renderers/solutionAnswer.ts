@@ -23,7 +23,7 @@ export function solutionAnswerOf(ex: SheetExercise): string {
       // Opción de texto (medium: nombre del objeto) o descripción de la escena (experto).
       return ex.answer ? ex.answer : "?";
     case "relacionSumaResta":
-      return `${ex.partA}+${ex.partB}=${ex.total}; ${ex.total}−${ex.partA}=${ex.partB}`;
+      return `${ex.total}−${ex.partA}=${ex.partB}; ${ex.total}−${ex.partB}=${ex.partA}; ${ex.partA}+${ex.partB}=${ex.total}`;
     case "laberintoMatematico": {
       if (ex.answer) return ex.answer;
       const finalValue = ex.answers?.[ex.correctFin];

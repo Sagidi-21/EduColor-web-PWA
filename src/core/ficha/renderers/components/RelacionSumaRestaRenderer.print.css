@@ -1,34 +1,92 @@
-/* Familia de operaciones — layout alumno */
+/* Familia de operaciones — enunciado + 3 operaciones en vertical (D·U) */
+
+.ficha-fam {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
 
 .ficha-fam__intro {
-  margin: 0 0 6px;
-  font-size: 13px;
+  margin: 0 0 8px;
+  font-size: 14px;
   font-weight: 600;
+  color: #1e293b;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.ficha-fam__hint {
+  font-size: 13px;
+  font-weight: 500;
   color: #64748b;
 }
 
-.ficha-fam__eqs {
+.ficha-fam__ops {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px 28px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.ficha-fam__eq {
-  display: flex;
+.ficha-fam__col {
+  display: grid;
+  grid-template-columns: 18px 28px 28px;
+  gap: 3px 4px;
   align-items: center;
-  gap: 6px;
-  font-size: 16px;
+  width: max-content;
+  font-family: "SF Mono", "Consolas", "Menlo", monospace;
+  font-size: 18px;
   font-weight: 700;
   color: #0f172a;
-  font-variant-numeric: tabular-nums;
 }
 
-.ficha-fam__blank {
-  display: inline-block;
-  width: 36px;
-  height: 28px;
-  border: 1.5px dashed #94a3b8;
-  border-radius: 3px;
-  background: #f8fafc;
+.ficha-fam__label {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.04em;
+}
+
+.ficha-fam__digit {
+  text-align: center;
+  min-height: 26px;
+  line-height: 26px;
+}
+
+.ficha-fam__op {
+  text-align: center;
+  color: #334155;
+}
+
+.ficha-fam__sep {
+  grid-column: 1 / -1;
+  height: 0;
+  border-top: 1.5px solid #334155;
+  margin: 2px 0 0;
+}
+
+/* Espacio bajo la línea para escribir el resultado */
+.ficha-fam__col--write::after {
+  content: "";
+  grid-column: 1 / -1;
+  height: 32px;
+}
+
+/* Tarjeta: centra la familia en la caja */
+.ficha-exercise--fam {
+  min-height: 160px;
+}
+
+.ficha-exercise--fam .ficha-exercise__body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
   box-sizing: border-box;
 }

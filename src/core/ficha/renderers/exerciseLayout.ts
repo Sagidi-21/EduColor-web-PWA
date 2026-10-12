@@ -37,6 +37,8 @@ export function exerciseCardVariant(
       return options.showAnswer ? "" : "algcol";
     case "sumaLlevando":
       return options.showAnswer ? "" : "sumall";
+    case "relacionSumaResta":
+      return options.showAnswer ? "" : "fam";
     case "laberintoMatematico":
       return "laberinto";
     default:

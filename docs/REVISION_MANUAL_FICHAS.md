@@ -122,7 +122,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **restaColumna** — Resta en columna _(2026-10-12: OK — mismo layout que Sumas en columna (−); sin casillas; 3/fila; hueco bajo la línea)_
 - [ ] **algoritmo3cifras** — Algoritmo de tres cifras
 - [x] **igualdad** — El signo igual _(2026-10-10: OK — enunciados por tipo; easy imágenes+op misma línea; medium/hard centrados; hard opciones en línea con •; color de clase; soluciones solo respuesta)_
-- [ ] **relacionSumaResta** — Familia de operaciones
+- [x] **relacionSumaResta** — Familia de operaciones _(2026-10-12: OK — 3 ops en vertical D·U; enunciado Total/partes + «realiza todas las operaciones»)_
 - [ ] **multiplicacion** — Multiplicación
 - [ ] **dobleYMitad** — El doble y la mitad
 - [x] **amigos10** — Los amigos del 10 _(2026-10-10: OK — ten-frame como en pizarra + operación a la derecha con casilla, toggle imágenes, soluciones solo número)_
