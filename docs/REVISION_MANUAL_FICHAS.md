@@ -155,7 +155,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 
 ## Geometría
 
-- [ ] **poligonos** — Los polígonos
+- [x] **poligonos** — Los polígonos _(2026-10-12: OK — redondea la correcta; expert sin figura ref.; easy sin mayúscula tras coma)_
 - [x] **shapes** — Formas y tamaños _(2026-10-10: OK — figura/foto + opciones como pizarra, soluciones solo nombre, PDF alineado)_
 - [ ] **simetria** — Simetría
 - [ ] **cuerpos3d** — Cuerpos geométricos

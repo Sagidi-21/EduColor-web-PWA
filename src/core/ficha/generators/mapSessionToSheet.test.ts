@@ -140,6 +140,36 @@ describe("mapSessionToSheet", () => {
     }
   });
 
+  it("poligonos expert: sin figura de referencia, solo opciones figurativas", () => {
+    const shape = {
+      id: "tri",
+      name: "Triángulo",
+      path: "M 100 30 L 170 150 L 30 150 Z",
+      drawType: "path",
+      color: "#3b82f6",
+      sides: 3,
+      vertices: 3,
+      isPolygon: true,
+    };
+    const ex = mapSessionToSheet(
+      "poligonos",
+      {
+        type: "expert_select",
+        question: "Selecciona el polígono que tiene exactamente 3 lados y 3 vértices.",
+        answer: "tri",
+        shape,
+        optionsList: [shape, { ...shape, id: "hex", name: "Hexágono", sides: 6, vertices: 6 }],
+      },
+      { ...config, difficulty: "expert" },
+    );
+    expect(ex.kind).toBe("poligonos");
+    if (ex.kind === "poligonos") {
+      expect(ex.shape).toBeUndefined();
+      expect(ex.optionsList).toHaveLength(2);
+      expect(ex.choiceLabels).toBeUndefined();
+    }
+  });
+
   it("mapea shapes con opciones de texto como en pizarra", () => {
     const ex = mapSessionToSheet(
       "shapes",

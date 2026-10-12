@@ -7,8 +7,8 @@ export interface PoligonosRendererProps {
 }
 
 /**
- * Alumno: figura/foto + pregunta + opciones (texto como en pizarra, o figuras).
- * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
+ * Alumno: figura/foto + pregunta + opciones (texto), o solo enunciado + figuras
+ * a redondear (expert). Soluciones: ExerciseRenderer (solo la respuesta).
  */
 export function PoligonosRenderer({ ex, showAnswer }: PoligonosRendererProps): JSX.Element {
   if (showAnswer) {
@@ -17,37 +17,45 @@ export function PoligonosRenderer({ ex, showAnswer }: PoligonosRendererProps): J
 
   const hasChoiceLabels = Boolean(ex.choiceLabels && ex.choiceLabels.length > 0);
   const hasFigureOptions = Boolean(ex.optionsList && ex.optionsList.length > 0);
+  const showReference = Boolean(ex.imageUrl || ex.shape);
 
   return (
-    <div className="ficha-poligonos">
-      {ex.question ? <p className="ficha-poligonos__question">{ex.question}</p> : null}
-      <div className="ficha-poligonos__body">
-        {ex.imageUrl ? (
-          <div className="ficha-poligonos__figure">
-            <img src={ex.imageUrl} alt="" className="ficha-poligonos__photo" />
-          </div>
-        ) : (
-          ex.shape && (
+    <div className={`ficha-poligonos${hasFigureOptions ? " ficha-poligonos--expert" : ""}`}>
+      {ex.question ? (
+        <p className="ficha-poligonos__question">
+          {ex.question}
+          <span className="ficha-poligonos__hint"> (redondea la correcta)</span>
+        </p>
+      ) : null}
+      {showReference || hasChoiceLabels ? (
+        <div className="ficha-poligonos__body">
+          {ex.imageUrl ? (
             <div className="ficha-poligonos__figure">
-              <ShapeSvg shape={ex.shape} size={72} />
+              <img src={ex.imageUrl} alt="" className="ficha-poligonos__photo" />
             </div>
-          )
-        )}
-        {hasChoiceLabels && (
-          <div
-            className={`ficha-poligonos__choices ficha-poligonos__choices--${ex.choiceLabels!.length}`}
-          >
-            {ex.choiceLabels!.map((label, i) => (
-              <div key={`${label}-${i}`} className="ficha-poligonos__choice">
-                <span className="ficha-poligonos__choice-mark" aria-hidden>
-                  •
-                </span>
-                <span className="ficha-poligonos__choice-text">{label}</span>
+          ) : (
+            ex.shape && (
+              <div className="ficha-poligonos__figure">
+                <ShapeSvg shape={ex.shape} size={72} />
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            )
+          )}
+          {hasChoiceLabels && (
+            <div
+              className={`ficha-poligonos__choices ficha-poligonos__choices--${ex.choiceLabels!.length}`}
+            >
+              {ex.choiceLabels!.map((label, i) => (
+                <div key={`${label}-${i}`} className="ficha-poligonos__choice">
+                  <span className="ficha-poligonos__choice-mark" aria-hidden>
+                    •
+                  </span>
+                  <span className="ficha-poligonos__choice-text">{label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : null}
       {!hasChoiceLabels && hasFigureOptions && (
         <div className="ficha-poligonos__options">
           {ex.optionsList!.map((opt, i) => (

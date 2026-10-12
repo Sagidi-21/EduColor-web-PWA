@@ -23,6 +23,12 @@
   line-height: 1.25;
 }
 
+.ficha-poligonos__hint {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+}
+
 .ficha-poligonos__body {
   display: flex;
   flex-direction: row;
@@ -59,16 +65,17 @@
   margin-right: 6px;
 }
 
-.ficha-poligonos__choice-text {
-  text-transform: capitalize;
-}
-
-/* Opciones figurativas (actividad polígonos) */
+/* Opciones figurativas (expert: sin figura de referencia) */
 .ficha-poligonos__options {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
+  justify-content: center;
+  gap: 12px 16px;
+  margin-top: 10px;
+}
+
+.ficha-poligonos--expert .ficha-poligonos__question {
+  text-align: center;
 }
 
 .ficha-poligonos__option {

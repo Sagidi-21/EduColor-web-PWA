@@ -244,6 +244,8 @@ function mapPoligonos(ex: Record<string, unknown>): PoligonosSheetExercise {
         .map((opt) => shapeFromPoligono(opt, false))
         .filter((s): s is SheetShapeVisual => Boolean(s))
     : undefined;
+  // Expert: rejilla de figuras a elegir → sin figura de referencia.
+  const hasFigureOptions = Boolean(optionsList && optionsList.length > 0);
   const choiceLabels = choiceLabelsFromOptions(ex.options);
   const answerRaw = answerOf(ex);
   const answerFromOpt = Array.isArray(ex.options)
@@ -261,7 +263,7 @@ function mapPoligonos(ex: Record<string, unknown>): PoligonosSheetExercise {
     kind: "poligonos",
     question: questionOf(ex),
     answer: answerLabel,
-    shape: shapeFromPoligono(ex.shape, showVertices),
+    shape: hasFigureOptions ? undefined : shapeFromPoligono(ex.shape, showVertices),
     optionsList,
     choiceLabels: choiceLabels.length > 0 ? choiceLabels : undefined,
   };
