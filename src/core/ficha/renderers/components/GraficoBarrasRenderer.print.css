@@ -1,7 +1,17 @@
-/* Gráfico de barras — layout alumno */
+/* Gráfico de barras — layout alumno
+ *
+ * Eje Y + líneas horizontales y barras comparten la misma altura (--ficha-bars-alto),
+ * para que el niño pueda comprobar la altura de cada columna con la marca.
+ */
+
+.ficha-bars {
+  --ficha-bars-alto: 88px;
+  --ficha-bars-pie: 28px;
+  --ficha-bars-eje: 14px;
+}
 
 .ficha-bars__question {
-  margin: 0 0 6px;
+  margin: 4px 0 0;
   font-size: 20px;
   font-weight: 600;
   color: #1e293b;
@@ -16,52 +26,122 @@
 
 .ficha-bars__chart {
   display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  height: 90px;
-  margin-bottom: 6px;
-  padding: 0 4px;
-  border-bottom: 1px solid #94a3b8;
+  gap: 4px;
+  padding-top: 12px;
+  box-sizing: border-box;
+}
+
+.ficha-bars__axis {
+  position: relative;
+  flex: 0 0 var(--ficha-bars-eje);
+  height: var(--ficha-bars-alto);
+}
+
+.ficha-bars__tick {
+  position: absolute;
+  right: 1px;
+  transform: translateY(50%);
+  font-size: 9px;
+  font-weight: 700;
+  color: #64748b;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.ficha-bars__plot {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ficha-bars__grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--ficha-bars-alto);
+  border-left: 1.5px solid #94a3b8;
+  border-bottom: 1.5px solid #94a3b8;
+  pointer-events: none;
+}
+
+.ficha-bars__hline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.ficha-bars__hline--key {
+  border-top-color: #cbd5e1;
 }
 
 .ficha-bars__col {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  height: 100%;
-  min-width: 0;
+}
+
+.ficha-bars__zone {
+  position: relative;
+  height: var(--ficha-bars-alto);
 }
 
 .ficha-bars__value {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  text-align: center;
   font-size: 10px;
   font-weight: 800;
   color: #334155;
-  margin-bottom: 2px;
-}
-
-.ficha-bars__track {
-  flex: 1;
-  width: 70%;
-  display: flex;
-  align-items: flex-end;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
 }
 
 .ficha-bars__fill {
-  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 15%;
+  right: 15%;
   background: #3b82f6;
   border-radius: 3px 3px 0 0;
-  min-height: 4px;
+  min-height: 2px;
+  box-sizing: border-box;
+}
+
+.ficha-bars__fill--blank {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(180, 83, 9, 0.15) 0 4px,
+    transparent 4px 8px
+  );
+  border: 1.5px dashed #b45309;
+  border-bottom: none;
+}
+
+.ficha-bars__foot {
+  height: var(--ficha-bars-pie);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding-top: 3px;
+  box-sizing: border-box;
 }
 
 .ficha-bars__emoji {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1;
-  margin-top: 2px;
 }
 
 .ficha-bars__label {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 600;
   color: #64748b;
   text-align: center;

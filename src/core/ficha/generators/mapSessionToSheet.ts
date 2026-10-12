@@ -6,6 +6,7 @@ import type { MoneyItem } from "../../activities/monedasBilletes";
 import type { KiloItem } from "../../activities/elKilo";
 import type { LitroItem } from "../../activities/elLitro";
 import { formatWeightSolutions } from "../../activities/balanzaEquilibra";
+import { marcasEje } from "../../activities/graficoBarras";
 import { timeLabel } from "../../activities/shared/timeLabel";
 import {
   capitalizeFirst,
@@ -893,10 +894,15 @@ function mapMenuItems(raw: unknown): MenuItemSheet[] {
   });
 }
 
-/** Marcas del eje Y en ficha: una por unidad, para leer la altura columna a columna. */
+/** Líneas del eje Y en ficha: una por unidad. */
 function marcasEjeUnitarias(tope: number): number[] {
   const max = Math.max(1, Math.floor(tope));
   return Array.from({ length: max }, (_, i) => i + 1);
+}
+
+/** Números del eje: valores únicos de las columnas, ordenados. */
+function etiquetasDesdeColumnas(valores: number[]): number[] {
+  return [...new Set(valores.filter((v) => Number.isFinite(v) && v > 0))].sort((a, b) => a - b);
 }
 
 function mapGraficoBarras(
@@ -917,14 +923,16 @@ function mapGraficoBarras(
       ? ex.blankBarIndex
       : undefined;
   const escalaMax = asNumber(ex.escalaMax, Math.max(1, ...bars.map((b) => b.valor)));
-  const hardOrExpert = config.difficulty === "hard" || config.difficulty === "expert";
+  const isExpert = config.difficulty === "expert";
   return {
     kind: "graficoBarras",
     titulo: asString(ex.titulo, "Gráfico"),
     bars,
     escalaMax,
     marcas: marcasEjeUnitarias(escalaMax),
-    showBarValues: !hardOrExpert,
+    etiquetasEje: isExpert
+      ? marcasEje(escalaMax)
+      : etiquetasDesdeColumnas(bars.map((b) => b.valor)),
     blankBarIndex: blank,
     question: questionOf(ex),
     answer: asString(ex.correctAnswer ?? ex.answer) || undefined,

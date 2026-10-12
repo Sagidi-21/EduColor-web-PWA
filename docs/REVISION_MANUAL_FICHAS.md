@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 42 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 43 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -197,7 +197,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **laberintoMatematico** — Laberinto matemático (1.º) _(2026-10-10: OK — tablero grande color de clase; INICIO soft; soluciones con casillas rellenas; modal ficha)_
 - [ ] **laberintoMatematico2** — Laberinto matemático (2.º)
 - [ ] **probabilidad** — Probabilidad
-- [ ] **graficoBarras** — Gráfico de barras
+- [x] **graficoBarras** — Gráfico de barras _(2026-10-12: OK — eje Y con líneas de 1 en 1; easy/medium/hard etiquetan valores de columna; expert de 5 en 5; sin números encima de barras)_
 
 ---
 
@@ -244,7 +244,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 
 ### Ya alineadas (código) — candidatos a marcar OK tras mirar preview
 
-`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `cintaMetrica`, `intervalosTiempo`, `graficoBarras`
+`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `cintaMetrica`, `intervalosTiempo`
 
 ### 2ª vuelta (2026-10-10) — decisiones del profesor aplicadas
 

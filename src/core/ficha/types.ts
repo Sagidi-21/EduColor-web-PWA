@@ -784,10 +784,13 @@ export interface GraficoBarrasSheetExercise {
   titulo: string;
   bars: GraficoBarraSheet[];
   escalaMax: number;
-  /** Marcas del eje Y de uno en uno (1..escalaMax), con línea horizontal cada una. */
+  /** Líneas horizontales del eje Y de uno en uno (1..escalaMax). */
   marcas: number[];
-  /** false en hard/expert: el alumno lee la altura con el eje, sin número encima. */
-  showBarValues: boolean;
+  /**
+   * Números visibles en el eje Y (el resto son solo líneas).
+   * easy/medium/hard: valores de las columnas; expert: escala de 5 en 5.
+   */
+  etiquetasEje: number[];
   blankBarIndex?: number;
   question: string;
   answer?: string | number;

@@ -1382,18 +1382,21 @@ describe("mapSessionToSheet", () => {
       titulo: "Animales",
       blankBarIndex: 1,
       answer: "3",
-      showBarValues: true,
       marcas: [1, 2, 3, 4, 5, 6],
+      etiquetasEje: [3, 5],
     });
     if (ex.kind === "graficoBarras") expect(ex.bars).toHaveLength(2);
   });
 
-  it("graficoBarras oculta valores de columna en hard/expert y marca el eje de uno en uno", () => {
+  it("graficoBarras: easy/medium/hard etiquetan el eje con valores de columna; expert de 5 en 5", () => {
     const hard = mapSessionToSheet(
       "graficoBarras",
       {
         titulo: "Frutas",
-        bars: [{ etiqueta: "Manzana", emoji: "🍎", valor: 4 }],
+        bars: [
+          { etiqueta: "Manzana", emoji: "🍎", valor: 4 },
+          { etiqueta: "Pera", emoji: "🍐", valor: 7 },
+        ],
         escalaMax: 8,
         question: "¿Cuántas manzanas?",
         correctAnswer: "4",
@@ -1402,8 +1405,25 @@ describe("mapSessionToSheet", () => {
     );
     expect(hard.kind).toBe("graficoBarras");
     if (hard.kind === "graficoBarras") {
-      expect(hard.showBarValues).toBe(false);
       expect(hard.marcas).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+      expect(hard.etiquetasEje).toEqual([4, 7]);
+    }
+
+    const expert = mapSessionToSheet(
+      "graficoBarras",
+      {
+        titulo: "Frutas",
+        bars: [{ etiqueta: "Manzana", emoji: "🍎", valor: 4 }],
+        escalaMax: 15,
+        question: "¿Cuántas manzanas?",
+        correctAnswer: "4",
+      },
+      { ...config, difficulty: "expert" },
+    );
+    expect(expert.kind).toBe("graficoBarras");
+    if (expert.kind === "graficoBarras") {
+      expect(expert.marcas).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+      expect(expert.etiquetasEje).toEqual([5, 10, 15]);
     }
   });
 
