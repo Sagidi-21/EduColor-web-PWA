@@ -58,8 +58,9 @@ describe("pairIntoRows", () => {
 });
 
 describe("columnsPerRow", () => {
-  it("algoritmoVertical → 3; resto → 2", () => {
+  it("algoritmoVertical y sumaLlevando → 3; resto → 2", () => {
     expect(columnsPerRow(cell(1, false, "algoritmoVertical").ex)).toBe(3);
+    expect(columnsPerRow({ kind: "sumaLlevando", addends: [12, 15], answer: 27 } as never)).toBe(3);
     expect(columnsPerRow(cell(1).ex)).toBe(2);
   });
 });

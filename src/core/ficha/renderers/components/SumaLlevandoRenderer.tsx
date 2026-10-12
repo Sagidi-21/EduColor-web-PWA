@@ -10,9 +10,9 @@ const tens = (n: number): string => (Math.floor(n / 10) > 0 ? String(Math.floor(
 const units = (n: number): string => String(n % 10);
 
 /**
- * Cuadrícula D·U de «Sumamos llevando» como en pizarra: casilla de llevada encima de las
- * decenas, 2-3 sumandos y dos casillas vacías para el resultado.
- * Soluciones: solo el número (lo maneja `ExerciseRenderer`).
+ * Cuadrícula D·U de «Sumamos llevando»: casilla de llevada + sumandos.
+ * Sin recuadros de resultado (espacio bajo la línea). Centrada en la tarjeta.
+ * Soluciones: solo el número (`ExerciseRenderer`).
  */
 export function SumaLlevandoRenderer({ ex, showAnswer }: SumaLlevandoRendererProps): JSX.Element {
   if (showAnswer) {
@@ -20,9 +20,13 @@ export function SumaLlevandoRenderer({ ex, showAnswer }: SumaLlevandoRendererPro
   }
 
   const last = ex.addends.length - 1;
+  const threeAddends = ex.addends.length >= 3;
 
   return (
-    <div className="ficha-sumall" aria-label={ex.addends.join(" + ")}>
+    <div
+      className={`ficha-sumall ficha-sumall--write${threeAddends ? " ficha-sumall--3" : ""}`}
+      aria-label={ex.addends.join(" + ")}
+    >
       <span />
       <span className="ficha-sumall__label">D</span>
       <span className="ficha-sumall__label">U</span>
@@ -43,11 +47,6 @@ export function SumaLlevandoRenderer({ ex, showAnswer }: SumaLlevandoRendererPro
       ))}
 
       <span className="ficha-sumall__sep" />
-
-      <span />
-      <span className="ficha-sumall__blank" aria-label="Decenas" />
-      <span className="ficha-sumall__blank" aria-label="Unidades" />
-      <span />
     </div>
   );
 }

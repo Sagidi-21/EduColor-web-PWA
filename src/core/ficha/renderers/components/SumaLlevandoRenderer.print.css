@@ -1,13 +1,14 @@
-/* Sumamos llevando — cuadrícula D·U con casilla de llevada (como pizarra) */
+/* Sumamos llevando — cuadrícula D·U con casilla de llevada (3 por fila) */
 
 .ficha-sumall {
   display: grid;
-  grid-template-columns: 18px 28px 28px auto;
+  grid-template-columns: 20px 32px 32px auto;
   gap: 3px 4px;
   align-items: center;
   width: max-content;
+  margin: 0 auto;
   font-family: "SF Mono", "Consolas", "Menlo", monospace;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 700;
   color: #0f172a;
 }
@@ -22,8 +23,8 @@
 
 .ficha-sumall__digit {
   text-align: center;
-  min-height: 24px;
-  line-height: 24px;
+  min-height: 28px;
+  line-height: 28px;
 }
 
 .ficha-sumall__op {
@@ -31,11 +32,11 @@
   color: #334155;
 }
 
-/* Casilla de llevada: pequeña, discontinua y ámbar, encima de las decenas. */
+/* Casilla de llevada: discontinua y ámbar, encima de las decenas. */
 .ficha-sumall__carry {
   display: block;
-  width: 24px;
-  height: 20px;
+  width: 32px;
+  height: 28px;
   justify-self: center;
   border: 1.5px dashed #d97706;
   border-radius: 6px;
@@ -57,15 +58,29 @@
   grid-column: 1 / -1;
   height: 0;
   border-top: 1.5px solid #334155;
-  margin: 2px 0;
+  margin: 2px 0 0;
 }
 
-.ficha-sumall__blank {
-  display: block;
-  width: 28px;
-  height: 28px;
-  border: 1.5px dashed #94a3b8;
-  border-radius: 3px;
-  background: #f8fafc;
+/* Sin casillas de resultado: espacio bajo la línea para escribir */
+.ficha-sumall--write::after {
+  content: "";
+  grid-column: 1 / -1;
+  height: 36px;
+}
+
+.ficha-sumall--3.ficha-sumall--write::after {
+  height: 40px;
+}
+
+/* Tarjeta alumno (3 por fila): centra la operación en altura y horizontal */
+.ficha-exercise--sumall {
+  min-height: 200px;
+}
+
+.ficha-exercise--sumall .ficha-exercise__body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
   box-sizing: border-box;
 }

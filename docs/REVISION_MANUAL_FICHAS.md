@@ -118,7 +118,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **tresSumandos** — Sumas con tres sumandos _(2026-10-10: OK — easy imágenes+op más grandes; gap imágenes/op; medium+ operación centrada)_
 - [x] **algoritmoVertical** — Sumas en columna _(2026-10-10: OK — operación centrada; sin casillas; 3/fila; números grandes; caja alta)_
 - [x] **tresSumandosColumna** — Sumas en columna (3 sumandos) _(2026-10-12: OK — D·U sin casillas; hueco bajo la línea; caja algcol)_
-- [ ] **sumaLlevando** — Sumamos llevando
+- [x] **sumaLlevando** — Sumamos llevando _(2026-10-12: OK — 3/fila; sin casillas resultado; operación centrada; números+llevada más grandes)_
 - [x] **restaColumna** — Resta en columna _(2026-10-12: OK — mismo layout que Sumas en columna (−); sin casillas; 3/fila; hueco bajo la línea)_
 - [ ] **algoritmo3cifras** — Algoritmo de tres cifras
 - [x] **igualdad** — El signo igual _(2026-10-10: OK — enunciados por tipo; easy imágenes+op misma línea; medium/hard centrados; hard opciones en línea con •; color de clase; soluciones solo respuesta)_

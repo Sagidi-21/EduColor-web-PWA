@@ -117,8 +117,12 @@ export function pageSizeForExercises(
     const wide = first.difficulty === "hard" || first.difficulty === "expert";
     return options.showAnswer ? 16 : wide ? 8 : 10;
   }
-  if (first.kind === "sumaLlevando" || first.kind === "algoritmo3Cifras") {
-    // Alumno: cuadrícula con casillas (más alta que una operación suelta).
+  if (first.kind === "sumaLlevando") {
+    // Alumno: 3 por fila (9/hoja). Soluciones: solo el número.
+    return options.showAnswer ? 18 : 9;
+  }
+  if (first.kind === "algoritmo3Cifras") {
+    // Alumno: cuadrícula C·D·U con casillas.
     return options.showAnswer ? 20 : 10;
   }
   if (first.kind === "algoritmoVertical") {

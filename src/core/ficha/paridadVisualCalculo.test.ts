@@ -76,11 +76,12 @@ describe("sumaLlevando ficha (casilla de llevada)", () => {
     }
   });
 
-  it("alumno: fila de llevada + casillas D·U; soluciones: solo el número", () => {
+  it("alumno: llevada + operación sin casillas de resultado; soluciones: solo el número", () => {
     const [ex] = generate<SumaLlevandoSheetExercise>("sumaLlevando", "hard", 1);
     const alumno = html(createElement(SumaLlevandoRenderer, { ex: ex!, showAnswer: false }));
     expect(alumno).toContain("ficha-sumall__carry");
-    expect(alumno.match(/ficha-sumall__blank/g)).toHaveLength(2);
+    expect(alumno).toContain("ficha-sumall--write");
+    expect(alumno).not.toContain("ficha-sumall__blank");
     expect(alumno).not.toContain(String(ex!.answer));
 
     const sol = html(createElement(ExerciseRenderer, { ex: ex!, showAnswer: true }));
@@ -176,7 +177,8 @@ describe("pageSizeForExercises (cálculo)", () => {
     const recta = generate<RectaNumericaSheetExercise>("rectaNumerica", "easy", 2);
     expect(pageSizeForExercises(mult)).toBe(8);
     expect(pageSizeForExercises(mult, { showAnswer: true })).toBe(12);
-    expect(pageSizeForExercises(suma)).toBe(10);
+    expect(pageSizeForExercises(suma)).toBe(9);
+    expect(pageSizeForExercises(suma, { showAnswer: true })).toBe(18);
     expect(pageSizeForExercises(alg)).toBe(10);
     expect(pageSizeForExercises(recta)).toBe(10);
   });
