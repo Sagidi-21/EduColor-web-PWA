@@ -17,6 +17,7 @@ function capName(name: string): string {
  * - 1 imagen: pregunta + referencia a la dcha.; foto grande centrada debajo.
  * - 2 imágenes: pregunta (+ ref); fotos debajo con gap.
  * - Opciones MC si vienen (classify); which-more/less sin opciones (nombre bajo foto).
+ * - Siempre «(redondea la correcta)» (opción o foto).
  * Soluciones: SOLO la respuesta (sin enunciado ni imágenes).
  */
 export function PhotoCompareRenderer({ ex, showAnswer }: PhotoCompareRendererProps): JSX.Element {
@@ -27,19 +28,13 @@ export function PhotoCompareRenderer({ ex, showAnswer }: PhotoCompareRendererPro
   const choices = ex.choiceLabels ?? [];
   const layout = ex.items.length <= 1 ? "one" : "two";
   const refLabel = ex.kind === "elKilo" ? "1 kg" : "1 L";
-  const showHint = choices.length > 0;
+  // Siempre hay que redondear: opción MC (classify) o foto/nombre (compare).
 
   return (
     <div className={`ficha-photo ficha-photo--${ex.kind} ficha-photo--${layout}`}>
       <div className="ficha-photo__header">
         <p className="ficha-photo__question">
-          {ex.question}
-          {showHint ? (
-            <>
-              {" "}
-              <span className="ficha-photo__hint">(redondea la correcta)</span>
-            </>
-          ) : null}
+          {ex.question} <span className="ficha-photo__hint">(redondea la correcta)</span>
         </p>
         {ex.referenceUrl ? (
           <div className="ficha-photo__ref">

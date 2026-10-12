@@ -710,6 +710,12 @@ function optionLabels(raw: unknown): string[] | undefined {
 }
 
 function mapElKilo(ex: Record<string, unknown>, config: SheetConfig): ElKiloSheetExercise {
+  const type = asString(ex.type, "classify");
+  // classify: Más/Menos de 1 kg.
+  // which-heavier / which-lighter: el nombre ya va bajo cada foto → sin opciones.
+  const showChoices = type === "classify";
+  // Expert: sin pesa de referencia en ninguna pregunta del nivel.
+  const showReference = config.withImages && config.difficulty !== "expert";
   return {
     kind: "elKilo",
     question: questionOf(ex),
@@ -718,8 +724,8 @@ function mapElKilo(ex: Record<string, unknown>, config: SheetConfig): ElKiloShee
       (item) => kiloImageUrl(item as unknown as KiloItem),
       config.withImages,
     ),
-    referenceUrl: config.withImages ? KILO_REFERENCE_URL : undefined,
-    choiceLabels: optionLabels(ex.options),
+    referenceUrl: showReference ? KILO_REFERENCE_URL : undefined,
+    choiceLabels: showChoices ? optionLabels(ex.options) : undefined,
     answer: asString(ex.answer) || undefined,
   };
 }

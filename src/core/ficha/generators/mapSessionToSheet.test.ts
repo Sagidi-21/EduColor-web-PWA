@@ -536,22 +536,59 @@ describe("mapSessionToSheet", () => {
     });
   });
 
-  it("mapea elLitro/elKilo con choiceLabels desde options", () => {
-    const ex = mapSessionToSheet(
+  it("elKilo/elLitro: opciones solo en classify; compare sin choiceLabels; expert sin ref", () => {
+    const kiloClassify = mapSessionToSheet(
       "elKilo",
       {
-        items: [],
-        question: "¿Cuál pesa más?",
-        options: ["Sandía", "Pluma"],
-        answer: "Sandía",
+        type: "classify",
+        items: [{ name: "sandía", file: "sandia.png", category: "mas" }],
+        question: "¿Sandía pesa más o menos de 1 kg?",
+        options: ["Más de 1 kg", "Menos de 1 kg"],
+        answer: "Más de 1 kg",
       },
       config,
     );
-    expect(ex).toMatchObject({ kind: "elKilo", choiceLabels: ["Sandía", "Pluma"] });
-  });
+    expect(kiloClassify).toMatchObject({
+      kind: "elKilo",
+      choiceLabels: ["Más de 1 kg", "Menos de 1 kg"],
+    });
 
-  it("elLitro: opciones solo en classify; which-more/less sin choiceLabels", () => {
-    const classify = mapSessionToSheet(
+    const kiloCompare = mapSessionToSheet(
+      "elKilo",
+      {
+        type: "which-heavier",
+        items: [
+          { name: "sandía", file: "sandia.png", category: "mas" },
+          { name: "pluma", file: "pluma.png", category: "menos" },
+        ],
+        question: "¿Cuál pesa más de 1 kg?",
+        options: ["Sandía", "Pluma"],
+        answer: "Sandía",
+      },
+      { ...config, difficulty: "hard" },
+    );
+    expect(kiloCompare.kind).toBe("elKilo");
+    if (kiloCompare.kind === "elKilo") {
+      expect(kiloCompare.choiceLabels).toBeUndefined();
+    }
+
+    const kiloExpert = mapSessionToSheet(
+      "elKilo",
+      {
+        type: "classify",
+        items: [{ name: "pluma", file: "pluma.png", category: "menos" }],
+        question: "¿Pluma pesa más o menos de 1 kg?",
+        options: ["Más de 1 kg", "Menos de 1 kg"],
+        answer: "Menos de 1 kg",
+      },
+      { ...config, difficulty: "expert", withImages: true },
+    );
+    expect(kiloExpert.kind).toBe("elKilo");
+    if (kiloExpert.kind === "elKilo") {
+      expect(kiloExpert.referenceUrl).toBeUndefined();
+    }
+
+    const litroClassify = mapSessionToSheet(
       "elLitro",
       {
         type: "classify",
@@ -562,12 +599,12 @@ describe("mapSessionToSheet", () => {
       },
       config,
     );
-    expect(classify).toMatchObject({
+    expect(litroClassify).toMatchObject({
       kind: "elLitro",
       choiceLabels: ["Más de 1 L", "Menos de 1 L"],
     });
 
-    const compare = mapSessionToSheet(
+    const litroCompare = mapSessionToSheet(
       "elLitro",
       {
         type: "which-more",
@@ -581,12 +618,12 @@ describe("mapSessionToSheet", () => {
       },
       { ...config, difficulty: "hard" },
     );
-    expect(compare.kind).toBe("elLitro");
-    if (compare.kind === "elLitro") {
-      expect(compare.choiceLabels).toBeUndefined();
+    expect(litroCompare.kind).toBe("elLitro");
+    if (litroCompare.kind === "elLitro") {
+      expect(litroCompare.choiceLabels).toBeUndefined();
     }
 
-    const expert = mapSessionToSheet(
+    const litroExpert = mapSessionToSheet(
       "elLitro",
       {
         type: "classify",
@@ -597,9 +634,9 @@ describe("mapSessionToSheet", () => {
       },
       { ...config, difficulty: "expert", withImages: true },
     );
-    expect(expert.kind).toBe("elLitro");
-    if (expert.kind === "elLitro") {
-      expect(expert.referenceUrl).toBeUndefined();
+    expect(litroExpert.kind).toBe("elLitro");
+    if (litroExpert.kind === "elLitro") {
+      expect(litroExpert.referenceUrl).toBeUndefined();
     }
   });
 

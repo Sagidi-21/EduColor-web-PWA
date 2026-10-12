@@ -118,7 +118,13 @@ describe("elKilo — generateSession", () => {
     expect(types).toEqual(new Set(["classify", "which-heavier", "which-lighter"]));
   });
 
-  it("clasificar: la respuesta coincide con la categoría del objeto", () => {
+  it("cada objeto declara género m/f", () => {
+    [...MAS_ITEMS, ...MENOS_ITEMS].forEach((item) => {
+      expect(["m", "f"]).toContain(item.gender);
+    });
+  });
+
+  it("clasificar: artículo y verbo según género/número", () => {
     DIFFICULTIES.forEach((diff) => {
       generateSession(diff, 42).forEach((ex) => {
         if (ex.type !== "classify") return;
@@ -126,7 +132,15 @@ describe("elKilo — generateSession", () => {
         expect(ex.items).toHaveLength(1);
         expect(ex.options).toEqual(["Más de 1 kg", "Menos de 1 kg"]);
         expect(ex.answer).toBe(item.category === "mas" ? "Más de 1 kg" : "Menos de 1 kg");
-        expect(ex.question).toContain(item.name.charAt(0).toUpperCase() + item.name.slice(1));
+        const art = item.plural
+          ? item.gender === "f"
+            ? "Las"
+            : "Los"
+          : item.gender === "f"
+            ? "La"
+            : "El";
+        const verb = item.plural ? "pesan" : "pesa";
+        expect(ex.question).toBe(`¿${art} ${item.name} ${verb} más o menos de 1 kg?`);
       });
     });
   });

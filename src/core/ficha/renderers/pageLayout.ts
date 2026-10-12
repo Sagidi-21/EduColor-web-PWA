@@ -151,10 +151,6 @@ export function isFullWidthExercise(
     return ex.variant === "find-abaco" && !options.showAnswer;
   }
   if (ex.kind === "comparison") return !options.showAnswer;
-  // elKilo: 1 por fila (fotos densas). elLitro: 2 por fila (columnsPerRow).
-  if (ex.kind === "elKilo") {
-    return !options.showAnswer;
-  }
   // Ordinales: easy/medium 2 por fila; hard/expert 1 (casilla a la derecha).
   if (ex.kind === "ordinales") {
     const wide = ex.difficulty === "hard" || ex.difficulty === "expert";

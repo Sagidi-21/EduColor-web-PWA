@@ -174,4 +174,16 @@ describe("fichas con escena dibujada", () => {
       expect(soluciones).not.toContain("ficha-leftright__pair");
     });
   });
+
+  it("elKilo/elLitro: siempre pide redondear (también compare en expert)", () => {
+    for (const id of ["elKilo", "elLitro"] as const) {
+      everyDifficulty(id, (alumno, soluciones) => {
+        expect(alumno).toContain("redondea la correcta");
+        expect(alumno).toContain("ficha-photo");
+        expect(soluciones).toContain("ficha-answer");
+        expect(soluciones).not.toContain("redondea la correcta");
+        expect(soluciones).not.toContain("ficha-photo__items");
+      });
+    }
+  });
 });

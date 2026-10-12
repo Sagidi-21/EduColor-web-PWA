@@ -7,6 +7,10 @@ export interface KiloItem {
   name: string;
   file: string;
   category: KiloCategory;
+  /** Género gramatical para el artículo (El / La / Los / Las) en classify. */
+  gender: "m" | "f";
+  /** Plurales como «gafas» / «llaves» → Las + pesan. */
+  plural?: boolean;
 }
 
 export interface KiloExercise {
@@ -19,54 +23,54 @@ export interface KiloExercise {
 }
 
 export const MAS_ITEMS: KiloItem[] = [
-  { name: "sandía", file: "sandia.png", category: "mas" },
-  { name: "melón", file: "melon.png", category: "mas" },
-  { name: "mochila llena", file: "mochila.png", category: "mas" },
-  { name: "pesa", file: "pesa.png", category: "mas" },
-  { name: "montón de libros", file: "moton de libros.png", category: "mas" },
-  { name: "calabaza", file: "calabaza.png", category: "mas" },
-  { name: "caja de herramientas", file: "caja de herramientas.png", category: "mas" },
-  { name: "saco de cemento", file: "saco cemento.png", category: "mas" },
-  { name: "microondas", file: "microondas.png", category: "mas" },
-  { name: "ordenador", file: "ordenador.png", category: "mas" },
-  { name: "aspiradora", file: "aspiradora.png", category: "mas" },
-  { name: "saco de cereales", file: "saco de cereales.png", category: "mas" },
-  { name: "silla", file: "silla.png", category: "mas" },
-  { name: "bloque", file: "bloque.png", category: "mas" },
-  { name: "martillo", file: "martillo.png", category: "mas" },
-  { name: "bola de bolos", file: "bola de bolos.png", category: "mas" },
-  { name: "monitor", file: "monitor.png", category: "mas" },
-  { name: "saco de pienso", file: "saco de pienso.png", category: "mas" },
+  { name: "sandía", file: "sandia.png", category: "mas", gender: "f" },
+  { name: "melón", file: "melon.png", category: "mas", gender: "m" },
+  { name: "mochila llena", file: "mochila.png", category: "mas", gender: "f" },
+  { name: "pesa", file: "pesa.png", category: "mas", gender: "f" },
+  { name: "montón de libros", file: "moton de libros.png", category: "mas", gender: "m" },
+  { name: "calabaza", file: "calabaza.png", category: "mas", gender: "f" },
+  { name: "caja de herramientas", file: "caja de herramientas.png", category: "mas", gender: "f" },
+  { name: "saco de cemento", file: "saco cemento.png", category: "mas", gender: "m" },
+  { name: "microondas", file: "microondas.png", category: "mas", gender: "m" },
+  { name: "ordenador", file: "ordenador.png", category: "mas", gender: "m" },
+  { name: "aspiradora", file: "aspiradora.png", category: "mas", gender: "f" },
+  { name: "saco de cereales", file: "saco de cereales.png", category: "mas", gender: "m" },
+  { name: "silla", file: "silla.png", category: "mas", gender: "f" },
+  { name: "bloque", file: "bloque.png", category: "mas", gender: "m" },
+  { name: "martillo", file: "martillo.png", category: "mas", gender: "m" },
+  { name: "bola de bolos", file: "bola de bolos.png", category: "mas", gender: "f" },
+  { name: "monitor", file: "monitor.png", category: "mas", gender: "m" },
+  { name: "saco de pienso", file: "saco de pienso.png", category: "mas", gender: "m" },
   // `bateria.png` esta en `src/assets/+kilo/` pero el motor original de
   // Electron no lo declaraba. Se incorpora aqui: el asset ya estaba migrado y
   // una bateria de coche pesa bastante mas de 1 kg, que es lo que la categoria
   // "mas" afirma. Ver MIGRACION_CHANGELOG.md.
-  { name: "batería", file: "bateria.png", category: "mas" },
+  { name: "batería", file: "bateria.png", category: "mas", gender: "f" },
 ];
 
 export const MENOS_ITEMS: KiloItem[] = [
-  { name: "pluma", file: "pluma.png", category: "menos" },
-  { name: "lápiz", file: "lápiz.png", category: "menos" },
-  { name: "gafas", file: "gafas.png", category: "menos" },
-  { name: "móvil", file: "mólvil.png", category: "menos" },
-  { name: "fresa", file: "fresa.png", category: "menos" },
-  { name: "bombilla", file: "bombilla.png", category: "menos" },
-  { name: "llaves", file: "llaves.png", category: "menos" },
-  { name: "patito de goma", file: "patito de goma.png", category: "menos" },
-  { name: "carta", file: "carta.png", category: "menos" },
-  { name: "concha", file: "concha.png", category: "menos" },
-  { name: "USB", file: "usb.png", category: "menos" },
-  { name: "caracola", file: "caracola.png", category: "menos" },
-  { name: "clip", file: "clip.png", category: "menos" },
-  { name: "pelota de ping-pong", file: "pelota de pingpong.png", category: "menos" },
-  { name: "uva", file: "uva.png", category: "menos" },
-  { name: "bolsita de té", file: "te.png", category: "menos" },
-  { name: "dedal", file: "dedal.png", category: "menos" },
-  { name: "hoja de papel", file: "hoja.png", category: "menos" },
-  { name: "canica", file: "canica.png", category: "menos" },
-  { name: "botón", file: "botón.png", category: "menos" },
-  { name: "almendra", file: "almendra.png", category: "menos" },
-  { name: "soldadito", file: "soldadito.png", category: "menos" },
+  { name: "pluma", file: "pluma.png", category: "menos", gender: "f" },
+  { name: "lápiz", file: "lápiz.png", category: "menos", gender: "m" },
+  { name: "gafas", file: "gafas.png", category: "menos", gender: "f", plural: true },
+  { name: "móvil", file: "mólvil.png", category: "menos", gender: "m" },
+  { name: "fresa", file: "fresa.png", category: "menos", gender: "f" },
+  { name: "bombilla", file: "bombilla.png", category: "menos", gender: "f" },
+  { name: "llaves", file: "llaves.png", category: "menos", gender: "f", plural: true },
+  { name: "patito de goma", file: "patito de goma.png", category: "menos", gender: "m" },
+  { name: "carta", file: "carta.png", category: "menos", gender: "f" },
+  { name: "concha", file: "concha.png", category: "menos", gender: "f" },
+  { name: "USB", file: "usb.png", category: "menos", gender: "m" },
+  { name: "caracola", file: "caracola.png", category: "menos", gender: "f" },
+  { name: "clip", file: "clip.png", category: "menos", gender: "m" },
+  { name: "pelota de ping-pong", file: "pelota de pingpong.png", category: "menos", gender: "f" },
+  { name: "uva", file: "uva.png", category: "menos", gender: "f" },
+  { name: "bolsita de té", file: "te.png", category: "menos", gender: "f" },
+  { name: "dedal", file: "dedal.png", category: "menos", gender: "m" },
+  { name: "hoja de papel", file: "hoja.png", category: "menos", gender: "f" },
+  { name: "canica", file: "canica.png", category: "menos", gender: "f" },
+  { name: "botón", file: "botón.png", category: "menos", gender: "m" },
+  { name: "almendra", file: "almendra.png", category: "menos", gender: "f" },
+  { name: "soldadito", file: "soldadito.png", category: "menos", gender: "m" },
 ];
 
 const CATEGORY_FOLDER: Record<KiloCategory, string> = {
@@ -83,6 +87,15 @@ export const MENOS_LABEL = "Menos de 1 kg";
 
 function cap(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function article(item: KiloItem): string {
+  if (item.plural) return item.gender === "f" ? "Las" : "Los";
+  return item.gender === "f" ? "La" : "El";
+}
+
+function weightVerb(item: KiloItem): string {
+  return item.plural ? "pesan" : "pesa";
 }
 
 // ── LCG determinista ────────────────────────────────────────────────────────
@@ -126,7 +139,7 @@ function classifyExercise(item: KiloItem): KiloExercise {
   return {
     type: "classify",
     items: [item],
-    question: `¿${cap(item.name)} pesa más o menos de 1 kg?`,
+    question: `¿${article(item)} ${item.name} ${weightVerb(item)} más o menos de 1 kg?`,
     options: [MAS_LABEL, MENOS_LABEL],
     answer: item.category === "mas" ? MAS_LABEL : MENOS_LABEL,
   };

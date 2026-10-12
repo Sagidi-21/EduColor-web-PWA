@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 37 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 38 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -75,6 +75,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `tresSumandosColumna` | Sumas en columna (3 sumandos) | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: D·U sin casillas; hueco bajo la línea; caja algcol.                                                                       |
 | `restaColumna`        | Resta en columna              | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: mismo layout que algoritmoVertical (−); sin casillas; 3/fila; hueco bajo la línea.                                        |
 | `elLitro`             | El litro                      | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: 2/fila; artículo El/La; classify con opciones+hint; compare sin opciones; expert sin ref.; nombres con mayúscula.         |
+| `elKilo`              | El kilo                       | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: alineado a elLitro — 2/fila; El/La/Las+pesa/pesan; classify opciones+hint; compare sin opciones+hint; expert sin ref.     |
 | `balanza`             | La balanza y el peso          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy MC+artículo mayúsc.; medium/hard MENOS/IGUAL/MÁS; hard sin inclinación (vs); expert sandía+pesas y «escribe el nº».  |
 | `balanzaEquilibra`    | Equilibra la balanza          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: sin ?/Pongo; hueco en platillo; expert 2 huecos+soluciones con ambos tipos (                                              | ); iconos fiables. |
 
@@ -172,7 +173,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 ## Medidas y tiempo
 
 - [x] **elLitro** — El litro _(2026-10-12: OK — 2/fila; artículo El/La; classify opciones+hint; which-more/less sin opciones; expert sin referencia; nombres mayúscula)_
-- [ ] **elKilo** — El kilo
+- [x] **elKilo** — El kilo _(2026-10-12: OK — alineado a elLitro: 2/fila; El/La/Las + pesa/pesan; classify opciones+hint; compare sin opciones+hint; expert sin ref.)_
 - [ ] **cintaMetrica** — Cinta métrica
 - [ ] **reloj** — El reloj
 - [ ] **relojPonerHora** — Pon la hora
@@ -231,12 +232,12 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | `datosInnecesarios`   | OK navegador 2026-10-12 — ver checklist Problemas           |
 | `weekDays`            | OK navegador 2026-10-10 — ver checklist Medidas y tiempo    |
 | `relojPonerHora`      | Cara vacía + enunciado con hora objetivo (no revela agujas) |
-| `elKilo` / `elLitro`  | elLitro OK navegador 2026-10-12 — ver checklist Medidas     |
+| `elKilo` / `elLitro`  | OK navegador 2026-10-12 — ver checklist Medidas             |
 | `problemas2pasos`     | Solución: `correctAnswer` (antes vacío/mal)                 |
 
 ### Ya alineadas (código) — candidatos a marcar OK tras mirar preview
 
-`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `inventarProblema`, `elKilo`, `cintaMetrica`, `intervalosTiempo`, `monedasBilletes`, `graficoBarras`
+`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `inventarProblema`, `cintaMetrica`, `intervalosTiempo`, `monedasBilletes`, `graficoBarras`
 
 ### 2ª vuelta (2026-10-10) — decisiones del profesor aplicadas
 
