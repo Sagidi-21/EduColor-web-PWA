@@ -2,19 +2,32 @@ import { describe, expect, it } from "vitest";
 import { generateSession, validateAnswer } from "./inventarProblema";
 
 describe("inventarProblema", () => {
-  it("easy genera preguntas de MÁS BARATO con 2 opciones", () => {
+  it("easy mezcla MÁS BARATO y MÁS CARO con 2 opciones y respuesta correcta", () => {
     const session = generateSession("easy", 123);
     expect(session.length).toBe(10);
+    const kinds = new Set<string>();
     for (const ex of session) {
-      expect(ex.question).toContain("MÁS BARATO");
+      const cheaper = ex.question.includes("MÁS BARATO");
+      const dearer = ex.question.includes("MÁS CARO");
+      expect(cheaper || dearer).toBe(true);
+      kinds.add(cheaper ? "barato" : "caro");
       expect(ex.options).toHaveLength(2);
       expect(ex.budget).toBeUndefined();
 
       const p1 = ex.items[0].price;
       const p2 = ex.items[1].price;
-      const expectedName = p1 < p2 ? ex.items[0].name : ex.items[1].name;
+      const expectedName = cheaper
+        ? p1 < p2
+          ? ex.items[0].name
+          : ex.items[1].name
+        : p1 > p2
+          ? ex.items[0].name
+          : ex.items[1].name;
       expect(ex.correctAnswer).toBe(expectedName);
     }
+    // Con seed 123 deben salir ambos tipos en la sesión.
+    expect(kinds.has("barato")).toBe(true);
+    expect(kinds.has("caro")).toBe(true);
   });
 
   it("medium genera preguntas sobre el coste total con 4 opciones", () => {

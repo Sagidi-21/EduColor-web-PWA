@@ -784,6 +784,10 @@ export interface GraficoBarrasSheetExercise {
   titulo: string;
   bars: GraficoBarraSheet[];
   escalaMax: number;
+  /** Marcas del eje Y de uno en uno (1..escalaMax), con línea horizontal cada una. */
+  marcas: number[];
+  /** false en hard/expert: el alumno lee la altura con el eje, sin número encima. */
+  showBarValues: boolean;
   blankBarIndex?: number;
   question: string;
   answer?: string | number;
@@ -830,6 +834,14 @@ export interface InventarProblemaSheetExercise {
   items: MenuItemSheet[];
   budget?: number;
   question: string;
+  /** Easy: resaltar MÁS BARATO / MÁS CARO con color de clase. */
+  highlightCompare?: boolean;
+  /** Medium/hard: precios de los iconos con color de clase (expert no). */
+  highlightItemPrices?: boolean;
+  /** Hard: precios del enunciado con color de clase (expert no). */
+  highlightQuestionPrices?: boolean;
+  /** Medium/hard/expert: iconos a la izquierda, hueco a la derecha para la operación. */
+  leaveWorkSpace?: boolean;
   answer?: string;
 }
 

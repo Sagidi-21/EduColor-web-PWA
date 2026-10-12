@@ -15,7 +15,7 @@
     "unit": 9,
     "unitLabel": "Nos vamos de viaje",
     "difficultyDescriptions": {
-      "easy": "¿Qué artículo es más barato? Compara dos precios",
+      "easy": "¿Qué artículo es más barato o más caro? Compara dos precios",
       "medium": "Suma el precio de dos artículos",
       "hard": "¿Me alcanza el dinero para comprar los dos?",
       "expert": "Calcula el cambio que te devuelven"

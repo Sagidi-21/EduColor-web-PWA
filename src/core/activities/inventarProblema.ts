@@ -45,8 +45,8 @@ function randInt(rng: () => number, min: number, max: number): number {
 /**
  * Genera una sesión de 10 ejercicios de «inventar problema».
  *
- * Tipos por dificultad (igual que Electron):
- *   easy   → ¿Qué artículo es MÁS BARATO? (2 opciones)
+ * Tipos por dificultad:
+ *   easy   → ¿Qué artículo es MÁS BARATO? o MÁS CARO? (2 opciones, mezclado)
  *   medium → ¿Cuánto cuestan los dos artículos juntos? (4 opciones)
  *   hard   → ¿Puedo comprarlo con este presupuesto? (sí/no)
  *   expert → ¿Cuánto me devuelven de cambio? (4 opciones)
@@ -75,15 +75,18 @@ export function generateSession(difficulty: string, seed = 42): InventarProblema
     const budget = totalPrice + randInt(rng, -15, 25);
 
     if (difficulty === "easy") {
+      const askCheaper = rng() < 0.5;
       const cheaper = itemA.price < itemB.price ? itemA : itemB;
+      const dearer = itemA.price > itemB.price ? itemA : itemB;
+      const target = askCheaper ? cheaper : dearer;
       out.push({
         items: [itemA, itemB],
-        question: "¿Qué artículo es MÁS BARATO?",
+        question: askCheaper ? "¿Qué artículo es MÁS BARATO?" : "¿Qué artículo es MÁS CARO?",
         options: [
           { label: `${itemA.emoji} ${itemA.name} (${itemA.price}€)`, value: itemA.name },
           { label: `${itemB.emoji} ${itemB.name} (${itemB.price}€)`, value: itemB.name },
         ].sort(() => rng() - 0.5),
-        correctAnswer: cheaper.name,
+        correctAnswer: target.name,
       });
     } else if (difficulty === "medium") {
       out.push({

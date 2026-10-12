@@ -1382,8 +1382,29 @@ describe("mapSessionToSheet", () => {
       titulo: "Animales",
       blankBarIndex: 1,
       answer: "3",
+      showBarValues: true,
+      marcas: [1, 2, 3, 4, 5, 6],
     });
     if (ex.kind === "graficoBarras") expect(ex.bars).toHaveLength(2);
+  });
+
+  it("graficoBarras oculta valores de columna en hard/expert y marca el eje de uno en uno", () => {
+    const hard = mapSessionToSheet(
+      "graficoBarras",
+      {
+        titulo: "Frutas",
+        bars: [{ etiqueta: "Manzana", emoji: "🍎", valor: 4 }],
+        escalaMax: 8,
+        question: "¿Cuántas manzanas?",
+        correctAnswer: "4",
+      },
+      { ...config, difficulty: "hard" },
+    );
+    expect(hard.kind).toBe("graficoBarras");
+    if (hard.kind === "graficoBarras") {
+      expect(hard.showBarValues).toBe(false);
+      expect(hard.marcas).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    }
   });
 
   it("mapea menuCafeteria con bandeja", () => {
@@ -1421,23 +1442,84 @@ describe("mapSessionToSheet", () => {
     });
   });
 
-  it("mapea inventarProblema e intervalosTiempo", () => {
-    const inv = mapSessionToSheet(
+  it("mapea inventarProblema con resaltados por dificultad; e intervalosTiempo", () => {
+    const easy = mapSessionToSheet(
+      "inventarProblema",
+      {
+        items: [
+          { emoji: "👟", name: "zapatillas", price: 30 },
+          { emoji: "🪁", name: "cometa", price: 8 },
+        ],
+        question: "¿Qué artículo es MÁS BARATO?",
+        correctAnswer: "cometa",
+      },
+      { ...config, difficulty: "easy" },
+    );
+    expect(easy).toMatchObject({
+      kind: "inventarProblema",
+      highlightCompare: true,
+      answer: "cometa",
+    });
+    if (easy.kind === "inventarProblema") {
+      expect(easy.highlightItemPrices).toBeUndefined();
+      expect(easy.highlightQuestionPrices).toBeUndefined();
+      expect(easy.leaveWorkSpace).toBeUndefined();
+    }
+
+    const medium = mapSessionToSheet(
+      "inventarProblema",
+      {
+        items: [{ emoji: "👟", name: "zapatillas", price: 30 }],
+        question: "¿Cuánto cuestan los dos artículos juntos?",
+        correctAnswer: "45",
+      },
+      { ...config, difficulty: "medium" },
+    );
+    expect(medium).toMatchObject({
+      kind: "inventarProblema",
+      highlightItemPrices: true,
+      leaveWorkSpace: true,
+    });
+
+    const hard = mapSessionToSheet(
       "inventarProblema",
       {
         items: [{ emoji: "👟", name: "zapatillas", price: 30 }],
         budget: 50,
-        question: "¿Puedes comprarlas?",
-        correctAnswer: "sí",
+        question: "Tengo 50€. ¿Puedo comprar 👟 (30€)?",
+        correctAnswer: "yes",
       },
-      config,
+      { ...config, difficulty: "hard" },
     );
-    expect(inv).toMatchObject({
+    expect(hard).toMatchObject({
+      kind: "inventarProblema",
+      highlightItemPrices: true,
+      highlightQuestionPrices: true,
+      leaveWorkSpace: true,
+      budget: 50,
+    });
+
+    const expert = mapSessionToSheet(
+      "inventarProblema",
+      {
+        items: [{ emoji: "👟", name: "zapatillas", price: 30 }],
+        budget: 50,
+        question: "¿Cuánto me devuelven?",
+        correctAnswer: "5",
+      },
+      { ...config, difficulty: "expert" },
+    );
+    expect(expert).toMatchObject({
       kind: "inventarProblema",
       budget: 50,
-      items: [{ emoji: "👟", price: 30 }],
-      answer: "sí",
+      answer: "5",
+      leaveWorkSpace: true,
     });
+    if (expert.kind === "inventarProblema") {
+      expect(expert.highlightCompare).toBeUndefined();
+      expect(expert.highlightItemPrices).toBeUndefined();
+      expect(expert.highlightQuestionPrices).toBeUndefined();
+    }
 
     const intv = mapSessionToSheet(
       "intervalosTiempo",

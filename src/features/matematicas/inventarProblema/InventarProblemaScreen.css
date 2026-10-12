@@ -34,6 +34,24 @@
   color: #22c55e;
 }
 
+/* Medium / hard: precios de iconos — color de clase (expert sin ayuda) */
+.inv--medium .inv__item-price,
+.inv--hard .inv__item-price {
+  color: var(--color-primary, #0284c7);
+}
+
+/* Easy: MÁS BARATO / MÁS CARO — color de clase */
+.inv__compare {
+  color: var(--color-primary, #0284c7);
+  font-weight: 900;
+}
+
+/* Hard: importes del enunciado — color de clase */
+.inv__price-hl {
+  color: var(--color-primary, #0284c7);
+  font-weight: 900;
+}
+
 .inv__budget {
   display: flex;
   flex-direction: column;

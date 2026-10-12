@@ -1,16 +1,44 @@
-/* Inventar problema — layout alumno */
+/* Inventar problema / Laboratorio de problemas — layout alumno */
+
+.ficha-inventar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
 .ficha-inventar__question {
-  margin: 0 0 6px;
-  font-size: 20px;
+  margin: 0;
+  font-size: 16px;
   font-weight: 600;
   color: #1e293b;
+}
+
+/* Easy: MÁS BARATO / MÁS CARO — color de clase */
+.ficha-inventar__compare {
+  color: var(--color-primary, #0284c7);
+  font-weight: 800;
+}
+
+/* Hard: importes del enunciado / presupuesto — color de clase */
+.ficha-inventar__price-hl {
+  color: var(--color-primary, #0284c7);
+  font-weight: 800;
 }
 
 .ficha-inventar__items {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Medium / hard / expert: iconos a la izquierda (espacio libre a la dcha. para operar) */
+.ficha-inventar--workspace .ficha-inventar__items {
+  justify-content: flex-start;
+}
+
+.ficha-inventar--workspace .ficha-inventar__budget {
+  text-align: left;
 }
 
 .ficha-inventar__card {
@@ -18,33 +46,39 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 4px 6px;
+  padding: 6px 8px;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   min-width: 56px;
 }
 
 .ficha-inventar__emoji {
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1;
 }
 
 .ficha-inventar__name {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   text-align: center;
   color: #334155;
 }
 
 .ficha-inventar__price {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   color: #0f172a;
 }
 
+/* Medium / hard: precios de iconos — color de clase (expert sin accent) */
+.ficha-inventar__price--accent {
+  color: var(--color-primary, #0284c7);
+}
+
 .ficha-inventar__budget {
-  margin: 0 0 6px;
-  font-size: 12px;
+  margin: 0;
+  font-size: 13px;
   font-weight: 700;
   color: #b45309;
+  text-align: center;
 }

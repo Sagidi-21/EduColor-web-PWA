@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { generateSession, validateAnswer } from "../../../core/activities/inventarProblema";
 import type { InventarProblemaExercise } from "../../../core/activities/inventarProblema";
 import type { EngineScreenProps } from "../engine-screens";
@@ -9,6 +9,35 @@ import { NoExerciseNotice } from "../components/NoExerciseNotice";
 import { playFeedback } from "../../shared/audioFeedback";
 import "../operations/OperationsScreen.css";
 import "./InventarProblemaScreen.css";
+
+/** Resalta MÁS BARATO / MÁS CARO (easy) o importes N€ (hard) con color de clase. */
+function questionNodes(question: string, difficulty: string): ReactNode {
+  if (difficulty === "easy") {
+    const parts = question.split(/(MÁS BARATO|MÁS CARO)/);
+    return parts.map((part, i) =>
+      part === "MÁS BARATO" || part === "MÁS CARO" ? (
+        <span key={i} className="inv__compare">
+          {part}
+        </span>
+      ) : (
+        <span key={i}>{part}</span>
+      ),
+    );
+  }
+  if (difficulty === "hard") {
+    const parts = question.split(/(\d+€)/);
+    return parts.map((part, i) =>
+      /^\d+€$/.test(part) ? (
+        <span key={i} className="inv__price-hl">
+          {part}
+        </span>
+      ) : (
+        <span key={i}>{part}</span>
+      ),
+    );
+  }
+  return question;
+}
 
 type AnswerState = "idle" | "correct" | "wrong";
 const AUTOAVANCE_MS = 900;
@@ -128,7 +157,7 @@ export function InventarProblemaScreen({
         : "";
 
   return (
-    <div className={`ops ${className ?? ""}`}>
+    <div className={`ops inv--${difficulty} ${className ?? ""}`.trim()}>
       <ActivityHeader
         unitTitle={activity.title}
         gradeTitle={gradeTitle}
@@ -160,7 +189,7 @@ export function InventarProblemaScreen({
           )}
         </div>
 
-        <p className="inv__question">{current.question}</p>
+        <p className="inv__question">{questionNodes(current.question, difficulty)}</p>
 
         <div className="inv__options">
           {current.options.map((opt) => {

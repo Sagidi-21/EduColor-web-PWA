@@ -893,7 +893,16 @@ function mapMenuItems(raw: unknown): MenuItemSheet[] {
   });
 }
 
-function mapGraficoBarras(ex: Record<string, unknown>): GraficoBarrasSheetExercise {
+/** Marcas del eje Y en ficha: una por unidad, para leer la altura columna a columna. */
+function marcasEjeUnitarias(tope: number): number[] {
+  const max = Math.max(1, Math.floor(tope));
+  return Array.from({ length: max }, (_, i) => i + 1);
+}
+
+function mapGraficoBarras(
+  ex: Record<string, unknown>,
+  config: SheetConfig,
+): GraficoBarrasSheetExercise {
   const barsRaw = Array.isArray(ex.bars) ? ex.bars : [];
   const bars = barsRaw.map((b) => {
     const bar = asRecord(b);
@@ -907,11 +916,15 @@ function mapGraficoBarras(ex: Record<string, unknown>): GraficoBarrasSheetExerci
     typeof ex.blankBarIndex === "number" && Number.isFinite(ex.blankBarIndex)
       ? ex.blankBarIndex
       : undefined;
+  const escalaMax = asNumber(ex.escalaMax, Math.max(1, ...bars.map((b) => b.valor)));
+  const hardOrExpert = config.difficulty === "hard" || config.difficulty === "expert";
   return {
     kind: "graficoBarras",
     titulo: asString(ex.titulo, "Gráfico"),
     bars,
-    escalaMax: asNumber(ex.escalaMax, Math.max(1, ...bars.map((b) => b.valor))),
+    escalaMax,
+    marcas: marcasEjeUnitarias(escalaMax),
+    showBarValues: !hardOrExpert,
     blankBarIndex: blank,
     question: questionOf(ex),
     answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
@@ -953,14 +966,25 @@ function mapCintaMetrica(ex: Record<string, unknown>): CintaMetricaSheetExercise
   };
 }
 
-function mapInventarProblema(ex: Record<string, unknown>): InventarProblemaSheetExercise {
+function mapInventarProblema(
+  ex: Record<string, unknown>,
+  config?: SheetConfig,
+): InventarProblemaSheetExercise {
   const budget =
     typeof ex.budget === "number" && Number.isFinite(ex.budget) ? ex.budget : undefined;
+  const difficulty = config?.difficulty;
   return {
     kind: "inventarProblema",
     items: mapMenuItems(ex.items),
     budget,
     question: questionOf(ex),
+    highlightCompare: difficulty === "easy" ? true : undefined,
+    highlightItemPrices: difficulty === "medium" || difficulty === "hard" ? true : undefined,
+    highlightQuestionPrices: difficulty === "hard" ? true : undefined,
+    leaveWorkSpace:
+      difficulty === "medium" || difficulty === "hard" || difficulty === "expert"
+        ? true
+        : undefined,
     answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
   };
 }
@@ -1827,13 +1851,13 @@ export function mapSessionToSheet(
     case "algoritmo3cifras":
       return mapAlgoritmo3Cifras(ex);
     case "graficoBarras":
-      return mapGraficoBarras(ex);
+      return mapGraficoBarras(ex, config);
     case "menuCafeteria":
       return mapMenuCafeteria(ex);
     case "monedasBilletes":
       return mapMonedasBilletes(ex, config);
     case "inventarProblema":
-      return mapInventarProblema(ex);
+      return mapInventarProblema(ex, config);
     case "balanza":
       return mapBalanza(ex, config);
     case "balanzaEquilibra":

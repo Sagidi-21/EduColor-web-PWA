@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 41 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 42 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -79,6 +79,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `reloj`               | El reloj                      | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy centrado+hint+aguja min color; medium sin digital duplicado; hard read aside; expert dibujar sin digital; hora color. |
 | `relojPonerHora`      | Pon la hora                   | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: esfera vacía para dibujar; hora objetivo en enunciado (color clase) + digital; soluciones solo respuesta.                  |
 | `monedasBilletes`     | Monedas y billetes            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy/medium centrado+opciones; hard opciones; expert 2 filas más separadas; gap opciones amplio.                           |
+| `inventarProblema`    | Laboratorio de problemas      | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy barato/caro color clase; medium/hard precios color; medium+ iconos izq.; expert sin ayuda de color.                   |
 | `balanza`             | La balanza y el peso          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy MC+artículo mayúsc.; medium/hard MENOS/IGUAL/MÁS; hard sin inclinación (vs); expert sandía+pesas y «escribe el nº».   |
 | `balanzaEquilibra`    | Equilibra la balanza          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: sin ?/Pongo; hueco en platillo; expert 2 huecos+soluciones con ambos tipos (                                               | ); iconos fiables. |
 
@@ -171,7 +172,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **problemas** — Problemas con una operación _(2026-10-12: OK — easy/medium enunciado izq. + op en columna; hard/expert enunciado centrado + hueco debajo; números color de clase salvo expert; sin recuadro de respuesta)_
 - [ ] **problemas2pasos** — Problemas de 2 pasos
 - [x] **datosInnecesarios** — Desechar datos inútiles _(2026-10-12: OK — instrucción de tachar primero y dominante; pregunta como contexto; color de clase en tarea/números; soluciones solo respuesta)_
-- [ ] **inventarProblema** — Laboratorio de problemas
+- [x] **inventarProblema** — Laboratorio de problemas _(2026-10-12: OK — easy MÁS BARATO/CARO color clase; medium/hard precios color; medium+ iconos a la izq.; expert sin ayuda de color)_
 
 ## Medidas y tiempo
 
@@ -233,6 +234,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | `vecinosNumero`       | OK navegador 2026-10-10 — ver checklist Numeración       |
 | `problemas`           | OK navegador 2026-10-12 — ver checklist Problemas        |
 | `datosInnecesarios`   | OK navegador 2026-10-12 — ver checklist Problemas        |
+| `inventarProblema`    | OK navegador 2026-10-12 — ver checklist Problemas        |
 | `weekDays`            | OK navegador 2026-10-10 — ver checklist Medidas y tiempo |
 | `reloj`               | OK navegador 2026-10-12 — ver checklist Medidas y tiempo |
 | `relojPonerHora`      | OK navegador 2026-10-12 — ver checklist Medidas y tiempo |
@@ -242,7 +244,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 
 ### Ya alineadas (código) — candidatos a marcar OK tras mirar preview
 
-`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `inventarProblema`, `cintaMetrica`, `intervalosTiempo`, `graficoBarras`
+`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `cintaMetrica`, `intervalosTiempo`, `graficoBarras`
 
 ### 2ª vuelta (2026-10-10) — decisiones del profesor aplicadas
 
