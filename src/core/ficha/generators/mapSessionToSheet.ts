@@ -5,6 +5,7 @@ import { litroImageUrl, litroReferenceUrl } from "../../../platform/litroImages"
 import type { MoneyItem } from "../../activities/monedasBilletes";
 import type { KiloItem } from "../../activities/elKilo";
 import type { LitroItem } from "../../activities/elLitro";
+import { formatWeightSolutions } from "../../activities/balanzaEquilibra";
 import {
   capitalizeFirst,
   handForBox,
@@ -805,12 +806,17 @@ function mapBalanza(ex: Record<string, unknown>, config: SheetConfig): BalanzaSh
 
 function mapBalanzaEquilibra(
   ex: Record<string, unknown>,
-  config: SheetConfig,
+  _config: SheetConfig,
 ): BalanzaSheetExercise {
-  const withVisual = config.withImages;
   const target = asNumber(ex.target, 1);
-  const leftEmoji = withVisual ? asString(ex.leftEmoji, "🧱") : "";
   const leftKind = asString(ex.leftKind, "weights");
+  // Esta actividad solo usa emojis (no fotos): siempre hay icono, con o sin «imágenes».
+  const rawEmoji = asString(ex.leftEmoji);
+  const leftEmoji = rawEmoji || (leftKind === "object" ? "📦" : "🧱");
+  const weightChips = weightChipsOf(ex);
+  // Expert (1 kg y 2 kg): listar todas las combinaciones; easy/medium/hard: el total.
+  const answer =
+    weightChips.length > 1 ? formatWeightSolutions(target, weightChips) : `${target} kg`;
   return {
     kind: "balanza",
     variant: "equilibra",
@@ -824,15 +830,15 @@ function mapBalanzaEquilibra(
       unknown: false,
     },
     right: {
-      emoji: withVisual ? "⬜" : "",
+      emoji: "🧱",
       count: 0,
       weightLabel: null,
       unknown: true,
     },
     targetKg: target,
     leftKind: leftKind === "object" ? "object" : "weights",
-    weightChips: weightChipsOf(ex),
-    answer: `${target} kg`,
+    weightChips,
+    answer,
   };
 }
 

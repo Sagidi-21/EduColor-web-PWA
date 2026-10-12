@@ -16,14 +16,18 @@
   margin: 2px auto;
 }
 
+/* Expert: platillo ancho para dos huecos en fila. */
+.ficha-balanza-eq__svg--wide {
+  max-width: 380px;
+}
+
 /* Paleta de pesas (chips) */
 .ficha-balanza-eq__palette {
   margin-top: 4px;
   text-align: center;
 }
 
-.ficha-balanza-eq__palette-label,
-.ficha-balanza-eq__fill-label {
+.ficha-balanza-eq__palette-label {
   display: inline-block;
   margin-right: 6px;
   font-size: 12px;
@@ -49,35 +53,5 @@
 .ficha-balanza-eq__chip-kg {
   font-size: 13px;
   font-weight: 800;
-  color: #0f172a;
-}
-
-/* ¿Cuántas pesas de cada una? */
-.ficha-balanza-eq__fill {
-  margin-top: 6px;
-  text-align: center;
-}
-
-.ficha-balanza-eq__fill-item {
-  display: inline-block;
-  margin: 0 6px;
-  vertical-align: middle;
-}
-
-.ficha-balanza-eq__blank {
-  display: inline-block;
-  width: 34px;
-  height: 26px;
-  border: 1.5px dashed #94a3b8;
-  border-radius: 3px;
-  background: #f8fafc;
-  box-sizing: border-box;
-  vertical-align: middle;
-}
-
-.ficha-balanza-eq__fill-text {
-  margin-left: 4px;
-  font-size: 13px;
-  font-weight: 700;
   color: #0f172a;
 }

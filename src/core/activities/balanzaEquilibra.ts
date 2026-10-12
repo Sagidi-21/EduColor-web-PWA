@@ -31,8 +31,11 @@ export interface BalanzaEqExercise {
   allowed: number[];
 }
 
-/** Objetos que pueden aparecer en el plato izquierdo en `medium`, `hard` y `expert`. */
-export const OBJECTS = ["📦", "🎁", "🧺", "🎒", "🪣", "🛍️"] as const;
+/**
+ * Objetos del plato izquierdo en `medium` / `hard` / `expert`.
+ * Cosas que pueden pesar varios kg (nada de balón a 9 kg). Emojis muy extendidos.
+ */
+export const OBJECTS = ["📦", "🎁", "🎒", "🧳"] as const;
 
 /**
  * Tamaño nominal de sesión: 10 ejercicios es el techo, pero el motor
@@ -137,4 +140,39 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Bala
 export function validateAnswer(weights: number[], exercise: BalanzaEqExercise): boolean {
   const sum = weights.reduce((a, b) => a + b, 0);
   return sum === exercise.target;
+}
+
+/**
+ * Formas de sumar `target` kg con las denominaciones dadas.
+ *
+ * Con `[1]` → `N×1 kg`. Con `[1, 2]` (expert) → solo combinaciones que usan
+ * **ambos** tipos (al menos una pesa de 1 kg y una de 2 kg).
+ */
+export function weightCombinations(target: number, allowed: readonly number[]): string[] {
+  const chips = [...allowed].filter((n) => n > 0).sort((a, b) => a - b);
+  if (chips.length === 0 || target < 0) return [];
+
+  if (chips.length === 1 && chips[0] === 1) {
+    return [`${target}×1 kg`];
+  }
+
+  // Expert: 1 kg y 2 kg — excluye «solo 1 kg» y «solo 2 kg».
+  if (chips.length === 2 && chips[0] === 1 && chips[1] === 2) {
+    const out: string[] = [];
+    for (let n2 = 1; n2 <= Math.floor(target / 2); n2 += 1) {
+      const n1 = target - 2 * n2;
+      if (n1 < 1) continue;
+      out.push(`${n1}×1 kg + ${n2}×2 kg`);
+    }
+    return out;
+  }
+
+  // Genérico (por si se añaden más denominaciones): una etiqueta con el total.
+  return [`${target} kg`];
+}
+
+/** Texto de solución: combinaciones separadas con barra vertical. */
+export function formatWeightSolutions(target: number, allowed: readonly number[]): string {
+  const combos = weightCombinations(target, allowed);
+  return combos.length > 0 ? combos.join(" | ") : `${target} kg`;
 }

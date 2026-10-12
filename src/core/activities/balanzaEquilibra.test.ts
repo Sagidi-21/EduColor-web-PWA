@@ -5,6 +5,8 @@ import {
   SESSION_TARGET,
   validateAnswer,
   OBJECTS,
+  weightCombinations,
+  formatWeightSolutions,
 } from "./balanzaEquilibra";
 import type { BalanzaEqExercise } from "./balanzaEquilibra";
 import type { ActivityDifficulty } from "../content/contracts";
@@ -183,5 +185,26 @@ describe("balanzaEquilibra — validateAnswer", () => {
         expect(validateAnswer(Array(ex.target).fill(1), ex), `target ${ex.target}`).toBe(true);
       }
     }
+  });
+});
+
+describe("balanzaEquilibra — weightCombinations", () => {
+  it("con solo 1 kg lista N×1 kg", () => {
+    expect(weightCombinations(4, [1])).toEqual(["4×1 kg"]);
+  });
+
+  it("con 1 kg y 2 kg solo lista combinaciones que usan ambos tipos", () => {
+    expect(weightCombinations(5, [1, 2])).toEqual(["3×1 kg + 1×2 kg", "1×1 kg + 2×2 kg"]);
+    expect(weightCombinations(4, [1, 2])).toEqual(["2×1 kg + 1×2 kg"]);
+    // Target impar mínimo con ambos: 3 = 1×1 + 1×2
+    expect(weightCombinations(3, [1, 2])).toEqual(["1×1 kg + 1×2 kg"]);
+  });
+
+  it("formatWeightSolutions separa con | las posibles respuestas", () => {
+    expect(formatWeightSolutions(5, [1, 2])).toBe("3×1 kg + 1×2 kg | 1×1 kg + 2×2 kg");
+  });
+
+  it("los objetos del catálogo no incluyen un balón (peso absurdo)", () => {
+    expect(OBJECTS).not.toContain("⚽");
   });
 });

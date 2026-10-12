@@ -88,13 +88,27 @@ describe("fichas con escena dibujada", () => {
     });
   });
 
-  it("balanzaEquilibra muestra la paleta de pesas; soluciones solo la respuesta", () => {
+  it("balanzaEquilibra muestra paleta y hueco en la balanza; sin zona Pongo", () => {
     everyDifficulty("balanzaEquilibra", (alumno, soluciones) => {
       expect(alumno).toContain("ficha-balanza-eq__palette");
-      expect(alumno).toContain("ficha-balanza-eq__fill");
+      expect(alumno).toContain("ficha-balanza-eq__svg");
+      expect(alumno).not.toContain("ficha-balanza-eq__fill");
+      expect(alumno).not.toContain(">Pongo");
+      // Sin interrogante en el platillo derecho (el alumno escribe en el hueco).
+      expect(alumno).not.toMatch(/>\s*\?\s*</);
       expect(soluciones).toContain("ficha-answer");
       expect(soluciones).not.toContain("ficha-balanza-eq__palette");
     });
+    // Expert: dos tipos de pesa → dos huecos en fila con kg debajo.
+    const expert = html("balanzaEquilibra", "expert", "alumno");
+    expect(expert).toContain("ficha-balanza-eq__svg--wide");
+    expect(expert).toContain(">1 kg<");
+    expect(expert).toContain(">2 kg<");
+    // Soluciones expert: combinaciones con ambos tipos, separadas por |.
+    const expertSol = html("balanzaEquilibra", "expert", "soluciones");
+    expect(expertSol).toMatch(/\d+×1 kg/);
+    expect(expertSol).toMatch(/×2 kg/);
+    expect(expertSol).toContain(" | ");
   });
 
   it("balanza easy/medium/hard pide redondear; expert pide escribir el número", () => {

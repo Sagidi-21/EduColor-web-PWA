@@ -76,6 +76,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `restaColumna`        | Resta en columna              | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: mismo layout que algoritmoVertical (−); sin casillas; 3/fila; hueco bajo la línea.                                        |
 | `elLitro`             | El litro                      | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: 2/fila; artículo El/La; classify con opciones+hint; compare sin opciones; expert sin ref.; nombres con mayúscula.         |
 | `balanza`             | La balanza y el peso          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy MC+artículo mayúsc.; medium/hard MENOS/IGUAL/MÁS; hard sin inclinación (vs); expert sandía+pesas y «escribe el nº».  |
+| `balanzaEquilibra`    | Equilibra la balanza          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: sin ?/Pongo; hueco en platillo; expert 2 huecos+soluciones con ambos tipos (                                              | ); iconos fiables. |
 
 ### Hallazgos baseline — `ordenar` (2026-10-09)
 
@@ -180,7 +181,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [ ] **monedasBilletes** — Monedas y billetes
 - [ ] **menuCafeteria** — En la cafetería
 - [x] **balanza** — La balanza y el peso _(2026-10-12: OK — easy redondea+artículo mayúsc.; medium/hard MENOS/IGUAL/MÁS; hard grupo vs pesa sin inclinación; expert sandía+pesas y «escribe el nº»; sin `?`)_
-- [ ] **balanzaEquilibra** — Equilibra la balanza
+- [x] **balanzaEquilibra** — Equilibra la balanza _(2026-10-12: OK — sin ?/Pongo; respuesta en platillo; expert 2 huecos 1kg/2kg; soluciones con ambos tipos separadas por \|; iconos fiables)_
 
 ## Otros
 
