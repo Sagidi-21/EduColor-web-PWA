@@ -206,8 +206,8 @@
 
 .cmp__answer-btn:hover:not(:disabled),
 .cmp__answer-btn:focus-visible:not(:disabled) {
-  border-color: #2563eb;
-  background: #eff6ff;
+  border-color: var(--color-primary, #2563eb);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
 }
 
 .cmp__answer-btn:disabled {
