@@ -511,7 +511,7 @@ describe("mapSessionToSheet", () => {
     if (ex.kind === "vecinosNumero") expect(ex.choiceLabels?.[0]).toBe("4 - 6");
   });
 
-  it("mapea dobleYMitad con cajas y opciones", () => {
+  it("mapea dobleYMitad easy con cajas y opciones", () => {
     const ex = mapSessionToSheet(
       "dobleYMitad",
       {
@@ -534,6 +534,33 @@ describe("mapSessionToSheet", () => {
       choiceLabels: ["8", "6", "7", "10"],
       answer: 8,
     });
+    expect(ex).not.toMatchObject({ verticalOp: true });
+  });
+
+  it("mapea dobleYMitad medium+ en vertical sin opciones", () => {
+    const ex = mapSessionToSheet(
+      "dobleYMitad",
+      {
+        type: "mitad",
+        number: 12,
+        result: 6,
+        operacion: "div2",
+        conocido: "original",
+        question: "¿Cuánto es la mitad de 12?",
+        correctAnswer: 6,
+        options: [6, 4, 8, 10],
+      },
+      { ...config, difficulty: "medium" },
+    );
+    expect(ex).toMatchObject({
+      kind: "dobleYMitad",
+      number: 12,
+      operacion: "div2",
+      conocido: "original",
+      verticalOp: true,
+      answer: 6,
+    });
+    if (ex.kind === "dobleYMitad") expect(ex.choiceLabels).toBeUndefined();
   });
 
   it("reloj: medium digital_to_analog sin digital; hard digital_read aside; expert dibujar sin digital", () => {

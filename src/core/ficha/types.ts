@@ -725,11 +725,16 @@ export interface Numeracion999SheetExercise {
 export interface DobleYMitadSheetExercise {
   kind: "dobleYMitad";
   question: string;
-  /** Número del enunciado (cajas Número / Doble|Mitad). */
+  /** Número del enunciado (cajas Número / Doble|Mitad o operación vertical). */
   number?: number;
   operacion?: "x2" | "div2";
   /** "original": dato = número de partida (hueco en Doble/Mitad); "resultado": hueco en Número. */
   conocido?: "original" | "resultado";
+  /**
+   * Medium+: operación ×2/÷2 en vertical + hueco en blanco (sin cajas ni opciones).
+   * Easy: cajas Número / Doble|Mitad + choiceLabels.
+   */
+  verticalOp?: boolean;
   choiceLabels?: string[];
   answer?: number;
 }

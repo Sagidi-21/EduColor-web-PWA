@@ -1,4 +1,4 @@
-/* Doble y mitad — cajas Número / Doble|Mitad + opciones ○ */
+/* Doble y mitad — easy: cajas + opciones; medium+: op vertical + hueco */
 
 .ficha-doble__question {
   margin: 0 0 6px;
@@ -6,6 +6,18 @@
   font-weight: 600;
   color: #1e293b;
   line-height: 1.25;
+}
+
+/* Cifras del enunciado — color de clase */
+.ficha-doble__q-num {
+  color: var(--color-primary, #0284c7);
+  font-weight: 800;
+}
+
+.ficha-doble__hint {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
 }
 
 .ficha-doble__visual {
@@ -29,10 +41,10 @@
   text-align: center;
   font-size: 22px;
   font-weight: 800;
-  color: #0284c7;
-  border: 1.5px solid #0284c7;
+  color: var(--color-primary, #0284c7);
+  border: 1.5px solid var(--color-primary, #0284c7);
   border-radius: 6px;
-  background: #e0f2fe;
+  background: color-mix(in srgb, var(--color-primary, #0284c7) 18%, #fff);
   box-sizing: border-box;
 }
 
@@ -58,9 +70,23 @@
 
 .ficha-doble__choices {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
   margin-top: 8px;
+  box-sizing: border-box;
+}
+
+/* 2–3 opciones: centradas */
+.ficha-doble__choices--center {
+  justify-content: center;
+  gap: 10px 28px;
+}
+
+/* 4 opciones: máximo gap (extremos a los lados) */
+.ficha-doble__choices--spread {
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .ficha-doble__choice {
@@ -72,4 +98,111 @@
 
 .ficha-doble__choice-mark {
   margin-right: 5px;
+}
+
+/* Medium+: operación en vertical + hueco en blanco bajo la línea */
+.ficha-doble--vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ficha-doble--vertical .ficha-doble__question {
+  text-align: center;
+  width: 100%;
+}
+
+.ficha-doble__col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: max-content;
+  margin-top: 4px;
+  font-family: "SF Mono", "Consolas", "Menlo", monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.ficha-doble__col-num {
+  color: var(--color-primary, #0284c7);
+  font-weight: 800;
+  padding: 0 2px;
+}
+
+.ficha-doble__col-op {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: #334155;
+  padding: 0 2px;
+}
+
+.ficha-doble__col-factor {
+  color: var(--color-primary, #0284c7);
+  font-weight: 800;
+}
+
+.ficha-doble__col-sep {
+  display: block;
+  width: 100%;
+  height: 0;
+  border-top: 1.5px solid #334155;
+  margin: 2px 0 0;
+}
+
+/* Hueco en blanco bajo la operación (sin recuadro) */
+.ficha-doble__col::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 36px;
+}
+
+/*
+ * División en casita (todos los niveles con ÷):
+ * dividendo a la izquierda; divisor dentro de la L
+ * (lado corto vertical + lado largo horizontal; sin trazo bajo la L).
+ */
+.ficha-doble__casita {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  width: max-content;
+  margin-top: 4px;
+  font-family: "SF Mono", "Consolas", "Menlo", monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.ficha-doble__casita-dividend {
+  grid-column: 1;
+  grid-row: 1;
+  color: var(--color-primary, #0284c7);
+  font-weight: 800;
+  padding: 2px 8px 0 2px;
+  align-self: start;
+}
+
+.ficha-doble__casita-divisor {
+  grid-column: 2;
+  grid-row: 1;
+  color: var(--color-primary, #0284c7);
+  font-weight: 800;
+  padding: 2px 10px 2px 8px;
+  min-width: 36px;
+  border-left: 1.5px solid #334155; /* lado corto vertical */
+  border-bottom: 1.5px solid #334155; /* lado largo horizontal */
+  box-sizing: border-box;
+}
+
+.ficha-doble__casita-work {
+  grid-column: 2;
+  grid-row: 2;
+  display: block;
+  height: 36px; /* hueco en blanco para el cociente */
+  min-width: 36px;
 }

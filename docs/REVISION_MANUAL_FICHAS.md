@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 53 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 54 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -129,7 +129,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **igualdad** — El signo igual _(2026-10-10: OK — enunciados por tipo; easy imágenes+op misma línea; medium/hard centrados; hard opciones en línea con •; color de clase; soluciones solo respuesta)_
 - [x] **relacionSumaResta** — Familia de operaciones _(2026-10-12: OK — 3 ops en vertical D·U; enunciado Total/partes + «realiza todas las operaciones»)_
 - [ ] **multiplicacion** — Multiplicación
-- [ ] **dobleYMitad** — El doble y la mitad
+- [x] **dobleYMitad** — El doble y la mitad _(2026-10-13: OK — easy cajas+color clase+opciones spread+redondea; medium+ × vertical / ÷ casita L + hueco sin opciones ni recuadros)_
 - [x] **amigos10** — Los amigos del 10 _(2026-10-10: OK — ten-frame como en pizarra + operación a la derecha con casilla, toggle imágenes, soluciones solo número)_
 
 ## Conteo y comparación
@@ -225,7 +225,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 | `tresSumandosColumna` | OK navegador 2026-10-12 — ver checklist Operaciones      |
 | `igualdad`            | OK navegador 2026-10-10 — ver checklist Operaciones      |
 | `relacionSumaResta`   | Tres ecuaciones con hueco                                |
-| `dobleYMitad`         | Cajas Número/Doble\|Mitad + ○                            |
+| `dobleYMitad`         | OK navegador 2026-10-13 — ver checklist Operaciones      |
 | `parImpar`            | ○ Par/Impar (o opciones del motor)                       |
 | `ordinales`           | «Desde la derecha», etiquetas 1º…, casilla               |
 | `poligonos`           | ○ opciones de texto (como shapes)                        |

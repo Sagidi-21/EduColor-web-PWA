@@ -1407,18 +1407,21 @@ function mapVecinosNumero(ex: Record<string, unknown>): SheetExercise {
   };
 }
 
-function mapDobleYMitad(ex: Record<string, unknown>): SheetExercise {
+function mapDobleYMitad(ex: Record<string, unknown>, config?: SheetConfig): SheetExercise {
   const choiceLabels = asStringArray(ex.options);
   const operacion = asString(ex.operacion);
   const conocido = asString(ex.conocido);
   const answerRaw = answerOf(ex) ?? (typeof ex.result === "number" ? ex.result : undefined);
+  // Medium+: el niño hace la operación en vertical (sin opciones ni cajas de relleno).
+  const verticalOp = config?.difficulty !== undefined && config.difficulty !== "easy";
   return {
     kind: "dobleYMitad",
     question: questionOf(ex),
     number: typeof ex.number === "number" ? ex.number : undefined,
     operacion: operacion === "x2" || operacion === "div2" ? operacion : undefined,
     conocido: conocido === "original" || conocido === "resultado" ? conocido : undefined,
-    choiceLabels: choiceLabels.length > 0 ? choiceLabels : undefined,
+    verticalOp: verticalOp ? true : undefined,
+    choiceLabels: !verticalOp && choiceLabels.length > 0 ? choiceLabels : undefined,
     answer: typeof answerRaw === "number" ? answerRaw : undefined,
   };
 }
@@ -1874,7 +1877,7 @@ export function mapSessionToSheet(
     case "lecturaNumeros":
       return mapLecturaNumeros(ex, config);
     case "dobleYMitad":
-      return mapDobleYMitad(ex);
+      return mapDobleYMitad(ex, config);
     case "abaco3cifras":
       return mapAbaco3Cifras(ex);
     case "algoritmo3cifras":
