@@ -567,8 +567,19 @@ export interface Problemas2PasosSheetExercise {
   question: string;
   /** Tracker de pasos (como en pizarra): a op1 b = ? → ? op2 c = ?. */
   steps?: { a: number; b: number; c: number; op1: "+" | "-"; op2: "+" | "-" };
-  /** Opciones ○ como en pizarra. */
+  /** Opciones ○ (no se usan en ficha: el niño escribe a mano). */
   choiceLabels?: string[];
+  /** Hueco en blanco bajo el tracker para escribir las operaciones. */
+  showWriteArea?: boolean;
+  /** Números del enunciado/pregunta en color de clase. */
+  highlightKeyNumbers?: boolean;
+  /** Easy/medium: números del tracker (a, b, c) en color de clase. */
+  highlightStepNumbers?: boolean;
+  /**
+   * Easy/medium/hard: `a ⊕ b = A` → `A ⊕ c = B` (letra compartida entre pasos).
+   * Expert: sigue con interrogantes.
+   */
+  useStepLetters?: boolean;
   answer?: number;
 }
 

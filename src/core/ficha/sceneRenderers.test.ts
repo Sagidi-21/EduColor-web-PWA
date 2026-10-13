@@ -238,6 +238,42 @@ describe("fichas con escena dibujada", () => {
     });
   });
 
+  it("problemas2pasos: números color de clase; hueco sin opciones; pregunta + línea al final", () => {
+    everyDifficulty("problemas2pasos", (alumno, soluciones) => {
+      expect(alumno).toContain("ficha-p2p");
+      expect(alumno).toContain("ficha-p2p__key-num");
+      expect(alumno).toContain("ficha-p2p__steps");
+      expect(alumno).toContain("ficha-p2p__work");
+      expect(alumno).toContain("ficha-p2p__final");
+      expect(alumno).toContain("ficha-p2p__answer-line");
+      expect(alumno).not.toContain("ficha-p2p__choices");
+      expect(alumno).not.toContain("ficha-answer");
+      // Pregunta y línea debajo del hueco de trabajo.
+      expect(alumno.indexOf("ficha-p2p__work")).toBeLessThan(alumno.indexOf("ficha-p2p__final"));
+      expect(soluciones).toContain("ficha-answer");
+      expect(soluciones).not.toContain("ficha-p2p__steps");
+      expect(soluciones).not.toContain("ficha-p2p__choices");
+      expect(soluciones).not.toContain("ficha-p2p__answer-line");
+    });
+    const stepsHtml = (s: string) =>
+      s.match(
+        /class="ficha-p2p__steps"[\s\S]*?<\/div>\s*(?=<p class="ficha-p2p__question"|<div class="ficha-p2p__)/,
+      )?.[0] ?? "";
+    // Números del tracker en color de clase solo easy/medium.
+    expect(stepsHtml(html("problemas2pasos", "easy", "alumno"))).toContain("ficha-p2p__key-num");
+    expect(stepsHtml(html("problemas2pasos", "medium", "alumno"))).toContain("ficha-p2p__key-num");
+    expect(stepsHtml(html("problemas2pasos", "hard", "alumno"))).not.toContain(
+      "ficha-p2p__key-num",
+    );
+    // Letras A/B en easy–hard; expert con interrogantes.
+    expect(stepsHtml(html("problemas2pasos", "easy", "alumno"))).toContain("ficha-p2p__letter");
+    expect(stepsHtml(html("problemas2pasos", "hard", "alumno"))).toContain("ficha-p2p__letter");
+    expect(stepsHtml(html("problemas2pasos", "expert", "alumno"))).not.toContain(
+      "ficha-p2p__letter",
+    );
+    expect(stepsHtml(html("problemas2pasos", "expert", "alumno"))).toContain("?");
+  });
+
   it("circuloCircunferencia: figura color de clase + opciones + hint; soluciones solo respuesta", () => {
     everyDifficulty("circuloCircunferencia", (alumno, soluciones) => {
       expect(alumno).toContain("ficha-cc");

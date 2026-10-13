@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 60 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 61 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -170,7 +170,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 ## Problemas
 
 - [x] **problemas** — Problemas con una operación _(2026-10-12: OK — easy/medium enunciado izq. + op en columna; hard/expert enunciado centrado + hueco debajo; números color de clase salvo expert; sin recuadro de respuesta)_
-- [ ] **problemas2pasos** — Problemas de 2 pasos
+- [x] **problemas2pasos** — Problemas de 2 pasos _(2026-10-13: OK — sin opciones; hueco + pregunta/línea final; números color clase; letras A/B tonos distintos easy–hard)_
 - [x] **datosInnecesarios** — Desechar datos inútiles _(2026-10-12: OK — instrucción de tachar primero y dominante; pregunta como contexto; color de clase en tarea/números; soluciones solo respuesta)_
 - [x] **inventarProblema** — Laboratorio de problemas _(2026-10-13: OK — easy A/B + redondea la letra; MÁS BARATO/CARO color; medium/hard precios color; medium+ iconos izq.; expert sin color)_
 

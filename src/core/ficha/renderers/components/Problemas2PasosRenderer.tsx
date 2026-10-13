@@ -1,4 +1,5 @@
-﻿import type { Problemas2PasosSheetExercise } from "../../types";
+﻿import type { ReactNode } from "react";
+import type { Problemas2PasosSheetExercise } from "../../types";
 
 export interface Problemas2PasosRendererProps {
   ex: Problemas2PasosSheetExercise;
@@ -9,8 +10,24 @@ function opSymbol(op: "+" | "-"): string {
   return op === "+" ? "+" : "−";
 }
 
+/** Resalta cifras del enunciado con el color de clase. */
+function textWithKeyNumbers(text: string, highlight: boolean): ReactNode {
+  if (!highlight) return text;
+  const parts = text.split(/(\d+)/);
+  return parts.map((part, i) =>
+    /^\d+$/.test(part) ? (
+      <span key={i} className="ficha-p2p__key-num">
+        {part}
+      </span>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
+}
+
 /**
- * Alumno: historia + tracker de pasos con huecos (como en pizarra) + pregunta + opciones •.
+ * Alumno: historia + tracker de pasos + pregunta + hueco para escribir.
+ * Sin opciones en ningún nivel (el niño hace las operaciones a mano).
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function Problemas2PasosRenderer({
@@ -23,13 +40,25 @@ export function Problemas2PasosRenderer({
 
   const choices = ex.choiceLabels ?? [];
   const steps = ex.steps;
+  const highlight = Boolean(ex.highlightKeyNumbers);
+  const highlightSteps = Boolean(ex.highlightStepNumbers);
+  const writeArea = Boolean(ex.showWriteArea);
+  const letters = Boolean(ex.useStepLetters);
+  const stepNum = (n: number) =>
+    highlightSteps ? <span className="ficha-p2p__key-num">{n}</span> : n;
+  const stepLetter = (ch: "A" | "B") => (
+    <span className={`ficha-p2p__letter ficha-p2p__letter--${ch.toLowerCase()}`}>{ch}</span>
+  );
+  // Easy/medium/hard: A enlaza ambos pasos; B es el resultado final. Expert: ?.
+  const midSlot = () => (letters ? stepLetter("A") : "?");
+  const finalSlot = () => (letters ? stepLetter("B") : "?");
 
   return (
-    <div className="ficha-p2p">
+    <div className={`ficha-p2p${writeArea ? " ficha-p2p--write" : ""}`}>
       <div className="ficha-p2p__story">
         {ex.story.map((line, i) => (
           <p key={i} className="ficha-p2p__story-line">
-            {line}
+            {textWithKeyNumbers(line, highlight)}
           </p>
         ))}
       </div>
@@ -38,7 +67,7 @@ export function Problemas2PasosRenderer({
           <div className="ficha-p2p__step">
             <span className="ficha-p2p__step-label">Paso 1</span>
             <span className="ficha-p2p__step-num">
-              {steps.a} {opSymbol(steps.op1)} {steps.b} = ?
+              {stepNum(steps.a)} {opSymbol(steps.op1)} {stepNum(steps.b)} = {midSlot()}
             </span>
           </div>
           <span className="ficha-p2p__arrow" aria-hidden>
@@ -47,12 +76,14 @@ export function Problemas2PasosRenderer({
           <div className="ficha-p2p__step">
             <span className="ficha-p2p__step-label">Paso 2</span>
             <span className="ficha-p2p__step-num">
-              ? {opSymbol(steps.op2)} {steps.c} = ?
+              {midSlot()} {opSymbol(steps.op2)} {stepNum(steps.c)} = {finalSlot()}
             </span>
           </div>
         </div>
       )}
-      {ex.question ? <p className="ficha-p2p__question">{ex.question}</p> : null}
+      {writeArea ? (
+        <div className="ficha-p2p__work" aria-label="Espacio para hacer las operaciones" />
+      ) : null}
       {choices.length > 0 && (
         <div className="ficha-p2p__choices">
           {choices.map((label, i) => (
@@ -65,6 +96,12 @@ export function Problemas2PasosRenderer({
           ))}
         </div>
       )}
+      {ex.question ? (
+        <div className="ficha-p2p__final">
+          <p className="ficha-p2p__question">{textWithKeyNumbers(ex.question, highlight)}</p>
+          <span className="ficha-p2p__answer-line" aria-hidden />
+        </div>
+      ) : null}
     </div>
   );
 }

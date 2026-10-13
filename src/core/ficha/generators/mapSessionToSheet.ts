@@ -1438,9 +1438,15 @@ function sheetOp(raw: unknown): "+" | "-" {
   return raw === "-" || raw === "−" || raw === "resta" ? "-" : "+";
 }
 
-function mapProblemas2Pasos(ex: Record<string, unknown>): Problemas2PasosSheetExercise {
+function mapProblemas2Pasos(
+  ex: Record<string, unknown>,
+  config: SheetConfig,
+): Problemas2PasosSheetExercise {
   const hasSteps = typeof ex.a === "number" && typeof ex.b === "number" && typeof ex.c === "number";
-  const choiceLabels = asStringArray(ex.options);
+  // Ficha: nunca opciones; el niño hace las operaciones bajo el tracker.
+  const diff = config.difficulty;
+  const highlightSteps = diff === "easy" || diff === "medium";
+  const useStepLetters = diff !== "expert";
   return {
     kind: "problemas2pasos",
     story: asStringArray(ex.story),
@@ -1456,7 +1462,10 @@ function mapProblemas2Pasos(ex: Record<string, unknown>): Problemas2PasosSheetEx
           },
         }
       : {}),
-    choiceLabels: choiceLabels.length > 0 ? choiceLabels : undefined,
+    showWriteArea: true,
+    highlightKeyNumbers: true,
+    ...(highlightSteps ? { highlightStepNumbers: true as const } : {}),
+    ...(useStepLetters ? { useStepLetters: true as const } : {}),
     // correctAnswer viene como string ("12") en el motor.
     answer: asNumber(Number(ex.correctAnswer ?? ex.result ?? ex.answer)),
   };
@@ -1841,7 +1850,7 @@ export function mapSessionToSheet(
     case "datosInnecesarios":
       return mapDatosInnecesarios(ex);
     case "problemas2pasos":
-      return mapProblemas2Pasos(ex);
+      return mapProblemas2Pasos(ex, config);
     case "posicionesAula":
       return mapPosicionesAula(ex);
     case "numeracion1119":

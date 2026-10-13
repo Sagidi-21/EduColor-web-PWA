@@ -793,31 +793,56 @@ describe("mapSessionToSheet", () => {
     expect(hard).toMatchObject({ kind: "repartoIgual", showVisual: false });
   });
 
-  it("mapea problemas2pasos con tracker y opciones", () => {
-    const ex = mapSessionToSheet(
-      "problemas2pasos",
-      {
-        type: "add-sub",
-        op1: "+",
-        op2: "-",
-        a: 10,
-        b: 5,
-        c: 3,
-        mid: 15,
-        result: 12,
-        story: ["Juan tiene 10.", "Le dan 5.", "Da 3."],
-        question: "¿Cuántos le quedan?",
-        correctAnswer: "12",
-        options: ["10", "12", "14", "15"],
-      },
-      config,
-    );
-    expect(ex).toMatchObject({
+  it("mapea problemas2pasos: sin opciones + hueco en todos los niveles", () => {
+    const raw = {
+      type: "add-sub",
+      op1: "+",
+      op2: "-",
+      a: 10,
+      b: 5,
+      c: 3,
+      mid: 15,
+      result: 12,
+      story: ["Juan tiene 10.", "Le dan 5.", "Da 3."],
+      question: "¿Cuántos le quedan?",
+      correctAnswer: "12",
+      options: ["10", "12", "14", "15"],
+    };
+    const easy = mapSessionToSheet("problemas2pasos", raw, config);
+    expect(easy).toMatchObject({
       kind: "problemas2pasos",
       steps: { a: 10, b: 5, c: 3, op1: "+", op2: "-" },
-      choiceLabels: ["10", "12", "14", "15"],
+      showWriteArea: true,
+      highlightKeyNumbers: true,
+      highlightStepNumbers: true,
+      useStepLetters: true,
       answer: 12,
     });
+    expect(easy).not.toHaveProperty("choiceLabels");
+
+    const medium = mapSessionToSheet("problemas2pasos", raw, { ...config, difficulty: "medium" });
+    expect(medium).toMatchObject({
+      kind: "problemas2pasos",
+      showWriteArea: true,
+      highlightKeyNumbers: true,
+      highlightStepNumbers: true,
+      useStepLetters: true,
+      answer: 12,
+    });
+    expect(medium).not.toHaveProperty("choiceLabels");
+
+    const hard = mapSessionToSheet("problemas2pasos", raw, { ...config, difficulty: "hard" });
+    expect(hard).toMatchObject({
+      showWriteArea: true,
+      highlightKeyNumbers: true,
+      useStepLetters: true,
+    });
+    expect(hard).not.toHaveProperty("choiceLabels");
+    expect(hard).not.toHaveProperty("highlightStepNumbers");
+
+    const expert = mapSessionToSheet("problemas2pasos", raw, { ...config, difficulty: "expert" });
+    expect(expert).toMatchObject({ showWriteArea: true, highlightKeyNumbers: true });
+    expect(expert).not.toHaveProperty("useStepLetters");
   });
 
   it("mapea simetria con figura y opciones; which-shape dibuja las opciones", () => {

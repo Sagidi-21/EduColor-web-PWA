@@ -1,4 +1,4 @@
-/* Problemas de 2 pasos — historia + tracker de pasos + opciones ○ */
+/* Problemas de 2 pasos — historia + tracker + (easy: hueco / medium+: opciones ○) */
 
 .ficha-p2p__story {
   margin-bottom: 6px;
@@ -9,6 +9,24 @@
   font-size: 14px;
   line-height: 1.3;
   color: #1a1a1a;
+}
+
+.ficha-p2p__key-num {
+  color: var(--color-primary, #0284c7);
+  font-weight: 800;
+}
+
+/* Letras A/B: misma familia de color, tonos distintos para distinguirlas */
+.ficha-p2p__letter {
+  font-weight: 800;
+}
+
+.ficha-p2p__letter--a {
+  color: color-mix(in srgb, var(--color-primary, #0284c7) 72%, #fff);
+}
+
+.ficha-p2p__letter--b {
+  color: color-mix(in srgb, var(--color-primary, #0284c7) 55%, #0f172a);
 }
 
 .ficha-p2p__steps {
@@ -48,12 +66,40 @@
   color: #334155;
 }
 
+/* Pregunta final abajo del todo + línea para el resultado */
+.ficha-p2p__final {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .ficha-p2p__question {
-  margin: 0 0 4px;
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: 15px;
   font-weight: 600;
   color: #1e293b;
   line-height: 1.25;
+}
+
+.ficha-p2p__answer-line {
+  flex: 0 0 72px;
+  height: 0;
+  border-bottom: 1.5px solid #334155;
+  margin-bottom: 2px;
+}
+
+/* Espacio en blanco bajo el tracker para hacer las operaciones */
+.ficha-p2p__work {
+  margin-top: 8px;
+  width: 100%;
+  min-height: 88px; /* edita aquí la altura del hueco */
+  box-sizing: border-box;
 }
 
 .ficha-p2p__choices {

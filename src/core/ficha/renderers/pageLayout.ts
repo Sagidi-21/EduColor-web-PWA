@@ -73,11 +73,14 @@ export function pageSizeForExercises(
     // Alumno: figura + opciones de texto (más altos). Soluciones: solo etiqueta.
     return options.showAnswer ? 16 : 8;
   }
+  if (first.kind === "problemas2pasos") {
+    // Hueco de escritura bajo el tracker → menos por hoja.
+    return options.showAnswer ? exercises.length || 1 : 6;
+  }
   if (
     first.kind === "simetria" ||
     first.kind === "cuerpos3d" ||
     first.kind === "circuloCircunferencia" ||
-    first.kind === "problemas2pasos" ||
     first.kind === "repartoIgual"
   ) {
     // Alumno: figura/diagrama + opciones (más altos). Soluciones: solo la respuesta.
