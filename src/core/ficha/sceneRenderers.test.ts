@@ -222,4 +222,19 @@ describe("fichas con escena dibujada", () => {
       });
     }
   });
+
+  it("cuerpos3d: figura + opciones horizontales + hint; soluciones solo respuesta", () => {
+    everyDifficulty("cuerpos3d", (alumno, soluciones) => {
+      expect(alumno).toContain("ficha-cuerpos3d__figure");
+      expect(alumno).toContain("ficha-cuerpos3d__svg");
+      expect(alumno).toContain("ficha-cuerpos3d__choices");
+      expect(alumno).toContain("redondea la correcta");
+      expect(alumno).toContain("var(--color-primary");
+      expect(alumno).not.toContain("ficha-answer");
+      expect(soluciones).toContain("ficha-answer");
+      expect(soluciones).not.toContain("ficha-cuerpos3d__figure");
+      expect(soluciones).not.toContain("ficha-cuerpos3d__choices");
+      expect(soluciones).not.toContain("redondea la correcta");
+    });
+  });
 });

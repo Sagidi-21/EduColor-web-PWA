@@ -1,4 +1,12 @@
-/* Cuerpos 3D — cuerpo SVG + opciones ○ */
+/* Cuerpos 3D — figura centrada + opciones horizontales con gap máximo */
+
+.ficha-cuerpos3d {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
 
 .ficha-cuerpos3d__question {
   margin: 0;
@@ -8,39 +16,54 @@
   line-height: 1.25;
 }
 
+.ficha-cuerpos3d__hint {
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
+}
+
 .ficha-cuerpos3d__body {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 40px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
   margin-top: 6px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ficha-cuerpos3d__figure {
-  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 
 .ficha-cuerpos3d__svg {
   display: block;
 }
 
+/* Opciones horizontales bajo la figura, ancho de caja, gap máximo */
 .ficha-cuerpos3d__choices {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  min-width: 0;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* ○ tipográfico en línea (html2canvas alinea mal cajas vacías/flex). */
 .ficha-cuerpos3d__choice {
-  display: block;
+  display: inline-block;
+  margin: 0;
   font-size: 15px;
   line-height: 1.35;
   color: #222;
+  text-align: center;
+  flex: 0 1 auto;
 }
 
 .ficha-cuerpos3d__choice-mark {

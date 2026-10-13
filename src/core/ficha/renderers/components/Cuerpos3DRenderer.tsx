@@ -7,9 +7,10 @@ export interface Cuerpos3DRendererProps {
 
 type Cuerpo = NonNullable<Cuerpos3DSheetExercise["shape"]>;
 
-const FILL = "rgba(16,185,129,.18)";
-const FILL2 = "rgba(16,185,129,.1)";
-const STROKE = "#0f9f6e";
+/** Color de clase (`--color-primary`); rellenos suaves con color-mix. */
+const FILL = "color-mix(in srgb, var(--color-primary, #0284c7) 18%, #fff)";
+const FILL2 = "color-mix(in srgb, var(--color-primary, #0284c7) 10%, #fff)";
+const STROKE = "var(--color-primary, #0284c7)";
 
 function cuerpoBody(shape: Cuerpo): JSX.Element {
   switch (shape) {
@@ -138,7 +139,7 @@ function Cuerpos3DSvg({ shape, size = 110 }: { shape: Cuerpo; size?: number }): 
 }
 
 /**
- * Alumno: pregunta + cuerpo SVG + opciones • (como en pizarra).
+ * Alumno: pregunta + cuerpo SVG centrado + opciones • horizontales debajo.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function Cuerpos3DRenderer({ ex, showAnswer }: Cuerpos3DRendererProps): JSX.Element {
@@ -150,7 +151,14 @@ export function Cuerpos3DRenderer({ ex, showAnswer }: Cuerpos3DRendererProps): J
 
   return (
     <div className="ficha-cuerpos3d">
-      {ex.question ? <p className="ficha-cuerpos3d__question">{ex.question}</p> : null}
+      {ex.question ? (
+        <p className="ficha-cuerpos3d__question">
+          {ex.question}
+          {choices.length > 0 && (
+            <span className="ficha-cuerpos3d__hint"> (redondea la correcta)</span>
+          )}
+        </p>
+      ) : null}
       <div className="ficha-cuerpos3d__body">
         {ex.shape && (
           <div className="ficha-cuerpos3d__figure">

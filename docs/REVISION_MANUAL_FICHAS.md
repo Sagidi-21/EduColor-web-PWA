@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 56 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 57 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -163,7 +163,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **poligonos** — Los polígonos _(2026-10-12: OK — redondea la correcta; expert sin figura ref.; easy sin mayúscula tras coma)_
 - [x] **shapes** — Formas y tamaños _(2026-10-10: OK — figura/foto + opciones como pizarra, soluciones solo nombre, PDF alineado)_
 - [ ] **simetria** — Simetría
-- [ ] **cuerpos3d** — Cuerpos geométricos
+- [x] **cuerpos3d** — Cuerpos geométricos _(2026-10-13: OK — figura centrada color de clase; opciones horizontales space-between; hint redondea)_
 - [ ] **circuloCircunferencia** — Círculo y circunferencia
 - [x] **lineTypes** — Tipos de líneas _(2026-10-10: OK — SVG + • opciones; hint «(redondea la correcta)» 14px; gap 120px; soluciones solo respuesta)_
 
