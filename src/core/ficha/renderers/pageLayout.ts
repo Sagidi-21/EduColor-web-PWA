@@ -146,10 +146,6 @@ export function isFullWidthExercise(
   if (ex.kind === "relacionar") return !options.showAnswer;
   if (ex.kind === "relacionarCantidades") return !options.showAnswer;
   if (ex.kind === "tablaNumerica") return !options.showAnswer;
-  if (ex.kind === "abaco3Cifras") {
-    // find-abaco: 4 ábacos en fila → ancho completo.
-    return ex.variant === "find-abaco" && !options.showAnswer;
-  }
   if (ex.kind === "comparison") return !options.showAnswer;
   // Ordinales: easy/medium 2 por fila; hard/expert 1 (casilla a la derecha).
   if (ex.kind === "ordinales") {

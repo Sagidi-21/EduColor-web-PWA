@@ -1,4 +1,5 @@
-﻿import type { Abaco3CifrasSheetExercise } from "../../types";
+﻿import type { ReactNode } from "react";
+import type { Abaco3CifrasSheetExercise } from "../../types";
 import { AbacoSvg } from "./AbacoSvg";
 
 export interface Abaco3CifrasRendererProps {
@@ -6,10 +7,24 @@ export interface Abaco3CifrasRendererProps {
   showAnswer: boolean;
 }
 
+/** Resalta cifras del enunciado con el color de clase. */
+function questionWithNumbers(question: string): ReactNode {
+  const parts = question.split(/(\d+)/);
+  return parts.map((part, i) =>
+    /^\d+$/.test(part) ? (
+      <span key={i} className="ficha-abaco__q-num">
+        {part}
+      </span>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
+}
+
 /**
  * Alumno:
  * - read-abaco / valor-posicional: ábaco SVG + pregunta + • opciones.
- * - find-abaco: número en badge + 4 ábacos (A-D) con • para marcar.
+ * - find-abaco: número en el enunciado (color de clase) + 4 ábacos (A-D) + hint redondea.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta; letra en find-abaco).
  */
 export function Abaco3CifrasRenderer({ ex, showAnswer }: Abaco3CifrasRendererProps): JSX.Element {
@@ -20,8 +35,10 @@ export function Abaco3CifrasRenderer({ ex, showAnswer }: Abaco3CifrasRendererPro
   if (ex.variant === "find-abaco") {
     return (
       <div className="ficha-abaco">
-        <p className="ficha-abaco__question">{ex.question}</p>
-        <div className="ficha-abaco__badge">{ex.number}</div>
+        <p className="ficha-abaco__question">
+          {questionWithNumbers(ex.question)}{" "}
+          <span className="ficha-abaco__hint">(redondea la correcta)</span>
+        </p>
         <table className="ficha-abaco__options" cellPadding={0} cellSpacing={0} role="presentation">
           <tbody>
             <tr>

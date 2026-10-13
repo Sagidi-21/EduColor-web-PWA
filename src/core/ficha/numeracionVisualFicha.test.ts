@@ -8,6 +8,7 @@ import { LecturaNumerosRenderer } from "./renderers/components/LecturaNumerosRen
 import { NumeracionRenderer } from "./renderers/components/NumeracionRenderer";
 import { RedondeoRenderer } from "./renderers/components/RedondeoRenderer";
 import { TablaNumericaRenderer } from "./renderers/components/TablaNumericaRenderer";
+import { pairIntoRows } from "./renderers/exerciseLayout";
 import { isFullWidthExercise } from "./renderers/pageLayout";
 import { solutionAnswerOf } from "./renderers/solutionAnswer";
 import type {
@@ -256,6 +257,26 @@ describe("abaco3cifras ficha", () => {
     }
   });
 
+  it("medium: todos a 2/fila; find-abaco emparejados entre sí", () => {
+    const list = generate<Abaco3CifrasSheetExercise>("abaco3cifras", "medium");
+    expect(list.every((ex) => !isFullWidthExercise(ex))).toBe(true);
+    const cells = list.map((ex, i) => ({
+      ex,
+      number: i + 1,
+      full: false,
+      variant: "",
+    }));
+    const rows = pairIntoRows(cells);
+    for (const row of rows) {
+      expect(row.length).toBeGreaterThanOrEqual(1);
+      expect(row.length).toBeLessThanOrEqual(2);
+      const variants = row.map((c) => (c.ex as Abaco3CifrasSheetExercise).variant);
+      const hasFind = variants.some((v) => v === "find-abaco");
+      const hasCompact = variants.some((v) => v !== "find-abaco");
+      expect(hasFind && hasCompact).toBe(false);
+    }
+  });
+
   it("find-abaco: 4 ábacos con letras y solución = letra", () => {
     const session = Array.from({ length: 12 }, (_, i) =>
       mapSessionToSheet(
@@ -278,9 +299,12 @@ describe("abaco3cifras ficha", () => {
     expect(ex.abacoOptions?.map((o) => o.letter)).toEqual(["A", "B", "C", "D"]);
     expect(ex.answer).toBe("C");
     expect(solutionAnswerOf(ex)).toBe("C");
-    expect(isFullWidthExercise(ex)).toBe(true);
+    expect(isFullWidthExercise(ex)).toBe(false);
     const markup = html(createElement(Abaco3CifrasRenderer, { ex, showAnswer: false }));
     expect((markup.match(/<svg/g) ?? []).length).toBe(4);
+    expect(markup).not.toContain("ficha-abaco__badge");
+    expect(markup).toContain("redondea la correcta");
+    expect(markup).toContain("ficha-abaco__q-num");
     const sol = html(createElement(Abaco3CifrasRenderer, { ex, showAnswer: true }));
     expect(sol).not.toContain("<svg");
   });

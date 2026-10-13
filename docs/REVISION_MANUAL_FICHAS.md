@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 52 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 53 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -156,7 +156,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **vecinosNumero** — Vecinos del número _(2026-10-10: OK — color de clase en «el número»; centrado; hint redondea; hard/expert con guion; opciones space-between)_
 - [x] **rectaNumerica** — Coloca el número en la recta _(2026-10-10: OK — número sin recuadro; hard/expert 1/fila recta ancha; soluciones con recta + marca vertical; sin flecha)_
 - [x] **redondeo** — Redondeo a la decena _(2026-10-13: OK — easy sin badge + opciones space-between; medium/hard/expert opciones centradas; hard sin extremos; expert solo badge color clase; soluciones solo respuesta)_
-- [ ] **abaco3cifras** — Ábaco de tres cifras
+- [x] **abaco3cifras** — Ábaco de tres cifras _(2026-10-13: OK — find sin badge + color clase + redondea; valor sin revelar bolitas; 2/fila por tipo)_
 
 ## Geometría
 

@@ -12,8 +12,9 @@ import type { ActivityDifficulty } from "../content/contracts";
  * - `find-abaco`: se muestra el número y hay que elegir el ábaco que lo
  *   representa. Las opciones son cadenas `"C-D-U"` con las bolitas de cada
  *   columna.
- * - `valor-posicional`: se pregunta qué vale cada bolita de una columna concreta.
- *   Las opciones son múltiplos del valor de esa columna, de 0 a 9.
+ * - `valor-posicional`: se pregunta qué valen las bolitas de una columna (sin
+ *   decir cuántas hay: el alumno las cuenta en el ábaco). Opciones = múltiplos
+ *   del valor de esa columna, de 0 a 9.
  *
  * No cambia ninguna regla de generación ni validación: solo el tipo de
  * dificultad (`Difficulty` de Electron → `ActivityDifficulty` de la PWA) y la
@@ -149,12 +150,12 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Abac
       }
       options.push(...Array.from(wrongs).sort(() => rng() - 0.5));
     } else {
-      // valor-posicional: qué vale cada bolita de la columna elegida.
+      // valor-posicional: el niño cuenta las bolitas en el ábaco (no se dice cuántas hay).
       const col = rng() < 0.33 ? "C" : rng() < 0.5 ? "D" : "U";
       const columna = COLUMNS.find((x) => x.id === col)!;
       const beads = col === "C" ? c : col === "D" ? d : u;
       const val = beads * columna.base;
-      question = `En el ábaco con ${beads} bolitas en la columna de ${columna.name}, ¿qué valor tienen?`;
+      question = `En el ábaco, ¿qué valor tienen las bolitas de la columna de ${columna.name}?`;
       correctAnswer = String(val);
       const wrongs = new Set<string>([correctAnswer]);
       while (wrongs.size < 4) {

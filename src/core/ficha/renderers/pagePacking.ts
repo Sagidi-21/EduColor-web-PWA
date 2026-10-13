@@ -8,7 +8,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { SheetExercise } from "../types";
 import { ExerciseGrid } from "./components/ExerciseGrid";
-import { columnsPerRow } from "./exerciseLayout";
+import { canShareAbacoRow, columnsPerRow } from "./exerciseLayout";
 import { chunkByPageSize, isFullWidthExercise, pageSizeForExercises } from "./pageLayout";
 import printCss from "./print/print-bundle";
 
@@ -36,6 +36,7 @@ function nextRowTake(exercises: SheetExercise[], start: number, showAnswer: bool
     const next = exercises[start + take];
     if (!next || isFullWidthExercise(next, { showAnswer })) break;
     if (columnsPerRow(next) !== cols) break;
+    if (!canShareAbacoRow(ex, next)) break;
     take += 1;
   }
   return take;

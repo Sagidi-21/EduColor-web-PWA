@@ -1,6 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { columnsPerRow, pairIntoRows } from "../exerciseLayout";
-import type { SheetExercise } from "../../types";
+import { columnsPerRow, pairIntoRows, reorderAbaco3CifrasForFicha } from "../exerciseLayout";
+import type { Abaco3CifrasSheetExercise, SheetExercise } from "../../types";
+import { isFullWidthExercise } from "../pageLayout";
+
+function abaco(
+  variant: Abaco3CifrasSheetExercise["variant"],
+  number = 135,
+): Abaco3CifrasSheetExercise {
+  return {
+    kind: "abaco3Cifras",
+    variant,
+    question: "q",
+    number,
+    columns: { c: 1, d: 3, u: 5 },
+    choiceLabels: variant === "find-abaco" ? undefined : ["1", "2", "3", "4"],
+    abacoOptions:
+      variant === "find-abaco"
+        ? [
+            { c: 1, d: 0, u: 0, letter: "A" },
+            { c: 1, d: 3, u: 5, letter: "B" },
+            { c: 2, d: 0, u: 0, letter: "C" },
+            { c: 3, d: 0, u: 0, letter: "D" },
+          ]
+        : undefined,
+    answer: variant === "find-abaco" ? "B" : "135",
+  };
+}
 
 function cell(number: number, full = false, kind: SheetExercise["kind"] = "operation") {
   const ex =
@@ -62,5 +87,39 @@ describe("columnsPerRow", () => {
     expect(columnsPerRow(cell(1, false, "algoritmoVertical").ex)).toBe(3);
     expect(columnsPerRow({ kind: "sumaLlevando", addends: [12, 15], answer: 27 } as never)).toBe(3);
     expect(columnsPerRow(cell(1).ex)).toBe(2);
+  });
+});
+
+describe("reorderAbaco3CifrasForFicha", () => {
+  it("empareja read/valor y find-abaco a 2 por fila (mismo tipo por fila)", () => {
+    const mixed = [
+      abaco("read-abaco", 111),
+      abaco("find-abaco", 222),
+      abaco("valor-posicional", 333),
+      abaco("find-abaco", 444),
+      abaco("read-abaco", 555),
+    ];
+    const ordered = reorderAbaco3CifrasForFicha(mixed);
+    expect(ordered.map((ex) => (ex as Abaco3CifrasSheetExercise).variant)).toEqual([
+      "read-abaco",
+      "valor-posicional",
+      "read-abaco",
+      "find-abaco",
+      "find-abaco",
+    ]);
+
+    const cells = ordered.map((ex, i) => ({
+      ex,
+      number: i + 1,
+      full: isFullWidthExercise(ex),
+      variant: "",
+    }));
+    const rows = pairIntoRows(cells);
+    // Compacto impar no se mezcla con find: queda en fila sola.
+    expect(rows.map((r) => r.map((c) => (c.ex as Abaco3CifrasSheetExercise).variant))).toEqual([
+      ["read-abaco", "valor-posicional"],
+      ["read-abaco"],
+      ["find-abaco", "find-abaco"],
+    ]);
   });
 });

@@ -176,7 +176,7 @@ describe("abaco3cifras — los tres tipos de ejercicio", () => {
     }
   });
 
-  it("`valor-posicional` ofrece múltiplos de la columna y el valor correcto es el de la pregunta", () => {
+  it("`valor-posicional` ofrece múltiplos de la columna y el valor correcto es el de las bolitas", () => {
     for (const dificultad of ["hard", "expert"] as ActivityDifficulty[]) {
       for (const semilla of SEMILLAS) {
         for (const ex of generateSession(dificultad, semilla).filter(
@@ -187,12 +187,10 @@ describe("abaco3cifras — los tres tipos de ejercicio", () => {
           expect(columna, ex.question).toBeDefined();
           const base = columna!.base;
 
-          const bolitas = Number(ex.question.match(/con (\d+) bolitas/)?.[1]);
-          expect(bolitas, ex.question).toBeGreaterThanOrEqual(0);
-          expect(bolitas, ex.question).toBeLessThanOrEqual(9);
-          expect(bolitas, ex.question).toBe(
-            columna!.id === "C" ? ex.centenas : columna!.id === "D" ? ex.decenas : ex.unidades,
-          );
+          // La pregunta no revela el conteo: el niño cuenta en el ábaco.
+          expect(ex.question, ex.question).not.toMatch(/\d+\s+bolitas/);
+          const bolitas =
+            columna!.id === "C" ? ex.centenas : columna!.id === "D" ? ex.decenas : ex.unidades;
           expect(ex.correctAnswer, ex.question).toBe(String(bolitas * base));
 
           expect(ex.options).toHaveLength(4);
@@ -214,8 +212,10 @@ describe("abaco3cifras — los tres tipos de ejercicio", () => {
           if (ex.type === "read-abaco") expect(ex.question).toBe("¿Qué número muestra el ábaco?");
           if (ex.type === "find-abaco")
             expect(ex.question).toContain(`representa el número ${ex.number}`);
-          if (ex.type === "valor-posicional")
-            expect(ex.question).toContain("bolitas en la columna de");
+          if (ex.type === "valor-posicional") {
+            expect(ex.question).toContain("bolitas de la columna de");
+            expect(ex.question).not.toMatch(/\d+\s+bolitas/);
+          }
         }
       }
     }

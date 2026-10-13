@@ -1,4 +1,4 @@
-import type { SheetExercise } from "../types";
+import type { Abaco3CifrasSheetExercise, SheetExercise } from "../types";
 
 /** Celda de la rejilla de ficha (antes de emparejar en filas). */
 export interface ExerciseGridCell {
@@ -6,6 +6,23 @@ export interface ExerciseGridCell {
   number: number;
   full: boolean;
   variant: string;
+}
+
+/**
+ * Ábaco 3 cifras: primero read/valor, luego find-abaco (ambos a 2/fila).
+ * `pairIntoRows` no mezcla tipos distintos si queda un sobrante impar.
+ */
+export function reorderAbaco3CifrasForFicha(exercises: SheetExercise[]): SheetExercise[] {
+  if (exercises.length === 0 || exercises[0]?.kind !== "abaco3Cifras") return exercises;
+
+  const compact: Abaco3CifrasSheetExercise[] = [];
+  const find: Abaco3CifrasSheetExercise[] = [];
+  for (const ex of exercises) {
+    if (ex.kind !== "abaco3Cifras") continue;
+    if (ex.variant === "find-abaco") find.push(ex);
+    else compact.push(ex);
+  }
+  return [...compact, ...find];
 }
 
 /** Clase explícita por tipo de ejercicio para CSS Word-safe. */
@@ -58,6 +75,12 @@ export function columnsPerRow(ex: SheetExercise): number {
   return 2;
 }
 
+/** find-abaco no comparte fila con read/valor (alturas distintas). */
+export function canShareAbacoRow(a: SheetExercise, b: SheetExercise): boolean {
+  if (a.kind !== "abaco3Cifras" || b.kind !== "abaco3Cifras") return true;
+  return (a.variant === "find-abaco") === (b.variant === "find-abaco");
+}
+
 /**
  * Empaqueta celdas en filas. Full-width ocupa fila sola; el resto usa
  * `columnsPerRow` del primer ejercicio de la fila.
@@ -78,6 +101,7 @@ export function pairIntoRows(cells: ExerciseGridCell[]): ExerciseGridCell[][] {
     while (row.length < cols && i < cells.length) {
       const next = cells[i]!;
       if (next.full || columnsPerRow(next.ex) !== cols) break;
+      if (!canShareAbacoRow(row[0]!.ex, next.ex)) break;
       row.push(next);
       i += 1;
     }

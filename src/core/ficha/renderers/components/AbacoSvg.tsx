@@ -21,17 +21,18 @@ const ETIQUETAS = ["C", "D", "U"] as const;
  */
 export function AbacoSvg({ c, d, u, size = "full" }: AbacoSvgProps): JSX.Element {
   const mini = size === "mini";
-  const beadR = mini ? 5 : 8;
-  const gap = mini ? 1.5 : 2;
-  const baseH = mini ? 12 : 16;
-  const rodW = mini ? 4 : 6;
-  const margenSuperior = mini ? 4 : 6;
+  // mini más compacto: 2 ejercicios find-abaco por fila (4 ábacos cada uno).
+  const beadR = mini ? 4 : 8;
+  const gap = mini ? 1.2 : 2;
+  const baseH = mini ? 10 : 16;
+  const rodW = mini ? 3 : 6;
+  const margenSuperior = mini ? 3 : 6;
 
-  const W = mini ? 78 : 132;
+  const W = mini ? 58 : 132;
   const rodH = BOLITAS_POR_COLUMNA * (beadR * 2 + gap);
   const H = margenSuperior + rodH + baseH;
 
-  const xs = mini ? [16, 39, 62] : [26, 66, 106];
+  const xs = mini ? [12, 29, 46] : [26, 66, 106];
   const columnas = [c, d, u];
 
   return (

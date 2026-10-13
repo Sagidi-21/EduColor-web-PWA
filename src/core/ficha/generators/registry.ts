@@ -1,6 +1,7 @@
 import { getEngineRegistration } from "../../content/engine-registry";
 import { getActivityManifest } from "../../../manifests/content-registry";
 import type { GeneratorDef, SheetConfig, SheetExercise } from "../types";
+import { reorderAbaco3CifrasForFicha } from "../renderers/exerciseLayout";
 import { mapSessionToSheet } from "./mapSessionToSheet";
 import { getSessionEngine } from "./session-engines";
 
@@ -44,6 +45,9 @@ export function createGenerator(activityId: string): GeneratorDef {
         }
       }
 
+      if (activityId === "abaco3cifras") {
+        return reorderAbaco3CifrasForFicha(results);
+      }
       return results;
     },
   };
