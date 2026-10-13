@@ -1586,6 +1586,7 @@ describe("mapSessionToSheet", () => {
         ],
         showBars: true,
         question: "¿Qué dura más?",
+        options: ["Recreo", "Clase"],
         correctAnswer: "clase",
       },
       config,
@@ -1594,8 +1595,27 @@ describe("mapSessionToSheet", () => {
       kind: "intervalosTiempo",
       showBars: true,
       answer: "clase",
+      choiceLabels: ["Recreo", "Clase"],
     });
     if (intv.kind === "intervalosTiempo") expect(intv.activities).toHaveLength(2);
+
+    const classify = mapSessionToSheet(
+      "intervalosTiempo",
+      {
+        type: "classify-hour",
+        activities: [{ name: "una película", emoji: "🎬", seconds: 7200, label: "2 horas" }],
+        showBars: true,
+        question: "🎬 Una película… ¿dura más de 1 hora o menos de 1 hora?",
+        options: ["Más de 1 hora", "Menos de 1 hora"],
+        correctAnswer: "Más de 1 hora",
+      },
+      { ...config, difficulty: "hard" },
+    );
+    expect(classify).toMatchObject({
+      kind: "intervalosTiempo",
+      choiceLabels: ["Más de 1 hora", "Menos de 1 hora"],
+      answer: "Más de 1 hora",
+    });
   });
 
   it("mapea relacionar a columnas con letras y respuestas número→letra", () => {

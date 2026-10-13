@@ -1007,6 +1007,7 @@ function mapInventarProblema(
 
 function mapIntervalosTiempo(ex: Record<string, unknown>): IntervalosTiempoSheetExercise {
   const acts = Array.isArray(ex.activities) ? ex.activities : [];
+  const choiceLabels = choiceLabelsFromOptions(ex.options);
   return {
     kind: "intervalosTiempo",
     type: asString(ex.type),
@@ -1021,6 +1022,7 @@ function mapIntervalosTiempo(ex: Record<string, unknown>): IntervalosTiempoSheet
     }),
     showBars: Boolean(ex.showBars),
     question: questionOf(ex),
+    choiceLabels: choiceLabels.length > 0 ? choiceLabels : undefined,
     answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
   };
 }

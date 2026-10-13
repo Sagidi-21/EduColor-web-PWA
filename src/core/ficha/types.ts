@@ -625,6 +625,8 @@ export interface IntervalosTiempoSheetExercise {
   activities: IntervalosTiempoActivitySheet[];
   showBars: boolean;
   question: string;
+  /** Opciones • (p. ej. «Más de 1 hora» / «Menos de 1 hora» o nombres de actividades). */
+  choiceLabels?: string[];
   answer?: string | number;
 }
 
