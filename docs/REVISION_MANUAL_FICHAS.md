@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 49 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 50 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -79,7 +79,7 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 | `reloj`               | El reloj                      | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy centrado+hint+aguja min color; medium sin digital duplicado; hard read aside; expert dibujar sin digital; hora color. |
 | `relojPonerHora`      | Pon la hora                   | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: esfera vacía para dibujar; hora objetivo en enunciado (color clase) + digital; soluciones solo respuesta.                  |
 | `monedasBilletes`     | Monedas y billetes            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy/medium centrado+opciones; hard opciones; expert 2 filas más separadas; gap opciones amplio.                           |
-| `inventarProblema`    | Laboratorio de problemas      | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy barato/caro color clase; medium/hard precios color; medium+ iconos izq.; expert sin ayuda de color.                   |
+| `inventarProblema`    | Laboratorio de problemas      | [x]    | [x]        | [x]      | [x]            | OK 2026-10-13: easy A/B + redondea la letra; barato/caro color; medium/hard precios color; medium+ iconos izq.; expert sin color.         |
 | `balanza`             | La balanza y el peso          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: easy MC+artículo mayúsc.; medium/hard MENOS/IGUAL/MÁS; hard sin inclinación (vs); expert sandía+pesas y «escribe el nº».   |
 | `balanzaEquilibra`    | Equilibra la balanza          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-12: sin ?/Pongo; hueco en platillo; expert 2 huecos+soluciones con ambos tipos (                                               | ); iconos fiables. |
 
@@ -172,7 +172,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **problemas** — Problemas con una operación _(2026-10-12: OK — easy/medium enunciado izq. + op en columna; hard/expert enunciado centrado + hueco debajo; números color de clase salvo expert; sin recuadro de respuesta)_
 - [ ] **problemas2pasos** — Problemas de 2 pasos
 - [x] **datosInnecesarios** — Desechar datos inútiles _(2026-10-12: OK — instrucción de tachar primero y dominante; pregunta como contexto; color de clase en tarea/números; soluciones solo respuesta)_
-- [x] **inventarProblema** — Laboratorio de problemas _(2026-10-12: OK — easy MÁS BARATO/CARO color clase; medium/hard precios color; medium+ iconos a la izq.; expert sin ayuda de color)_
+- [x] **inventarProblema** — Laboratorio de problemas _(2026-10-13: OK — easy A/B + redondea la letra; MÁS BARATO/CARO color; medium/hard precios color; medium+ iconos izq.; expert sin color)_
 
 ## Medidas y tiempo
 
@@ -195,7 +195,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **rutaCuadricula** — Taller de programación _(2026-10-12: OK — iconos 🚶🏫🌳 como pizarra; easy con 1 obstáculo; soluciones = tablero con camino ejemplo + «Ej.: …»)_
 - [x] **repartoIgual** — Repartos en partes iguales _(2026-10-13: OK — easy/medium puntos+cajas grupo; hard/expert casilla; números color de clase)_
 - [x] **laberintoMatematico** — Laberinto matemático (1.º) _(2026-10-10: OK — tablero grande color de clase; INICIO soft; soluciones con casillas rellenas; modal ficha)_
-- [ ] **laberintoMatematico2** — Laberinto matemático (2.º)
+- [x] **laberintoMatematico2** — Laberinto matemático (2.º) _(2026-10-13: OK)_
 - [ ] **probabilidad** — Probabilidad
 - [x] **graficoBarras** — Gráfico de barras _(2026-10-12: OK — eje Y con líneas de 1 en 1; easy/medium/hard etiquetan valores de columna; expert de 5 en 5; sin números encima de barras)_
 

@@ -44,7 +44,7 @@ function renderQuestion(ex: InventarProblemaSheetExercise): ReactNode {
 
 /**
  * Alumno:
- * - easy: MÁS BARATO/CARO en color de clase.
+ * - easy: MÁS BARATO/CARO en color de clase; letras A/B + hint «redondea la letra correcta».
  * - medium/hard: precios de iconos en color de clase; hard también en enunciado.
  * - medium/hard/expert: iconos a la izquierda + hueco para la operación.
  * - expert: sin resaltados de ayuda.
@@ -62,10 +62,16 @@ export function InventarProblemaRenderer({
     ? "ficha-inventar__price ficha-inventar__price--accent"
     : "ficha-inventar__price";
   const workSpace = Boolean(ex.leaveWorkSpace);
+  const showLetters = Boolean(ex.showItemLetters);
 
   return (
     <div className={`ficha-inventar${workSpace ? " ficha-inventar--workspace" : ""}`}>
-      <p className="ficha-inventar__question">{renderQuestion(ex)}</p>
+      <p className="ficha-inventar__question">
+        {renderQuestion(ex)}
+        {showLetters ? (
+          <span className="ficha-inventar__hint"> (redondea la letra correcta)</span>
+        ) : null}
+      </p>
       {ex.budget !== undefined ? (
         <p className="ficha-inventar__budget">
           💰 Presupuesto:{" "}
@@ -79,6 +85,11 @@ export function InventarProblemaRenderer({
       <div className="ficha-inventar__items">
         {ex.items.map((item, i) => (
           <div key={i} className="ficha-inventar__card">
+            {showLetters ? (
+              <span className="ficha-inventar__letter" aria-hidden="true">
+                {String.fromCharCode(65 + i)}
+              </span>
+            ) : null}
             <span className="ficha-inventar__emoji">{item.emoji}</span>
             <span className="ficha-inventar__name">{item.name}</span>
             <span className={priceClass}>{item.price}€</span>

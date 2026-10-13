@@ -989,19 +989,29 @@ function mapInventarProblema(
   const budget =
     typeof ex.budget === "number" && Number.isFinite(ex.budget) ? ex.budget : undefined;
   const difficulty = config?.difficulty;
+  const items = mapMenuItems(ex.items);
+  const rawAnswer = asString(ex.correctAnswer ?? ex.answer) || undefined;
+  const isEasy = difficulty === "easy";
+  // En easy la ficha etiqueta A/B y la solución es la letra, no el nombre.
+  let answer = rawAnswer;
+  if (isEasy && rawAnswer) {
+    const idx = items.findIndex((item) => item.name === rawAnswer);
+    if (idx >= 0 && idx < 26) answer = String.fromCharCode(65 + idx);
+  }
   return {
     kind: "inventarProblema",
-    items: mapMenuItems(ex.items),
+    items,
     budget,
     question: questionOf(ex),
-    highlightCompare: difficulty === "easy" ? true : undefined,
+    highlightCompare: isEasy ? true : undefined,
+    showItemLetters: isEasy ? true : undefined,
     highlightItemPrices: difficulty === "medium" || difficulty === "hard" ? true : undefined,
     highlightQuestionPrices: difficulty === "hard" ? true : undefined,
     leaveWorkSpace:
       difficulty === "medium" || difficulty === "hard" || difficulty === "expert"
         ? true
         : undefined,
-    answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
+    answer,
   };
 }
 

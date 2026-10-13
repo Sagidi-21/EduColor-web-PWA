@@ -848,6 +848,8 @@ export interface InventarProblemaSheetExercise {
   question: string;
   /** Easy: resaltar MÁS BARATO / MÁS CARO con color de clase. */
   highlightCompare?: boolean;
+  /** Easy: letras A/B junto a cada producto + hint «redondea la letra correcta». */
+  showItemLetters?: boolean;
   /** Medium/hard: precios de los iconos con color de clase (expert no). */
   highlightItemPrices?: boolean;
   /** Hard: precios del enunciado con color de clase (expert no). */

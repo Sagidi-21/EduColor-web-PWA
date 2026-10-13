@@ -19,6 +19,27 @@
   font-weight: 800;
 }
 
+.ficha-inventar__hint {
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.ficha-inventar__letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  min-height: 22px;
+  margin-bottom: 2px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  border: 1.5px solid #94a3b8;
+  border-radius: 4px;
+  background: #f8fafc;
+}
+
 /* Hard: importes del enunciado / presupuesto — color de clase */
 .ficha-inventar__price-hl {
   color: var(--color-primary, #0284c7);

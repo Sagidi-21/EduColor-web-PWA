@@ -1513,7 +1513,9 @@ describe("mapSessionToSheet", () => {
     expect(easy).toMatchObject({
       kind: "inventarProblema",
       highlightCompare: true,
-      answer: "cometa",
+      showItemLetters: true,
+      // Solución = letra del producto correcto (B = cometa, 2.º ítem).
+      answer: "B",
     });
     if (easy.kind === "inventarProblema") {
       expect(easy.highlightItemPrices).toBeUndefined();
