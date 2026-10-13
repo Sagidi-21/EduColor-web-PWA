@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 45 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 46 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -140,7 +140,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **capacidad** — Capacidad y litros _(2026-10-11: OK — easy opciones centradas; medium/hard pregunta izq. + medida dcha.; plural vaso/vasos; expert por tipo)_
 - [x] **ordinales** — Números ordinales _(2026-10-11: OK — mismo emoji+anillo; LTR; identify redondea; easy 2/fila; hard/expert casilla dcha.; flecha+hint)_
 - [x] **relacionar** — Relacionar número y cantidad _(2026-10-09: OK — alumno con líneas+figuras, soluciones solo número→letra, paginación por nivel)_
-- [ ] **relacionarCantidades** — Relacionar cantidades
+- [x] **relacionarCantidades** — Relacionar cantidades _(2026-10-13: OK — imgs 26px; columnas space-between para alinear altura izq./dcha.)_
 
 ## Numeración
 
@@ -244,7 +244,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 
 ### Ya alineadas (código) — candidatos a marcar OK tras mirar preview
 
-`relacionarCantidades`, `seriesNumericas`, `series3cifras`, `cintaMetrica`
+`seriesNumericas`, `series3cifras`, `cintaMetrica`
 
 ### 2ª vuelta (2026-10-10) — decisiones del profesor aplicadas
 
