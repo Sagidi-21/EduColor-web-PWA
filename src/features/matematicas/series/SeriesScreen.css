@@ -121,13 +121,13 @@
 
 /* Question */
 .ser__question {
-  font-size: 1.25rem;
+  font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
   color: #1e293b;
 }
 .ser__dir {
-  font-size: 0.95rem;
+  font-size: 1.8rem;
   font-weight: 600;
   color: var(--color-primary, #3b82f6);
 }
@@ -136,8 +136,8 @@
 .ser__sequence {
   display: flex;
   align-items: center;
-  gap: 0.15rem;
-  flex-wrap: wrap;
+  gap: 1.1rem;
+  flex-wrap: nowrap;
   justify-content: center;
 }
 .ser__box {
@@ -145,27 +145,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 72px;
-  height: 72px;
-  border-radius: 14px;
+  width: 112px;
+  height: 112px;
+  border-radius: 18px;
   background: #fff;
   border: 3px solid #cbd5e1;
-  font-size: 1.7rem;
+  font-size: 2.5rem;
   font-weight: 900;
-  color: #1e293b;
+  color: var(--color-primary, #3b82f6);
   font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
 }
 .ser__box--blank {
   border-color: #94a3b8;
   background: #f1f5f9;
   color: #94a3b8;
-  font-size: 2rem;
+  font-size: 2.5rem;
   border-style: dashed;
 }
 .ser__arrow {
   position: absolute;
-  right: -18px;
-  font-size: 1rem;
+  right: -1.15rem;
+  font-size: 1.35rem;
   color: #94a3b8;
   font-weight: 700;
   pointer-events: none;
@@ -174,28 +175,30 @@
 /* Options */
 .ser__options {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  flex-wrap: nowrap;
+  gap: 1rem;
   justify-content: center;
-  max-width: 440px;
+  max-width: none;
 }
 .ser__opt {
-  padding: 0.75rem 1.6rem;
-  min-height: 52px;
-  min-width: 76px;
-  border-radius: 14px;
+  padding: 0.9rem 1.8rem;
+  min-height: 72px;
+  min-width: 96px;
+  border-radius: 16px;
   border: 3px solid #e2e8f0;
   background: #fff;
   color: #1e293b;
-  font-size: 1.4rem;
+  font-size: 2.5rem;
   font-weight: 900;
   cursor: pointer;
   transition: all 0.16s;
   font-family: "Inter", sans-serif;
   font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
 }
 .ser__opt:hover:not(:disabled) {
-  border-color: #94a3b8;
+  border-color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, #3b82f6);
   transform: translateY(-2px);
 }
 .ser__opt:disabled {
