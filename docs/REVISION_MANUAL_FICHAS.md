@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 43 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 44 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -184,7 +184,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [ ] **intervalosTiempo** — Intervalos de tiempo
 - [x] **weekDays** — Días de la semana _(2026-10-10: OK — enunciado→tira→opciones; color de clase en día; gap 18px; recuadros 32px)_
 - [x] **monedasBilletes** — Monedas y billetes _(2026-10-12: OK — easy/medium centrado+opciones+hint; hard opciones; expert 2 filas separadas; gap opciones amplio)_
-- [ ] **menuCafeteria** — En la cafetería
+- [x] **menuCafeteria** — En la cafetería _(2026-10-13: OK — precios enunciado color clase easy–hard; remarcado carta easy accent / medium negro / hard+expert sin; medium presupuesto; hard mezcla suma y ¿me alcanza? sin total dado; opciones centradas + hint redondea)_
 - [x] **balanza** — La balanza y el peso _(2026-10-12: OK — easy redondea+artículo mayúsc.; medium/hard MENOS/IGUAL/MÁS; hard grupo vs pesa sin inclinación; expert sandía+pesas y «escribe el nº»; sin `?`)_
 - [x] **balanzaEquilibra** — Equilibra la balanza _(2026-10-12: OK — sin ?/Pongo; respuesta en platillo; expert 2 huecos 1kg/2kg; soluciones con ambos tipos separadas por \|; iconos fiables)_
 

@@ -23,7 +23,7 @@ describe("menuCafeteria core", () => {
   });
 
   it("cada ejercicio tiene la forma esperada", () => {
-    const sess = generateSession("medium", 456);
+    const sess = generateSession("easy", 456);
     for (const ex of sess) {
       expect(ex.menuItems).toBeDefined();
       expect(Array.isArray(ex.menuItems)).toBe(true);
@@ -37,7 +37,7 @@ describe("menuCafeteria core", () => {
     }
   });
 
-  it("easy/medium: pregunta de suma, 4 opciones", () => {
+  it("easy: pregunta de suma, 4 opciones", () => {
     const sess = generateSession("easy", 789);
     for (const ex of sess) {
       expect(ex.question).toContain("¿Cuánto pago en total?");
@@ -46,12 +46,36 @@ describe("menuCafeteria core", () => {
     }
   });
 
-  it("hard: pregunta de presupuesto, 2 opciones (yes/no)", () => {
-    const sess = generateSession("hard", 789);
+  it("medium: 2 platos y presupuesto, 2 opciones (yes/no)", () => {
+    const sess = generateSession("medium", 789);
     for (const ex of sess) {
+      expect(ex.tray).toHaveLength(2);
+      expect(ex.question).toMatch(/^Tengo \d+€\. ¿Puedo pedir /);
       expect(ex.question).toContain("¿Puedo pedir");
+      expect(ex.question).not.toContain("¿Cuánto pago en total?");
       expect(ex.options.length).toBe(2);
       expect(["yes", "no"]).toContain(ex.correctAnswer);
+    }
+  });
+
+  it("hard: 3 platos, mezcla suma y presupuesto", () => {
+    const sess = generateSession("hard", 789);
+    const sums = sess.filter((ex) => ex.question.includes("¿Cuánto pago en total?"));
+    const budgets = sess.filter((ex) => ex.question.includes("¿Puedo pedir"));
+    expect(sums.length).toBeGreaterThan(0);
+    expect(budgets.length).toBeGreaterThan(0);
+    expect(sums.length + budgets.length).toBe(sess.length);
+    for (const ex of sess) {
+      expect(ex.tray).toHaveLength(3);
+    }
+    for (const ex of sums) {
+      expect(ex.options.length).toBe(4);
+      expect(ex.correctAnswer).toMatch(/^\d+€$/);
+    }
+    for (const ex of budgets) {
+      expect(ex.options.length).toBe(2);
+      expect(["yes", "no"]).toContain(ex.correctAnswer);
+      expect(ex.question).not.toMatch(/=\s*\d+€\s*en total/);
     }
   });
 

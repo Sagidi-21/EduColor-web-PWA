@@ -1441,7 +1441,42 @@ describe("mapSessionToSheet", () => {
       kind: "menuCafeteria",
       tray: [{ emoji: "🍝", name: "Pasta", price: 6 }],
       answer: "6€",
+      highlightQuestionPrices: true,
+      selectedHighlight: "accent",
     });
+  });
+
+  it("menuCafeteria resalta por dificultad: easy accent, medium black, hard/expert sin remarcado", () => {
+    const base = {
+      tray: [{ emoji: "🍝", name: "Pasta", price: 6 }],
+      menuItems: [
+        { emoji: "🍝", name: "Pasta", price: 6 },
+        { emoji: "🥗", name: "Ensalada", price: 4 },
+      ],
+      question: "Pido Pasta (6€). ¿Cuánto pago?",
+      correctAnswer: "6€",
+    };
+
+    const medium = mapSessionToSheet("menuCafeteria", base, { ...config, difficulty: "medium" });
+    expect(medium).toMatchObject({
+      kind: "menuCafeteria",
+      highlightQuestionPrices: true,
+      selectedHighlight: "black",
+    });
+
+    const hard = mapSessionToSheet("menuCafeteria", base, { ...config, difficulty: "hard" });
+    expect(hard).toMatchObject({
+      kind: "menuCafeteria",
+      highlightQuestionPrices: true,
+    });
+    if (hard.kind === "menuCafeteria") expect(hard.selectedHighlight).toBeUndefined();
+
+    const expert = mapSessionToSheet("menuCafeteria", base, { ...config, difficulty: "expert" });
+    expect(expert).toMatchObject({ kind: "menuCafeteria" });
+    if (expert.kind === "menuCafeteria") {
+      expect(expert.highlightQuestionPrices).toBeUndefined();
+      expect(expert.selectedHighlight).toBeUndefined();
+    }
   });
 
   it("mapea cintaMetrica con emoji del objeto", () => {

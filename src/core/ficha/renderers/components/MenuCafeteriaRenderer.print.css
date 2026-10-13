@@ -9,6 +9,17 @@
   white-space: pre-wrap;
 }
 
+/* easy / medium / hard: importes del enunciado — color de clase */
+.ficha-menu__price-hl {
+  color: var(--color-primary, #0284c7);
+  font-weight: 800;
+}
+
+.ficha-menu__hint {
+  font-weight: 500;
+  color: #64748b;
+}
+
 .ficha-menu__card {
   margin: 4px 0;
   padding: 6px 8px;
@@ -53,10 +64,16 @@
   min-width: 56px;
 }
 
-/* Platos del pedido: borde grueso (se distingue también en blanco y negro) */
+/* medium: platos del pedido remarcados en negro */
 .ficha-menu__item--selected {
   border: 2.5px solid #1e293b;
   background: #f1f5f9;
+}
+
+/* easy: platos del pedido remarcados con color de clase */
+.ficha-menu__item--selected-accent {
+  border: 2.5px solid var(--color-primary, #0284c7);
+  background: color-mix(in srgb, var(--color-primary, #0284c7) 10%, #fff);
 }
 
 .ficha-menu__emoji {
@@ -77,14 +94,19 @@
   color: #0f172a;
 }
 
-/* Opciones ○ (círculo tipográfico, como el resto de fichas) */
+/* Opciones • centradas bajo la carta */
 .ficha-menu__choices {
-  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 32px;
+  margin-top: 8px;
+  width: 100%;
 }
 
 .ficha-menu__choice {
   display: inline-block;
-  margin: 2px 16px 2px 0;
+  margin: 0;
   font-size: 15px;
   line-height: 1.35;
   color: #222;

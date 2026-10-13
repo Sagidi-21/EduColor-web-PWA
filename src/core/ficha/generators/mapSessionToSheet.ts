@@ -939,7 +939,10 @@ function mapGraficoBarras(
   };
 }
 
-function mapMenuCafeteria(ex: Record<string, unknown>): MenuCafeteriaSheetExercise {
+function mapMenuCafeteria(
+  ex: Record<string, unknown>,
+  config: SheetConfig,
+): MenuCafeteriaSheetExercise {
   const optionsRaw = Array.isArray(ex.options) ? ex.options : [];
   const choiceLabels = choiceLabelsFromOptions(optionsRaw);
   const correct = asString(ex.correctAnswer ?? ex.answer);
@@ -953,12 +956,17 @@ function mapMenuCafeteria(ex: Record<string, unknown>): MenuCafeteriaSheetExerci
       ? asString((matched as Record<string, unknown>).label) || correct
       : correct;
   const menu = mapMenuItems(ex.menuItems);
+  const difficulty = config.difficulty;
+  const selectedHighlight =
+    difficulty === "easy" ? "accent" : difficulty === "medium" ? "black" : undefined;
   return {
     kind: "menuCafeteria",
     tray: mapMenuItems(ex.tray),
     menu: menu.length > 0 ? menu : undefined,
     question: questionOf(ex),
     choiceLabels: choiceLabels.length > 0 ? choiceLabels : undefined,
+    highlightQuestionPrices: difficulty !== "expert" ? true : undefined,
+    selectedHighlight,
     answer: answerLabel || undefined,
   };
 }
@@ -1861,7 +1869,7 @@ export function mapSessionToSheet(
     case "graficoBarras":
       return mapGraficoBarras(ex, config);
     case "menuCafeteria":
-      return mapMenuCafeteria(ex);
+      return mapMenuCafeteria(ex, config);
     case "monedasBilletes":
       return mapMonedasBilletes(ex, config);
     case "inventarProblema":

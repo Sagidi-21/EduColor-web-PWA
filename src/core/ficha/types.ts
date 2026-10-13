@@ -811,6 +811,13 @@ export interface MenuCafeteriaSheetExercise {
   question: string;
   /** Opciones MC (importes o Sí/No) como en pizarra. */
   choiceLabels?: string[];
+  /** easy/medium/hard: importes `N€` del enunciado con color de clase (expert no). */
+  highlightQuestionPrices?: boolean;
+  /**
+   * Remarcado de platos del pedido en la carta.
+   * easy: color de clase; medium: negro; hard/expert: sin remarcar.
+   */
+  selectedHighlight?: "accent" | "black";
   answer?: string | number;
 }
 

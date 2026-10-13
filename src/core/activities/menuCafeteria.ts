@@ -85,10 +85,11 @@ export function generateSession(
     }
 
     const total = tray.reduce((s, m) => s + m.price, 0);
+    const trayList = (sep: string) =>
+      tray.map((m) => `${m.emoji} ${m.name} (${m.price}€)`).join(sep);
 
-    if (difficulty === "easy" || difficulty === "medium") {
-      // Sum the prices of the tray
-      const question = `Pido ${tray.map((m) => `${m.emoji} ${m.name} (${m.price}€)`).join(" y ")}. ¿Cuánto pago en total?`;
+    const pushSum = (sep: string) => {
+      const question = `Pido ${trayList(sep)}. ¿Cuánto pago en total?`;
       const correctAnswer = `${total}€`;
       const wrongs = new Set<string>();
       while (wrongs.size < 3) {
@@ -100,17 +101,31 @@ export function generateSession(
         value: v,
       }));
       out.push({ menuItems: menuSubset, tray, question, options, correctAnswer });
-    } else if (difficulty === "hard") {
-      // What can I buy with a budget?
+    };
+
+    const pushBudget = (sep: string) => {
       const budget = total + randInt(rng, -2, 5);
       const canBuy = budget >= total;
-      const question = `Tengo ${budget}€. ¿Puedo pedir ${tray.map((m) => `${m.emoji} ${m.name} (${m.price}€)`).join(" + ")} = ${total}€ en total?`;
+      // Sin total en el enunciado: el alumno suma los platos.
+      const question = `Tengo ${budget}€. ¿Puedo pedir ${trayList(sep)}?`;
       const correctAnswer = canBuy ? "yes" : "no";
       const options = shuffle(rng, [
         { label: "Sí, me llega", value: "yes" },
         { label: "No, no tengo suficiente", value: "no" },
       ]);
       out.push({ menuItems: menuSubset, tray, question, options, correctAnswer });
+    };
+
+    if (difficulty === "easy") {
+      // Suma 2 platos del menú.
+      pushSum(" y ");
+    } else if (difficulty === "medium") {
+      // 2 platos + presupuesto.
+      pushBudget(" y ");
+    } else if (difficulty === "hard") {
+      // 3 platos: mezcla ¿cuánto pago? y ¿me alcanza?
+      if (i % 2 === 0) pushSum(" + ");
+      else pushBudget(" + ");
     } else {
       // expert: Change calculation
       const payment = total + randInt(rng, 1, 10);

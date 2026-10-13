@@ -17,7 +17,7 @@
     "difficultyDescriptions": {
       "easy": "Suma 2 platos del menú",
       "medium": "Suma 2 platos y compara con presupuesto",
-      "hard": "3 platos: ¿me alcanza el dinero?",
+      "hard": "3 platos: suma el total o ¿me alcanza?",
       "expert": "Calcula cuánto dinero te devuelven"
     }
   },
