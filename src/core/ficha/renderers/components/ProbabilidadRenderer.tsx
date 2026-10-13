@@ -85,7 +85,8 @@ function BagSvg({ balls }: { balls: ProbabilidadBallSheet[] }): JSX.Element {
 }
 
 /**
- * Alumno: suceso (clasificar) o bolsa dibujada con pelotas + pregunta + • Seguro/Posible/Imposible.
+ * Alumno: suceso (clasificar) o bolsa + pregunta + opciones • centradas + hint redondea.
+ * Easy/medium: texto del recuadro en color de clase.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function ProbabilidadRenderer({ ex, showAnswer }: ProbabilidadRendererProps): JSX.Element {
@@ -98,15 +99,21 @@ export function ProbabilidadRenderer({ ex, showAnswer }: ProbabilidadRendererPro
     ex.choiceLabels && ex.choiceLabels.length > 0
       ? ex.choiceLabels
       : ["Seguro", "Posible", "Imposible"];
+  const contextClass = ex.highlightContext
+    ? "ficha-prob__context ficha-prob__context--primary"
+    : "ficha-prob__context";
 
   return (
     <div className="ficha-prob">
       {isBag ? (
         <BagSvg balls={ex.balls!} />
       ) : ex.context ? (
-        <p className="ficha-prob__context">{ex.context}</p>
+        <p className={contextClass}>{ex.context}</p>
       ) : null}
-      <p className="ficha-prob__question">{ex.question}</p>
+      <p className="ficha-prob__question">
+        {ex.question}
+        {choices.length > 0 && <span className="ficha-prob__hint"> (redondea la correcta)</span>}
+      </p>
       <div className="ficha-prob__choices">
         {choices.map((label, i) => (
           <span key={`${label}-${i}`} className="ficha-prob__choice">

@@ -1596,13 +1596,17 @@ function mapPosicionesAula(ex: Record<string, unknown>): PosicionesAulaSheetExer
   };
 }
 
-function mapProbabilidad(ex: Record<string, unknown>): ProbabilidadSheetExercise {
+function mapProbabilidad(
+  ex: Record<string, unknown>,
+  config: SheetConfig,
+): ProbabilidadSheetExercise {
   const variant: "classify" | "bag" = asString(ex.type) === "bag" ? "bag" : "classify";
   const context = asString(ex.context);
   const choices = asStringArray(ex.options);
   const correct = asString(ex.correctAnswer ?? ex.answer);
   const matchedLabel = choices.find((c) => c.toLowerCase() === correct.toLowerCase());
   const balls = variant === "bag" ? parseBagContext(context) : undefined;
+  const highlightContext = config.difficulty === "easy" || config.difficulty === "medium";
   return {
     kind: "probabilidad",
     variant,
@@ -1610,6 +1614,7 @@ function mapProbabilidad(ex: Record<string, unknown>): ProbabilidadSheetExercise
     context: context || undefined,
     balls: balls && balls.length > 0 ? balls : undefined,
     choiceLabels: choices.length > 0 ? choices : undefined,
+    ...(highlightContext ? { highlightContext: true as const } : {}),
     answer: matchedLabel ?? (capitalizeFirst(correct) || undefined),
   };
 }
@@ -1892,7 +1897,7 @@ export function mapSessionToSheet(
     case "multiplicacion":
       return mapMultiplicacion(ex);
     case "probabilidad":
-      return mapProbabilidad(ex);
+      return mapProbabilidad(ex, config);
     case "redondeo":
       return mapRedondeo(ex, config);
     case "series3cifras":

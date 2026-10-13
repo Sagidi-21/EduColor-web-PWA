@@ -558,6 +558,8 @@ export interface ProbabilidadSheetExercise {
   balls?: ProbabilidadBallSheet[];
   /** Opciones MC (Seguro / Posible / Imposible). */
   choiceLabels?: string[];
+  /** Easy/medium: texto del recuadro (contexto) en color de clase. */
+  highlightContext?: boolean;
   answer?: string | number;
 }
 

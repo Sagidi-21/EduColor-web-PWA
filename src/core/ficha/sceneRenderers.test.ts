@@ -79,13 +79,18 @@ describe("fichas con escena dibujada", () => {
     });
   });
 
-  it("probabilidad dibuja la bolsa o el contexto con opciones ○", () => {
+  it("probabilidad: opciones centradas + hint; easy/medium recuadro color de clase", () => {
     everyDifficulty("probabilidad", (alumno, soluciones) => {
       expect(alumno).toContain("ficha-prob__choice-mark");
+      expect(alumno).toContain("redondea la correcta");
       expect(alumno).toMatch(/ficha-prob__bag-svg|ficha-prob__context/);
       expect(soluciones).toContain("ficha-answer");
       expect(soluciones).not.toContain("ficha-prob__choices");
+      expect(soluciones).not.toContain("redondea la correcta");
     });
+    expect(html("probabilidad", "easy", "alumno")).toContain("ficha-prob__context--primary");
+    expect(html("probabilidad", "medium", "alumno")).toContain("ficha-prob__context--primary");
+    expect(html("probabilidad", "hard", "alumno")).not.toContain("ficha-prob__context--primary");
   });
 
   it("capacidad dibuja recipientes o vasos; soluciones solo la respuesta", () => {

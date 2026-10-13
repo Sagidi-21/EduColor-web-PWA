@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 61 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 62 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -196,7 +196,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **repartoIgual** — Repartos en partes iguales _(2026-10-13: OK — easy/medium puntos+cajas grupo; hard/expert casilla; números color de clase)_
 - [x] **laberintoMatematico** — Laberinto matemático (1.º) _(2026-10-10: OK — tablero grande color de clase; INICIO soft; soluciones con casillas rellenas; modal ficha)_
 - [x] **laberintoMatematico2** — Laberinto matemático (2.º) _(2026-10-13: OK)_
-- [ ] **probabilidad** — Probabilidad
+- [x] **probabilidad** — Probabilidad _(2026-10-13: OK — opciones centradas + hint redondea; easy/medium texto del recuadro en color de clase)_
 - [x] **graficoBarras** — Gráfico de barras _(2026-10-12: OK — eje Y con líneas de 1 en 1; easy/medium/hard etiquetan valores de columna; expert de 5 en 5; sin números encima de barras)_
 
 ---
