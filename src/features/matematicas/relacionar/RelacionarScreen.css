@@ -28,6 +28,70 @@
   text-align: center;
 }
 
+.rel__board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+/* Enunciado a la izquierda (absoluto); columnas centradas en horizontal */
+.rel__main--side {
+  position: relative;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px 16px;
+}
+
+.rel__main--side .rel__instruction {
+  position: absolute;
+  /* Distancia al borde izquierdo de la pantalla (ajusta este valor) */
+  left: 100px;
+  top: 50%;
+  transform: translateY(-50%);
+  /* Ancho del bloque de texto: más estrecho = más líneas; ~9–11rem ≈ 2 líneas */
+  width: 14rem;
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.35;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.rel__main--side .rel__board {
+  width: 100%;
+  align-items: center;
+  max-height: 100%;
+  overflow: auto;
+}
+
+/* Easy / medium: filas centradas en vertical */
+.rel__main--board-center {
+  justify-content: center;
+}
+
+.rel__main--board-center .rel__board {
+  justify-content: center;
+}
+
+/* Hard / expert: filas arriba para no cortar la última */
+.rel__main--board-top {
+  justify-content: flex-start;
+}
+
+.rel__main--board-top .rel__board {
+  justify-content: flex-start;
+}
+
+.rel__main--side .rel__columns {
+  gap: 200px;
+  transform: translateX(120px);
+}
+
+.rel__main--side .rel__col {
+  gap: 8px;
+}
+
 /* ── Columnas ────────────────────────────────────────────────────── */
 .rel__columns {
   position: relative;
@@ -87,7 +151,7 @@
 .rel__number {
   font-size: 52px;
   font-weight: 900;
-  color: #1e293b;
+  color: var(--color-primary, #ea580c);
   line-height: 1;
 }
 
@@ -149,7 +213,7 @@
   cursor: default;
 }
 .rel__item--connected .rel__number {
-  color: #16a34a;
+  color: var(--color-primary, #ea580c);
 }
 
 .rel__item--wrong {

@@ -69,6 +69,8 @@ describe("RelacionarScreen smoke", () => {
     expect(container.querySelector(".rel__instruction")?.textContent).toBe(
       "Toca un número y luego el grupo que le corresponde",
     );
+    expect(container.querySelector(".rel__main--side")).not.toBeNull();
+    expect(container.querySelector(".rel__main--board-center")).not.toBeNull();
     expect(leftItems(container)).toHaveLength(round.pairs.length);
     expect(rightItems(container)).toHaveLength(round.pairs.length);
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
@@ -82,6 +84,14 @@ describe("RelacionarScreen smoke", () => {
     expect(container.querySelector(".shared-numpad")).toBeNull();
     expect(container.querySelector(".dab")).toBeNull();
     expect(container.querySelector(".input-toggle")).toBeNull();
+  });
+
+  it("en hard/expert las columnas van arriba; en easy/medium centradas", () => {
+    const { container: hard } = render(<RelacionarScreen {...buildProps("hard")} />);
+    expect(hard.querySelector(".rel__main--board-top")).not.toBeNull();
+
+    const { container: medium } = render(<RelacionarScreen {...buildProps("medium")} />);
+    expect(medium.querySelector(".rel__main--board-center")).not.toBeNull();
   });
 
   it("la columna izquierda muestra los números de la ronda", () => {

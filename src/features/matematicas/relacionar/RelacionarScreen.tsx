@@ -137,6 +137,9 @@ export function RelacionarScreen({
 
   if (!currentRound) return null;
 
+  // Easy/medium: columnas centradas en vertical. Hard/expert: arriba (más filas).
+  const boardAlign = difficulty === "hard" || difficulty === "expert" ? "top" : "center";
+
   return (
     <div className="rel">
       <ActivityHeader
@@ -150,25 +153,27 @@ export function RelacionarScreen({
         progress={`${roundIdx + 1} / ${TOTAL_ROUNDS}`}
       />
 
-      <main className="rel__main">
+      <main className={`rel__main rel__main--side rel__main--board-${boardAlign}`}>
         <p className="rel__instruction">Toca un número y luego el grupo que le corresponde</p>
 
-        <MatchColumns
-          key={roundIdx}
-          prefix="rel"
-          leftClass="rel__item--num"
-          rightClass={(pair) =>
-            pair.scattered ? "rel__item--imgs rel__item--imgs-scattered" : "rel__item--imgs"
-          }
-          left={currentRound.leftColumn}
-          right={currentRound.rightColumn}
-          renderLeft={(pair) => <span className="rel__number">{pair.number}</span>}
-          renderRight={(pair) => <ScatteredImages pair={pair} />}
-          onPair={() => {
-            /* El sonido y el error los pone el propio emparejador. */
-          }}
-          onComplete={handleComplete}
-        />
+        <div className="rel__board">
+          <MatchColumns
+            key={roundIdx}
+            prefix="rel"
+            leftClass="rel__item--num"
+            rightClass={(pair) =>
+              pair.scattered ? "rel__item--imgs rel__item--imgs-scattered" : "rel__item--imgs"
+            }
+            left={currentRound.leftColumn}
+            right={currentRound.rightColumn}
+            renderLeft={(pair) => <span className="rel__number">{pair.number}</span>}
+            renderRight={(pair) => <ScatteredImages pair={pair} />}
+            onPair={() => {
+              /* El sonido y el error los pone el propio emparejador. */
+            }}
+            onComplete={handleComplete}
+          />
+        </div>
       </main>
     </div>
   );
