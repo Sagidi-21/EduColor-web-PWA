@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 46 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 47 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -151,7 +151,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **tablaNumerica** — La tabla de los números _(2026-10-12: OK — easy tabla hasta respuesta+10; medium 4–10 símbolos / busca 2–4; hard/expert color de clase; ficha iconos+recuadros)_
 - [x] **lecturaNumeros** — Lectura de números _(2026-10-10: OK — enunciado ½ + número dcha.; color de clase; hint redondea; opciones space-between; hard/expert 1/fila y display más pequeño)_
 - [x] **ordenar** — Ordenar números _(2026-10-09: OK — alumno+soluciones, impresión A4, cabecera/logo)_
-- [ ] **seriesNumericas** — Series numéricas
+- [x] **seriesNumericas** — Series numéricas _(2026-10-13: OK — 1.º y 2.º; secuencia+hueco; pista de salto solo easy/medium; soluciones solo número)_
 - [ ] **series3cifras** — Series de 3 cifras
 - [x] **vecinosNumero** — Vecinos del número _(2026-10-10: OK — color de clase en «el número»; centrado; hint redondea; hard/expert con guion; opciones space-between)_
 - [x] **rectaNumerica** — Coloca el número en la recta _(2026-10-10: OK — número sin recuadro; hard/expert 1/fila recta ancha; soluciones con recta + marca vertical; sin flecha)_
@@ -244,7 +244,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 
 ### Ya alineadas (código) — candidatos a marcar OK tras mirar preview
 
-`seriesNumericas`, `series3cifras`, `cintaMetrica`
+`series3cifras`, `cintaMetrica`
 
 ### 2ª vuelta (2026-10-10) — decisiones del profesor aplicadas
 
