@@ -10,13 +10,13 @@ const baseActivity = {
   id: "lecturaNumeros",
   engineId: "lecturaNumeros",
   gradeIds: ["grade-1", "grade-2"],
-} as ActivityManifest;
+} as unknown as ActivityManifest;
 
 const countingActivity = {
   id: "counting",
   engineId: "counting",
   gradeIds: ["grade-1", "grade-2"],
-} as ActivityManifest;
+} as unknown as ActivityManifest;
 
 describe("levelSelect", () => {
   it("starsForIndex pinta 1–4 estrellas", () => {

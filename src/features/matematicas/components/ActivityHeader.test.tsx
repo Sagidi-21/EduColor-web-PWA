@@ -9,7 +9,7 @@ const activity = {
   engineId: "lecturaNumeros",
   title: "Lectura de números",
   gradeIds: ["grade-1"],
-} as ActivityManifest;
+} as unknown as ActivityManifest;
 
 function LaunchAndHeader() {
   const { launchSession, session } = useExerciseSession();
