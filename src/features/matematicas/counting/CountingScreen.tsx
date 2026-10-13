@@ -184,6 +184,58 @@ export function CountingScreen({
     else if (field === "hundreds") setCanvasKeys((k) => ({ ...k, hundreds: k.hundreds + 1 }));
   }, [currentStep]);
 
+  /** Volver a un paso ya respondido (p. ej. decenas) para modificar el valor. */
+  const goBackToFillStep = useCallback(
+    (targetIndex: number) => {
+      if (!current || current.interactionType !== "FILL_TABLE") return;
+      if (targetIndex < 0 || targetIndex > session.currentStepIndex) return;
+      if (session.answerState === "wrong") return;
+
+      const targetStep = current.steps[targetIndex];
+      if (!targetStep || targetStep.answerType === "COMPOSE_NUMBER") return;
+
+      const fieldFor = (answerType: string): "hundreds" | "tens" | "units" | null => {
+        if (answerType === "COUNT_HUNDREDS") return "hundreds";
+        if (answerType === "COUNT_TENS") return "tens";
+        if (answerType === "COUNT_UNITS") return "units";
+        return null;
+      };
+
+      const targetField = fieldFor(targetStep.answerType);
+      if (!targetField) return;
+
+      setSession((s) => {
+        const nextInput = {
+          hundreds: s.posTableInput.hundreds ?? "",
+          tens: s.posTableInput.tens,
+          units: s.posTableInput.units,
+        };
+        // Vacía los pasos posteriores al elegido.
+        for (let j = targetIndex + 1; j < current.steps.length; j++) {
+          const f = fieldFor(current.steps[j]!.answerType);
+          if (f === "hundreds") nextInput.hundreds = "";
+          if (f === "tens") nextInput.tens = "";
+          if (f === "units") nextInput.units = "";
+        }
+        // Si el valor del paso destino está vacío, rellena con la respuesta ya dada.
+        if (!nextInput[targetField]) {
+          nextInput[targetField] = String(targetStep.correctAnswer);
+        }
+        return {
+          ...s,
+          currentStepIndex: targetIndex,
+          answerState: "idle",
+          selectedOption: null,
+          alreadyFailed: false,
+          posTableInput: nextInput,
+        };
+      });
+      setActiveInputCell(targetField);
+      setCanvasKeys((k) => ({ ...k, [targetField]: k[targetField] + 1 }));
+    },
+    [current, session.currentStepIndex, session.answerState],
+  );
+
   const handleNext = useCallback(() => {
     const isLastStep = session.currentStepIndex >= current.steps.length - 1;
 
@@ -636,7 +688,14 @@ export function CountingScreen({
             </div>
           )}
 
-          <div className="counting__objects" aria-label={`${current.count} objetos`}>
+          <div
+            className={`counting__objects${
+              current.interactionType === "GROUP" || current.interactionType === "DRAG"
+                ? " counting__objects--passthrough"
+                : ""
+            }`}
+            aria-label={`${current.count} objetos`}
+          >
             {/* ... objects rendered here ... */}
             {current.positions.map((pos, i) => {
               const isTouched = session.touchedIndices.includes(i);
@@ -651,6 +710,20 @@ export function CountingScreen({
                 );
 
               if (belongsToFilledGroup) return null;
+
+              // Con numpad flotante: ocultar solo las imágenes del mismo lado que el teclado.
+              // Numpad unidades → izquierda; numpad decenas → derecha.
+              const numpadFloating =
+                current.interactionType === "FILL_TABLE" &&
+                mode === "numpad" &&
+                currentStep?.answerType !== "COMPOSE_NUMBER";
+              const hideBehindNumpad =
+                numpadFloating &&
+                (currentStep?.answerType === "COUNT_UNITS"
+                  ? pos.zone === "tens" || (pos.zone == null && pos.x < 50)
+                  : pos.zone === "units" || (pos.zone == null && pos.x >= 50));
+
+              if (hideBehindNumpad) return null;
 
               if (
                 (arrangement === "packages" ||
@@ -832,13 +905,16 @@ export function CountingScreen({
                         ? "U"
                         : "N";
                 return (
-                  <div
+                  <button
                     key={i}
-                    className={`counting__ft-badge counting__ft-badge--${label.toLowerCase()}`}
+                    type="button"
+                    className={`counting__ft-badge counting__ft-badge--${label.toLowerCase()} counting__ft-badge--editable`}
+                    aria-label={`Modificar ${label}`}
+                    onClick={() => goBackToFillStep(i)}
                   >
                     <span className="counting__ft-badge-label">{label}</span>
                     <span className="counting__ft-badge-num">{step.correctAnswer}</span>
-                  </div>
+                  </button>
                 );
               })}
 
@@ -896,16 +972,22 @@ export function CountingScreen({
                       const isConfirmed = i < session.currentStepIndex;
                       const isCurrent = i === session.currentStepIndex;
                       return (
-                        <div
+                        <button
                           key={i}
+                          type="button"
                           className={`counting__ft-numcell counting__ft-numcell--${label.toLowerCase()} ${
                             isCurrent && resolvedActiveCell === field
                               ? "counting__ft-numcell--active"
                               : ""
-                          }`}
+                          } ${isConfirmed ? "counting__ft-numcell--editable" : ""}`}
                           onClick={() => {
-                            if (session.answerState === "idle" && isCurrent)
+                            if (isConfirmed) {
+                              goBackToFillStep(i);
+                              return;
+                            }
+                            if (session.answerState === "idle" && isCurrent) {
                               setActiveInputCell(field as "hundreds" | "tens" | "units");
+                            }
                           }}
                         >
                           <span className="counting__ft-numcell-label">{label}</span>
@@ -916,7 +998,7 @@ export function CountingScreen({
                                   field as keyof typeof session.posTableInput
                                 ] || "?"}
                           </span>
-                        </div>
+                        </button>
                       );
                     })}
                 </div>

@@ -26,7 +26,7 @@
   border: 3px solid #e2e8f0;
   border-radius: 14px;
   background: #f8faff;
-  color: var(--color-primary-dark, #1e293b);
+  color: var(--color-primary, #2563eb);
   cursor: pointer;
   transition:
     background 0.12s,
@@ -40,8 +40,8 @@
 }
 
 .shared-numpad__key:hover:not(:disabled) {
-  background: #dbeafe;
-  border-color: #2563eb;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 14%, #fff);
+  border-color: var(--color-primary, #2563eb);
   transform: scale(1.05);
 }
 
@@ -55,23 +55,38 @@
 }
 
 .shared-numpad__key--confirm {
-  background: #2563eb;
-  border-color: #1d4ed8;
+  background: var(--color-primary, #2563eb);
+  border-color: var(--color-primary, #2563eb);
   color: #fff;
 }
 
 .shared-numpad__key--confirm:hover:not(:disabled) {
-  background: #1d4ed8;
-  border-color: #1e40af;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 85%, #000);
+  border-color: color-mix(in srgb, var(--color-primary, #2563eb) 85%, #000);
 }
 
 .shared-numpad__key--del {
   background: #fef2f2;
-  border-color: #fca5a5;
-  color: #dc2626;
+  border-color: #ef4444;
+  border-width: 3px;
+  color: #b91c1c;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shared-numpad__del-glyph {
+  display: block;
+  font-size: clamp(30px, 5vw, 48px);
+  font-weight: 900;
+  line-height: 1;
+  /* Compensa el sesgo óptico del glifo ← en tipografías de sistema */
+  transform: translateY(0.01em);
 }
 
 .shared-numpad__key--del:hover:not(:disabled) {
   background: #fee2e2;
-  border-color: #f87171;
+  border-color: #dc2626;
+  color: #991b1b;
 }

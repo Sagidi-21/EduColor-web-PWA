@@ -36,6 +36,7 @@ export function Numpad({
             return (
               <button
                 key={k}
+                type="button"
                 className={`shared-numpad__key ${isConf ? "shared-numpad__key--confirm" : ""} ${isDel ? "shared-numpad__key--del" : ""}`}
                 onClick={() => {
                   if (isDel) onDelete();
@@ -43,8 +44,15 @@ export function Numpad({
                   else onDigit(k);
                 }}
                 disabled={disabled}
+                aria-label={isDel ? "Borrar" : isConf ? "Confirmar" : undefined}
               >
-                {k}
+                {isDel ? (
+                  <span className="shared-numpad__del-glyph" aria-hidden="true">
+                    ←
+                  </span>
+                ) : (
+                  k
+                )}
               </button>
             );
           })}

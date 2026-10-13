@@ -732,11 +732,14 @@ function generatePositionsByArrangement(
       const remainder = count % 10;
       const totalGroups = fullTens + (remainder > 0 ? 1 : 0);
 
-      // Distribute group centers in a grid
+      // Deja libre la franja inferior (~30%) para los contenedores de decenas.
+      const usableTop = 8;
+      const usableH = 55;
       const gcols = Math.min(totalGroups, 3);
       const grows = Math.ceil(totalGroups / gcols);
       const gw = 80 / gcols;
-      const gh = 80 / grows;
+      const gh = usableH / grows;
+      const yMax = usableTop + usableH;
 
       const positions: ObjectPosition[] = [];
       const groupFrames: GroupFrame[] = [];
@@ -748,13 +751,16 @@ function generatePositionsByArrangement(
         const gcol = gi % gcols;
         const grow = Math.floor(gi / gcols);
         const cx = 10 + (gcol + 0.5) * gw;
-        const cy = 10 + (grow + 0.5) * gh;
-        const spread = Math.min(gw, gh) * 0.75;
+        const cy = usableTop + (grow + 0.5) * gh;
+        const spread = Math.min(gw, gh) * 0.7;
 
-        const groupPositions = placeAroundCenter(groupSize, cx, cy, spread, rng);
+        const groupPositions = placeAroundCenter(groupSize, cx, cy, spread, rng).map((p) => ({
+          ...p,
+          y: Math.min(p.y, yMax),
+        }));
         const indices: number[] = [];
         for (let k = 0; k < groupPositions.length; k++) {
-          positions.push(groupPositions[k]);
+          positions.push(groupPositions[k]!);
           indices.push(posIdx++);
         }
         groupFrames.push({ indices, size: groupSize, isComplete });
