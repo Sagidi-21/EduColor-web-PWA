@@ -14,7 +14,7 @@
   align-items: center;
   gap: 16px;
   padding: 12px 24px;
-  background: var(--color-primary-dark);
+  background: var(--color-primary);
   color: #fff;
   flex-shrink: 0;
 }
@@ -92,7 +92,7 @@
   background: #fff;
   font-size: 42px;
   font-weight: 900;
-  color: #1e293b;
+  color: var(--color-primary, #ea580c);
   cursor: pointer;
   transition: all 0.15s;
   user-select: none;
@@ -101,7 +101,7 @@
   justify-content: center;
 }
 .ord__card:hover {
-  border-color: #94a3b8;
+  border-color: var(--color-primary, #ea580c);
   transform: translateY(-4px) scale(1.06);
 }
 .ord__card:active {
@@ -122,7 +122,7 @@
   background: #f1f5f9;
   font-size: 42px;
   font-weight: 900;
-  color: #1e293b;
+  color: var(--color-primary, #ea580c);
   user-select: none;
   display: flex;
   align-items: center;
@@ -133,7 +133,7 @@
   border-style: solid;
   border-color: #22c55e;
   background: #f0fdf4;
-  color: #16a34a;
+  color: var(--color-primary, #ea580c);
 }
 
 .ord__slot--wrong {

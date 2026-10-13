@@ -4,7 +4,6 @@
   width: 100%;
   box-sizing: border-box;
   --lab-ink: var(--color-primary, #0284c7);
-  --lab-ink-dark: var(--color-primary-dark, #0369a1);
   --lab-soft: color-mix(in srgb, var(--lab-ink) 18%, #fff);
   --lab-soft-strong: color-mix(in srgb, var(--lab-ink) 28%, #fff);
   --lab-muted: #64748b;
@@ -42,7 +41,7 @@
 }
 
 .ficha-laberinto__edge text {
-  fill: var(--lab-ink-dark);
+  fill: var(--lab-ink);
 }
 
 .ficha-laberinto__label {
@@ -54,7 +53,7 @@
 }
 
 .ficha-laberinto__fin-label {
-  fill: var(--lab-ink-dark);
+  fill: var(--lab-ink);
 }
 
 /* Nodos */

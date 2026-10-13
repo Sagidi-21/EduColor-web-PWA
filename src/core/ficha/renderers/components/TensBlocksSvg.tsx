@@ -77,7 +77,7 @@ export function TensBlocksSvg({ number, layout = "stack" }: TensBlocksSvgProps):
               rx={6}
               className="ficha-tens-blocks__ten"
               fill="var(--color-primary, #3b82f6)"
-              stroke="var(--color-primary-dark, #1d4ed8)"
+              stroke="var(--color-primary, #3b82f6)"
               strokeWidth={1.5}
             />
             <text

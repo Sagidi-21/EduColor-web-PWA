@@ -3,7 +3,7 @@
   align-items: center;
   gap: 12px;
   padding: 10px 20px;
-  background: var(--header-bg, var(--color-primary-dark));
+  background: var(--header-bg, var(--color-primary));
   color: var(--header-color, #fff);
   flex-shrink: 0;
   min-height: 56px;

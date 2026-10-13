@@ -68,7 +68,7 @@ function DecadeNumberLine({
         cy={Y}
         r={6}
         fill="var(--color-primary, #0284c7)"
-        stroke="var(--color-primary-dark, #0369a1)"
+        stroke="var(--color-primary, #0284c7)"
         strokeWidth={1.5}
       />
       <text

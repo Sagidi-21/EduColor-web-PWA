@@ -161,7 +161,7 @@
 }
 
 .ficha-modal__primary:hover:not(:disabled) {
-  background: var(--color-primary-dark, #3b3f91);
+  background: color-mix(in srgb, var(--color-primary, #6366f1) 85%, #000);
 }
 
 .ficha-modal__primary:disabled {
