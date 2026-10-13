@@ -109,7 +109,7 @@
   bottom: 0;
   left: 15%;
   right: 15%;
-  background: #3b82f6;
+  background: var(--color-primary, #3b82f6);
   border-radius: 3px 3px 0 0;
   min-height: 2px;
   box-sizing: border-box;
@@ -118,10 +118,10 @@
 .ficha-bars__fill--blank {
   background: repeating-linear-gradient(
     45deg,
-    rgba(180, 83, 9, 0.15) 0 4px,
+    color-mix(in srgb, var(--color-primary, #3b82f6) 22%, transparent) 0 4px,
     transparent 4px 8px
   );
-  border: 1.5px dashed #b45309;
+  border: 1.5px dashed var(--color-primary, #3b82f6);
   border-bottom: none;
 }
 

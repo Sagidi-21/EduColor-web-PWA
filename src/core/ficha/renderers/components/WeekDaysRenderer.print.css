@@ -25,6 +25,11 @@
   font-weight: 800;
 }
 
+.ficha-weekdays__hint {
+  font-weight: 500;
+  color: #64748b;
+}
+
 .ficha-weekdays__strip {
   display: flex;
   justify-content: center;
@@ -59,8 +64,9 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 4px 16px;
+  gap: 10px 32px;
   margin-top: 0;
+  width: 100%;
 }
 
 .ficha-weekdays__choice {

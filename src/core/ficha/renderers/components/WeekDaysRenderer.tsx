@@ -46,6 +46,9 @@ export function WeekDaysRenderer({ ex, showAnswer }: WeekDaysRendererProps): JSX
     <div className="ficha-weekdays">
       <p className="ficha-weekdays__question">
         {questionWithHighlight(ex.question, ex.highlightDay)}
+        {choices.length > 0 && (
+          <span className="ficha-weekdays__hint"> (redondea la correcta)</span>
+        )}
       </p>
       <div className="ficha-weekdays__strip" aria-label="Días de la semana">
         {WEEK_STRIP.map(({ day, abbr }) => (

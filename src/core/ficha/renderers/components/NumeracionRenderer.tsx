@@ -30,7 +30,12 @@ export function NumeracionRenderer({ ex, showAnswer }: NumeracionRendererProps):
   const questionBelow = Boolean(ex.questionBelowImage);
   const showBoxes = !hasChoices && ex.showAnswerBoxes !== false;
 
-  const questionEl = <p className="ficha-numeracion__question">{ex.question}</p>;
+  const questionEl = (
+    <p className="ficha-numeracion__question">
+      {ex.question}
+      {hasChoices && <span className="ficha-numeracion__hint"> (redondea la correcta)</span>}
+    </p>
+  );
   // MC (easy/identify): decenas en columna. Medium/hard/jump: en fila (menos altura).
   const blocksLayout = hasChoices ? "stack" : "row";
   const blocksEl = ex.showBlocks ? (

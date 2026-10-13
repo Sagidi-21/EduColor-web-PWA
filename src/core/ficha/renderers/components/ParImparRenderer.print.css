@@ -22,6 +22,11 @@
   font-weight: 800;
 }
 
+.ficha-parimpar__hint {
+  font-weight: 500;
+  color: #64748b;
+}
+
 .ficha-parimpar__row {
   display: flex;
   flex-wrap: wrap;
@@ -49,7 +54,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 6px 24px;
+  gap: 10px 32px;
   width: 100%;
   margin-top: 10px;
   box-sizing: border-box;

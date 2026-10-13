@@ -39,7 +39,12 @@ export function ParImparRenderer({ ex, showAnswer }: ParImparRendererProps): JSX
 
   return (
     <div className="ficha-parimpar">
-      <p className="ficha-parimpar__question">{questionWithParityWords(question)}</p>
+      <p className="ficha-parimpar__question">
+        {questionWithParityWords(question)}
+        {!ex.writeIn && choices.length > 0 && (
+          <span className="ficha-parimpar__hint"> (redondea la correcta)</span>
+        )}
+      </p>
 
       {showEmoji ? (
         <div className="ficha-parimpar__row" aria-label={`${count} objetos`}>

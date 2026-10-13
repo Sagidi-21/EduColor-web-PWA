@@ -181,7 +181,12 @@ export function CapacidadRenderer({ ex, showAnswer }: CapacidadRendererProps): J
       ) : (
         <>
           <Visual ex={ex} />
-          <p className="ficha-capacidad__question">{ex.question}</p>
+          <p className="ficha-capacidad__question">
+            {ex.question}
+            {choices.length > 0 && (
+              <span className="ficha-capacidad__round-hint"> (redondea la correcta)</span>
+            )}
+          </p>
           {choices.length > 0 && (
             <div className="ficha-capacidad__choices">
               {choices.map((label, i) => (

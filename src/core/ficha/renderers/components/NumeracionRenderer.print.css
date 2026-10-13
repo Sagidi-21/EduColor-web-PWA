@@ -8,6 +8,11 @@
   line-height: 1.25;
 }
 
+.ficha-numeracion__hint {
+  font-weight: 500;
+  color: #64748b;
+}
+
 /* Sin MC: enunciado debajo de la imagen (units / sequence / jump) */
 .ficha-numeracion--prompt-below .ficha-numeracion__blocks {
   margin-bottom: 6px;
