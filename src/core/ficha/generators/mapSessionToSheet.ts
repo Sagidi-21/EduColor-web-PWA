@@ -973,11 +973,19 @@ function mapMenuCafeteria(
 
 function mapCintaMetrica(ex: Record<string, unknown>): CintaMetricaSheetExercise {
   const item = ex.item && typeof ex.item === "object" ? asRecord(ex.item) : {};
+  const typeRaw = asString(ex.type);
+  const exerciseType: "choose-unit" | "estimate" | undefined =
+    typeRaw === "estimate" ? "estimate" : typeRaw === "choose-unit" ? "choose-unit" : undefined;
+  const choiceLabels = asStringArray(ex.options);
+  // choose-unit: el niño rellena el hueco (cm/m); estimate: opciones •.
+  const showChoices = exerciseType === "estimate" && choiceLabels.length > 0;
   return {
     kind: "cintaMetrica",
+    exerciseType,
     emoji: asString(item.emoji),
     itemName: asString(item.name),
     question: questionOf(ex),
+    choiceLabels: showChoices ? choiceLabels : undefined,
     answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
   };
 }

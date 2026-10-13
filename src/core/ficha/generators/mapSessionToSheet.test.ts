@@ -1506,21 +1506,46 @@ describe("mapSessionToSheet", () => {
     }
   });
 
-  it("mapea cintaMetrica con emoji del objeto", () => {
+  it("mapea cintaMetrica choose-unit sin opciones (hueco cm/m)", () => {
     const ex = mapSessionToSheet(
       "cintaMetrica",
       {
+        type: "choose-unit",
         item: { name: "un lápiz", size: 15, unit: "cm", emoji: "✏️" },
-        question: "¿En qué unidad lo mides?",
+        question: "Un lápiz mide 15 ___",
+        options: ["cm", "m"],
         correctAnswer: "cm",
       },
       config,
     );
     expect(ex).toMatchObject({
       kind: "cintaMetrica",
+      exerciseType: "choose-unit",
       emoji: "✏️",
       itemName: "un lápiz",
+      question: "Un lápiz mide 15 ___",
       answer: "cm",
+    });
+    if (ex.kind === "cintaMetrica") expect(ex.choiceLabels).toBeUndefined();
+  });
+
+  it("mapea cintaMetrica estimate con opciones", () => {
+    const ex = mapSessionToSheet(
+      "cintaMetrica",
+      {
+        type: "estimate",
+        item: { name: "una puerta", size: 2, unit: "m", emoji: "🚪" },
+        question: "¿Cuánto mide aproximadamente una puerta?",
+        options: ["2 m", "3 m", "2 cm"],
+        correctAnswer: "2 m",
+      },
+      { ...config, difficulty: "hard" },
+    );
+    expect(ex).toMatchObject({
+      kind: "cintaMetrica",
+      exerciseType: "estimate",
+      choiceLabels: ["2 m", "3 m", "2 cm"],
+      answer: "2 m",
     });
   });
 

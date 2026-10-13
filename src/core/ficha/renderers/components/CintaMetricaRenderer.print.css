@@ -1,34 +1,63 @@
-/* Cinta métrica — layout alumno */
+/* Cinta métrica — icono + frase; sin línea de medición */
 
-.ficha-cinta__question {
-  margin: 0 0 6px;
-  font-size: 20px;
+.ficha-cinta--unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ficha-cinta__instruction {
+  margin: 0 0 4px;
+  font-size: 14px;
   font-weight: 600;
-  color: #1e293b;
+  color: #64748b;
+  line-height: 1.25;
 }
 
 .ficha-cinta__object {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
   margin-bottom: 4px;
 }
 
 .ficha-cinta__emoji {
-  font-size: 28px;
+  font-size: 32px;
   line-height: 1;
 }
 
-.ficha-cinta__name {
-  font-size: 13px;
-  font-weight: 700;
-  color: #0f172a;
+.ficha-cinta__question {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.3;
 }
 
-.ficha-cinta__tape {
-  height: 10px;
+.ficha-cinta--estimate .ficha-cinta__question {
   margin-bottom: 6px;
-  border-radius: 2px;
-  background: repeating-linear-gradient(90deg, #fbbf24 0 6px, #fef3c7 6px 12px);
-  border: 1px solid #d97706;
+  text-align: left;
+  width: 100%;
+}
+
+.ficha-cinta__choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+  width: 100%;
+  margin-top: 6px;
+  box-sizing: border-box;
+}
+
+.ficha-cinta__choice {
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #222;
+}
+
+.ficha-cinta__choice-mark {
+  margin-right: 5px;
 }

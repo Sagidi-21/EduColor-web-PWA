@@ -10,25 +10,62 @@ describe("cintaMetrica engine", () => {
     expect(session1).toEqual(session2);
   });
 
-  it("difficulty 'easy' solo devuelve type 'choose-unit'", () => {
-    const session = generateSession("easy", 123);
-    for (const ex of session) {
-      expect(ex.type).toBe("choose-unit");
-      expect(ex.options).toEqual(["cm", "m"]);
+  it("easy y medium solo devuelven choose-unit", () => {
+    for (const level of ["easy", "medium"] as const) {
+      const session = generateSession(level, 123);
+      expect(session).toHaveLength(10);
+      for (const ex of session) {
+        expect(ex.type).toBe("choose-unit");
+        expect(ex.options).toEqual(["cm", "m"]);
+        expect(ex.question).toMatch(/mide \d+ ___/);
+      }
     }
   });
 
-  it("otras dificultades pueden devolver 'estimate'", () => {
-    // Generate many to ensure we get at least one 'estimate'
+  it("hard solo devuelve estimate", () => {
+    const session = generateSession("hard", 42);
+    expect(session).toHaveLength(10);
+    for (const ex of session) {
+      expect(ex.type).toBe("estimate");
+      expect(ex.options).toHaveLength(3);
+      expect(ex.question).toMatch(/aproximadamente/i);
+    }
+  });
+
+  it("estimate: distractores de tamaño claramente separados (no 22 vs 25)", () => {
+    for (const seed of [1, 7, 42, 99]) {
+      const session = generateSession("hard", seed);
+      for (const ex of session) {
+        const sameUnit = ex.options
+          .map((o) => o.trim().split(/\s+/))
+          .filter((parts) => parts[1] === ex.item.unit)
+          .map((parts) => Number(parts[0]));
+        expect(sameUnit.length).toBe(2);
+        const gap = Math.abs(sameUnit[0]! - sameUnit[1]!);
+        const minGap = ex.item.unit === "cm" ? 12 : 3;
+        expect(gap).toBeGreaterThanOrEqual(minGap);
+      }
+    }
+  });
+
+  it("emoji del estuche no es un lápiz/boli", () => {
     const session = [
       ...generateSession("medium", 1),
       ...generateSession("hard", 2),
       ...generateSession("expert", 3),
     ];
+    const estuche = session.find((ex) => ex.item.name === "un estuche");
+    if (estuche) {
+      expect(estuche.item.emoji).not.toMatch(/✏|🖊/);
+      expect(estuche.item.emoji).toBe("🎒");
+    }
+  });
 
-    const estimateEx = session.find((ex) => ex.type === "estimate");
-    expect(estimateEx).toBeDefined();
-    expect(estimateEx!.options).toHaveLength(3);
+  it("expert mezcla choose-unit y estimate", () => {
+    const session = generateSession("expert", 7);
+    const types = new Set(session.map((ex) => ex.type));
+    expect(types.has("choose-unit")).toBe(true);
+    expect(types.has("estimate")).toBe(true);
   });
 
   it("no repite items en una sesion", () => {

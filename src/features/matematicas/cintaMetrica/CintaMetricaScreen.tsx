@@ -142,11 +142,12 @@ export function CintaMetricaScreen({
         {session.answerState === "correct" && <div className="ops__celebration">¡Correcto! ⭐</div>}
 
         <div className="cmt__card">
+          {current.type === "choose-unit" ? (
+            <p className="cmt__instruction">Elige entre cm y m</p>
+          ) : null}
           <div className="cmt__object-display">
             <span className="cmt__emoji">{current.item.emoji}</span>
-            <span className="cmt__object-name">{current.item.name}</span>
           </div>
-          <div className="cmt__tape" />
 
           <p className="cmt__question">{current.question}</p>
 

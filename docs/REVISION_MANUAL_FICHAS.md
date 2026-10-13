@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 54 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 55 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -178,7 +178,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 
 - [x] **elLitro** — El litro _(2026-10-12: OK — 2/fila; artículo El/La; classify opciones+hint; which-more/less sin opciones; expert sin referencia; nombres mayúscula)_
 - [x] **elKilo** — El kilo _(2026-10-12: OK — alineado a elLitro: 2/fila; El/La/Las + pesa/pesan; classify opciones+hint; compare sin opciones+hint; expert sin ref.)_
-- [ ] **cintaMetrica** — Cinta métrica
+- [x] **cintaMetrica** — Cinta métrica _(2026-10-13: OK — easy/medium Elige cm/m + icono + frase sin cinta; hard estimación con gaps claros; expert mezcla; iconos coherentes)_
 - [x] **reloj** — El reloj _(2026-10-12: OK — easy centrado+hint+aguja min color clase; medium sin digital duplicado+hint; hard digital_read opciones aside; expert dibujar sin digital; hora/digital color clase)_
 - [x] **relojPonerHora** — Pon la hora _(2026-10-12: OK — esfera vacía; hora en enunciado color clase + digital; soluciones solo respuesta)_
 - [x] **intervalosTiempo** — Intervalos de tiempo _(2026-10-13: OK — barras color de clase; opciones • centradas con gap; classify-hora Más/Menos + hint redondea)_
@@ -244,7 +244,7 @@ Sustituye `ID` por el identificador en negrita (ej. `suma`):
 
 ### Ya alineadas (código) — candidatos a marcar OK tras mirar preview
 
-`cintaMetrica`
+_(ninguna pendiente de esta lista)_
 
 ### 2ª vuelta (2026-10-10) — decisiones del profesor aplicadas
 

@@ -594,9 +594,13 @@ export interface Series3CifrasSheetExercise {
 
 export interface CintaMetricaSheetExercise {
   kind: "cintaMetrica";
+  /** choose-unit = Elige cm/m; estimate = medida aproximada. */
+  exerciseType?: "choose-unit" | "estimate";
   emoji: string;
   itemName: string;
   question: string;
+  /** Opciones • (estimate; en choose-unit no hace falta: se rellena el hueco). */
+  choiceLabels?: string[];
   answer?: string | number;
 }
 
