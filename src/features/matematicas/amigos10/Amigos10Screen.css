@@ -1,29 +1,52 @@
-/* Ten-frame ─────────────────────────────────────────────────── */
+/* Amigos del 10 — tamaños en rem/px (body zoom 1.5 por defecto). */
+
 .ami__question {
-  font-size: 1.3rem;
+  font-size: 2.25rem;
   font-weight: 700;
   text-align: center;
   color: #1e293b;
-  max-width: 520px;
+  max-width: 42rem;
   text-wrap: balance;
   margin: 0;
+  flex-shrink: 0;
+}
+
+.ami__question-n {
+  color: var(--color-primary, #0284c7);
+  font-weight: 900;
+}
+
+/* Fila: dibujo a la izquierda + operación a la derecha */
+.ami__board {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.75rem;
+  width: min(100%, 52rem);
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0 0.5rem;
 }
 
 .ami__tenframe {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-  padding: 1rem 1.2rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  width: min(100%, 22rem);
+  flex: 0 1 22rem;
+  padding: 0.85rem 1rem;
+  box-sizing: border-box;
   background: #fff;
   border: 3px solid #e2e8f0;
-  border-radius: 16px;
+  border-radius: 18px;
 }
 
 .ami__cell {
-  width: 52px;
-  height: 52px;
-  border-radius: 10px;
-  border: 2px solid #cbd5e1;
+  aspect-ratio: 1;
+  width: 100%;
+  min-width: 0;
+  border-radius: 12px;
+  border: 3px solid #cbd5e1;
   background: #f1f5f9;
   display: flex;
   align-items: center;
@@ -31,27 +54,31 @@
 }
 
 .ami__cell--given {
-  background: #e0f2fe;
-  border-color: #38bdf8;
+  background: color-mix(in srgb, var(--color-primary, #0284c7) 14%, #fff);
+  border-color: var(--color-primary, #0284c7);
 }
 
 .ami__dot {
-  width: 28px;
-  height: 28px;
+  width: 55%;
+  height: 55%;
   border-radius: 50%;
-  background: #0284c7;
+  background: var(--color-primary, #0284c7);
 }
 
 .ami__tenframe-label {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  font-size: 1.5rem;
+  justify-content: center;
+  gap: 0.7rem;
+  flex: 0 0 auto;
+  font-size: 3.4rem;
   font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .ami__tenframe-n--given {
-  color: #0284c7;
+  color: var(--color-primary, #0284c7);
 }
 
 .ami__tenframe-n--blank {
@@ -61,36 +88,70 @@
 .ami__tenframe-plus,
 .ami__tenframe-eq {
   color: #1e293b;
-  font-size: 1.3rem;
+  font-size: 0.85em;
 }
 
-/* Opciones de respuesta ─────────────────────────────────────── */
+/* Hueco fijo entre dibujo y opciones: ahí aparece «¡Correcto!» */
+.ami__between {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.4rem;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.ami__cheer {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #16a34a;
+  text-align: center;
+  line-height: 1;
+  animation: ami-cheer-pop 0.4s ease;
+}
+
+@keyframes ami-cheer-pop {
+  0% {
+    transform: scale(0);
+  }
+  80% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Opciones de respuesta */
 .ami__options {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  flex-wrap: nowrap;
+  gap: 1rem;
   justify-content: center;
-  max-width: 440px;
+  width: min(100%, 40rem);
+  max-width: 100%;
 }
 
 .ami__opt {
-  padding: 0.75rem 1.6rem;
-  min-height: 52px;
-  min-width: 76px;
-  border-radius: 14px;
+  padding: 0.85rem 1.5rem;
+  min-height: 4.2rem;
+  min-width: 5rem;
+  border-radius: 16px;
   border: 3px solid #e2e8f0;
   background: #fff;
   color: #1e293b;
-  font-size: 1.5rem;
+  font-size: 2.85rem;
   font-weight: 900;
   cursor: pointer;
   transition: all 0.16s;
   font-family: inherit;
   font-variant-numeric: tabular-nums;
+  flex: 1 1 0;
 }
 
 .ami__opt:hover:not(:disabled) {
-  border-color: #94a3b8;
+  border-color: var(--color-primary, #0284c7);
+  color: var(--color-primary, #0284c7);
   transform: translateY(-2px);
 }
 
@@ -109,4 +170,24 @@
   border-color: #ef4444 !important;
   background: #fef2f2 !important;
   color: #ef4444 !important;
+}
+
+.ops__stage:has(.ami__board) {
+  justify-content: flex-start;
+  /* Enunciado ↔ dibujo: 4.05rem; dibujo ↔ opciones: mitad + between + mitad */
+  gap: 0;
+  padding: 1.1rem 1rem 0.85rem;
+  overflow: hidden;
+}
+
+.ops__stage:has(.ami__board) > .ami__question {
+  margin-bottom: 4.05rem;
+}
+
+.ops__stage:has(.ami__board) > .ami__board {
+  margin-bottom: 2.025rem;
+}
+
+.ops__stage:has(.ami__board) > .ami__between {
+  margin-bottom: 2.025rem;
 }

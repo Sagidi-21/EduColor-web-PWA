@@ -34,8 +34,8 @@ interface SessionState {
  * `electron-reference/Colegio/src/renderer/src/core/engines/amigos10/`,
  * sin cambios funcionales. Respuesta por cuatro botones; no hay numpad ni lienzo.
  *
- * La visual es el ten-frame clásico: 10 celdas, las `given` pintadas en azul y
- * el resto vacías, con la ecuación `dado + ? = 10` debajo.
+ * La visual es el ten-frame clásico: 10 celdas, las `given` pintadas en color
+ * primario y el resto vacías, con la ecuación `dado + ? = 10` debajo.
  */
 export function Amigos10Screen({
   activity,
@@ -143,7 +143,7 @@ export function Amigos10Screen({
         ? "ops__stage--wrong"
         : "";
 
-  // Ten-frame: 10 celdas, las primeras `given` en azul, el resto vacías.
+  // Ten-frame: 10 celdas, las primeras `given` en color primario, el resto vacías.
   const cells = Array.from({ length: 10 }, (_, i) => i < current.given);
 
   return (
@@ -158,26 +158,52 @@ export function Amigos10Screen({
       />
 
       <div className={`ops__stage ${stageClass}`}>
-        {session.answerState === "correct" && <div className="ops__celebration">¡Correcto! ⭐</div>}
+        <p className="ami__question">
+          {current.type === "complement" && (
+            <>
+              ¿Cuánto le falta al <span className="ami__question-n">{current.given}</span> para
+              llegar a 10?
+            </>
+          )}
+          {current.type === "missing-addend" && (
+            <>
+              <span className="ami__question-n">{current.given}</span> + ___ = 10
+            </>
+          )}
+          {current.type === "decompose" && (
+            <>
+              10 − <span className="ami__question-n">{current.given}</span> = ___
+            </>
+          )}
+        </p>
 
-        <p className="ami__question">{current.question}</p>
+        <div className="ami__board">
+          <div className="ami__tenframe" aria-hidden="true">
+            {cells.map((filled, i) => (
+              <div key={i} className={`ami__cell${filled ? " ami__cell--given" : ""}`}>
+                {filled && <div className="ami__dot" />}
+              </div>
+            ))}
+          </div>
+          <div
+            className="ami__tenframe-label"
+            aria-label={`${current.given} más cuánto es igual a 10`}
+          >
+            <span className="ami__tenframe-n ami__tenframe-n--given">{current.given}</span>
+            <span className="ami__tenframe-plus">+</span>
+            <span className="ami__tenframe-n ami__tenframe-n--blank">?</span>
+            <span className="ami__tenframe-eq">= 10</span>
+          </div>
+        </div>
 
-        {/* Ten-frame visual */}
-        <div className="ami__tenframe">
-          {cells.map((filled, i) => (
-            <div key={i} className={`ami__cell${filled ? " ami__cell--given" : ""}`}>
-              {filled && <div className="ami__dot" />}
+        <div className="ami__between" aria-live="polite">
+          {session.answerState === "correct" && (
+            <div className="ami__cheer" role="status">
+              ¡Correcto! ⭐
             </div>
-          ))}
-        </div>
-        <div className="ami__tenframe-label">
-          <span className="ami__tenframe-n ami__tenframe-n--given">{current.given}</span>
-          <span className="ami__tenframe-plus">+</span>
-          <span className="ami__tenframe-n ami__tenframe-n--blank">?</span>
-          <span className="ami__tenframe-eq">= 10</span>
+          )}
         </div>
 
-        {/* Botones de opción */}
         <div className="ami__options">
           {current.options.map((opt) => {
             const estado =
@@ -201,11 +227,11 @@ export function Amigos10Screen({
         </div>
       </div>
 
-      <footer className="ops__footer">
-        {session.answerState === "wrong" && (
+      {session.answerState === "wrong" && (
+        <footer className="ops__footer">
           <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-        )}
-      </footer>
+        </footer>
+      )}
     </div>
   );
 }
