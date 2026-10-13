@@ -52,6 +52,9 @@ export function exerciseCardVariant(
     case "tresSumandosColumna":
       // Alumno: caja alta. Soluciones: tarjeta compacta (solo el número).
       return options.showAnswer ? "" : "algcol";
+    case "algoritmo3Cifras":
+      // Alumno: C·D·U + llevar, hueco bajo la línea. Soluciones: solo el número.
+      return options.showAnswer ? "" : "alg3";
     case "sumaLlevando":
       return options.showAnswer ? "" : "sumall";
     case "relacionSumaResta":
@@ -68,7 +71,8 @@ export function columnsPerRow(ex: SheetExercise): number {
   if (
     ex.kind === "algoritmoVertical" ||
     ex.kind === "tresSumandosColumna" ||
-    ex.kind === "sumaLlevando"
+    ex.kind === "sumaLlevando" ||
+    ex.kind === "algoritmo3Cifras"
   ) {
     return 3;
   }

@@ -126,8 +126,8 @@ export function pageSizeForExercises(
     return options.showAnswer ? 18 : 9;
   }
   if (first.kind === "algoritmo3Cifras") {
-    // Alumno: cuadrícula C·D·U con casillas.
-    return options.showAnswer ? 20 : 10;
+    // Alumno: 3 por fila, hueco bajo la línea. Soluciones: solo el número.
+    return options.showAnswer ? 18 : 9;
   }
   if (first.kind === "algoritmoVertical") {
     // Alumno: 3 por fila, cajas más altas. Soluciones: solo el número.

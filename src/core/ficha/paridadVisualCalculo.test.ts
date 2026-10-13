@@ -102,11 +102,12 @@ describe("algoritmo3cifras ficha (C·D·U con llevadas)", () => {
     }
   });
 
-  it("alumno: 2 casillas de llevar y 3 de resultado; soluciones: solo resultado", () => {
+  it("alumno: 2 casillas de llevar, sin recuadros de resultado; soluciones: solo resultado", () => {
     const [ex] = generate<Algoritmo3CifrasSheetExercise>("algoritmo3cifras", "medium", 1);
     const alumno = html(createElement(Algoritmo3CifrasRenderer, { ex: ex!, showAnswer: false }));
     expect(alumno.match(/ficha-alg3__carry"/g)).toHaveLength(2);
-    expect(alumno.match(/ficha-alg3__blank/g)).toHaveLength(3);
+    expect(alumno).toContain("ficha-alg3--write");
+    expect(alumno).not.toContain("ficha-alg3__blank");
     for (const col of [">C<", ">D<", ">U<"]) expect(alumno).toContain(col);
     expect(alumno).toContain("llevar");
 
@@ -179,7 +180,8 @@ describe("pageSizeForExercises (cálculo)", () => {
     expect(pageSizeForExercises(mult, { showAnswer: true })).toBe(12);
     expect(pageSizeForExercises(suma)).toBe(9);
     expect(pageSizeForExercises(suma, { showAnswer: true })).toBe(18);
-    expect(pageSizeForExercises(alg)).toBe(10);
+    expect(pageSizeForExercises(alg)).toBe(9);
+    expect(pageSizeForExercises(alg, { showAnswer: true })).toBe(18);
     expect(pageSizeForExercises(recta)).toBe(10);
   });
 });

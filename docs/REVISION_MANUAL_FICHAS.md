@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 55 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 56 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -125,7 +125,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **tresSumandosColumna** — Sumas en columna (3 sumandos) _(2026-10-12: OK — D·U sin casillas; hueco bajo la línea; caja algcol)_
 - [x] **sumaLlevando** — Sumamos llevando _(2026-10-12: OK — 3/fila; sin casillas resultado; operación centrada; números+llevada más grandes)_
 - [x] **restaColumna** — Resta en columna _(2026-10-12: OK — mismo layout que Sumas en columna (−); sin casillas; 3/fila; hueco bajo la línea)_
-- [ ] **algoritmo3cifras** — Algoritmo de tres cifras
+- [x] **algoritmo3cifras** — Algoritmo de tres cifras _(2026-10-13: OK — 3/fila; sin casillas resultado; hueco bajo la línea; casillas llevar/prestar)_
 - [x] **igualdad** — El signo igual _(2026-10-10: OK — enunciados por tipo; easy imágenes+op misma línea; medium/hard centrados; hard opciones en línea con •; color de clase; soluciones solo respuesta)_
 - [x] **relacionSumaResta** — Familia de operaciones _(2026-10-12: OK — 3 ops en vertical D·U; enunciado Total/partes + «realiza todas las operaciones»)_
 - [ ] **multiplicacion** — Multiplicación

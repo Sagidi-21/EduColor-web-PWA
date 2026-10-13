@@ -11,7 +11,8 @@ const COLUMNS = ["C", "D", "U"] as const;
 
 /**
  * Cuadrícula C·D·U como `ColumnCarryOperation` en pizarra: fila de casillas de llevar
- * (o prestar) sobre centenas y decenas, los dos números, raya y tres casillas vacías.
+ * (o prestar) sobre centenas y decenas, los dos números y raya.
+ * Sin casillas de resultado: espacio en blanco bajo la línea para escribir.
  * Soluciones: solo el resultado (lo maneja `ExerciseRenderer`).
  */
 export function Algoritmo3CifrasRenderer({
@@ -27,7 +28,7 @@ export function Algoritmo3CifrasRenderer({
   const bDigits = [ex.bC, ex.bD, ex.bU];
 
   return (
-    <div className="ficha-alg3" aria-label={`${ex.a} ${op} ${ex.b}`}>
+    <div className="ficha-alg3 ficha-alg3--write" aria-label={`${ex.a} ${op} ${ex.b}`}>
       <span />
       {COLUMNS.map((c) => (
         <span key={c} className="ficha-alg3__label">
@@ -63,12 +64,6 @@ export function Algoritmo3CifrasRenderer({
       <span />
 
       <span className="ficha-alg3__sep" />
-
-      <span />
-      <span className="ficha-alg3__blank" aria-label="Centenas" />
-      <span className="ficha-alg3__blank" aria-label="Decenas" />
-      <span className="ficha-alg3__blank" aria-label="Unidades" />
-      <span />
     </div>
   );
 }
