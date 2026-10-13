@@ -12,6 +12,7 @@ export function ExerciseView({ onExit }: Props) {
 
   return (
     <EngineScreen
+      key={`${session.difficulty}-${session.levelId ?? ""}-${session.seed}`}
       activity={session.activity}
       difficulty={session.difficulty}
       seed={session.seed}

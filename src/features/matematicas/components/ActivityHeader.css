@@ -61,6 +61,49 @@
   flex-shrink: 0;
 }
 
+.activity-header__levels {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.activity-header__level-chip {
+  padding: 4px 7px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.12);
+  color: inherit;
+  font-size: 11px;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    opacity 0.15s;
+}
+
+.activity-header__level-chip:hover:not(:disabled),
+.activity-header__level-chip:focus-visible:not(:disabled) {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.activity-header__level-chip--active,
+.activity-header__level-chip:disabled {
+  background: rgba(255, 255, 255, 0.38);
+  border-color: rgba(255, 255, 255, 0.7);
+  cursor: default;
+  opacity: 1;
+  font-weight: 700;
+}
+
+.activity-header__meta-stars {
+  font-size: 12px;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
 .activity-header__counter {
   font-size: 16px;
   font-weight: 700;

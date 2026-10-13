@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+import { useContext, type ReactNode } from "react";
+import { ExerciseSessionContext } from "../ExerciseSessionContext";
+import { starsForIndex, type LevelIndex } from "../levelSelect";
 import "./ActivityHeader.css";
 
 export interface ActivityHeaderProps {
@@ -14,6 +16,8 @@ export interface ActivityHeaderProps {
   children?: ReactNode;
 }
 
+const LEVEL_INDICES: LevelIndex[] = [0, 1, 2, 3];
+
 export function ActivityHeader({
   onExit,
   exitLabel = "← Salir",
@@ -27,6 +31,9 @@ export function ActivityHeader({
   children,
 }: ActivityHeaderProps): JSX.Element {
   const headerTitle = unitTitle ?? title;
+  // Lectura opcional: los tests de pantalla montan el header sin provider.
+  const sessionCtx = useContext(ExerciseSessionContext);
+  const showLevelChips = !!sessionCtx?.session && sessionCtx.currentLevelIndex !== null;
 
   return (
     <header className="activity-header">
@@ -35,10 +42,9 @@ export function ActivityHeader({
       </button>
 
       <div className="activity-header__info">
-        {(gradeTitle || difficultyStars || className) && (
+        {(gradeTitle || className) && (
           <span className="activity-header__meta">
             {gradeTitle}
-            {difficultyStars && ` · ${difficultyStars}`}
             {className ? ` — ${className}` : ""}
           </span>
         )}
@@ -46,6 +52,32 @@ export function ActivityHeader({
       </div>
 
       <div className="activity-header__right">
+        {showLevelChips ? (
+          <div className="activity-header__levels" role="group" aria-label="Nivel de dificultad">
+            {LEVEL_INDICES.map((index) => {
+              const active = index === sessionCtx!.currentLevelIndex;
+              return (
+                <button
+                  key={index}
+                  type="button"
+                  className={`activity-header__level-chip${active ? " activity-header__level-chip--active" : ""}`}
+                  disabled={active}
+                  aria-label={`Nivel ${index + 1}`}
+                  aria-current={active ? "true" : undefined}
+                  onClick={() => sessionCtx!.setLevelIndex(index)}
+                >
+                  {starsForIndex(index)}
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          difficultyStars && (
+            <span className="activity-header__meta-stars" aria-hidden="true">
+              {difficultyStars}
+            </span>
+          )
+        )}
         {children}
         {progress && (
           <span className="activity-header__counter" aria-label={`Ejercicio ${progress}`}>

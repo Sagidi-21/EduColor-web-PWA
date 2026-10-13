@@ -17,56 +17,13 @@ import { useViewTransition } from "../../core/transition/ViewTransitionContext";
 import { useExerciseSession } from "./ExerciseSessionContext";
 import { CatalogFilterBar } from "./CatalogFilterBar";
 import { DifficultyReveal } from "./components/DifficultyReveal";
+import { getCurriculumLevelsForGrade, getDifficultyStars, getStarsForLevel } from "./levelSelect";
 import "./MatematicasCatalogScreen.css";
 import fondoImg from "../../assets/catalogo-fondo.png";
 
 interface Props {
   initialGradeId: GradeId;
   onBack: () => void;
-}
-
-const levelOrder: CurriculumLevelId[] = [
-  "1-L1",
-  "1-L2",
-  "1-L3",
-  "1-L4",
-  "2-L1",
-  "2-L2",
-  "2-L3",
-  "2-L4",
-];
-
-function getLevelsForActivity(
-  activity: ActivityManifest,
-  currentGradeId?: string,
-): CurriculumLevelId[] {
-  // Si estamos viendo el catálogo desde 1º, mostramos los 4 primeros (1-L1 a 1-L4)
-  if (currentGradeId === "grade-1") return levelOrder.slice(0, 4);
-  // Si estamos en 2º, mostramos los 4 siguientes (2-L1 a 2-L4)
-  if (currentGradeId === "grade-2") return levelOrder.slice(4, 8);
-
-  // Fallback si no hay grade (ej: búsqueda global futura)
-  const isGrade1 = activity.gradeIds.includes("grade-1");
-  const isGrade2 = activity.gradeIds.includes("grade-2");
-  if (isGrade1 && !isGrade2) return levelOrder.slice(0, 4);
-  if (isGrade2 && !isGrade1) return levelOrder.slice(4, 8);
-  return levelOrder;
-}
-
-function getStarsForLevel(levelId: CurriculumLevelId): string {
-  const match = levelId.match(/L(\d)/);
-  const stars = match ? parseInt(match[1], 10) : 1;
-  return "⭐".repeat(stars);
-}
-
-function getDifficultyStars(difficulty?: ActivityDifficulty): string {
-  const map: Record<ActivityDifficulty, string> = {
-    easy: "⭐",
-    medium: "⭐⭐",
-    hard: "⭐⭐⭐",
-    expert: "⭐⭐⭐⭐",
-  };
-  return difficulty ? map[difficulty] : "";
 }
 
 export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
@@ -78,7 +35,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
   const [gradeId, setGradeId] = useState(initialGradeId);
   const [blockId, setBlockId] = useState<string>("");
   const [selected, setSelected] = useState<ActivityManifest | null>(null);
-  const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard" | "expert">("easy");
+  const [difficulty, setDifficulty] = useState<ActivityDifficulty>("easy");
   const [levelId, setLevelId] = useState<CurriculumLevelId | null>(null);
   const [popupShrinking, setPopupShrinking] = useState(false);
   const grades = getGrades(subjectId);
@@ -97,6 +54,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
       activity: selected,
       difficulty,
       levelId: levelId ?? undefined,
+      gradeId,
       gradeTitle,
       className: profile.className,
       mascotUrl: profile.mascotUrl,
@@ -169,7 +127,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                         activity.engineId === "counting" ||
                         activity.engineId === "tresSumandos"
                       ) {
-                        setLevelId(getLevelsForActivity(activity, gradeId)[0]);
+                        setLevelId(getCurriculumLevelsForGrade(activity, gradeId)[0]!);
                       } else {
                         setLevelId(null);
                       }
