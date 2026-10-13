@@ -9,12 +9,31 @@ describe("CirculoCircunferencia engine", () => {
     expect(["classify-shape", "real-object"]).toContain(session[0].type);
   });
 
-  it("easy only produces classify-shape exercises", () => {
+  it("easy only produces classify-shape exercises with distinct questions", () => {
     const session = generateCCSession(4321, "easy");
     for (const ex of session) {
       expect(ex.type).toBe("classify-shape");
       expect(["Círculo", "Circunferencia"]).toContain(ex.correctAnswer);
     }
+    const questions = session.map((ex) => ex.question);
+    expect(new Set(questions).size).toBe(questions.length);
+    const circulos = session.filter((ex) => ex.shapeType === "circulo").length;
+    const circunferencias = session.filter((ex) => ex.shapeType === "circunferencia").length;
+    expect(circulos).toBe(5);
+    expect(circunferencias).toBe(5);
+  });
+
+  it("medium mixes shapes and real objects without repeating real objects", () => {
+    const session = generateCCSession(5555, "medium");
+    expect(session).toHaveLength(10);
+    const shapes = session.filter((ex) => ex.type === "classify-shape");
+    const reals = session.filter((ex) => ex.type === "real-object");
+    expect(shapes).toHaveLength(4);
+    expect(reals).toHaveLength(6);
+    const names = reals.map((ex) => ex.objectName);
+    expect(new Set(names).size).toBe(names.length);
+    const shapeQuestions = shapes.map((ex) => ex.question);
+    expect(new Set(shapeQuestions).size).toBe(shapeQuestions.length);
   });
 
   it("expert only produces real-object exercises", () => {

@@ -5,7 +5,9 @@ export interface CirculoCircunferenciaRendererProps {
   showAnswer: boolean;
 }
 
-const COLOR = "#3b82f6";
+/** Color de clase (`--color-primary`). */
+const FILL = "var(--color-primary, #3b82f6)";
+const STROKE = "var(--color-primary, #3b82f6)";
 
 /** Círculo relleno o circunferencia (solo borde), como en pizarra. */
 function CirculoSvg({
@@ -26,16 +28,16 @@ function CirculoSvg({
       aria-hidden
     >
       {shapeType === "circulo" ? (
-        <circle cx={c} cy={c} r={r} fill={COLOR} opacity={0.85} />
+        <circle cx={c} cy={c} r={r} fill={FILL} opacity={0.85} />
       ) : (
-        <circle cx={c} cy={c} r={r} fill="none" stroke={COLOR} strokeWidth={size * 0.1} />
+        <circle cx={c} cy={c} r={r} fill="none" stroke={STROKE} strokeWidth={size * 0.1} />
       )}
     </svg>
   );
 }
 
 /**
- * Alumno: figura SVG (o objeto real) + pregunta + opciones • (como en pizarra).
+ * Alumno: figura SVG (o objeto real) centrada + opciones • horizontales debajo.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function CirculoCircunferenciaRenderer({
@@ -51,7 +53,12 @@ export function CirculoCircunferenciaRenderer({
 
   return (
     <div className="ficha-cc">
-      {ex.question ? <p className="ficha-cc__question">{ex.question}</p> : null}
+      {ex.question ? (
+        <p className="ficha-cc__question">
+          {ex.question}
+          {choices.length > 0 && <span className="ficha-cc__hint"> (redondea la correcta)</span>}
+        </p>
+      ) : null}
       <div className="ficha-cc__body">
         {!isReal && ex.shapeType && (
           <div className="ficha-cc__figure">

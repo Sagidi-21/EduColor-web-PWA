@@ -30,6 +30,20 @@ const REAL_OBJECTS: { name: string; emoji: string; type: CCShape }[] = [
   { name: "el aro de un cuaderno", emoji: "📓", type: "circunferencia" },
 ];
 
+/** Enunciados distintos para no repetir la misma frase en toda la ficha. */
+const SHAPE_QUESTIONS = [
+  "¿Es un círculo o una circunferencia?",
+  "¿Qué figura ves: círculo o circunferencia?",
+  "Mira la figura. ¿Círculo o circunferencia?",
+  "¿Cómo se llama esta figura?",
+  "Señala si es círculo o circunferencia.",
+  "¿Es relleno (círculo) o solo el borde (circunferencia)?",
+  "Observa bien: ¿círculo o circunferencia?",
+  "¿De qué figura se trata?",
+  "Clasifica la figura: círculo o circunferencia.",
+  "¿Es un círculo relleno o una circunferencia?",
+];
+
 function lcg(seed: number): () => number {
   let s = seed;
   return () => {
@@ -38,59 +52,87 @@ function lcg(seed: number): () => number {
   };
 }
 
-function randInt(rng: () => number, min: number, max: number): number {
-  return min + Math.floor(rng() * (max - min + 1));
+function shuffle<T>(rng: () => number, arr: T[]): T[] {
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
 }
 
 function cap(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+function makeShapeEx(shapeType: CCShape, question: string): CCExercise {
+  return {
+    type: "classify-shape",
+    shapeType,
+    question,
+    options: ["Círculo", "Circunferencia"],
+    correctAnswer: shapeType === "circulo" ? "Círculo" : "Circunferencia",
+  };
+}
+
+function makeRealEx(obj: (typeof REAL_OBJECTS)[number]): CCExercise {
+  return {
+    type: "real-object",
+    shapeType: obj.type,
+    objectName: obj.name,
+    objectEmoji: obj.emoji,
+    question: `${obj.emoji} ${cap(obj.name)}… ¿es un círculo o una circunferencia?`,
+    options: ["Círculo", "Circunferencia"],
+    correctAnswer: obj.type === "circulo" ? "Círculo" : "Circunferencia",
+  };
+}
+
+/**
+ * Cuántos ejercicios SVG vs objeto real por dificultad.
+ * easy: solo figuras (antes repetían el mismo enunciado 10 veces).
+ * medium: mezcla con mayoría de objetos reales.
+ * hard/expert: solo objetos reales.
+ */
+function planCounts(difficulty: ActivityDifficulty): { shapes: number; reals: number } {
+  switch (difficulty) {
+    case "easy":
+      return { shapes: 10, reals: 0 };
+    case "medium":
+      return { shapes: 4, reals: 6 };
+    case "hard":
+    case "expert":
+      return { shapes: 0, reals: 10 };
+  }
+}
+
 /** Genera una sesión de 10 ejercicios de círculo/circunferencia. */
 export function generateCCSession(seed: number, difficulty: ActivityDifficulty): CCExercise[] {
   const rng = lcg(seed);
-  const count = 10;
+  const { shapes: nShapes, reals: nReals } = planCounts(difficulty);
   const out: CCExercise[] = [];
-  const used = new Set<string>();
-  let tries = 0;
 
-  while (out.length < count && tries < 400) {
-    tries++;
-
-    const useReal =
-      difficulty === "hard" || difficulty === "expert" || (difficulty === "medium" && rng() > 0.4);
-
-    if (!useReal) {
-      const shapeType: CCShape = rng() > 0.5 ? "circulo" : "circunferencia";
-      const key = `shape-${shapeType}-${out.length}`;
-      if (used.has(key)) {
-        tries++;
-        continue;
-      }
-      used.add(key);
-      out.push({
-        type: "classify-shape",
-        shapeType,
-        question: "¿Es un círculo o una circunferencia?",
-        options: ["Círculo", "Circunferencia"],
-        correctAnswer: shapeType === "circulo" ? "Círculo" : "Circunferencia",
-      });
-    } else {
-      const obj = REAL_OBJECTS[randInt(rng, 0, REAL_OBJECTS.length - 1)];
-      if (used.has(obj.name)) continue;
-      used.add(obj.name);
-      out.push({
-        type: "real-object",
-        shapeType: obj.type,
-        objectName: obj.name,
-        objectEmoji: obj.emoji,
-        question: `${obj.emoji} ${cap(obj.name)}… ¿es un círculo o una circunferencia?`,
-        options: ["Círculo", "Circunferencia"],
-        correctAnswer: obj.type === "circulo" ? "Círculo" : "Circunferencia",
-      });
+  if (nShapes > 0) {
+    // Mitad círculo / mitad circunferencia (si impar, un extra al azar).
+    const nCirc = Math.floor(nShapes / 2);
+    const nCircunf = nShapes - nCirc;
+    const shapeTypes = shuffle(rng, [
+      ...Array<CCShape>(nCirc).fill("circulo"),
+      ...Array<CCShape>(nCircunf).fill("circunferencia"),
+    ]);
+    const questions = shuffle(rng, SHAPE_QUESTIONS).slice(0, nShapes);
+    for (let i = 0; i < nShapes; i++) {
+      out.push(makeShapeEx(shapeTypes[i], questions[i]));
     }
   }
-  return out;
+
+  if (nReals > 0) {
+    const objects = shuffle(rng, REAL_OBJECTS).slice(0, nReals);
+    for (const obj of objects) {
+      out.push(makeRealEx(obj));
+    }
+  }
+
+  return shuffle(rng, out);
 }
 
 /** Comprueba si la respuesta elegida es correcta. */

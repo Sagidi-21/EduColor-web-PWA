@@ -17,7 +17,9 @@ describe("CirculoCircunferenciaScreen smoke tests", () => {
 
   it("TR-CC.1: Se renderiza sin errores", () => {
     render(<CirculoCircunferenciaScreen {...mockProps} />);
-    expect(screen.getByText(/¿Es un círculo o una circunferencia\?/i)).toBeInTheDocument();
+    expect(document.querySelector(".cc__question")).toBeTruthy();
+    const opts = screen.getAllByRole("button").filter((b) => b.className.includes("cc__opt"));
+    expect(opts).toHaveLength(2);
   });
 
   it("TR-CC.2: Permite hacer clic en una opción y evalúa la respuesta", () => {
@@ -78,6 +80,6 @@ describe("CirculoCircunferenciaScreen smoke tests", () => {
     expect(
       screen.queryByText(/¡Sigue practicando!|¡Bien hecho!|¡Excelente!/i),
     ).not.toBeInTheDocument();
-    expect(screen.getByText(/¿Es un círculo o una circunferencia\?/i)).toBeInTheDocument();
+    expect(document.querySelector(".cc__question")).toBeTruthy();
   });
 });

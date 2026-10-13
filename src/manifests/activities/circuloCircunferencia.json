@@ -15,9 +15,9 @@
     "unit": 13,
     "unitLabel": "Figuras y cuerpos geométricos",
     "difficultyDescriptions": {
-      "easy": "Clasifica figuras SVG: ¿círculo o circunferencia?",
-      "medium": "Figuras SVG + primeros objetos reales",
-      "hard": "Mayoría de objetos reales cotidianos",
+      "easy": "Clasifica figuras SVG con enunciados variados",
+      "medium": "4 figuras SVG + 6 objetos reales",
+      "hard": "Solo objetos reales cotidianos",
       "expert": "Solo objetos reales, ejemplos más sutiles"
     }
   },

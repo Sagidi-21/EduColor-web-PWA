@@ -238,6 +238,22 @@ describe("fichas con escena dibujada", () => {
     });
   });
 
+  it("circuloCircunferencia: figura color de clase + opciones + hint; soluciones solo respuesta", () => {
+    everyDifficulty("circuloCircunferencia", (alumno, soluciones) => {
+      expect(alumno).toContain("ficha-cc");
+      expect(alumno).toContain("ficha-cc__choices");
+      expect(alumno).toContain("redondea la correcta");
+      expect(alumno).toMatch(/ficha-cc__svg|ficha-cc__emoji/);
+      expect(alumno).not.toContain("ficha-answer");
+      expect(soluciones).toContain("ficha-answer");
+      expect(soluciones).not.toContain("ficha-cc__choices");
+      expect(soluciones).not.toContain("redondea la correcta");
+    });
+    const easy = html("circuloCircunferencia", "easy", "alumno");
+    expect(easy).toContain("var(--color-primary");
+    expect(easy).toContain("ficha-cc__svg");
+  });
+
   it("simetria: figura color de clase + hint; which-shape con dibujos; soluciones solo respuesta", () => {
     everyDifficulty("simetria", (alumno, soluciones) => {
       expect(alumno).toContain("ficha-simetria");
