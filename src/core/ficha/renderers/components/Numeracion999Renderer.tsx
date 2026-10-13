@@ -1,12 +1,28 @@
-﻿import type { Numeracion999SheetExercise } from "../../types";
+﻿import type { ReactNode } from "react";
+import type { Numeracion999SheetExercise } from "../../types";
 
 export interface Numeracion999RendererProps {
   ex: Numeracion999SheetExercise;
   showAnswer: boolean;
 }
 
+/** Resalta cifras del enunciado con el color de clase. */
+function questionWithNumbers(question: string): ReactNode {
+  const parts = question.split(/(\d+)/);
+  return parts.map((part, i) =>
+    /^\d+$/.test(part) ? (
+      <span key={i} className="ficha-n999__q-num">
+        {part}
+      </span>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
+}
+
 /**
- * Alumno: número grande o tarjeta C·D·U + • opciones (como pizarra).
+ * Alumno: enunciado (números color de clase) + número/CDU centrado + • opciones
+ * en horizontal debajo, a ancho de caja con gap máximo (space-between).
  */
 export function Numeracion999Renderer({ ex, showAnswer }: Numeracion999RendererProps): JSX.Element {
   if (showAnswer) {
@@ -17,39 +33,41 @@ export function Numeracion999Renderer({ ex, showAnswer }: Numeracion999RendererP
 
   return (
     <div className="ficha-n999">
-      <p className="ficha-n999__question">{ex.question}</p>
-      {ex.showCduCard ? (
-        <div className="ficha-n999__cdu" aria-label="Centenas, decenas y unidades">
-          <div className="ficha-n999__cdu-col">
-            <span className="ficha-n999__cdu-val">{ex.centenas ?? 0}</span>
-            <span className="ficha-n999__cdu-label">Centenas</span>
+      <p className="ficha-n999__question">{questionWithNumbers(ex.question)}</p>
+      <div className="ficha-n999__body">
+        {ex.showCduCard ? (
+          <div className="ficha-n999__cdu" aria-label="Centenas, decenas y unidades">
+            <div className="ficha-n999__cdu-col">
+              <span className="ficha-n999__cdu-val">{ex.centenas ?? 0}</span>
+              <span className="ficha-n999__cdu-label">Centenas</span>
+            </div>
+            <span className="ficha-n999__cdu-sep">·</span>
+            <div className="ficha-n999__cdu-col">
+              <span className="ficha-n999__cdu-val">{ex.decenas ?? 0}</span>
+              <span className="ficha-n999__cdu-label">Decenas</span>
+            </div>
+            <span className="ficha-n999__cdu-sep">·</span>
+            <div className="ficha-n999__cdu-col">
+              <span className="ficha-n999__cdu-val">{ex.unidades ?? 0}</span>
+              <span className="ficha-n999__cdu-label">Unidades</span>
+            </div>
           </div>
-          <span className="ficha-n999__cdu-sep">·</span>
-          <div className="ficha-n999__cdu-col">
-            <span className="ficha-n999__cdu-val">{ex.decenas ?? 0}</span>
-            <span className="ficha-n999__cdu-label">Decenas</span>
-          </div>
-          <span className="ficha-n999__cdu-sep">·</span>
-          <div className="ficha-n999__cdu-col">
-            <span className="ficha-n999__cdu-val">{ex.unidades ?? 0}</span>
-            <span className="ficha-n999__cdu-label">Unidades</span>
-          </div>
-        </div>
-      ) : (
-        <div className="ficha-n999__number">{ex.number ?? ""}</div>
-      )}
-      {choices.length > 0 && (
-        <div className="ficha-n999__choices">
-          {choices.map((label, i) => (
-            <span key={`${label}-${i}`} className="ficha-n999__choice">
-              <span className="ficha-n999__choice-mark" aria-hidden>
-                •
+        ) : (
+          <div className="ficha-n999__number">{ex.number ?? ""}</div>
+        )}
+        {choices.length > 0 && (
+          <div className="ficha-n999__choices">
+            {choices.map((label, i) => (
+              <span key={`${label}-${i}`} className="ficha-n999__choice">
+                <span className="ficha-n999__choice-mark" aria-hidden>
+                  •
+                </span>
+                <span>{label}</span>
               </span>
-              <span>{label}</span>
-            </span>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 50 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 51 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -147,7 +147,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **numeracion1119** — Números del 11 al 19 _(2026-10-10: OK — redondea + opciones sin ○; medium/hard imagen+enunciado; huecos dobles; expert con MC en identify)_
 - [x] **numeracion4059** — Números del 40 al 59 _(2026-10-11: OK — visual como 1119; identify MC sin • (decenas en columna); medium/hard/jump bloques en fila; huecos dobles; soluciones solo respuesta)_
 - [x] **numeracion6099** — Números del 60 al 99 _(2026-10-11: OK — misma visual que 4059; word MC sin bloques; jump/units/sequence en fila)_
-- [ ] **numeracion999** — Numeración hasta 999
+- [x] **numeracion999** — Numeración hasta 999 _(2026-10-13: OK — cifras enunciado color clase; opciones horizontales space-between bajo el número)_
 - [x] **tablaNumerica** — La tabla de los números _(2026-10-12: OK — easy tabla hasta respuesta+10; medium 4–10 símbolos / busca 2–4; hard/expert color de clase; ficha iconos+recuadros)_
 - [x] **lecturaNumeros** — Lectura de números _(2026-10-10: OK — enunciado ½ + número dcha.; color de clase; hint redondea; opciones space-between; hard/expert 1/fila y display más pequeño)_
 - [x] **ordenar** — Ordenar números _(2026-10-09: OK — alumno+soluciones, impresión A4, cabecera/logo)_

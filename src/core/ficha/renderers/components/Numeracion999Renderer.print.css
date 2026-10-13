@@ -1,27 +1,48 @@
 /* Numeración hasta 999 — layout alumno */
 
+.ficha-n999 {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .ficha-n999__question {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-size: 14px;
   font-weight: 600;
   color: #1e293b;
   line-height: 1.25;
 }
 
+/* Cifras del enunciado — color de clase */
+.ficha-n999__q-num {
+  color: var(--color-primary, #0284c7);
+  font-weight: 800;
+}
+
+.ficha-n999__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .ficha-n999__number {
   font-size: 36px;
   font-weight: 800;
-  color: #0284c7;
+  color: var(--color-primary, #0284c7);
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
 .ficha-n999__cdu {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
 }
 
@@ -58,20 +79,27 @@
   color: #94a3b8;
 }
 
+/* Opciones horizontales bajo el número, ancho de caja, gap máximo */
 .ficha-n999__choices {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ficha-n999__choice {
-  display: block;
+  display: inline-block;
   font-size: 13px;
   line-height: 1.35;
   color: #222;
+  text-align: center;
+  flex: 0 1 auto;
 }
 
 .ficha-n999__choice-mark {
-  margin-right: 6px;
+  margin-right: 4px;
 }
