@@ -1475,17 +1475,37 @@ const SIMETRIA_SHAPES: readonly NonNullable<SimetriaSheetExercise["shape"]>[] = 
   "estrella",
 ];
 
+/** Nombre mostrado en opciones which-shape → id de figura (mismo que el motor). */
+const SIMETRIA_NAME_TO_SHAPE: Record<string, NonNullable<SimetriaSheetExercise["shape"]>> = {
+  Círculo: "circulo",
+  Cuadrado: "cuadrado",
+  Rectángulo: "rectangulo",
+  "Triángulo equilátero": "triangulo-eq",
+  "Triángulo isósceles": "triangulo-iso",
+  "Triángulo escaleno": "triangulo-esc",
+  Rombo: "rombo",
+  "Pentágono regular": "pentagono",
+  "Hexágono regular": "hexagono",
+  "Estrella de 5 puntas": "estrella",
+};
+
 function mapSimetria(ex: Record<string, unknown>): SimetriaSheetExercise {
   const shapeRaw = asString(ex.shape);
   const shape = SIMETRIA_SHAPES.find((s) => s === shapeRaw);
-  // En «which-shape» la figura son las opciones: no se dibuja.
-  const showShape = asString(ex.type) !== "which-shape";
+  const isWhichShape = asString(ex.type) === "which-shape";
   const choiceLabels = asStringArray(ex.options);
+  const optionShapes = isWhichShape
+    ? choiceLabels
+        .map((name) => SIMETRIA_NAME_TO_SHAPE[name])
+        .filter((s): s is NonNullable<SimetriaSheetExercise["shape"]> => Boolean(s))
+    : undefined;
   return {
     kind: "simetria",
     question: questionOf(ex),
-    shape: showShape ? shape : undefined,
-    choiceLabels: choiceLabels.length > 0 ? choiceLabels : undefined,
+    // which-shape: dibujar las opciones (figuras), no una figura de referencia.
+    shape: isWhichShape ? undefined : shape,
+    choiceLabels: !isWhichShape && choiceLabels.length > 0 ? choiceLabels : undefined,
+    optionShapes: optionShapes && optionShapes.length > 0 ? optionShapes : undefined,
     answer: asString(ex.correctAnswer ?? ex.answer) || undefined,
   };
 }

@@ -1,4 +1,12 @@
-/* Simetría — figura SVG + opciones ○ */
+/* Simetría — figura SVG color de clase + opciones ○ / figuras a redondear */
+
+.ficha-simetria {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
 
 .ficha-simetria__question {
   margin: 0;
@@ -6,6 +14,16 @@
   font-weight: 600;
   color: #1a1a1a;
   line-height: 1.25;
+}
+
+.ficha-simetria__hint {
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.ficha-simetria--which .ficha-simetria__question {
+  text-align: center;
 }
 
 .ficha-simetria__body {
@@ -45,4 +63,30 @@
 
 .ficha-simetria__choice-mark {
   margin-right: 6px;
+}
+
+/* which-shape: figuras dibujadas a redondear */
+.ficha-simetria__options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8px 12px;
+  width: 100%;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+.ficha-simetria__option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 0 1 auto;
+}
+
+.ficha-simetria__opt-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #666;
 }

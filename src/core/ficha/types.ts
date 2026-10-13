@@ -515,23 +515,30 @@ export interface RectaNumericaSheetExercise {
   answer?: number;
 }
 
+export type SimetriaSheetShape =
+  | "circulo"
+  | "cuadrado"
+  | "rectangulo"
+  | "triangulo-eq"
+  | "triangulo-iso"
+  | "triangulo-esc"
+  | "rombo"
+  | "pentagono"
+  | "hexagono"
+  | "estrella";
+
 export interface SimetriaSheetExercise {
   kind: "simetria";
   question: string;
-  /** Figura plana en SVG; solo si la pregunta la muestra (no en «which-shape»). */
-  shape?:
-    | "circulo"
-    | "cuadrado"
-    | "rectangulo"
-    | "triangulo-eq"
-    | "triangulo-iso"
-    | "triangulo-esc"
-    | "rombo"
-    | "pentagono"
-    | "hexagono"
-    | "estrella";
-  /** Opciones ○ como en pizarra (Sí/No, número de ejes o nombres). */
+  /** Figura plana en SVG (is-symmetric / count-axes). */
+  shape?: SimetriaSheetShape;
+  /** Opciones ○ de texto (Sí/No, número de ejes). */
   choiceLabels?: string[];
+  /**
+   * which-shape: figuras dibujadas a redondear (no solo nombres).
+   * `answer` sigue siendo el nombre de la figura correcta.
+   */
+  optionShapes?: SimetriaSheetShape[];
   answer?: string;
 }
 

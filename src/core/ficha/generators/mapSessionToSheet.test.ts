@@ -820,7 +820,7 @@ describe("mapSessionToSheet", () => {
     });
   });
 
-  it("mapea simetria con figura y opciones; which-shape sin figura", () => {
+  it("mapea simetria con figura y opciones; which-shape dibuja las opciones", () => {
     const ex = mapSessionToSheet(
       "simetria",
       {
@@ -847,11 +847,17 @@ describe("mapSessionToSheet", () => {
         axes: 4,
         question: "¿Cuál tiene eje?",
         correctAnswer: "Cuadrado",
-        options: ["Cuadrado", "Rombo"],
+        options: ["Cuadrado", "Rombo", "Triángulo escaleno", "Rectángulo"],
       },
       config,
     );
-    expect(which).toMatchObject({ kind: "simetria", shape: undefined });
+    expect(which).toMatchObject({
+      kind: "simetria",
+      shape: undefined,
+      choiceLabels: undefined,
+      optionShapes: ["cuadrado", "rombo", "triangulo-esc", "rectangulo"],
+      answer: "Cuadrado",
+    });
   });
 
   it("mapea cuerpos3d con cuerpo y opciones", () => {

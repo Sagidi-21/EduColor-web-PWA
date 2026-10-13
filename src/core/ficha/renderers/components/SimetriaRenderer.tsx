@@ -1,14 +1,15 @@
-﻿import type { SimetriaSheetExercise } from "../../types";
+﻿import type { SimetriaSheetExercise, SimetriaSheetShape } from "../../types";
 
 export interface SimetriaRendererProps {
   ex: SimetriaSheetExercise;
   showAnswer: boolean;
 }
 
-type SimShape = NonNullable<SimetriaSheetExercise["shape"]>;
+type SimShape = SimetriaSheetShape;
 
-const FILL = "rgba(139,92,246,.25)";
-const STROKE = "#7c5cdb";
+/** Color de clase (`--color-primary`); relleno suave con color-mix. */
+const FILL = "color-mix(in srgb, var(--color-primary, #0284c7) 18%, #fff)";
+const STROKE = "var(--color-primary, #0284c7)";
 
 function pts(arr: [number, number][]): string {
   return arr.map(([x, y]) => `${x},${y}`).join(" ");
@@ -110,7 +111,7 @@ function SimetriaShapeSvg({ shape, size = 84 }: { shape: SimShape; size?: number
 }
 
 /**
- * Alumno: pregunta + figura SVG (si aplica) + opciones • (como en pizarra).
+ * Alumno: pregunta + figura (o figuras-opción) + • / letras.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function SimetriaRenderer({ ex, showAnswer }: SimetriaRendererProps): JSX.Element {
@@ -119,29 +120,50 @@ export function SimetriaRenderer({ ex, showAnswer }: SimetriaRendererProps): JSX
   }
 
   const choices = ex.choiceLabels ?? [];
+  const optionShapes = ex.optionShapes ?? [];
+  const hasRoundHint = choices.length > 0 || optionShapes.length > 0;
 
   return (
-    <div className="ficha-simetria">
-      {ex.question ? <p className="ficha-simetria__question">{ex.question}</p> : null}
-      <div className="ficha-simetria__body">
-        {ex.shape && (
-          <div className="ficha-simetria__figure">
-            <SimetriaShapeSvg shape={ex.shape} />
-          </div>
-        )}
-        {choices.length > 0 && (
-          <div className="ficha-simetria__choices">
-            {choices.map((label, i) => (
-              <div key={`${label}-${i}`} className="ficha-simetria__choice">
-                <span className="ficha-simetria__choice-mark" aria-hidden>
-                  •
-                </span>
-                <span>{label}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+    <div className={`ficha-simetria${optionShapes.length > 0 ? " ficha-simetria--which" : ""}`}>
+      {ex.question ? (
+        <p className="ficha-simetria__question">
+          {ex.question}
+          {hasRoundHint && <span className="ficha-simetria__hint"> (redondea la correcta)</span>}
+        </p>
+      ) : null}
+
+      {ex.shape || choices.length > 0 ? (
+        <div className="ficha-simetria__body">
+          {ex.shape && (
+            <div className="ficha-simetria__figure">
+              <SimetriaShapeSvg shape={ex.shape} />
+            </div>
+          )}
+          {choices.length > 0 && (
+            <div className="ficha-simetria__choices">
+              {choices.map((label, i) => (
+                <div key={`${label}-${i}`} className="ficha-simetria__choice">
+                  <span className="ficha-simetria__choice-mark" aria-hidden>
+                    •
+                  </span>
+                  <span>{label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : null}
+
+      {optionShapes.length > 0 && (
+        <div className="ficha-simetria__options">
+          {optionShapes.map((shape, i) => (
+            <div key={`${shape}-${i}`} className="ficha-simetria__option">
+              <span className="ficha-simetria__opt-label">{String.fromCharCode(65 + i)}</span>
+              <SimetriaShapeSvg shape={shape} size={64} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

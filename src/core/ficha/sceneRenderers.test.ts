@@ -237,4 +237,22 @@ describe("fichas con escena dibujada", () => {
       expect(soluciones).not.toContain("redondea la correcta");
     });
   });
+
+  it("simetria: figura color de clase + hint; which-shape con dibujos; soluciones solo respuesta", () => {
+    everyDifficulty("simetria", (alumno, soluciones) => {
+      expect(alumno).toContain("ficha-simetria");
+      expect(alumno).toContain("redondea la correcta");
+      expect(alumno).toContain("var(--color-primary");
+      expect(alumno).toMatch(/ficha-simetria__figure|ficha-simetria__options/);
+      expect(alumno).not.toContain("ficha-answer");
+      expect(soluciones).toContain("ficha-answer");
+      expect(soluciones).not.toContain("ficha-simetria__figure");
+      expect(soluciones).not.toContain("ficha-simetria__options");
+      expect(soluciones).not.toContain("redondea la correcta");
+    });
+    // medium+ incluye which-shape → figuras-opción dibujadas
+    const medium = html("simetria", "medium", "alumno");
+    expect(medium).toContain("ficha-simetria__options");
+    expect(medium).toContain("ficha-simetria--which");
+  });
 });
