@@ -1,19 +1,20 @@
-/* ===== Hoja de soluciones (compartida, caja uniforme) ===== */
+/* ===== Hoja de soluciones (compartida, tipografía uniforme) ===== */
 
 .ficha-answer {
   margin-top: 4px;
   min-height: 28px;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 800;
+  line-height: 1.35;
   color: #0f172a;
   box-sizing: border-box;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
-/* Respuesta larga (laberinto, escenas): misma caja, letra menor */
+/* Misma letra que .ficha-answer; solo permite wrap cómodo en textos largos */
 .ficha-answer--long {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
   line-height: 1.35;
 }

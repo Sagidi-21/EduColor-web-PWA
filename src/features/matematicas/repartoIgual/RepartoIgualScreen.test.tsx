@@ -19,8 +19,12 @@ const buildProps = (difficulty: EngineScreenProps["difficulty"], seed = 4242) =>
 const textOf = (container: HTMLElement) =>
   container.querySelector(".reparto__text")?.textContent ?? "";
 
-const inputCls = (container: HTMLElement) =>
-  container.querySelector(".reparto__input")?.className ?? "";
+const answerEl = (container: HTMLElement) =>
+  container.querySelector("[data-testid='reparto-answer']");
+
+const answerCls = (container: HTMLElement) => answerEl(container)?.className ?? "";
+
+const answerText = (container: HTMLElement) => answerEl(container)?.textContent ?? "";
 
 const answerWithNumpad = (container: HTMLElement, value: string | number) => {
   String(value)
@@ -81,7 +85,16 @@ describe("RepartoIgualScreen smoke", () => {
     const { container } = render(<RepartoIgualScreen {...buildProps("medium", seed)} />);
 
     expect(container.querySelectorAll(".reparto__group-box")).toHaveLength(ex.groups);
-    expect(container.querySelector(".reparto__input")?.textContent).toBe("?");
+    expect(answerText(container)).toBe("?");
+    expect(container.querySelector(".reparto__answer-row")).toBeNull();
+  });
+
+  it("en hard muestra la fila de respuesta y no dibuja grupos", () => {
+    const { container } = render(<RepartoIgualScreen {...buildProps("hard")} />);
+
+    expect(container.querySelector(".reparto__groups")).toBeNull();
+    expect(container.querySelector(".reparto__answer-row")).not.toBeNull();
+    expect(answerText(container)).toBe("?");
   });
 
   it("teclear la respuesta y confirmar marca el acierto", () => {
@@ -92,7 +105,7 @@ describe("RepartoIgualScreen smoke", () => {
     answerWithNumpad(container, ex.itemsPerGroup);
 
     expect(container.querySelector(".ops__celebration")?.textContent).toContain("¡Muy bien!");
-    expect(inputCls(container)).toContain("reparto__input--correct");
+    expect(answerCls(container)).toContain("reparto__feedback--correct");
     expect(container.querySelector(".activity-actions")).toBeNull();
   });
 
@@ -123,8 +136,8 @@ describe("RepartoIgualScreen smoke", () => {
     pressNumpad(container, deleteKey);
     pressNumpad(container, confirmKey);
 
-    expect(container.querySelector(".reparto__input")?.textContent).toBe("?");
-    expect(inputCls(container)).toContain("reparto__input--active");
+    expect(answerText(container)).toBe("?");
+    expect(answerCls(container)).toContain("reparto__feedback--active");
     expect(container.querySelector(".ops__celebration")).toBeNull();
     expect(container.querySelector(".activity-actions")).toBeNull();
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
@@ -140,7 +153,7 @@ describe("RepartoIgualScreen smoke", () => {
     answerWithNumpad(container, ex.itemsPerGroup + 1);
 
     expect(container.querySelector(".ops__celebration")).toBeNull();
-    expect(inputCls(container)).toContain("reparto__input--wrong");
+    expect(answerCls(container)).toContain("reparto__feedback--wrong");
     expect(container.querySelector(".activity-action--retry")).not.toBeNull();
     expect(container.querySelector(".activity-action--next")).not.toBeNull();
   });
@@ -154,8 +167,8 @@ describe("RepartoIgualScreen smoke", () => {
     fireEvent.click(container.querySelector(".activity-action--retry")!);
 
     expect(container.querySelector(".ops__celebration")).toBeNull();
-    expect(container.querySelector(".reparto__input")?.textContent).toBe("?");
-    expect(inputCls(container)).toContain("reparto__input--active");
+    expect(answerText(container)).toBe("?");
+    expect(answerCls(container)).toContain("reparto__feedback--active");
   });
 
   it("acierto: el contador avanza solo tras 1200 ms", () => {

@@ -6,8 +6,8 @@ export interface RepartoIgualRendererProps {
 }
 
 /**
- * Alumno: enunciado + puntos (objetos) + cajas de grupo vacías (easy/medium, como en pizarra)
- * + casilla «A cada grupo le tocan». Soluciones: las maneja ExerciseRenderer (solo la respuesta).
+ * Alumno: enunciado + puntos + cajas de grupo (easy/medium) o casilla de respuesta (hard/expert).
+ * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function RepartoIgualRenderer({ ex, showAnswer }: RepartoIgualRendererProps): JSX.Element {
   if (showAnswer) {
@@ -17,10 +17,10 @@ export function RepartoIgualRenderer({ ex, showAnswer }: RepartoIgualRendererPro
   return (
     <div className="ficha-reparto">
       <p className="ficha-reparto__text">
-        Tenemos <strong>{ex.total}</strong> objetos y queremos repartirlos en{" "}
-        <strong>{ex.groups}</strong> grupos iguales.
+        Tenemos <strong className="ficha-reparto__num">{ex.total}</strong> objetos y queremos
+        repartirlos en <strong className="ficha-reparto__num">{ex.groups}</strong> grupos iguales.
       </p>
-      {ex.showVisual && (
+      {ex.showVisual ? (
         <div className="ficha-reparto__visual">
           <div className="ficha-reparto__items" aria-hidden>
             {Array.from({ length: ex.total }, (_, i) => (
@@ -33,11 +33,12 @@ export function RepartoIgualRenderer({ ex, showAnswer }: RepartoIgualRendererPro
             ))}
           </div>
         </div>
+      ) : (
+        <div className="ficha-reparto__answer-row">
+          <span>A cada grupo le tocan:</span>
+          <span className="ficha-reparto__input" />
+        </div>
       )}
-      <div className="ficha-reparto__answer-row">
-        <span>A cada grupo le tocan:</span>
-        <span className="ficha-reparto__input" />
-      </div>
     </div>
   );
 }

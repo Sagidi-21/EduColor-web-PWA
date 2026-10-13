@@ -144,14 +144,16 @@ export function RepartoIgualScreen({
         ? "ops__stage--wrong"
         : "";
 
-  const inputCls =
+  const feedbackCls =
     session.answerState === "correct"
-      ? "reparto__input--correct"
+      ? "reparto__feedback--correct"
       : session.answerState === "wrong"
-        ? "reparto__input--wrong"
-        : "reparto__input--active";
+        ? "reparto__feedback--wrong"
+        : "reparto__feedback--active";
 
   const showVisual = difficulty === "easy" || difficulty === "medium";
+  const displayValue =
+    session.answerState === "correct" ? String(current.itemsPerGroup) : session.input || "?";
 
   return (
     <div className="ops">
@@ -167,8 +169,11 @@ export function RepartoIgualScreen({
 
         <div className="reparto__container">
           <div className="reparto__text">
-            Tenemos <strong>{current.total}</strong> objetos y queremos repartirlos en{" "}
-            <strong>{current.groups}</strong> grupos iguales.
+            {"Tenemos "}
+            <strong className="reparto__text-num">{current.total}</strong>
+            {" objetos y queremos repartirlos en "}
+            <strong className="reparto__text-num">{current.groups}</strong>
+            {" grupos iguales."}
           </div>
 
           {showVisual && (
@@ -180,20 +185,26 @@ export function RepartoIgualScreen({
               </div>
               <div className="reparto__groups">
                 {Array.from({ length: current.groups }).map((_, i) => (
-                  <div key={`group-${i}`} className="reparto__group-box">
-                    {session.answerState === "correct" && current.itemsPerGroup}
+                  <div
+                    key={`group-${i}`}
+                    className={`reparto__group-box ${feedbackCls}`}
+                    data-testid={i === 0 ? "reparto-answer" : undefined}
+                  >
+                    {displayValue}
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          <div className="reparto__answer-row">
-            <span>A cada grupo le tocan:</span>
-            <div className={`reparto__input ${inputCls}`}>
-              {session.answerState === "correct" ? current.itemsPerGroup : session.input || "?"}
+          {!showVisual && (
+            <div className="reparto__answer-row">
+              <span>A cada grupo le tocan:</span>
+              <div className={`reparto__input ${feedbackCls}`} data-testid="reparto-answer">
+                {displayValue}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 

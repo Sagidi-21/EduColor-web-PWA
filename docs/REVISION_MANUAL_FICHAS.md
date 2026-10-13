@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 48 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 49 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -193,7 +193,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **leftRight** — Izquierda y derecha _(2026-10-10: OK — opciones centradas; hint redondea; expert char-click con hint «x» en recuadro)_
 - [x] **posicionesAula** — Posiciones en el aula _(2026-10-10: OK — escena SVG + ○ opciones, soluciones solo respuesta)_
 - [x] **rutaCuadricula** — Taller de programación _(2026-10-12: OK — iconos 🚶🏫🌳 como pizarra; easy con 1 obstáculo; soluciones = tablero con camino ejemplo + «Ej.: …»)_
-- [ ] **repartoIgual** — Repartos en partes iguales
+- [x] **repartoIgual** — Repartos en partes iguales _(2026-10-13: OK — easy/medium puntos+cajas grupo; hard/expert casilla; números color de clase)_
 - [x] **laberintoMatematico** — Laberinto matemático (1.º) _(2026-10-10: OK — tablero grande color de clase; INICIO soft; soluciones con casillas rellenas; modal ficha)_
 - [ ] **laberintoMatematico2** — Laberinto matemático (2.º)
 - [ ] **probabilidad** — Probabilidad
