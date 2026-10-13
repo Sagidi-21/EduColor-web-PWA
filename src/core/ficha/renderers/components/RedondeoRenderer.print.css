@@ -1,13 +1,8 @@
-/* Redondeo a la decena — badge + recta de decenas + ○ opciones */
+/* Redondeo a la decena — recta / badge por nivel + • opciones */
 
 .ficha-redondeo__top {
   width: 100%;
-  border-collapse: collapse;
-}
-
-.ficha-redondeo__badge-cell {
-  width: 64px;
-  padding: 0 8px 0 0;
+  text-align: center;
 }
 
 .ficha-redondeo__badge {
@@ -18,21 +13,44 @@
   font-size: 28px;
   font-weight: 900;
   line-height: 1.15;
-  color: #0284c7;
-  background: #e0f2fe;
-  border: 1.5px solid #0284c7;
+  color: var(--color-primary, #0284c7);
+  background: color-mix(in srgb, var(--color-primary, #0284c7) 18%, #fff);
+  border: 1.5px solid var(--color-primary, #0284c7);
   border-radius: 8px;
   box-sizing: border-box;
 }
 
-.ficha-redondeo__line-cell {
-  padding: 0;
-}
-
 .ficha-redondeo__line {
   display: block;
+  margin: 0 auto;
   max-width: 100%;
   height: auto;
+}
+
+.ficha-redondeo--hard .ficha-redondeo__top {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.ficha-redondeo--hard .ficha-redondeo__badge {
+  display: table-cell;
+  vertical-align: middle;
+  width: 64px;
+  padding: 4px 8px;
+  margin: 0;
+}
+
+.ficha-redondeo--hard .ficha-redondeo__line {
+  display: table-cell;
+  vertical-align: middle;
+  margin: 0;
+  padding-left: 8px;
+}
+
+.ficha-redondeo--expert .ficha-redondeo__top {
+  margin-bottom: 2px;
 }
 
 .ficha-redondeo__question {
@@ -46,7 +64,17 @@
 .ficha-redondeo__choices {
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
   gap: 4px 16px;
+}
+
+.ficha-redondeo__choices--spread {
+  justify-content: space-between;
+}
+
+.ficha-redondeo__choices--center {
+  justify-content: center;
+  gap: 4px 28px;
 }
 
 .ficha-redondeo__choice {

@@ -1721,7 +1721,7 @@ function mapLecturaNumeros(ex: Record<string, unknown>, config: SheetConfig): Sh
   };
 }
 
-function mapRedondeo(ex: Record<string, unknown>): SheetExercise {
+function mapRedondeo(ex: Record<string, unknown>, config: SheetConfig): SheetExercise {
   const number = asNumber(ex.number);
   const lower = asNumber(ex.lowerDecade, Math.floor(number / 10) * 10);
   const upper = asNumber(ex.upperDecade, lower + 10);
@@ -1733,6 +1733,7 @@ function mapRedondeo(ex: Record<string, unknown>): SheetExercise {
     lowerDecade: lower,
     upperDecade: upper,
     choiceLabels: asStringArray(ex.options),
+    difficulty: config.difficulty,
     answer: asString(ex.correctAnswer) || undefined,
   };
 }
@@ -1853,7 +1854,7 @@ export function mapSessionToSheet(
     case "probabilidad":
       return mapProbabilidad(ex);
     case "redondeo":
-      return mapRedondeo(ex);
+      return mapRedondeo(ex, config);
     case "series3cifras":
       return mapSeries("series3Cifras", ex, config);
     case "seriesNumericas":

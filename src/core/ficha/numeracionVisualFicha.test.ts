@@ -323,19 +323,55 @@ describe("lecturaNumeros ficha", () => {
 });
 
 describe("redondeo ficha", () => {
-  it("badge + recta de decenas + • opciones", () => {
+  it("easy/medium: recta sin badge; easy opciones repartidas; medium mismo gap que hard", () => {
     for (const d of ["easy", "medium"] as const) {
       const list = generate<RedondeoSheetExercise>("redondeo", d);
       expect(list.length).toBeGreaterThan(0);
       for (const ex of list) {
+        expect(ex.difficulty).toBe(d);
         expect(ex.upperDecade - ex.lowerDecade).toBe(10);
         expect(ex.choiceLabels.length).toBeGreaterThanOrEqual(2);
         expect(ex.choiceLabels).toContain(String(ex.answer));
         const markup = html(createElement(RedondeoRenderer, { ex, showAnswer: false }));
-        expect(markup).toContain("ficha-redondeo__badge");
+        expect(markup).not.toContain("ficha-redondeo__badge");
         expect(markup).toContain("ficha-redondeo__line");
+        expect(markup).toContain(
+          d === "easy" ? "ficha-redondeo__choices--spread" : "ficha-redondeo__choices--center",
+        );
+        expect(markup).toContain("var(--color-primary");
+        expect(markup).toContain(String(ex.lowerDecade));
+        expect(markup).toContain(String(ex.upperDecade));
         expect(markup).toContain("•");
       }
+    }
+  });
+
+  it("hard: recta sin extremos, opciones centradas", () => {
+    const list = generate<RedondeoSheetExercise>("redondeo", "hard");
+    expect(list.length).toBeGreaterThan(0);
+    for (const ex of list) {
+      expect(ex.difficulty).toBe("hard");
+      const markup = html(createElement(RedondeoRenderer, { ex, showAnswer: false }));
+      expect(markup).toContain("ficha-redondeo__badge");
+      expect(markup).toContain("ficha-redondeo__line");
+      expect(markup).toContain("ficha-redondeo__choices--center");
+      const svg = markup.match(/<svg[\s\S]*?<\/svg>/)?.[0] ?? "";
+      // Solo la etiqueta del número en la marca; sin números de extremos.
+      expect((svg.match(/<text /g) ?? []).length).toBe(1);
+      expect(svg).toContain(`>${ex.number}<`);
+    }
+  });
+
+  it("expert: solo badge centrado, sin recta", () => {
+    const list = generate<RedondeoSheetExercise>("redondeo", "expert");
+    expect(list.length).toBeGreaterThan(0);
+    for (const ex of list) {
+      expect(ex.difficulty).toBe("expert");
+      const markup = html(createElement(RedondeoRenderer, { ex, showAnswer: false }));
+      expect(markup).toContain("ficha-redondeo__badge");
+      expect(markup).toContain("ficha-redondeo--expert");
+      expect(markup).not.toContain("ficha-redondeo__line");
+      expect(markup).toContain("ficha-redondeo__choices--center");
     }
   });
 

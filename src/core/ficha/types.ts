@@ -575,6 +575,8 @@ export interface RedondeoSheetExercise {
   upperDecade: number;
   /** Opciones MC (○), como en pizarra. */
   choiceLabels: string[];
+  /** Layout por nivel: easy/medium recta sin badge; hard sin extremos; expert solo badge. */
+  difficulty?: Difficulty;
   answer?: number | string;
 }
 
