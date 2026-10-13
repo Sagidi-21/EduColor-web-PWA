@@ -31,7 +31,9 @@ export function MultiplicacionRenderer({
           {ex.left.map((item) => (
             <div key={item.id} className="ficha-relacionar__num">
               <span className="ficha-relacionar__num-value ficha-mult__op">
-                {item.table} × {item.factor}
+                <span className="ficha-mult__table">{item.table}</span>
+                {" × "}
+                {item.factor}
               </span>
               <span className="ficha-relacionar__dot" aria-hidden="true" />
             </div>

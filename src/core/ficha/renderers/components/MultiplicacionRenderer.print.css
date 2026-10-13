@@ -32,6 +32,12 @@
   white-space: nowrap;
 }
 
+/* Número de la tabla (p. ej. el 2 en `2 × 7`) = color de clase. */
+.ficha-mult__table {
+  color: var(--color-primary, #0284c7);
+  font-weight: 700;
+}
+
 .ficha-mult .ficha-mult__product {
   width: auto;
   min-width: 44px;

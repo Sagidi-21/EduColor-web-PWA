@@ -6,7 +6,7 @@ Marca con `[x]` cada actividad cuando hayas comprobado en el navegador:
 2. Vista previa soluciones (`mode=soluciones`)
 3. Print preview / PDF se ve correcto en A4
 
-**Progreso:** 59 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
+**Progreso:** 60 / 62 _(conteo de `[x]` en el checklist; pendientes de OK en navegador — ver «Pasada paridad pizarra» abajo)_
 
 > Cómo marcar: cambia `- [ ]` por `- [x]` y, si quieres, añade fecha u observación al final de la línea.
 > Ejemplo: `- [x] **suma** — La suma _(2026-10-09: OK)_`
@@ -128,7 +128,7 @@ Cuando se valide una actividad nueva de la lista general, añadirla también a e
 - [x] **algoritmo3cifras** — Algoritmo de tres cifras _(2026-10-13: OK — 3/fila; sin casillas resultado; hueco bajo la línea; casillas llevar/prestar)_
 - [x] **igualdad** — El signo igual _(2026-10-10: OK — enunciados por tipo; easy imágenes+op misma línea; medium/hard centrados; hard opciones en línea con •; color de clase; soluciones solo respuesta)_
 - [x] **relacionSumaResta** — Familia de operaciones _(2026-10-12: OK — 3 ops en vertical D·U; enunciado Total/partes + «realiza todas las operaciones»)_
-- [ ] **multiplicacion** — Multiplicación
+- [x] **multiplicacion** — Multiplicación _(2026-10-13: OK — unir columnas; número de la tabla en color de clase)_
 - [x] **dobleYMitad** — El doble y la mitad _(2026-10-13: OK — easy cajas+color clase+opciones spread+redondea; medium+ × vertical / ÷ casita L + hueco sin opciones ni recuadros)_
 - [x] **amigos10** — Los amigos del 10 _(2026-10-10: OK — ten-frame como en pizarra + operación a la derecha con casilla, toggle imágenes, soluciones solo número)_
 

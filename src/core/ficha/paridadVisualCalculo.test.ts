@@ -53,6 +53,7 @@ describe("multiplicacion ficha (unir columnas)", () => {
     const alumno = html(createElement(MultiplicacionRenderer, { ex: ex!, showAnswer: false }));
     expect(alumno).toContain("ficha-relacionar__dot");
     expect(alumno).toContain("ficha-mult");
+    expect(alumno).toContain("ficha-mult__table");
     expect(alumno.match(/ficha-relacionar__dot/g)).toHaveLength(ex!.left.length * 2);
     expect(alumno).toContain("Une cada multiplicación");
 
