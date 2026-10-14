@@ -28,6 +28,9 @@ export function RepartoIgualScreen({
   seed,
   onExit,
   gradeTitle,
+  className,
+  mascotUrl,
+  difficultyStars,
 }: EngineScreenProps) {
   const [session, setSession] = useState<SessionState>(() => ({
     exercises: generateSession(difficulty as "easy" | "medium" | "hard" | "expert", seed),
@@ -156,69 +159,76 @@ export function RepartoIgualScreen({
     session.answerState === "correct" ? String(current.itemsPerGroup) : session.input || "?";
 
   return (
-    <div className="ops">
+    <div className="ops reparto">
       <ActivityHeader
-        unitTitle={activity.title}
-        gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
         onExit={onExit}
+        gradeTitle={gradeTitle}
+        className={className}
+        unitTitle={activity.title}
+        mascotUrl={mascotUrl}
+        difficultyStars={difficultyStars}
+        progress={`${session.currentIndex + 1}/${total}`}
       />
 
-      <div className={`ops__stage ${stageClass}`}>
-        {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
+      <div className="ops__body ops__body--with-numpad">
+        <div className={`ops__stage ${stageClass}`}>
+          {session.answerState === "correct" && (
+            <div className="ops__celebration">¡Muy bien! ⭐</div>
+          )}
 
-        <div className="reparto__container">
-          <div className="reparto__text">
-            {"Tenemos "}
-            <strong className="reparto__text-num">{current.total}</strong>
-            {" objetos y queremos repartirlos en "}
-            <strong className="reparto__text-num">{current.groups}</strong>
-            {" grupos iguales."}
+          <div className="reparto__container">
+            <p className="reparto__text">
+              {"Tenemos "}
+              <strong className="reparto__text-num">{current.total}</strong>
+              {" objetos y queremos repartirlos en "}
+              <strong className="reparto__text-num">{current.groups}</strong>
+              {" grupos iguales."}
+            </p>
+
+            {showVisual && (
+              <div className="reparto__visual">
+                <div className="reparto__total-items">
+                  {Array.from({ length: current.total }).map((_, i) => (
+                    <div key={`item-${i}`} className="reparto__item" />
+                  ))}
+                </div>
+                <div className="reparto__groups">
+                  {Array.from({ length: current.groups }).map((_, i) => (
+                    <div
+                      key={`group-${i}`}
+                      className={`reparto__group-box ${feedbackCls}`}
+                      data-testid={i === 0 ? "reparto-answer" : undefined}
+                    >
+                      {displayValue}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {!showVisual && (
+              <div className="reparto__answer-row">
+                <span>A cada grupo le tocan:</span>
+                <div className={`reparto__input ${feedbackCls}`} data-testid="reparto-answer">
+                  {displayValue}
+                </div>
+              </div>
+            )}
           </div>
-
-          {showVisual && (
-            <div className="reparto__visual">
-              <div className="reparto__total-items">
-                {Array.from({ length: current.total }).map((_, i) => (
-                  <div key={`item-${i}`} className="reparto__item" />
-                ))}
-              </div>
-              <div className="reparto__groups">
-                {Array.from({ length: current.groups }).map((_, i) => (
-                  <div
-                    key={`group-${i}`}
-                    className={`reparto__group-box ${feedbackCls}`}
-                    data-testid={i === 0 ? "reparto-answer" : undefined}
-                  >
-                    {displayValue}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {!showVisual && (
-            <div className="reparto__answer-row">
-              <span>A cada grupo le tocan:</span>
-              <div className={`reparto__input ${feedbackCls}`} data-testid="reparto-answer">
-                {displayValue}
-              </div>
-            </div>
-          )}
         </div>
-      </div>
 
-      <footer className="ops__footer">
-        <Numpad
-          onDigit={handleDigit}
-          onDelete={handleDelete}
-          onConfirm={handleConfirm}
-          disabled={session.answerState !== "idle"}
-        />
-        {session.answerState === "wrong" && (
-          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-        )}
-      </footer>
+        <footer className="ops__footer">
+          <Numpad
+            onDigit={handleDigit}
+            onDelete={handleDelete}
+            onConfirm={handleConfirm}
+            disabled={session.answerState !== "idle"}
+          />
+          {session.answerState === "wrong" && (
+            <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+          )}
+        </footer>
+      </div>
     </div>
   );
 }

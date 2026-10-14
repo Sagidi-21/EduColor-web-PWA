@@ -62,7 +62,7 @@ describe("RepartoIgualScreen smoke", () => {
       `Tenemos ${ex.total} objetos y queremos repartirlos en ${ex.groups} grupos iguales.`,
     );
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
-      `1 / ${exercises.length}`,
+      `1/${exercises.length}`,
     );
   });
 
@@ -118,7 +118,7 @@ describe("RepartoIgualScreen smoke", () => {
 
     expect(container.querySelector(".ops__celebration")).toBeNull();
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
-      `1 / ${exercises.length}`,
+      `1/${exercises.length}`,
     );
   });
 
@@ -141,7 +141,7 @@ describe("RepartoIgualScreen smoke", () => {
     expect(container.querySelector(".ops__celebration")).toBeNull();
     expect(container.querySelector(".activity-actions")).toBeNull();
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
-      `1 / ${exercises.length}`,
+      `1/${exercises.length}`,
     );
   });
 
@@ -181,12 +181,12 @@ describe("RepartoIgualScreen smoke", () => {
     // Antes del plazo no ha avanzado.
     runAutoAdvance(AUTO_ADVANCE_MS - 100);
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
-      `1 / ${exercises.length}`,
+      `1/${exercises.length}`,
     );
 
     runAutoAdvance(200);
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
-      `2 / ${exercises.length}`,
+      `2/${exercises.length}`,
     );
   });
 

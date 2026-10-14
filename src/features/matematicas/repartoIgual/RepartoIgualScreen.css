@@ -1,21 +1,46 @@
+/* Reparto igual — Segoe UI; enunciado/dibujos centrados; numpad lateral */
+
+.reparto.ops {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: #fff;
+}
+
+.reparto .ops__stage {
+  background: #fff;
+}
+
+.reparto .ops__stage--correct {
+  background: #f0fdf4;
+}
+
+.reparto .ops__stage--wrong {
+  background: #fff7f7;
+}
+
 .reparto__container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 2rem;
-  margin: 2rem auto;
-  font-family: var(--font-primary, "Fredoka", "Nunito", sans-serif);
-  color: var(--text-color, #333);
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  color: #1e293b;
+  text-align: center;
 }
 
 .reparto__text {
-  font-size: 1.8rem;
+  margin: 0;
+  font-size: 48px;
+  font-weight: 600;
   text-align: center;
-  max-width: 600px;
+  line-height: 1.4;
+  max-width: 36rem;
 }
 
 .reparto__text-num {
-  color: var(--color-primary, #6366f1);
+  color: var(--color-primary, #2563eb);
   font-weight: 800;
 }
 
@@ -23,6 +48,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 2rem;
   width: 100%;
 }
@@ -30,7 +56,7 @@
 .reparto__total-items {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 25px;
   justify-content: center;
   max-width: 400px;
 }
@@ -52,15 +78,15 @@
 .reparto__group-box {
   width: 96px;
   height: 96px;
-  border: 4px dashed var(--color-primary, #6366f1);
+  border: 4px dashed var(--color-primary, #2563eb);
   border-radius: 16px;
-  background: color-mix(in srgb, var(--color-primary, #6366f1) 8%, #fff);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 8%, #fff);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2.25rem;
   font-weight: 700;
-  color: var(--color-primary, #6366f1);
+  color: var(--color-primary, #2563eb);
   transition: all 0.2s;
 }
 
@@ -81,27 +107,29 @@
 .reparto__answer-row {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
   font-size: 2rem;
+  flex-wrap: wrap;
 }
 
 .reparto__input {
   width: 6rem;
   height: 5rem;
-  border: 4px solid var(--color-primary, #6366f1);
+  border: 4px solid var(--color-primary, #2563eb);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in srgb, var(--color-primary, #6366f1) 8%, #fff);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 8%, #fff);
   font-weight: bold;
   font-size: 2.25rem;
-  color: var(--color-primary, #6366f1);
+  color: var(--color-primary, #2563eb);
   transition: all 0.2s;
 }
 
 .reparto__input.reparto__feedback--active {
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary, #6366f1) 25%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary, #2563eb) 25%, transparent);
 }
 
 .reparto__input.reparto__feedback--correct {
@@ -116,4 +144,69 @@
   background-color: #fdf0ec;
   color: #e84118;
   box-shadow: none;
+}
+
+/* Numpad lateral siempre (no solo ≥1500px) */
+.reparto .ops__body--with-numpad {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.reparto .ops__body--with-numpad .ops__stage {
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.reparto .ops__body--with-numpad .ops__footer {
+  flex: 0 0 320px;
+  width: 320px;
+  height: 100%;
+  min-height: 0;
+  border-top: 0;
+  border-left: 0;
+  background: #fff;
+  padding: 20px;
+  gap: 18px;
+  justify-content: safe center;
+  overflow-y: auto;
+}
+
+.reparto .ops__body--with-numpad .ops__footer .shared-numpad {
+  width: 100%;
+  max-width: 280px;
+}
+
+.reparto .ops__body--with-numpad .ops__footer .shared-numpad__key {
+  width: clamp(56px, 7vw, 76px);
+  height: clamp(52px, 7vw, 68px);
+}
+
+.reparto .ops__body--with-numpad .ops__footer .activity-actions {
+  width: 100%;
+  padding: 0;
+  gap: 10px;
+}
+
+.reparto .ops__body--with-numpad .ops__footer .activity-action {
+  flex: 1 1 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 12px;
+  font-size: 16px;
+}
+
+@media (max-width: 900px) {
+  .reparto .ops__body--with-numpad {
+    flex-direction: column;
+  }
+
+  .reparto .ops__body--with-numpad .ops__footer {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    border-left: 0;
+    border-top: 0;
+  }
 }
