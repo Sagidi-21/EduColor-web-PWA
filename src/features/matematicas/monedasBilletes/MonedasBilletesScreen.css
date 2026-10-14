@@ -12,13 +12,37 @@
  * dice el valor. Por eso las cajas de billete son más anchas que altas y las de
  * moneda cuadradas, que es la proporción de las imágenes. */
 
+/* Fondo blanco y sin línea del pie (como el resto de la pizarra). */
+.mon.ops {
+  background: #fff;
+}
+.mon .ops__footer {
+  border-top: none;
+}
+/* +30px entre enunciado, imagen y opciones (el stage de ops trae 16px). */
+.mon .ops__stage {
+  gap: 46px;
+}
+/* Easy/medium: flotante a 54px. Hard: 30px más arriba (24px). */
+.mon--easy .ops__celebration,
+.mon--medium .ops__celebration {
+  top: 54px;
+}
+.mon--hard .ops__celebration {
+  top: 10px;
+}
+/* Expert (compra): en el flujo, encima del contenido. */
+.mon--expert .ops__celebration.activity-celebration--inline {
+  margin-bottom: -10px;
+}
+
 .mon__enunciado {
-  margin: 0;
+  margin: -20px 0 20px;
   max-width: 44rem;
-  font-size: clamp(1.15rem, 3vw, 1.6rem);
-  font-weight: 800;
+  font-size: 40px;
+  font-weight: 700;
   text-align: center;
-  color: #78350f;
+  color: #1e293b;
 }
 
 /* ── Las imágenes de dinero ─────────────────────────────────────────────────── */
@@ -46,7 +70,7 @@
   min-height: 9rem;
   padding: 0.5rem 1.5rem;
   background: #fff;
-  border: 2px solid #fde68a;
+  border: 2px solid #e2e8f0;
   border-radius: 18px;
 }
 
@@ -55,13 +79,13 @@
 }
 
 .mon__img--grande.mon__img--moneda {
-  width: 9.5rem;
-  height: 9.5rem;
+  width: 12rem;
+  height: 12rem;
 }
 
 .mon__img--grande.mon__img--billete {
-  width: 14rem;
-  height: 6.5rem;
+  width: 20rem;
+  height: 9.5rem;
 }
 
 .mon__fila {
@@ -72,14 +96,20 @@
   gap: 0.75rem;
   padding: 0.9rem 1.2rem;
   background: #fff;
-  border: 2px solid #fde68a;
+  border: 2px solid #e2e8f0;
   border-radius: 18px;
   max-width: 40rem;
 }
 
+/* Hard: hasta 4 monedas en una sola fila (equivalencia). */
+.mon--hard .mon__fila:not(.mon__fila--pagada):not(.mon__fila--cesta) {
+  flex-wrap: nowrap;
+  max-width: none;
+}
+
 .mon__img--fila.mon__img--moneda {
-  width: 4.5rem;
-  height: 4.5rem;
+  width: 9rem;
+  height: 9rem;
 }
 
 .mon__img--fila.mon__img--billete {
@@ -92,48 +122,52 @@
 .mon__opciones {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: calc(1rem + 30px);
   justify-content: center;
+  margin-top: 30px;
 }
 
 .mon__opcion {
-  min-width: 88px;
-  min-height: 54px;
-  padding: 0.7rem 1.5rem;
-  font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+  min-width: 96px;
+  min-height: 68px;
+  padding: 12px 24px;
+  font-size: clamp(22px, 2.6vw, 32px);
   font-weight: 800;
-  color: #78350f;
-  background: #fffbeb;
-  border: 3px solid #fbbf24;
-  border-radius: 14px;
+  color: var(--color-primary, #2563eb);
+  background: transparent;
+  border: 3px solid #000;
+  border-radius: 16px;
   cursor: pointer;
   font-variant-numeric: tabular-nums;
+  user-select: none;
   transition:
-    transform 0.15s ease,
-    background 0.15s ease;
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.15s;
 }
 
 .mon__opcion:hover:not(:disabled) {
-  background: #fef3c7;
-  border-color: #d97706;
-  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+  transform: scale(1.04);
 }
 
 .mon__opcion:disabled {
-  opacity: 0.7;
   cursor: default;
 }
 
 .mon__opcion--correcta {
-  border-color: #16a34a;
-  background: #dcfce7;
-  color: #166534;
+  border-color: #16a34a !important;
+  background: #f0fdf4 !important;
+  color: #15803d !important;
 }
 
 .mon__opcion--fallada {
-  border-color: #dc2626;
-  background: #fee2e2;
-  color: #991b1b;
+  border-color: #dc2626 !important;
+  background: #fff1f2 !important;
+  color: #dc2626 !important;
 }
 
 /* ── La tarjeta del producto y el pago ──────────────────────────────────────── */

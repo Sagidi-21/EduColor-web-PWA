@@ -295,19 +295,26 @@ export function MonedasBilletesScreen({
         ? "ops__stage--wrong"
         : "";
   return (
-    <div className={`ops ${className ?? ""}`}>
+    <div className={`ops mon mon--${difficulty}`}>
       <ActivityHeader
-        unitTitle={activity.title}
-        gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
         onExit={onExit}
-        mascotUrl={mascotUrl}
+        gradeTitle={gradeTitle}
+        className={className}
+        unitTitle={activity.title}
         difficultyStars={difficultyStars}
+        mascotUrl={mascotUrl}
+        progress={`${session.currentIndex + 1}/${total}`}
       />
 
       <div className={`ops__stage ${stageClass}`}>
         {session.answerState === "correct" && (
-          <div className="ops__celebration">¡Correcto! 💰⭐</div>
+          <div
+            className={`ops__celebration${
+              difficulty === "expert" ? " activity-celebration--inline" : ""
+            }`}
+          >
+            ¡Correcto! 💰⭐
+          </div>
         )}
 
         {current.type === "shopping" ? (
