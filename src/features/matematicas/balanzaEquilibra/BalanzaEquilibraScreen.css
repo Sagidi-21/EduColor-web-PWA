@@ -1,34 +1,48 @@
+/* Enunciado arriba y, debajo, la balanza con las pesas a su derecha. */
+.be__stage {
+  flex-direction: column;
+  gap: 8px;
+}
+
 .be__instruction {
-  font-size: clamp(17px, 2.4vw, 24px);
+  font-size: 42px;
   font-weight: 700;
   color: #1e293b;
   text-align: center;
   margin: 0;
-  max-width: 640px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.be .blz__celebration {
+  top: 74px;
+}
+
+.be__instruction strong {
+  color: var(--color-primary, #2563eb);
+}
+
+.be__row {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 }
 
 .be__tray {
+  flex-shrink: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 14px;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 16px 20px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  margin-top: 8px;
-}
-
-.be__tray-label {
-  font-size: clamp(15px, 1.9vw, 21px);
-  font-weight: 800;
-  color: #334159;
 }
 
 .be__token {
-  width: 64px;
-  height: 64px;
+  width: 88px;
+  height: 108px;
+  overflow: visible;
   cursor: grab;
   border-radius: 12px;
   background: #e2e8f0;
@@ -51,25 +65,17 @@
   transform: scale(1.05);
 }
 
-.be__hint {
-  font-size: clamp(13px, 1.6vw, 17px);
-  color: #64748b;
-  flex-basis: 100%;
-  text-align: center;
-  margin-top: 4px;
-}
-
 .be__right-label {
   font-size: 22px;
   font-weight: bold;
 }
 
 .be__right-label--balanced {
-  fill: #34d399;
+  fill: #16a34a;
 }
 
 .be__right-label--unbalanced {
-  fill: #a78bfa;
+  fill: #7c3aed;
 }
 
 @media (prefers-reduced-motion: reduce) {

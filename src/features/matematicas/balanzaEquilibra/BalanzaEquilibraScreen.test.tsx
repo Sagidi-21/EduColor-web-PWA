@@ -88,10 +88,10 @@ describe("BalanzaEquilibraScreen smoke", () => {
       const { container } = render(<BalanzaEquilibraScreen {...props(d)} />);
       const session = generateSession(d, 4242);
       expect(container.querySelector(".activity-header__counter")?.getAttribute("aria-label")).toBe(
-        `Ejercicio 1 / ${session.length}`,
+        `Ejercicio 1/${session.length}`,
       );
       expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
-        `1 / ${session.length}`,
+        `1/${session.length}`,
       );
       cleanup();
     }
@@ -195,7 +195,7 @@ describe("BalanzaEquilibraScreen smoke", () => {
 
       // El contador avanza con cada ejercicio completado.
       expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
-        `${i + 1} / ${session.length}`,
+        `${i + 1}/${session.length}`,
       );
       runTimers(AUTOAVANCE_MS);
     }

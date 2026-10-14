@@ -43,11 +43,19 @@ interface DragState {
   y: number;
 }
 
+/**
+ * Cliente → viewBox. El SVG usa `preserveAspectRatio` por defecto (`meet`):
+ * el dibujo se escala por el lado limitante y se centra, así que hay que
+ * descontar ese margen o la pesa se separa del ratón.
+ */
 function toSvg(clientX: number, clientY: number, svg: SVGSVGElement): Punto {
   const r = svg.getBoundingClientRect();
+  const scale = Math.min(r.width / VIEW_W, r.height / VIEW_H) || 1;
+  const offsetX = (r.width - VIEW_W * scale) / 2;
+  const offsetY = (r.height - VIEW_H * scale) / 2;
   return {
-    x: ((clientX - r.left) / r.width) * VIEW_W,
-    y: ((clientY - r.top) / r.height) * VIEW_H,
+    x: (clientX - r.left - offsetX) / scale,
+    y: (clientY - r.top - offsetY) / scale,
   };
 }
 
@@ -238,157 +246,168 @@ function BalanzaEquilibraScreen({
     });
 
   return (
-    <div className={`blz be ${className || ""}`}>
+    <div className="blz be">
       <ActivityHeader
         onExit={onExit}
-        exitLabel="← Salir"
         gradeTitle={gradeTitle}
+        className={className}
         unitTitle={activity.title}
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
       />
 
-      <div className={`blz__stage ${stageClass}`}>
+      <div className={`blz__stage be__stage ${stageClass}`}>
         {answerState === "correct" && <div className="blz__celebration">¡Equilibrada! ⚖️⭐</div>}
 
         <p className="be__instruction">
           Arrastra pesas al platillo derecho hasta <strong>equilibrar</strong> la balanza
         </p>
 
-        <svg
-          ref={svgRef}
-          className="blz__svg"
-          viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-          onPointerMove={onMove}
-          onPointerUp={onUp}
-          onPointerLeave={onUp}
-          style={{ touchAction: "none" }}
-          role="img"
-          aria-label={`Balanza. Objeto de la izquierda: ${current.leftLabel}. Objetivo: equilibrar ${current.target} kg.`}
-        >
-          {/* Soporte */}
-          <path
-            d={`M ${VIEW_W / 2 - 16} 330 L ${VIEW_W / 2} ${FULCRUM_Y} L ${VIEW_W / 2 + 16} 330 Z`}
-            className="blz__soporte"
-          />
-          <rect x={VIEW_W / 2 - 55} y={330} width={110} height={22} rx={8} className="blz__base" />
-
-          {/* Brazo y fulcro */}
-          <line x1={xL} y1={yL} x2={xR} y2={yR} className="blz__brazo" />
-          <circle cx={FULCRUM_X} cy={FULCRUM_Y} r={10} className="blz__fulcro" />
-
-          {/* Cuerdas + platillos */}
-          {[
-            [xL, yL, panLeftX, panLeftY],
-            [xR, yR, panRightX, panRightY],
-          ].map(([bx, by, px, py], k) => (
-            <g key={k}>
-              <line x1={bx} y1={by} x2={px - 60} y2={py} className="blz__colgador" />
-              <line x1={bx} y1={by} x2={px + 60} y2={py} className="blz__colgador" />
-              <line
-                x1={px - 60}
-                y1={py}
-                x2={px + 60}
-                y2={py}
-                className="blz__bandeja"
-                strokeWidth={6}
-                strokeLinecap="round"
-              />
-            </g>
-          ))}
-
-          {/* Contenido platillo IZQUIERDO (carga fija) */}
-          {current.leftKind === "object" ? (
-            <text
-              x={panLeftX}
-              y={panLeftY - 14}
-              fontSize={54}
-              textAnchor="middle"
-              className="blz__objeto"
-            >
-              {current.leftEmoji}
-            </text>
-          ) : (
-            blockGrid(
-              panLeftX,
-              panLeftY,
-              Array.from({ length: current.target }, () => ({ kg: 1 })),
-            )
-          )}
-          <text
-            x={panLeftX}
-            y={panLeftY + 34}
-            fontSize={22}
-            fontWeight="bold"
-            fill="#fbbf24"
-            textAnchor="middle"
-          >
-            {current.target} kg
-          </text>
-
-          {/* Contenido platillo DERECHO (pesas del niño, arrastrables para quitar) */}
-          {blockGrid(
-            panRightX,
-            panRightY,
-            weights.map((kg) => ({ kg })),
-            (i) => startDrag(weights[i], i),
-          )}
-          <text
-            x={panRightX}
-            y={panRightY + 34}
-            className={`be__right-label ${rightTotal === current.target ? "be__right-label--balanced" : "be__right-label--unbalanced"}`}
-          >
-            {rightTotal} kg
-          </text>
-
-          {/* Pesa fantasma que sigue al puntero */}
-          {drag && (
-            <g pointerEvents="none">
-              <text x={drag.x} y={drag.y} fontSize={30} textAnchor="middle" className="blz__objeto">
-                🧱
-              </text>
-              {drag.kg === 2 && (
-                <text
-                  x={drag.x}
-                  y={drag.y - 20}
-                  fontSize={13}
-                  fontWeight="bold"
-                  fill="#fde68a"
-                  textAnchor="middle"
-                >
-                  2
-                </text>
-              )}
-            </g>
-          )}
-        </svg>
-      </div>
-
-      {/* Bandeja de pesas arrastrables */}
-      <div className="be__tray">
-        <span className="be__tray-label">Pesas:</span>
-        {current.allowed.map((kg) => (
+        <div className="be__row">
           <svg
-            key={kg}
-            className="be__token"
-            viewBox="0 0 70 70"
-            onPointerDown={(e) => startDrag(kg, null)(e)}
+            ref={svgRef}
+            className="blz__svg"
+            viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
             onPointerMove={onMove}
             onPointerUp={onUp}
+            onPointerLeave={onUp}
             style={{ touchAction: "none" }}
+            role="img"
+            aria-label={`Balanza. Objeto de la izquierda: ${current.leftLabel}. Objetivo: equilibrar ${current.target} kg.`}
           >
-            <text x={35} y={40} fontSize={34} textAnchor="middle" className="blz__objeto">
-              🧱
+            {/* Soporte */}
+            <path
+              d={`M ${VIEW_W / 2 - 16} 330 L ${VIEW_W / 2} ${FULCRUM_Y} L ${VIEW_W / 2 + 16} 330 Z`}
+              className="blz__soporte"
+            />
+            <rect
+              x={VIEW_W / 2 - 55}
+              y={330}
+              width={110}
+              height={22}
+              rx={8}
+              className="blz__base"
+            />
+
+            {/* Brazo y fulcro */}
+            <line x1={xL} y1={yL} x2={xR} y2={yR} className="blz__brazo" />
+            <circle cx={FULCRUM_X} cy={FULCRUM_Y} r={10} className="blz__fulcro" />
+
+            {/* Cuerdas + platillos */}
+            {[
+              [xL, yL, panLeftX, panLeftY],
+              [xR, yR, panRightX, panRightY],
+            ].map(([bx, by, px, py], k) => (
+              <g key={k}>
+                <line x1={bx} y1={by} x2={px - 60} y2={py} className="blz__colgador" />
+                <line x1={bx} y1={by} x2={px + 60} y2={py} className="blz__colgador" />
+                <line
+                  x1={px - 60}
+                  y1={py}
+                  x2={px + 60}
+                  y2={py}
+                  className="blz__bandeja"
+                  strokeWidth={6}
+                  strokeLinecap="round"
+                />
+              </g>
+            ))}
+
+            {/* Contenido platillo IZQUIERDO (carga fija) */}
+            {current.leftKind === "object" ? (
+              <text
+                x={panLeftX}
+                y={panLeftY - 14}
+                fontSize={54}
+                textAnchor="middle"
+                className="blz__objeto"
+              >
+                {current.leftEmoji}
+              </text>
+            ) : (
+              blockGrid(
+                panLeftX,
+                panLeftY,
+                Array.from({ length: current.target }, () => ({ kg: 1 })),
+              )
+            )}
+            <text x={panLeftX} y={panLeftY + 34} textAnchor="middle" className="blz__pesa">
+              {current.target} kg
             </text>
-            <text x={35} y={64} fontSize={13} fontWeight="bold" fill="#475569" textAnchor="middle">
-              {kg} kg
+
+            {/* Contenido platillo DERECHO (pesas del niño, arrastrables para quitar) */}
+            {blockGrid(
+              panRightX,
+              panRightY,
+              weights.map((kg) => ({ kg })),
+              (i) => startDrag(weights[i], i),
+            )}
+            <text
+              x={panRightX}
+              y={panRightY + 34}
+              className={`be__right-label ${rightTotal === current.target ? "be__right-label--balanced" : "be__right-label--unbalanced"}`}
+            >
+              {rightTotal} kg
             </text>
+
+            {/* Pesa fantasma que sigue al puntero */}
+            {drag && (
+              <g pointerEvents="none">
+                <text
+                  x={drag.x}
+                  y={drag.y}
+                  fontSize={30}
+                  textAnchor="middle"
+                  className="blz__objeto"
+                >
+                  🧱
+                </text>
+                {drag.kg === 2 && (
+                  <text
+                    x={drag.x}
+                    y={drag.y - 20}
+                    fontSize={13}
+                    fontWeight="bold"
+                    fill="#fde68a"
+                    textAnchor="middle"
+                  >
+                    2
+                  </text>
+                )}
+              </g>
+            )}
           </svg>
-        ))}
-        <span className="be__hint">
-          Arrastra una pesa al platillo. Para quitarla, sácala del platillo.
-        </span>
+
+          {/* Pesas arrastrables, a la derecha del plato derecho */}
+          <div className="be__tray">
+            {current.allowed.map((kg) => (
+              <svg
+                key={kg}
+                className="be__token"
+                viewBox="0 0 70 86"
+                onPointerDown={(e) => startDrag(kg, null)(e)}
+                onPointerMove={onMove}
+                onPointerUp={onUp}
+                style={{ touchAction: "none" }}
+              >
+                <text x={35} y={52} fontSize={34} textAnchor="middle" className="blz__objeto">
+                  🧱
+                </text>
+                <text
+                  x={35}
+                  y={78}
+                  fontSize={13}
+                  fontWeight="bold"
+                  fill="#475569"
+                  textAnchor="middle"
+                >
+                  {kg} kg
+                </text>
+              </svg>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
