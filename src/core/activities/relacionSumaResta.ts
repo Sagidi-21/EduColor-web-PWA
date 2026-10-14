@@ -40,7 +40,7 @@ function randInt(rng: () => number, min: number, max: number) {
 // ────────────────────────────────────────────────────────────────
 // Generador de sesión
 // Dificultades:
-//   easy   — total 5-10, apoyo visual (partA ≥ 1, partB ≥ 1)
+//   easy   — total 5-10 (partA ≥ 1, partB ≥ 1)
 //   medium — total 11-20
 //   hard   — total 21-50
 //   expert — total 51-99

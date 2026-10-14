@@ -7,17 +7,31 @@ import {
 import type { RelacionSumaRestaExercise } from "../../../core/activities/relacionSumaResta";
 import type { EngineScreenProps } from "../engine-screens";
 import { playFeedback } from "../../shared/audioFeedback";
+import { LazyDigitCell } from "../../shared/DigitCell";
 import { SummaryScreen } from "../components/SummaryScreen";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { ActionButtons } from "../components/ActivityActionButtons";
 import { Numpad } from "../../shared/components/Numpad";
+import InputModeToggle from "../../shared/components/InputModeToggle";
+import { useInputMode } from "../../shared/hooks/useInputMode";
 import "./RelacionSumaRestaScreen.css";
 
 // ────────────────────────────────────────────────────────────────
-// Tipos internos
+// Tipos
 // ────────────────────────────────────────────────────────────────
 
-type AnswerState = "idle" | "correct" | "wrong";
+type OpIndex = 0 | 1 | 2;
+/** digits[0]=D, digits[1]=U */
+type OpDigits = [string, string];
+type AllDigits = [OpDigits, OpDigits, OpDigits];
+type GradeResults = [boolean, boolean, boolean];
+
+interface OpDef {
+  left: number;
+  right: number;
+  op: "+" | "−";
+  expected: number;
+}
 
 interface SessionState {
   exercises: RelacionSumaRestaExercise[];
@@ -25,16 +39,27 @@ interface SessionState {
   correctCount: number;
   startTime: number;
   alreadyFailed?: boolean;
-  answerState: AnswerState;
-  /** inputs[0] = total−partA = partB  |  inputs[1] = total−partB = partA  |  inputs[2] = partA+partB = total */
-  inputs: [string, string, string];
-  /** Cuál de los 3 inputs está activo (0, 1 ó 2) */
-  activeInput: 0 | 1 | 2;
+  /** selecting = eligiendo/rellenando ops; graded = las 3 evaluadas */
+  phase: "selecting" | "graded";
+  gradeResults: GradeResults | null;
+  digits: AllDigits;
+  done: [boolean, boolean, boolean];
+  detailOp: OpIndex | null;
+  detailDigits: OpDigits;
+  detailActiveDigit: 0 | 1;
 }
 
 // ────────────────────────────────────────────────────────────────
-// Utilidades de estado
+// Utilidades
 // ────────────────────────────────────────────────────────────────
+
+function emptyDigits(): AllDigits {
+  return [
+    ["", ""],
+    ["", ""],
+    ["", ""],
+  ];
+}
 
 function initSession(difficulty: string, seed: number): SessionState {
   return {
@@ -42,78 +67,189 @@ function initSession(difficulty: string, seed: number): SessionState {
     currentIndex: 0,
     correctCount: 0,
     startTime: Date.now(),
-    answerState: "idle",
-    inputs: ["", "", ""],
-    activeInput: 0,
+    phase: "selecting",
+    gradeResults: null,
+    digits: emptyDigits(),
+    done: [false, false, false],
+    detailOp: null,
+    detailDigits: ["", ""],
+    detailActiveDigit: 1,
   };
 }
 
+function digitDU(n: number): { d: string; u: string } {
+  const d = Math.floor(n / 10);
+  return { d: d > 0 ? String(d) : "", u: String(n % 10) };
+}
+
+function pairToInput([d, u]: OpDigits): string {
+  if (d === "" && u === "") return "";
+  const n = parseInt(`${d}${u}`, 10);
+  return Number.isNaN(n) ? "" : String(n);
+}
+
+function digitsToInputs(digits: AllDigits): [string, string, string] {
+  return [pairToInput(digits[0]), pairToInput(digits[1]), pairToInput(digits[2])];
+}
+
+function opsFor(ex: RelacionSumaRestaExercise): [OpDef, OpDef, OpDef] {
+  return [
+    { left: ex.total, right: ex.partA, op: "−", expected: ex.partB },
+    { left: ex.total, right: ex.partB, op: "−", expected: ex.partA },
+    { left: ex.partA, right: ex.partB, op: "+", expected: ex.total },
+  ];
+}
+
 // ────────────────────────────────────────────────────────────────
-// Componente de ecuación con input inline
+// Overview: una columna de operación (solo lectura + clic)
 // ────────────────────────────────────────────────────────────────
 
-function EquationRow({
-  leftNum,
-  op,
-  rightNum,
-  inputIndex,
-  activeInput,
-  inputValue,
-  answerState,
-  expectedValue,
-  onClick,
-  showVisual = false,
-  visualItems = 0,
-  itemVariant = "a",
+function OverviewOp({
+  def,
+  digits,
+  done,
+  grade,
+  selectable,
+  onSelect,
 }: {
-  leftNum: number;
-  op: "+" | "-";
-  rightNum: number;
-  inputIndex: 0 | 1 | 2;
-  activeInput: 0 | 1 | 2;
-  inputValue: string;
-  answerState: AnswerState;
-  expectedValue: number;
-  onClick: () => void;
-  showVisual?: boolean;
-  visualItems?: number;
-  itemVariant?: "a" | "b";
+  def: OpDef;
+  digits: OpDigits;
+  done: boolean;
+  grade: boolean | null;
+  selectable: boolean;
+  onSelect: () => void;
 }) {
-  const isActive = activeInput === inputIndex;
+  const top = digitDU(def.left);
+  const bottom = digitDU(def.right);
 
-  const inputClass = [
-    "relsr__input",
-    answerState === "correct" ? "relsr__input--correct" : "",
-    answerState === "wrong" ? "relsr__input--wrong" : "",
-    answerState === "idle" && isActive ? "relsr__input--active" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  const displayValue = answerState === "correct" ? String(expectedValue) : inputValue;
+  const boxClass = () => {
+    const classes = ["relsr__box"];
+    if (grade === true) classes.push("relsr__box--correct");
+    else if (grade === false) classes.push("relsr__box--wrong");
+    return classes.join(" ");
+  };
 
   return (
     <div
-      className="relsr__equation-row"
-      onClick={onClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && onClick()}
+      className={`relsr__op-col${selectable ? " relsr__op-col--selectable" : ""}${done ? " relsr__op-col--done" : ""}`}
+      data-left={def.left}
+      data-right={def.right}
+      data-op={def.op === "−" ? "-" : "+"}
+      data-done={done ? "1" : "0"}
+      role={selectable ? "button" : undefined}
+      tabIndex={selectable ? 0 : undefined}
+      aria-label={`${def.left} ${def.op} ${def.right}`}
+      onClick={selectable ? onSelect : undefined}
+      onKeyDown={selectable ? (e) => e.key === "Enter" && onSelect() : undefined}
     >
-      {showVisual && visualItems > 0 && (
-        <div className="relsr__dots" aria-hidden="true">
-          {Array.from({ length: visualItems }).map((_, i) => (
-            <span key={i} className={`relsr__dot relsr__dot--${itemVariant}`} />
-          ))}
-        </div>
-      )}
-      <div className="relsr__formula">
-        <span className="relsr__number">{leftNum}</span>
-        <span className="relsr__op">{op}</span>
-        <span className="relsr__number">{rightNum}</span>
-        <span className="relsr__op">=</span>
-        <div className={inputClass}>{displayValue}</div>
+      <div className="relsr__grid">
+        <span />
+        <span className="relsr__col-label">D</span>
+        <span className="relsr__col-label">U</span>
+
+        <span />
+        <span className="relsr__digit relsr__number">{top.d}</span>
+        <span className="relsr__digit relsr__number">{top.u}</span>
+
+        <span className="relsr__op">{def.op}</span>
+        <span className="relsr__digit relsr__number">{bottom.d}</span>
+        <span className="relsr__digit relsr__number">{bottom.u}</span>
+
+        <span className="relsr__separator" />
+
+        <span />
+        <div className={boxClass()}>{digits[0]}</div>
+        <div className={boxClass()}>{digits[1]}</div>
       </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────
+// Detalle: una operación grande (numpad / canvas)
+// ────────────────────────────────────────────────────────────────
+
+function DetailGrid({
+  def,
+  digits,
+  activeDigit,
+  mode,
+  canvasKey,
+  onBoxClick,
+  onCanvasConfirm,
+  onCanvasClear,
+}: {
+  def: OpDef;
+  digits: OpDigits;
+  activeDigit: 0 | 1;
+  mode: "numpad" | "canvas";
+  canvasKey: number;
+  onBoxClick: (i: 0 | 1) => void;
+  onCanvasConfirm: (i: 0 | 1, d: string) => void;
+  onCanvasClear: (i: 0 | 1) => void;
+}) {
+  const top = digitDU(def.left);
+  const bottom = digitDU(def.right);
+
+  const boxClass = (i: 0 | 1) =>
+    ["relsr__detail-box", activeDigit === i ? "relsr__detail-box--active" : ""]
+      .filter(Boolean)
+      .join(" ");
+
+  return (
+    <div
+      className="relsr__detail-grid"
+      data-left={def.left}
+      data-right={def.right}
+      data-op={def.op}
+    >
+      <span />
+      <span className="relsr__col-label">D</span>
+      <span className="relsr__col-label">U</span>
+
+      <span />
+      <span className="relsr__detail-digit">{top.d}</span>
+      <span className="relsr__detail-digit">{top.u}</span>
+
+      <span className="relsr__detail-op">{def.op}</span>
+      <span className="relsr__detail-digit">{bottom.d}</span>
+      <span className="relsr__detail-digit">{bottom.u}</span>
+
+      <span className="relsr__detail-separator" />
+
+      <span />
+      {([0, 1] as const).map((i) => {
+        const isActive = activeDigit === i;
+        const val = digits[i];
+
+        if (mode === "canvas" && isActive) {
+          return (
+            <LazyDigitCell
+              key={`canvas-${i}-${canvasKey}`}
+              isActive
+              onActivate={() => {}}
+              onConfirm={(d) => onCanvasConfirm(i, d)}
+              onClear={() => onCanvasClear(i)}
+              state="idle"
+              value=""
+            />
+          );
+        }
+
+        return (
+          <div
+            key={i}
+            className={boxClass(i)}
+            data-digit={i === 0 ? "D" : "U"}
+            onClick={() => onBoxClick(i)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && onBoxClick(i)}
+          >
+            {val || (isActive ? <span className="relsr__cursor">_</span> : "")}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -123,12 +259,17 @@ function EquationRow({
 // ────────────────────────────────────────────────────────────────
 
 export function RelacionSumaRestaScreen({
-  activity: _activity,
+  activity,
   difficulty,
   seed,
   onExit,
   gradeTitle,
+  className,
+  mascotUrl,
+  difficultyStars,
 }: EngineScreenProps) {
+  const { mode, toggle } = useInputMode();
+  const [canvasKey, setCanvasKey] = useState(0);
   const [session, setSession] = useState<SessionState>(() => initSession(difficulty, seed));
   const [finished, setFinished] = useState<{
     total: number;
@@ -138,34 +279,128 @@ export function RelacionSumaRestaScreen({
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
-  const showVisual = difficulty === "easy" || difficulty === "medium";
+  const inDetail = session.detailOp !== null;
+  const ops = current ? opsFor(current) : null;
 
-  // ── Confirmar respuesta ──────────────────────────────────────
+  const gradeAllIfReady = useCallback(
+    (digits: AllDigits, done: [boolean, boolean, boolean], alreadyFailed?: boolean) => {
+      if (!done.every(Boolean) || !current) return null;
+      const results = validateAnswers(current, digitsToInputs(digits));
+      const ok = allCorrect(results);
+      playFeedback(ok);
+      return {
+        phase: "graded" as const,
+        gradeResults: results,
+        answerOk: ok,
+        correctDelta: ok && !alreadyFailed ? 1 : 0,
+      };
+    },
+    [current],
+  );
 
-  const handleConfirmAll = useCallback(() => {
-    const results = validateAnswers(current, session.inputs);
-    const ok = allCorrect(results);
+  const openDetail = useCallback(
+    (opIndex: OpIndex) => {
+      if (session.phase === "graded") return;
+      const prev = session.digits[opIndex];
+      setSession((s) => ({
+        ...s,
+        detailOp: opIndex,
+        detailDigits: [...prev] as OpDigits,
+        detailActiveDigit: 1,
+      }));
+      setCanvasKey((k) => k + 1);
+    },
+    [session.phase, session.digits],
+  );
 
-    if (ok) playFeedback(true);
-    else playFeedback(false);
+  const commitDetail = useCallback(
+    (newDigits: OpDigits) => {
+      if (session.detailOp === null) return;
+      const opIndex = session.detailOp;
+      const digits: AllDigits = session.digits.map((p) => [...p] as OpDigits) as AllDigits;
+      digits[opIndex] = newDigits;
+      const done: [boolean, boolean, boolean] = [...session.done];
+      done[opIndex] = true;
 
-    setSession((s) => ({
-      ...s,
-      answerState: ok ? "correct" : "wrong",
-      correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
-    }));
-  }, [current, session.inputs]);
+      const graded = gradeAllIfReady(digits, done, session.alreadyFailed);
+      if (graded) {
+        setSession((s) => ({
+          ...s,
+          digits,
+          done,
+          detailOp: null,
+          detailDigits: ["", ""],
+          detailActiveDigit: 1,
+          phase: graded.phase,
+          gradeResults: graded.gradeResults,
+          correctCount: s.correctCount + graded.correctDelta,
+          alreadyFailed: graded.answerOk ? s.alreadyFailed : true,
+        }));
+      } else {
+        setSession((s) => ({
+          ...s,
+          digits,
+          done,
+          detailOp: null,
+          detailDigits: ["", ""],
+          detailActiveDigit: 1,
+        }));
+      }
+    },
+    [session, gradeAllIfReady],
+  );
 
-  // Avanzar al pulsar ✓ en el último input o desde el numpad
-  const handleNextInput = useCallback(() => {
-    if (session.activeInput < 2) {
-      setSession((s) => ({ ...s, activeInput: (s.activeInput + 1) as 0 | 1 | 2 }));
-    } else {
-      handleConfirmAll();
+  const handleDetailDigit = useCallback(
+    (d: string) => {
+      if (session.detailOp === null) return;
+      const nd: OpDigits = [...session.detailDigits];
+      nd[session.detailActiveDigit] = d;
+      if (session.detailActiveDigit === 1) {
+        setSession((s) => ({ ...s, detailDigits: nd, detailActiveDigit: 0 }));
+      } else {
+        commitDetail(nd);
+      }
+    },
+    [session.detailOp, session.detailDigits, session.detailActiveDigit, commitDetail],
+  );
+
+  const handleDetailDelete = useCallback(() => {
+    if (session.detailOp === null) return;
+    const nd: OpDigits = [...session.detailDigits];
+    const { detailActiveDigit } = session;
+    if (nd[detailActiveDigit]) {
+      nd[detailActiveDigit] = "";
+      setSession((s) => ({ ...s, detailDigits: nd }));
+    } else if (detailActiveDigit === 0) {
+      nd[1] = "";
+      setSession((s) => ({ ...s, detailDigits: nd, detailActiveDigit: 1 }));
     }
-  }, [session.activeInput, handleConfirmAll]);
+  }, [session]);
 
-  // ── Siguiente ejercicio ──────────────────────────────────────
+  const handleDetailConfirm = useCallback(() => {
+    if (session.detailOp === null) return;
+    if (session.detailActiveDigit === 1) {
+      setSession((s) => ({ ...s, detailActiveDigit: 0 }));
+      return;
+    }
+    if (session.detailDigits.every((x) => x !== "")) {
+      commitDetail([...session.detailDigits] as OpDigits);
+    }
+  }, [session, commitDetail]);
+
+  const handleCanvasConfirm = useCallback(
+    (i: 0 | 1, digit: string) => {
+      const nd: OpDigits = [...session.detailDigits];
+      nd[i] = digit;
+      if (i === 1) {
+        setSession((s) => ({ ...s, detailDigits: nd, detailActiveDigit: 0 }));
+      } else {
+        commitDetail(nd);
+      }
+      setCanvasKey((k) => k + 1);
+    },
+    [session.detailDigits, commitDetail],
+  );
 
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
@@ -179,53 +414,50 @@ export function RelacionSumaRestaScreen({
       setSession((s) => ({
         ...s,
         currentIndex: next,
-        answerState: "idle",
-        inputs: ["", "", ""],
-        activeInput: 0,
+        phase: "selecting",
+        gradeResults: null,
+        digits: emptyDigits(),
+        done: [false, false, false],
+        detailOp: null,
+        detailDigits: ["", ""],
+        detailActiveDigit: 1,
         alreadyFailed: false,
       }));
     }
   }, [session, total]);
 
+  /** Reintentar: solo limpia las operaciones incorrectas. */
   const handleRetry = useCallback(() => {
-    setSession((s) => ({
-      ...s,
-      answerState: "idle",
-      alreadyFailed: true,
-    }));
+    setSession((s) => {
+      if (!s.gradeResults) return s;
+      const digits: AllDigits = s.digits.map((p) => [...p] as OpDigits) as AllDigits;
+      const done: [boolean, boolean, boolean] = [...s.done];
+      s.gradeResults.forEach((ok, i) => {
+        if (!ok) {
+          digits[i as OpIndex] = ["", ""];
+          done[i as OpIndex] = false;
+        }
+      });
+      return {
+        ...s,
+        phase: "selecting",
+        gradeResults: null,
+        digits,
+        done,
+        detailOp: null,
+        detailDigits: ["", ""],
+        detailActiveDigit: 1,
+        alreadyFailed: true,
+      };
+    });
   }, []);
 
-  // Auto-avance al acertar
   useEffect(() => {
-    if (session.answerState !== "correct") return;
+    if (session.phase !== "graded" || !session.gradeResults) return;
+    if (!allCorrect(session.gradeResults)) return;
     const t = setTimeout(handleNext, 1200);
     return () => clearTimeout(t);
-  }, [session.answerState, handleNext]);
-
-  // ── Numpad ───────────────────────────────────────────────────
-
-  const handleDigit = useCallback(
-    (d: string) => {
-      if (session.answerState !== "idle") return;
-      setSession((s) => {
-        const inputs = [...s.inputs] as [string, string, string];
-        if (inputs[s.activeInput].length < 2) inputs[s.activeInput] += d;
-        return { ...s, inputs };
-      });
-    },
-    [session.answerState],
-  );
-
-  const handleDelete = useCallback(() => {
-    if (session.answerState !== "idle") return;
-    setSession((s) => {
-      const inputs = [...s.inputs] as [string, string, string];
-      inputs[s.activeInput] = inputs[s.activeInput].slice(0, -1);
-      return { ...s, inputs };
-    });
-  }, [session.answerState]);
-
-  // ── Resumen ──────────────────────────────────────────────────
+  }, [session.phase, session.gradeResults, handleNext]);
 
   if (finished) {
     return (
@@ -241,97 +473,125 @@ export function RelacionSumaRestaScreen({
     );
   }
 
-  if (!current) return null;
+  if (!current || !ops) return null;
 
-  const stageClass =
-    session.answerState === "correct"
-      ? "relsr__stage--correct"
-      : session.answerState === "wrong"
-        ? "relsr__stage--wrong"
-        : "";
+  const allOk =
+    session.phase === "graded" && session.gradeResults && allCorrect(session.gradeResults);
+  const someWrong =
+    session.phase === "graded" && session.gradeResults && !allCorrect(session.gradeResults);
 
-  const setActive = (i: 0 | 1 | 2) => {
-    if (session.answerState === "idle") {
-      setSession((s) => ({ ...s, activeInput: i }));
-    }
-  };
+  // ── Vista detalle (una operación) ─────────────────────────────
+  if (inDetail && session.detailOp !== null) {
+    const def = ops[session.detailOp];
+    return (
+      <div className={`relsr${mode === "canvas" ? " relsr--canvas" : ""}`}>
+        <ActivityHeader
+          onExit={onExit}
+          gradeTitle={gradeTitle}
+          className={className}
+          unitTitle={activity.title}
+          mascotUrl={mascotUrl}
+          difficultyStars={difficultyStars}
+          progress={`${session.currentIndex + 1}/${total}`}
+        >
+          <InputModeToggle mode={mode} onToggle={toggle} />
+        </ActivityHeader>
 
+        <div
+          className={
+            mode === "numpad"
+              ? "relsr__detail relsr__detail--numpad"
+              : "relsr__detail relsr__detail--canvas"
+          }
+        >
+          <div className="relsr__detail-stage">
+            <DetailGrid
+              def={def}
+              digits={session.detailDigits}
+              activeDigit={session.detailActiveDigit}
+              mode={mode}
+              canvasKey={canvasKey}
+              onBoxClick={(i) => {
+                const nd: OpDigits = [...session.detailDigits];
+                nd[i] = "";
+                setSession((s) => ({ ...s, detailActiveDigit: i, detailDigits: nd }));
+              }}
+              onCanvasConfirm={handleCanvasConfirm}
+              onCanvasClear={(i) => {
+                const nd: OpDigits = [...session.detailDigits];
+                nd[i] = "";
+                setSession((s) => ({ ...s, detailDigits: nd }));
+              }}
+            />
+          </div>
+
+          {mode === "numpad" && (
+            <footer className="relsr__detail-footer">
+              <Numpad
+                onDigit={handleDetailDigit}
+                onDelete={handleDetailDelete}
+                onConfirm={handleDetailConfirm}
+                disabled={false}
+              />
+            </footer>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Vista overview (3 operaciones) ────────────────────────────
   return (
     <div className="relsr">
       <ActivityHeader
-        gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
         onExit={onExit}
+        gradeTitle={gradeTitle}
+        className={className}
+        unitTitle={activity.title}
+        mascotUrl={mascotUrl}
+        difficultyStars={difficultyStars}
+        progress={`${session.currentIndex + 1}/${total}`}
       />
 
-      <div className={`relsr__stage ${stageClass}`}>
-        {session.answerState === "correct" && (
+      <div
+        className={`relsr__overview${allOk ? " relsr__overview--correct" : ""}${someWrong ? " relsr__overview--wrong" : ""}`}
+      >
+        {allOk && (
           <div className="relsr__celebration" aria-live="polite">
             ¡Muy bien! ⭐
           </div>
         )}
 
-        <div className="relsr__container">
-          {/* ── Fila 1: total − partA = ? (partB) ── */}
-          <EquationRow
-            leftNum={current.total}
-            op="-"
-            rightNum={current.partA}
-            inputIndex={0}
-            activeInput={session.activeInput}
-            inputValue={session.inputs[0]}
-            answerState={session.answerState}
-            expectedValue={current.partB}
-            onClick={() => setActive(0)}
-            showVisual={showVisual}
-            visualItems={showVisual ? current.partA : 0}
-            itemVariant="a"
-          />
+        <p className="relsr__intro">
+          Total {current.total}: partes {current.partA} y {current.partB}{" "}
+          <span className="relsr__hint">(selecciónalas de una en una)</span>
+        </p>
 
-          {/* ── Fila 2: total − partB = ? (partA) ── */}
-          <EquationRow
-            leftNum={current.total}
-            op="-"
-            rightNum={current.partB}
-            inputIndex={1}
-            activeInput={session.activeInput}
-            inputValue={session.inputs[1]}
-            answerState={session.answerState}
-            expectedValue={current.partA}
-            onClick={() => setActive(1)}
-            showVisual={showVisual}
-            visualItems={showVisual ? current.partB : 0}
-            itemVariant="b"
-          />
-
-          {/* ── Fila 3: partA + partB = ? (total) ── */}
-          <EquationRow
-            leftNum={current.partA}
-            op="+"
-            rightNum={current.partB}
-            inputIndex={2}
-            activeInput={session.activeInput}
-            inputValue={session.inputs[2]}
-            answerState={session.answerState}
-            expectedValue={current.total}
-            onClick={() => setActive(2)}
-            showVisual={false}
-          />
+        <div className="relsr__ops">
+          {ops.map((def, i) => {
+            const idx = i as OpIndex;
+            const grade =
+              session.phase === "graded" && session.gradeResults ? session.gradeResults[idx] : null;
+            return (
+              <OverviewOp
+                key={idx}
+                def={def}
+                digits={session.digits[idx]}
+                done={session.done[idx]}
+                grade={grade}
+                selectable={session.phase === "selecting"}
+                onSelect={() => openDetail(idx)}
+              />
+            );
+          })}
         </div>
-      </div>
 
-      <footer className="relsr__footer">
-        <Numpad
-          onDigit={handleDigit}
-          onDelete={handleDelete}
-          onConfirm={handleNextInput}
-          disabled={session.answerState !== "idle"}
-        />
-
-        {session.answerState === "wrong" && (
-          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+        {someWrong && (
+          <div className="relsr__actions">
+            <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+          </div>
         )}
-      </footer>
+      </div>
     </div>
   );
 }

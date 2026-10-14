@@ -15,10 +15,10 @@
     "unit": 8,
     "unitLabel": "Nuestro colegio",
     "difficultyDescriptions": {
-      "easy": "Números hasta el 10, con apoyo visual",
+      "easy": "Números hasta el 10",
       "medium": "Números hasta el 20",
       "hard": "Números hasta el 50",
-      "expert": "Números hasta el 99, sin apoyo visual"
+      "expert": "Números hasta el 99"
     }
   },
   "order": 30
