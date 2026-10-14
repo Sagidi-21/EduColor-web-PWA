@@ -20,7 +20,15 @@ for (const [ruta, url] of Object.entries(modules)) {
   porCarpetaYFichero.set(`${partes[partes.length - 2]}/${partes[partes.length - 1]}`, url);
 }
 
+/**
+ * Revisión de assets: súbela al sustituir un PNG para invalidar la caché del
+ * navegador en dev (misma ruta, contenido nuevo).
+ */
+const ASSET_REV = 4;
+
 /** Devuelve la URL de la imagen, o "" si el asset no llegara a empaquetarse. */
 export function moneyImageUrl(item: MoneyItem): string {
-  return porCarpetaYFichero.get(`${CARPETA[item.tipo]}/${item.fichero}`) ?? "";
+  const url = porCarpetaYFichero.get(`${CARPETA[item.tipo]}/${item.fichero}`) ?? "";
+  if (!url) return "";
+  return `${url}${url.includes("?") ? "&" : "?"}r=${ASSET_REV}`;
 }

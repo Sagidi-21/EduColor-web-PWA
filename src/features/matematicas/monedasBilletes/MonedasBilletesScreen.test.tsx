@@ -37,7 +37,9 @@ const runTimers = (ms: number) => {
 const opciones = (c: HTMLElement) =>
   Array.from(c.querySelectorAll<HTMLButtonElement>(".mon__opcion"));
 const monedasDelMonedero = (c: HTMLElement) =>
-  Array.from(c.querySelectorAll<HTMLButtonElement>(".mon__moneda"));
+  Array.from(c.querySelectorAll<HTMLButtonElement>('.mon__pieza[data-zona="monedero"]'));
+const piezasDePago = (c: HTMLElement) =>
+  Array.from(c.querySelectorAll<HTMLButtonElement>('.mon__pieza[data-zona="pago"]'));
 const imagenes = (c: HTMLElement) => Array.from(c.querySelectorAll<HTMLImageElement>("img"));
 
 const progreso = (c: HTMLElement): string =>
@@ -46,7 +48,7 @@ const progreso = (c: HTMLElement): string =>
 const enunciado = (c: HTMLElement): string => c.querySelector(".mon__enunciado")?.textContent ?? "";
 
 /**
- * La hoja del nivel fácil: diez ejercicios de botón y ninguno de compra, que es
+ * La hoja del nivel fï¿½cil: diez ejercicios de botï¿½n y ninguno de compra, que es
  * lo que necesitan los tests que contestan con opciones.
  */
 const hojaDeBotones = (seed = 4242) => generateSession("easy", seed) as IdentifyExercise[];
@@ -54,7 +56,7 @@ const hojaDeBotones = (seed = 4242) => generateSession("easy", seed) as Identify
 /** El primer ejercicio de esa hoja, ya tipado. */
 const primeroDe = (seed = 4242) => hojaDeBotones(seed)[0]!;
 
-/** La primera opción que no sea la correcta. */
+/** La primera opciï¿½n que no sea la correcta. */
 const otra = (ex: { answer: string; options: string[] }): string => {
   const distinta = ex.options.find((o) => o !== ex.answer);
   if (distinta === undefined) throw new Error("No hay opciones distintas de la correcta");
@@ -63,7 +65,7 @@ const otra = (ex: { answer: string; options: string[] }): string => {
 
 const acertar = (c: HTMLElement, v: string) => {
   const boton = c.querySelector<HTMLButtonElement>(`.mon__opcion[data-value="${v}"]`);
-  if (!boton) throw new Error(`No hay ninguna opción con el valor "${v}"`);
+  if (!boton) throw new Error(`No hay ninguna opciï¿½n con el valor "${v}"`);
   fireEvent.click(boton);
 };
 
@@ -80,12 +82,14 @@ const irA = (c: HTMLElement, lista: MonedasExercise[], indice: number) => {
 };
 
 const monederoDe = (c: HTMLElement, pieza: MoneyItem) => {
-  const boton = c.querySelector<HTMLButtonElement>(`.mon__moneda[data-value="${pieza.corta}"]`);
+  const boton = c.querySelector<HTMLButtonElement>(
+    `.mon__pieza[data-zona="monedero"][data-value="${pieza.corta}"]`,
+  );
   if (!boton) throw new Error(`El monedero no tiene la pieza "${pieza.corta}"`);
   return boton;
 };
 
-/** Pone en la cesta una lista de piezas. */
+/** Separa al pago una lista de piezas (toque en el monedero). */
 const pagar = (c: HTMLElement, piezas: readonly MoneyItem[]) => {
   for (const pieza of piezas) fireEvent.click(monederoDe(c, pieza));
 };
@@ -103,16 +107,16 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-describe("monedasBilletes — el dinero en pantalla", () => {
-  it("las imágenes de dinero no se recortan", () => {
-    // El original las pintaba con `object-fit: cover` en cajas de 220×120, más
-    // anchas que altas, y el recorte se comía los bordes de los billetes, que
-    // es justo donde está el valor.
+describe("monedasBilletes ï¿½ el dinero en pantalla", () => {
+  it("las imï¿½genes de dinero no se recortan", () => {
+    // El original las pintaba con `object-fit: cover` en cajas de 220ï¿½120, mï¿½s
+    // anchas que altas, y el recorte se comï¿½a los bordes de los billetes, que
+    // es justo donde estï¿½ el valor.
     expect(css).toContain("object-fit: contain");
     expect(css).not.toContain("object-fit: cover");
   });
 
-  it("enseña la moneda o el billete que toca, con su nombre accesible", () => {
+  it("enseï¿½a la moneda o el billete que toca, con su nombre accesible", () => {
     for (const dificultad of ["easy", "medium"] as const) {
       const lista = generateSession(dificultad, 4242) as IdentifyExercise[];
       const { container, unmount } = render(<MonedasBilletesScreen {...props(dificultad)} />);
@@ -131,8 +135,8 @@ describe("monedasBilletes — el dinero en pantalla", () => {
   });
 });
 
-describe("monedasBilletes — identificar", () => {
-  it("muestra el enunciado que genera el núcleo, con sus cuatro opciones", () => {
+describe("monedasBilletes ï¿½ identificar", () => {
+  it("muestra el enunciado que genera el nï¿½cleo, con sus cuatro opciones", () => {
     const ex = primeroDe();
     const { container } = render(<MonedasBilletesScreen {...props("easy")} />);
 
@@ -161,7 +165,7 @@ describe("monedasBilletes — identificar", () => {
     expect(progreso(container)).toBe("2/10");
   });
 
-  it("fallar marca la opción pulsada, no la correcta, y no avanza solo", () => {
+  it("fallar marca la opciï¿½n pulsada, no la correcta, y no avanza solo", () => {
     const lista = hojaDeBotones();
     const { container } = render(<MonedasBilletesScreen {...props("easy")} />);
 
@@ -201,7 +205,7 @@ describe("monedasBilletes — identificar", () => {
     expect(container.querySelector(".activity-action--retry")).toBeNull();
   });
 
-  it("el botón de siguiente avanza tras un fallo", () => {
+  it("el botï¿½n de siguiente avanza tras un fallo", () => {
     const lista = hojaDeBotones();
     const { container } = render(<MonedasBilletesScreen {...props("easy")} />);
 
@@ -213,8 +217,8 @@ describe("monedasBilletes — identificar", () => {
   });
 });
 
-describe("monedasBilletes — la equivalencia", () => {
-  it("enseña las monedas que hay que sumar, sin su valor debajo", () => {
+describe("monedasBilletes ï¿½ la equivalencia", () => {
+  it("enseï¿½a las monedas que hay que sumar, sin su valor debajo", () => {
     // Con el valor escrito bajo cada moneda, sumar era leer.
     const lista = generateSession("hard", 4242);
     const indice = lista.findIndex((ex) => ex.type === "equivalence");
@@ -229,7 +233,7 @@ describe("monedasBilletes — la equivalencia", () => {
 
     const texto = container.querySelector(".ops__stage")!.textContent ?? "";
     for (const item of ex.items) {
-      // La etiqueta corta («50c») solo puede aparecer en las opciones.
+      // La etiqueta corta (ï¿½50cï¿½) solo puede aparecer en las opciones.
       expect(texto.includes(` ${item.corta}`), `se ve el valor de ${item.etiqueta}`).toBe(false);
     }
     expect(container.querySelector(".mon__moneda-corta")).toBeNull();
@@ -249,10 +253,10 @@ describe("monedasBilletes — la equivalencia", () => {
   });
 });
 
-describe("monedasBilletes — la vuelta", () => {
+describe("monedasBilletes ï¿½ la vuelta", () => {
   const vuelta = (c: HTMLElement) => c.querySelector<HTMLElement>(".mon__pago")!;
 
-  it("enseña el producto, el precio y el dinero que se entrega", () => {
+  it("enseï¿½a el producto, el precio y el dinero que se entrega", () => {
     const lista = generateSession("hard", 4242);
     const { container } = render(<MonedasBilletesScreen {...props("hard")} />);
     irA(container, lista, 1);
@@ -285,18 +289,20 @@ describe("monedasBilletes — la vuelta", () => {
   });
 });
 
-describe("monedasBilletes — la compra", () => {
-  it("enseña el precio y el dinero disponible", () => {
+describe("monedasBilletes ï¿½ el mostrador expert", () => {
+  it("monta la foto, el enunciado y el dinero disponible", () => {
     const { container } = render(<MonedasBilletesScreen {...props("expert")} />);
     const ex = generateSession("expert", 4242)[0] as ShoppingExercise;
 
+    expect(enunciado(container)).toBe("Separa el dinero suficiente para pagar el precio exacto.");
+    expect(container.querySelector(".mon__mostrador-foto")).not.toBeNull();
     expect(container.querySelector(".mon__producto-nombre")?.textContent).toBe(ex.producto.nombre);
-    expect(container.querySelector(".mon__producto-precio")?.textContent).toContain(ex.precioLabel);
+    expect(container.querySelector(".mon__mostrador-precio")?.textContent).toBe(ex.precioLabel);
     expect(monedasDelMonedero(container)).toHaveLength(ex.disponibles.length);
-    expect(container.querySelector(".mon__cesta-vacia")).not.toBeNull();
+    expect(container.querySelector(".mon__zona-vacia")).not.toBeNull();
   });
 
-  it("cada moneda que se elige suma en el total y aparece en la cesta", () => {
+  it("cada toque en el monedero suma en el total y aparece en el pago", () => {
     const { container } = render(<MonedasBilletesScreen {...props("expert")} />);
     const ex = generateSession("expert", 4242)[0] as ShoppingExercise;
     const primera = ex.disponibles[0]!;
@@ -304,28 +310,30 @@ describe("monedasBilletes — la compra", () => {
     fireEvent.click(monederoDe(container, primera));
     fireEvent.click(monederoDe(container, primera));
 
-    const total = container.querySelector(".mon__cesta-total")!.textContent ?? "";
+    const total = container.querySelector(".mon__mostrador-total")!.textContent ?? "";
     expect(total).toContain(formatearCentes(primera.valor * 2));
-    expect(imagenes(container.querySelector(".mon__cesta")!)).toHaveLength(2);
-    expect(container.querySelector(".mon__cesta-vacia")).toBeNull();
+    expect(piezasDePago(container)).toHaveLength(2);
+    expect(container.querySelector(".mon__zona-vacia")).toBeNull();
   });
 
   it("avisa cuando se pasa del precio, sin dar el acierto", () => {
     const { container } = render(<MonedasBilletesScreen {...props("expert")} />);
     const ex = generateSession("expert", 4242)[0] as ShoppingExercise;
-    // Un céntimo más que el precio, descompuesto de menor a mayor: así ninguna
-    // suma intermedia cae justo en el precio, que es lo que dispararía el
+    // Un cï¿½ntimo mï¿½s que el precio, descompuesto de menor a mayor: asï¿½ ninguna
+    // suma intermedia cae justo en el precio, que es lo que dispararï¿½a el
     // acierto.
     const piezas = [...descomponer(ex.precio + 1)].reverse();
     pagar(container, piezas);
 
     expect(totalCesta(piezas)).toBeGreaterThan(ex.precio);
-    expect(container.querySelector(".mon__cesta-total--sobra")).not.toBeNull();
-    expect(container.querySelector(".mon__cesta-total")?.textContent).toContain("te has pasado");
+    expect(container.querySelector(".mon__mostrador-total--sobra")).not.toBeNull();
+    expect(container.querySelector(".mon__mostrador-total")?.textContent).toContain(
+      "te has pasado",
+    );
     expect(container.querySelector(".ops__stage")?.className).not.toContain("ops__stage--correct");
   });
 
-  it("se corrige solo en cuanto la cesta paga el precio exacto", () => {
+  it("se corrige solo en cuanto el pago es el precio exacto", () => {
     const { container } = render(<MonedasBilletesScreen {...props("expert")} />);
     const ex = generateSession("expert", 4242)[0] as ShoppingExercise;
 
@@ -333,52 +341,50 @@ describe("monedasBilletes — la compra", () => {
 
     expect(totalCesta(descomponer(ex.precio))).toBe(ex.precio);
     expect(container.querySelector(".ops__stage")?.className).toContain("ops__stage--correct");
+    expect(container.querySelector(".mon__zona--exacto")).not.toBeNull();
     runTimers(AUTOAVANCE_MS);
     expect(progreso(container)).toBe("2/10");
   });
 
-  it("se puede quitar la última pieza y vaciar la cesta", () => {
+  it("un toque en la zona de pago devuelve la pieza al monedero", () => {
     const { container } = render(<MonedasBilletesScreen {...props("expert")} />);
     const ex = generateSession("expert", 4242)[0] as ShoppingExercise;
     const primera = ex.disponibles[0]!;
-
-    const botones = () =>
-      Array.from(container.querySelectorAll<HTMLButtonElement>(".mon__cesta-btn"));
-    expect(botones().every((b) => b.disabled)).toBe(true);
+    const segunda = ex.disponibles[1]!;
 
     fireEvent.click(monederoDe(container, primera));
-    fireEvent.click(monederoDe(container, ex.disponibles[1]!));
-    expect(botones().every((b) => b.disabled)).toBe(false);
+    fireEvent.click(monederoDe(container, segunda));
+    expect(piezasDePago(container)).toHaveLength(2);
 
-    fireEvent.click(botones()[0]!);
-    expect(container.querySelector(".mon__cesta")!.textContent).toContain(
-      formatearCentes(primera.valor),
+    fireEvent.click(piezasDePago(container)[0]!);
+    expect(piezasDePago(container)).toHaveLength(1);
+    expect(container.querySelector(".mon__mostrador-total")?.textContent).toContain(
+      formatearCentes(segunda.valor),
     );
 
-    fireEvent.click(botones()[1]!);
-    expect(container.querySelector(".mon__cesta-vacia")).not.toBeNull();
-    expect(botones().every((b) => b.disabled)).toBe(true);
+    fireEvent.click(piezasDePago(container)[0]!);
+    expect(container.querySelector(".mon__zona-vacia")).not.toBeNull();
   });
 
-  it("la cesta se vacía al pasar al producto siguiente", () => {
+  it("la zona de pago se vacï¿½a al pasar al producto siguiente", () => {
     const lista = generateSession("expert", 4242) as ShoppingExercise[];
     const { container } = render(<MonedasBilletesScreen {...props("expert")} />);
 
     pagar(container, descomponer(lista[0]!.precio));
-    expect(container.querySelector(".mon__cesta-vacia")).toBeNull();
+    expect(container.querySelector(".mon__zona-vacia")).toBeNull();
 
     runTimers(AUTOAVANCE_MS);
 
     expect(progreso(container)).toBe("2/10");
-    expect(container.querySelector(".mon__cesta-vacia")).not.toBeNull();
+    expect(container.querySelector(".mon__zona-vacia")).not.toBeNull();
     expect(container.querySelector(".mon__producto-nombre")?.textContent).toBe(
       lista[1]!.producto.nombre,
     );
   });
 });
 
-describe("monedasBilletes — determinismo y salida", () => {
-  it("acertar los diez muestra la nota máxima", () => {
+describe("monedasBilletes ï¿½ determinismo y salida", () => {
+  it("acertar los diez muestra la nota mï¿½xima", () => {
     const lista = hojaDeBotones();
     const { container } = render(<MonedasBilletesScreen {...props("easy")} />);
 
@@ -390,7 +396,7 @@ describe("monedasBilletes — determinismo y salida", () => {
     expect(container.querySelector(".summary__stat-value")?.textContent).toBe("10/10");
   });
 
-  it("acertar tras fallar no puntúa doble", () => {
+  it("acertar tras fallar no puntï¿½a doble", () => {
     const lista = hojaDeBotones();
     const { container } = render(<MonedasBilletesScreen {...props("easy")} />);
 
@@ -406,7 +412,7 @@ describe("monedasBilletes — determinismo y salida", () => {
     expect(container.querySelector(".summary__stat-value")?.textContent).toBe("9/10");
   });
 
-  it("repetir regenera la misma sesión, con la misma semilla", () => {
+  it("repetir regenera la misma sesiï¿½n, con la misma semilla", () => {
     const lista = hojaDeBotones();
     const { container } = render(<MonedasBilletesScreen {...props("easy")} />);
 
@@ -418,21 +424,21 @@ describe("monedasBilletes — determinismo y salida", () => {
     const repetir = Array.from(container.querySelectorAll<HTMLButtonElement>("button")).find((b) =>
       b.textContent?.includes("Repetir"),
     );
-    if (!repetir) throw new Error("El resumen no ofrece el botón de repetir");
+    if (!repetir) throw new Error("El resumen no ofrece el botï¿½n de repetir");
     fireEvent.click(repetir);
 
     expect(enunciado(container)).toBe((lista[0]! as IdentifyExercise).question);
     expect(container.querySelector(".mon__opcion--correcta")).toBeNull();
   });
 
-  it("el botón de salir avisa y no cambia de ejercicio", () => {
+  it("el botï¿½n de salir avisa y no cambia de ejercicio", () => {
     const ex = primeroDe();
     const { container } = render(<MonedasBilletesScreen {...props("easy")} />);
 
     const salir = Array.from(container.querySelectorAll<HTMLButtonElement>("button")).find((b) =>
       b.textContent?.includes("Salir"),
     );
-    if (!salir) throw new Error("No hay botón de salir en la cabecera");
+    if (!salir) throw new Error("No hay botï¿½n de salir en la cabecera");
     fireEvent.click(salir);
 
     expect(mockOnExit).toHaveBeenCalled();
@@ -440,9 +446,9 @@ describe("monedasBilletes — determinismo y salida", () => {
   });
 });
 
-describe("monedasBilletes — las imágenes resueltas", () => {
-  it("cada pieza del catálogo tiene su fichero en el sitio que le toca", () => {
-    // Un `""` en el `src` es un asset que no se empaquetó, que es como se
+describe("monedasBilletes ï¿½ las imï¿½genes resueltas", () => {
+  it("cada pieza del catï¿½logo tiene su fichero en el sitio que le toca", () => {
+    // Un `""` en el `src` es un asset que no se empaquetï¿½, que es como se
     // rompe esta actividad sin que se note en los tests.
     const vacias = TODO_EL_DINERO.filter((m) => moneyImageUrl(m) === "");
     expect(vacias.map((m) => m.fichero)).toEqual([]);
