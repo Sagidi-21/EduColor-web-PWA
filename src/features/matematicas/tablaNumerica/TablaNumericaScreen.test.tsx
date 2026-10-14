@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { TablaNumericaScreen } from "./TablaNumericaScreen";
 import { generateSession } from "../../../core/activities/tablaNumerica";
 import { smokeProps } from "../testing/smoke";
@@ -35,8 +35,8 @@ describe("TablaNumericaScreen smoke", () => {
     const { container } = render(<TablaNumericaScreen {...props("easy", seed)} />);
 
     expect(cells(container)).toHaveLength(ex.gridState.length);
-    const target = cells(container)[ex.targetIndex];
-    expect(target.className).toContain("tbl__cell--target");
+    const target = container.querySelector(`#tbl-cell-${ex.targetIndex}`);
+    expect(target?.className).toContain("tbl__cell--target");
     // Solo una casilla objetivo en toda la rejilla.
     expect(container.querySelectorAll(".tbl__cell--target")).toHaveLength(1);
   });
@@ -53,25 +53,46 @@ describe("TablaNumericaScreen smoke", () => {
     ex.answer.split("").forEach((d) => fireEvent.click(numpadKey(container, d)));
     fireEvent.click(numpadKey(container, "✓"));
 
-    expect(cells(container)[ex.targetIndex].className).toContain("tbl__cell--ok");
+    expect(container.querySelector(`#tbl-cell-${ex.targetIndex}`)?.className).toContain(
+      "tbl__cell--ok",
+    );
     expect(container.querySelector(".tbl__celebration")?.textContent).toContain("¡Muy bien!");
   });
 
-  it("medium: al pulsar las casillas de los símbolos pedidos celebra", () => {
+  it("medium: une símbolos con números y celebra al completar", async () => {
     const seed = 4242;
     const session = generateSession("medium", seed);
     const ex = session[0];
-    expect(ex.validSet!.length).toBeGreaterThanOrEqual(2);
+    expect(ex.matchLeft!.length).toBeGreaterThanOrEqual(3);
 
     const { container } = render(<TablaNumericaScreen {...props("medium", seed)} />);
 
     expect(container.querySelector(".shared-numpad")).toBeNull();
-    expect(container.textContent).toContain(`0 / ${ex.validSet!.length}`);
+    expect(container.querySelector(".tbl__columns")).not.toBeNull();
+    expect(container.querySelector(".tbl__stage--split")).not.toBeNull();
 
-    ex.validSet!.forEach((pos) => {
-      fireEvent.click(container.querySelector(`#tbl-cell-${pos}`)!);
+    expect(container.querySelectorAll(".tbl__item--sym")).toHaveLength(ex.matchLeft!.length);
+
+    for (const pair of ex.matchLeft!) {
+      const left = Array.from(container.querySelectorAll(".tbl__item--sym")).find(
+        (el) => el.textContent === pair.symbol && !el.className.includes("connected"),
+      );
+      const right = Array.from(container.querySelectorAll(".tbl__item--num")).find(
+        (el) => el.textContent === String(pair.id) && !el.className.includes("connected"),
+      );
+      expect(left).toBeTruthy();
+      expect(right).toBeTruthy();
+      fireEvent.click(left!);
+      fireEvent.click(right!);
+    }
+
+    expect(container.querySelectorAll(".tbl__item--connected")).toHaveLength(
+      ex.matchLeft!.length * 2,
+    );
+
+    await act(async () => {
+      vi.advanceTimersByTime(100);
     });
-
     expect(container.querySelector(".tbl__celebration")?.textContent).toContain("¡Muy bien!");
   });
 
@@ -111,7 +132,7 @@ describe("TablaNumericaScreen smoke", () => {
     expect(container.querySelector(".dab--loading")).not.toBeNull();
   });
 
-  it("el tipo colorear muestra la regla y el contador de casillas", () => {
+  it("el tipo colorear muestra enunciado a la izquierda y contador a la derecha", () => {
     const seed = 4242;
     const session = generateSession("hard", seed);
     const ex = session[0];
@@ -120,7 +141,9 @@ describe("TablaNumericaScreen smoke", () => {
 
     const { container } = render(<TablaNumericaScreen {...props("hard", seed)} />);
 
-    expect(container.querySelector(".tbl__color-rule-text")?.textContent).toBe(ex.ruleLabel);
-    expect(container.textContent).toContain(`0 / ${ex.validSet!.length}`);
+    expect(container.querySelector(".tbl__question--color")?.textContent).toBe(ex.question);
+    expect(container.querySelector(".tbl__color-count")?.textContent?.trim()).toBe(
+      `0 / ${ex.validSet!.length}`,
+    );
   });
 });

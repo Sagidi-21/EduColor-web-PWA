@@ -10,9 +10,12 @@ import { LazyDigitCell } from "../../shared/DigitCell";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { ActionButtons } from "../components/ActivityActionButtons";
+import { MatchColumns, type MatchReport } from "../components/MatchColumns";
 
 import "../operations/OperationsScreen.css";
 import "./TablaNumericaScreen.css";
+
+type MatchPair = { id: number; symbol: string };
 
 type AnswerState = "idle" | "correct" | "wrong";
 
@@ -63,10 +66,10 @@ export function TablaNumericaScreen({
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
   const isColorear = current?.type === "colorear";
-  /** Medium (símbolos) y hard/expert: pulsar casillas correctas. */
-  const isClickFind =
-    isColorear || (current?.type === "symbol" && (current.validSet?.length ?? 0) > 0);
+  /** Hard/expert: pulsar casillas correctas. Medium une con MatchColumns. */
+  const isClickFind = isColorear;
   const isMissing = current?.type === "missing";
+  const isSymbolMatch = current?.type === "symbol";
 
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
@@ -160,6 +163,18 @@ export function TablaNumericaScreen({
     [session, current],
   );
 
+  const handleMatchPair = useCallback((ok: boolean) => {
+    if (!ok) setSession((s) => ({ ...s, alreadyFailed: true }));
+  }, []);
+
+  const handleMatchComplete = useCallback((report: MatchReport) => {
+    setSession((s) => ({
+      ...s,
+      colorDone: true,
+      correctCount: report.fallos === 0 && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+    }));
+  }, []);
+
   if (finished) {
     return (
       <SummaryScreen
@@ -176,7 +191,9 @@ export function TablaNumericaScreen({
 
   if (!current) return <></>;
 
-  const cells = current.gridState.map((state, index) => {
+  const gridStart = current.gridStart ?? 0;
+  const cells = current.gridState.map((state, localIndex) => {
+    const index = gridStart + localIndex;
     let cls = "tbl__cell";
     let content: string = String(index);
 
@@ -239,100 +256,116 @@ export function TablaNumericaScreen({
         {isMissing && <InputModeToggle mode={mode} onToggle={toggle} />}
       </ActivityHeader>
 
-      <div className={`tbl__stage ${stageClass}`}>
+      <div
+        className={`tbl__stage ${stageClass}${isMissing || isSymbolMatch ? " tbl__stage--split" : ""}`}
+      >
         {(session.answerState === "correct" || session.colorDone) && (
           <div className="tbl__celebration">¡Muy bien! ⭐</div>
         )}
 
-        {current.type === "symbol" && (
-          <div className="tbl__symbol-prompt">
-            Busca{" "}
-            {(current.targetSymbols ?? [current.targetSymbol]).filter(Boolean).map((sym) => (
-              <span key={sym} className="tbl__big-symbol">
-                {sym}
-              </span>
-            ))}
-            <span className="tbl__color-rule-count">
-              {session.found.size} / {current.validSet?.length}
-            </span>
-          </div>
-        )}
-
-        {current.type === "colorear" && (
-          <div className="tbl__color-rule">
-            <span className="tbl__color-rule-text">{current.ruleLabel}</span>
-            <span className="tbl__color-rule-count">
-              {session.found.size} / {current.validSet?.length}
-            </span>
-          </div>
-        )}
-
-        <div className="tbl__grid-container">
-          <div className="tbl__grid">{cells}</div>
-        </div>
-      </div>
-
-      {isMissing && (
-        <footer className="tbl__footer">
-          <p className="tbl__question">{current.question}</p>
-
-          <div className="tbl__answer">
-            {mode === "numpad" ? (
-              <>
-                <div
-                  className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : session.answerState === "wrong" ? "ops__answer-box--wrong" : ""}`}
-                >
-                  {session.answerState === "correct"
-                    ? current.answer
-                    : session.input || <span className="ops__cursor">_</span>}
-                </div>
-                <Numpad
-                  onDigit={(d) => {
-                    if (session.answerState !== "idle") return;
-                    setSession((s) => ({
-                      ...s,
-                      input: s.input.length < 2 ? s.input + d : s.input,
-                    }));
-                  }}
-                  onDelete={() => {
-                    if (session.answerState !== "idle") return;
-                    setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
-                  }}
-                  onConfirm={confirm}
-                  disabled={session.answerState !== "idle"}
-                />
-              </>
-            ) : session.answerState === "idle" ? (
-              <LazyDigitCell
-                key={canvasKey}
-                isActive={true}
-                onActivate={() => {}}
-                onConfirm={(digit) => {
-                  if (session.answerState !== "idle") return;
-                  setSession((s) => ({
-                    ...s,
-                    input: s.input.length < 2 ? s.input + digit : s.input,
-                  }));
-                  setCanvasKey((k) => k + 1);
-                }}
-                onClear={() => setSession((s) => ({ ...s, input: "" }))}
-                state={session.answerState}
-                value={session.input}
-              />
-            ) : (
-              <div
-                className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : "ops__answer-box--wrong"}`}
-              >
-                {session.answerState === "correct" ? current.answer : session.input || "?"}
+        {isMissing ? (
+          <>
+            <p className="tbl__question">{current.question}</p>
+            <div className="tbl__main">
+              <div className="tbl__grid-container">
+                <div className="tbl__grid">{cells}</div>
               </div>
-            )}
+            </div>
+            <aside className="tbl__side">
+              {mode === "numpad" ? (
+                <>
+                  <div
+                    className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : session.answerState === "wrong" ? "ops__answer-box--wrong" : ""}`}
+                  >
+                    {session.answerState === "correct"
+                      ? current.answer
+                      : session.input || <span className="ops__cursor">_</span>}
+                  </div>
+                  <Numpad
+                    onDigit={(d) => {
+                      if (session.answerState !== "idle") return;
+                      setSession((s) => ({
+                        ...s,
+                        input: s.input.length < 2 ? s.input + d : s.input,
+                      }));
+                    }}
+                    onDelete={() => {
+                      if (session.answerState !== "idle") return;
+                      setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
+                    }}
+                    onConfirm={confirm}
+                    disabled={session.answerState !== "idle"}
+                  />
+                </>
+              ) : session.answerState === "idle" ? (
+                <div className="tbl__canvas">
+                  <LazyDigitCell
+                    key={canvasKey}
+                    isActive={true}
+                    onActivate={() => {}}
+                    onConfirm={(digit) => {
+                      if (session.answerState !== "idle") return;
+                      setSession((s) => ({
+                        ...s,
+                        input: s.input.length < 2 ? s.input + digit : s.input,
+                      }));
+                      setCanvasKey((k) => k + 1);
+                    }}
+                    onClear={() => setSession((s) => ({ ...s, input: "" }))}
+                    state={session.answerState}
+                    value={session.input}
+                  />
+                </div>
+              ) : (
+                <div
+                  className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : "ops__answer-box--wrong"}`}
+                >
+                  {session.answerState === "correct" ? current.answer : session.input || "?"}
+                </div>
+              )}
 
-            {session.answerState === "wrong" && (
-              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-            )}
+              {session.answerState === "wrong" && (
+                <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+              )}
+            </aside>
+          </>
+        ) : isSymbolMatch ? (
+          <>
+            <p className="tbl__question">{current.question}</p>
+            <div className="tbl__main">
+              <div className="tbl__grid-container">
+                <div className="tbl__grid">{cells}</div>
+              </div>
+            </div>
+            <aside className="tbl__side tbl__side--match">
+              <MatchColumns<MatchPair>
+                key={session.currentIndex}
+                prefix="tbl"
+                leftClass="tbl__item--sym"
+                rightClass="tbl__item--num"
+                left={current.matchLeft ?? []}
+                right={current.matchRight ?? []}
+                renderLeft={(pair) => <span className="tbl__match-sym">{pair.symbol}</span>}
+                renderRight={(pair) => <span className="tbl__match-num">{pair.id}</span>}
+                onPair={handleMatchPair}
+                onComplete={handleMatchComplete}
+                celebrateMs={50}
+                celebrateText=""
+              />
+            </aside>
+          </>
+        ) : (
+          <div className="tbl__color-layout">
+            <p className="tbl__question tbl__question--color">{current.question}</p>
+            <div className="tbl__grid-container">
+              <div className="tbl__grid">{cells}</div>
+            </div>
+            <div className="tbl__color-count" aria-live="polite">
+              {session.found.size} / {current.validSet?.length}
+            </div>
           </div>
-        </footer>
-      )}
+        )}
+      </div>
     </div>
   );
 }

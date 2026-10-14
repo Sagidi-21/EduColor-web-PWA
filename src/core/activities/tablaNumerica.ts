@@ -10,6 +10,8 @@ export interface TablaNumericaExercise {
   type: TablaNumericaType;
   question: string;
   gridState: TablaNumericaCellState[];
+  /** Primer número de la rejilla (easy: ventana alrededor del objetivo). */
+  gridStart?: number;
   symbolMap?: Record<number, string>;
   /** Símbolo(s) a buscar; en medium puede ser varios unidos con espacio. */
   targetSymbol?: string;
@@ -20,6 +22,10 @@ export interface TablaNumericaExercise {
   /** Casillas correctas a pulsar (medium símbolos / hard-expert colorear). */
   validSet?: number[];
   ruleLabel?: string;
+  /** Medium: columna izquierda (símbolos) ya barajada para MatchColumns. */
+  matchLeft?: { id: number; symbol: string }[];
+  /** Medium: columna derecha (números) ya barajada para MatchColumns. */
+  matchRight?: { id: number; symbol: string }[];
 }
 
 // ── LCG determinista ────────────────────────────────────────────────────────
@@ -47,14 +53,14 @@ function shuffle<T>(arr: T[], rng: () => number): T[] {
 
 const GRID_SIZE = 100;
 const EXERCISE_COUNT = 10;
-/** En easy, la tabla llega hasta la respuesta + este margen (no hasta 99). */
-const EASY_EXTRA = 10;
+/** En easy: ±N números alrededor del objetivo (recorte en bordes 0/99). */
+const EASY_WINDOW = 20;
 
 /**
  * Genera 10 ejercicios sobre la tabla del 0 al 99.
  *
- * - easy:   casilla amarilla oculta (`missing`); tabla solo hasta respuesta + 10.
- * - medium: 4–10 símbolos en la tabla; hay que localizar 2–4 de ellos.
+ * - easy:   casilla amarilla oculta (`missing`); ventana de ±20 alrededor del objetivo.
+ * - medium: 3–5 pares a unir + 3 símbolos señuelo en la tabla.
  * - hard:   colorear todos los números con una misma unidad.
  * - expert: alterna coloreado por unidades y por decenas.
  */
@@ -73,18 +79,21 @@ export function generateSession(
       if (used.has(target)) continue;
       used.add(target);
 
-      // p. ej. respuesta 10 → casillas 0…20 (no hasta 99)
-      const gridLen = Math.min(GRID_SIZE, target + EASY_EXTRA + 1);
+      const gridStart = Math.max(0, target - EASY_WINDOW);
+      const gridEnd = Math.min(GRID_SIZE - 1, target + EASY_WINDOW);
+      const gridLen = gridEnd - gridStart + 1;
+      const localTarget = target - gridStart;
       const gridState: TablaNumericaCellState[] = new Array(gridLen).fill("visible");
-      gridState[target] = "target";
+      gridState[localTarget] = "target";
       for (let i = 0; i < gridLen; i++) {
-        if (i !== target && rng() < 0.12) gridState[i] = "blank";
+        if (i !== localTarget && rng() < 0.12) gridState[i] = "blank";
       }
 
       out.push({
         type: "missing",
         question: "¿Qué número falta en la casilla amarilla?",
         gridState,
+        gridStart,
         targetIndex: target,
         answer: String(target),
       });
@@ -95,49 +104,61 @@ export function generateSession(
 
   if (difficulty === "medium") {
     const usedAsk = new Set<number>();
+    const DECOY_COUNT = 3;
 
     while (out.length < EXERCISE_COUNT) {
-      const gridCount = randInt(rng, 4, 10);
-      const askCount = randInt(rng, 2, Math.min(4, gridCount));
+      const pairCount = randInt(rng, 3, 5);
+      const totalSymbols = pairCount + DECOY_COUNT;
+      const bandStart = randInt(rng, 0, GRID_SIZE - 40);
+      const bandEnd = bandStart + 39;
 
       const positions: number[] = [];
       const posSet = new Set<number>();
       let tries = 0;
-      while (positions.length < gridCount && tries++ < 400) {
-        const pos = randInt(rng, 2, 97);
+      while (positions.length < totalSymbols && tries++ < 400) {
+        const pos = randInt(rng, bandStart, bandEnd);
         if (!posSet.has(pos)) {
           posSet.add(pos);
           positions.push(pos);
         }
       }
-      if (positions.length < gridCount) continue;
+      if (positions.length < totalSymbols) continue;
 
-      const syms = shuffle([...SYMBOLS], rng).slice(0, gridCount);
+      const askPositions = positions.slice(0, pairCount);
+      if (askPositions.some((p) => usedAsk.has(p))) continue;
+      askPositions.forEach((p) => usedAsk.add(p));
+
+      const syms = shuffle([...SYMBOLS], rng).slice(0, totalSymbols);
       const symbolMap: Record<number, string> = {};
       positions.forEach((pos, i) => {
         symbolMap[pos] = syms[i];
       });
 
-      const askPositions = shuffle([...positions], rng).slice(0, askCount);
-      if (askPositions.some((p) => usedAsk.has(p))) continue;
-      askPositions.forEach((p) => usedAsk.add(p));
+      const pairs = askPositions.map((pos) => ({ id: pos, symbol: symbolMap[pos] }));
+      const matchLeft = shuffle(pairs, rng);
+      const matchRight = shuffle(pairs, rng);
 
-      const targetSymbols = askPositions.map((p) => symbolMap[p]);
-      const gridState: TablaNumericaCellState[] = new Array(GRID_SIZE).fill("visible");
+      const gridState: TablaNumericaCellState[] = new Array(bandEnd - bandStart + 1).fill(
+        "visible",
+      );
       positions.forEach((pos) => {
-        gridState[pos] = "symbol";
+        gridState[pos - bandStart] = "symbol";
       });
 
+      const targetSymbols = askPositions.map((p) => symbolMap[p]);
       out.push({
         type: "symbol",
-        question: `Busca estos símbolos: ${targetSymbols.join(" ")}`,
+        question: "Une cada símbolo con su número",
         gridState,
+        gridStart: bandStart,
         symbolMap,
         targetSymbol: targetSymbols.join(" "),
         targetSymbols,
         targetIndex: askPositions[0],
         answer: askPositions.join(", "),
         validSet: askPositions,
+        matchLeft,
+        matchRight,
       });
     }
 

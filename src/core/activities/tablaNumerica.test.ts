@@ -22,8 +22,8 @@ describe("tablaNumerica — generateSession", () => {
     });
   });
 
-  it("medium/hard/expert: rejilla de 100 casillas", () => {
-    for (const diff of ["medium", "hard", "expert"] as const) {
+  it("hard/expert: rejilla de 100 casillas", () => {
+    for (const diff of ["hard", "expert"] as const) {
       generateSession(diff, 7).forEach((ex) => {
         expect(ex.gridState).toHaveLength(100);
       });
@@ -36,44 +36,46 @@ describe("tablaNumerica — generateSession", () => {
     expect(new Set(targets).size).toBe(targets.length);
   });
 
-  it("easy: una única casilla target y tabla solo hasta respuesta + 10", () => {
+  it("easy: una única casilla target y ventana ±20 alrededor del objetivo", () => {
     generateSession("easy", 9).forEach((ex) => {
       expect(ex.type).toBe("missing");
       const targets = ex.gridState.filter((s) => s === "target");
       expect(targets).toHaveLength(1);
       expect(ex.answer).toBe(String(ex.targetIndex));
-      const expectedLen = Math.min(100, ex.targetIndex + 10 + 1);
-      expect(ex.gridState).toHaveLength(expectedLen);
-      expect(ex.gridState.length - 1).toBe(Math.min(99, ex.targetIndex + 10));
+      const start = Math.max(0, ex.targetIndex - 20);
+      const end = Math.min(99, ex.targetIndex + 20);
+      expect(ex.gridStart).toBe(start);
+      expect(ex.gridState).toHaveLength(end - start + 1);
+      expect(ex.gridState[ex.targetIndex - start]).toBe("target");
     });
   });
 
-  it("medium: 4–10 símbolos en la tabla y pregunta por 2–4 de ellos", () => {
-    const gridCounts = new Set<number>();
-    const askCounts = new Set<number>();
+  it("medium: 3–5 pares a unir + 3 señuelos en la tabla", () => {
+    const pairCounts = new Set<number>();
     generateSession("medium", 11).forEach((ex) => {
       expect(ex.type).toBe("symbol");
       const symbolCells = ex.gridState.filter((s) => s === "symbol");
-      expect(symbolCells.length).toBeGreaterThanOrEqual(4);
-      expect(symbolCells.length).toBeLessThanOrEqual(10);
-      gridCounts.add(symbolCells.length);
+      expect(ex.matchLeft!.length).toBeGreaterThanOrEqual(3);
+      expect(ex.matchLeft!.length).toBeLessThanOrEqual(5);
+      expect(symbolCells.length).toBe(ex.matchLeft!.length + 3);
+      pairCounts.add(ex.matchLeft!.length);
 
-      expect(ex.validSet).toBeDefined();
-      expect(ex.validSet!.length).toBeGreaterThanOrEqual(2);
-      expect(ex.validSet!.length).toBeLessThanOrEqual(4);
-      expect(ex.validSet!.length).toBeLessThanOrEqual(symbolCells.length);
-      askCounts.add(ex.validSet!.length);
-
-      expect(ex.targetSymbols).toHaveLength(ex.validSet!.length);
-      expect(ex.symbolMap).toBeDefined();
+      expect(ex.validSet).toHaveLength(ex.matchLeft!.length);
+      expect(ex.matchRight).toHaveLength(ex.matchLeft!.length);
+      expect(ex.gridStart).toBeDefined();
+      expect(ex.gridState).toHaveLength(40);
       expect(Object.keys(ex.symbolMap ?? {})).toHaveLength(symbolCells.length);
-      ex.validSet!.forEach((pos, i) => {
-        expect(ex.symbolMap?.[pos]).toBe(ex.targetSymbols![i]);
+
+      const leftIds = new Set(ex.matchLeft!.map((p) => p.id));
+      const rightIds = new Set(ex.matchRight!.map((p) => p.id));
+      expect(leftIds).toEqual(new Set(ex.validSet));
+      expect(rightIds).toEqual(new Set(ex.validSet));
+      ex.matchLeft!.forEach((p) => {
+        expect(ex.symbolMap?.[p.id]).toBe(p.symbol);
       });
       expect(ex.answer).toBe(ex.validSet!.join(", "));
     });
-    expect(gridCounts.size).toBeGreaterThan(1);
-    expect(askCounts.size).toBeGreaterThan(1);
+    expect(pairCounts.size).toBeGreaterThan(1);
   });
 
   it("medium: no repite casillas preguntadas entre ejercicios", () => {
