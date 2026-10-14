@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { generateSession, validateAnswer } from "../../../core/activities/inventarProblema";
+import {
+  capitalizar,
+  generateSession,
+  validateAnswer,
+} from "../../../core/activities/inventarProblema";
 import type { InventarProblemaExercise } from "../../../core/activities/inventarProblema";
 import type { EngineScreenProps } from "../engine-screens";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
@@ -10,7 +14,7 @@ import { playFeedback } from "../../shared/audioFeedback";
 import "../operations/OperationsScreen.css";
 import "./InventarProblemaScreen.css";
 
-/** Resalta MÁS BARATO / MÁS CARO (easy) o importes N€ (hard) con color de clase. */
+/** Resalta MÁS BARATO / MÁS CARO (easy) o importes N€ (hard/expert) en primary. */
 function questionNodes(question: string, difficulty: string): ReactNode {
   if (difficulty === "easy") {
     const parts = question.split(/(MÁS BARATO|MÁS CARO)/);
@@ -24,7 +28,7 @@ function questionNodes(question: string, difficulty: string): ReactNode {
       ),
     );
   }
-  if (difficulty === "hard") {
+  if (difficulty === "hard" || difficulty === "expert") {
     const parts = question.split(/(\d+€)/);
     return parts.map((part, i) =>
       /^\d+€$/.test(part) ? (
@@ -157,11 +161,11 @@ export function InventarProblemaScreen({
         : "";
 
   return (
-    <div className={`ops inv--${difficulty} ${className ?? ""}`.trim()}>
+    <div className={`ops inv inv--${difficulty} ${className ?? ""}`.trim()}>
       <ActivityHeader
         unitTitle={activity.title}
         gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
         onExit={onExit}
         mascotUrl={mascotUrl}
         difficultyStars={difficultyStars}
@@ -176,7 +180,7 @@ export function InventarProblemaScreen({
           {current.items.map((item, i) => (
             <div key={i} className="inv__item">
               <span className="inv__item-emoji">{item.emoji}</span>
-              <span className="inv__item-name">{item.name}</span>
+              <span className="inv__item-name">{capitalizar(item.name)}</span>
               <span className="inv__item-price">{item.price}€</span>
             </div>
           ))}

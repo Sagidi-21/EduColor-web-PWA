@@ -1,5 +1,19 @@
 /* InventarProblemaScreen — Clases específicas inv__* */
 
+/* Fondo blanco y sin línea del pie (como el resto de la pizarra). */
+.inv.ops {
+  background: #fff;
+}
+.inv .ops__footer {
+  border-top: none;
+}
+.inv .ops__stage {
+  gap: 46px;
+}
+.inv .ops__celebration {
+  top: 54px;
+}
+
 .inv__items-container {
   display: flex;
   gap: 2rem;
@@ -12,43 +26,38 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  padding: 1.5rem;
-  background: rgba(30, 41, 59, 0.05); /* equivalente a rgba(255,255,255,0.05) en modo claro */
-  border-radius: 20px;
-  border: 1px solid rgba(30, 41, 59, 0.1);
+  padding: 1.25rem 1.5rem;
+  background: #fff;
+  border-radius: 18px;
+  border: 3px solid #000;
 }
 
 .inv__item-emoji {
   font-size: 4rem;
+  line-height: 1;
 }
 
 .inv__item-name {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #475569; /* equivalente a e2e8f0 oscuro */
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #334155;
 }
 
 .inv__item-price {
   font-size: 1.8rem;
   font-weight: 900;
-  color: #22c55e;
-}
-
-/* Medium / hard: precios de iconos — color de clase (expert sin ayuda) */
-.inv--medium .inv__item-price,
-.inv--hard .inv__item-price {
-  color: var(--color-primary, #0284c7);
+  color: var(--color-primary, #2563eb);
 }
 
 /* Easy: MÁS BARATO / MÁS CARO — color de clase */
 .inv__compare {
-  color: var(--color-primary, #0284c7);
+  color: var(--color-primary, #2563eb);
   font-weight: 900;
 }
 
-/* Hard: importes del enunciado — color de clase */
+/* Hard / expert: importes del enunciado — color de clase */
 .inv__price-hl {
-  color: var(--color-primary, #0284c7);
+  color: var(--color-primary, #2563eb);
   font-weight: 900;
 }
 
@@ -58,78 +67,104 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 1.5rem;
-  background: rgba(234, 179, 8, 0.1);
-  border-radius: 20px;
-  border: 2px solid rgba(234, 179, 8, 0.3);
+  padding: 1.25rem 1.5rem;
+  background: #fff;
+  border-radius: 18px;
+  border: 3px solid var(--color-primary, #2563eb);
 }
 
 .inv__budget-emoji {
   font-size: 2rem;
+  line-height: 1;
 }
 
 .inv__budget-label {
-  font-size: 0.9rem;
-  color: #d97706; /* ajustado para mejor contraste en fondo claro */
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary, #2563eb);
 }
 
 .inv__budget-value {
   font-size: 1.8rem;
   font-weight: 900;
-  color: #d97706;
+  color: var(--color-primary, #2563eb);
 }
 
 .inv__question {
-  font-size: 1.3rem;
+  margin: -8px 0 0;
+  max-width: none;
+  font-size: 38px;
   font-weight: 700;
   text-align: center;
-  max-width: 600px;
   color: #1e293b;
-  margin: 0;
-  text-wrap: balance;
+  white-space: nowrap;
 }
 
 .inv__options {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: calc(1rem + 30px);
   justify-content: center;
 }
 
 .inv__opt {
-  padding: 0.75rem 1.4rem;
-  min-height: 52px;
-  min-width: 80px;
-  border-radius: 14px;
-  border: 3px solid #e2e8f0;
-  background: #fff;
-  color: #1e293b;
-  font-size: 1.1rem;
-  font-weight: 700;
+  min-width: 96px;
+  min-height: 68px;
+  padding: 12px 24px;
+  border-radius: 16px;
+  border: 3px solid #000;
+  background: transparent;
+  color: var(--color-primary, #2563eb);
+  font-size: 28px;
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.16s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.15s;
   font-family: inherit;
   text-align: center;
+  user-select: none;
 }
 
 .inv__opt:hover:not(:disabled) {
-  border-color: #94a3b8;
-  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+  transform: scale(1.04);
 }
 
 .inv__opt:disabled {
-  opacity: 0.7;
   cursor: default;
 }
 
 .inv__opt--correct {
-  border-color: #22c55e !important;
+  border-color: #16a34a !important;
   background: #f0fdf4 !important;
-  color: #16a34a !important;
+  color: #15803d !important;
 }
 
 .inv__opt--wrong {
-  border-color: #ef4444 !important;
-  background: #fef2f2 !important;
-  color: #ef4444 !important;
+  border-color: #dc2626 !important;
+  background: #fff1f2 !important;
+  color: #dc2626 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inv__opt {
+    transition: none;
+  }
+
+  .inv__opt:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .inv__question {
+    font-size: 1.35rem;
+    white-space: normal;
+    max-width: 36rem;
+  }
 }

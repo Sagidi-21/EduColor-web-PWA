@@ -42,6 +42,12 @@ function randInt(rng: () => number, min: number, max: number): number {
   return min + Math.floor(rng() * (max - min + 1));
 }
 
+/** Primera letra en mayúscula (etiquetas de opciones y nombres en pantalla). */
+export function capitalizar(texto: string): string {
+  if (!texto) return texto;
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
 /**
  * Genera una sesión de 10 ejercicios de «inventar problema».
  *
@@ -83,8 +89,14 @@ export function generateSession(difficulty: string, seed = 42): InventarProblema
         items: [itemA, itemB],
         question: askCheaper ? "¿Qué artículo es MÁS BARATO?" : "¿Qué artículo es MÁS CARO?",
         options: [
-          { label: `${itemA.emoji} ${itemA.name} (${itemA.price}€)`, value: itemA.name },
-          { label: `${itemB.emoji} ${itemB.name} (${itemB.price}€)`, value: itemB.name },
+          {
+            label: `${itemA.emoji} ${capitalizar(itemA.name)} (${itemA.price}€)`,
+            value: itemA.name,
+          },
+          {
+            label: `${itemB.emoji} ${capitalizar(itemB.name)} (${itemB.price}€)`,
+            value: itemB.name,
+          },
         ].sort(() => rng() - 0.5),
         correctAnswer: target.name,
       });
