@@ -3,6 +3,9 @@
  * La cabecera (`.reloj__header` y toda su familia en el original de Electron) y
  * los botones de reintentar/siguiente (`.reloj__next-btn`) ya no se pintan aquí:
  * los presta `ActivityHeader` y `ActionButtons`.
+ *
+ * `relojPonerHora` importa este fichero y reutiliza `.reloj__stage`; lo que es
+ * solo de esta pantalla va colgado de `.reloj`, que esa no usa como raíz.
  */
 
 .reloj {
@@ -10,9 +13,9 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #f5f3ff 100%);
-  color: #2e1065;
-  font-family: "Inter", sans-serif;
+  background: #fff;
+  color: #1e293b;
+  font-family: "Segoe UI", system-ui, sans-serif;
 }
 
 /* ── Escenario ────────────────────────────────────────────────────────────── */
@@ -31,12 +34,21 @@
   transition: background 0.3s;
 }
 
+.reloj > .reloj__stage {
+  padding: 16px 24px;
+  gap: 28px;
+}
+
+.reloj .reloj__celebration {
+  top: calc(1rem + 40px);
+}
+
 .reloj__stage--correct {
-  background: rgba(16, 185, 129, 0.08);
+  background: #f0fdf4;
 }
 
 .reloj__stage--wrong {
-  background: rgba(239, 68, 68, 0.08);
+  background: #fef2f2;
 }
 
 .reloj__celebration {
@@ -46,7 +58,7 @@
   transform: translateX(-50%);
   font-size: 2rem;
   font-weight: 900;
-  color: #10b981;
+  color: #16a34a;
   animation: reloj-pop 0.4s ease;
   white-space: nowrap;
 }
@@ -66,13 +78,15 @@
 }
 
 .reloj__question {
-  /* Escala con la pizarra: mínimo de portátil pequeño, tope para la pizarra grande. */
-  font-size: clamp(22px, 2.4vw, 30px);
+  font-size: 42px;
   font-weight: 700;
   text-align: center;
-  color: #2e1065;
-  max-width: 600px;
+  color: #1e293b;
   margin: 0;
+}
+
+.reloj__num {
+  color: var(--color-primary, #2563eb);
 }
 
 /* ── Los dos relojes ──────────────────────────────────────────────────────── */
@@ -87,28 +101,25 @@
 
 .reloj__analog {
   position: relative;
-  width: 180px;
-  height: 180px;
+  width: 240px;
+  height: 240px;
 }
 
 .reloj__clock-svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
 }
 
 .reloj__digital-display {
-  background: #1a2b1a;
-  border: 3px solid #22c55e;
-  border-radius: 12px;
-  padding: 1rem 2rem;
-  font-family: "Courier New", monospace;
-  /* Antes 3rem fijo; sube con la pizarra como el enunciado. */
-  font-size: clamp(44px, 5.5vw, 68px);
-  font-weight: 900;
-  color: #22c55e;
-  letter-spacing: 4px;
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 16px;
+  padding: 12px 32px;
+  font-size: clamp(56px, 6vw, 80px);
+  font-weight: 800;
+  color: var(--color-primary, #2563eb);
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── Opciones ─────────────────────────────────────────────────────────────── */
@@ -120,9 +131,9 @@
 .reloj__options {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  gap: 24px 32px;
   width: 100%;
-  max-width: 600px;
+  max-width: 720px;
 }
 
 .reloj__option {
@@ -132,16 +143,22 @@
   /* `min-width: 0` deja que la celda encoja por debajo de su contenido en vez de
    * desbordar la columna, que es lo que rompería el ancho en un móvil. */
   min-width: 0;
-  padding: clamp(0.4rem, 1.6vw, 0.8rem) clamp(0.5rem, 2vw, 1.8rem);
-  border-radius: 14px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  background: rgba(0, 0, 0, 0.04);
-  color: #2e1065;
-  font-size: 1.3rem;
-  font-weight: 700;
+  min-height: 68px;
+  padding: 12px 24px;
+  border-radius: 16px;
+  border: 3px solid #000;
+  background: transparent;
+  color: var(--color-primary, #2563eb);
+  font-family: inherit;
+  font-size: clamp(22px, 2.6vw, 32px);
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.2s;
-  font-family: "Courier New", monospace;
+  user-select: none;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.15s;
 }
 
 /* La esfera de la opción es de 96 px, pero se deja encoger antes que desbordar. */
@@ -151,9 +168,10 @@
 }
 
 .reloj__option:hover:not(:disabled) {
-  border-color: #a78bfa;
-  background: rgba(167, 139, 250, 0.1);
-  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+  transform: scale(1.04);
 }
 
 .reloj__option:disabled {
@@ -161,13 +179,13 @@
 }
 
 .reloj__option--correct {
-  border-color: #10b981 !important;
-  background: rgba(16, 185, 129, 0.2) !important;
-  color: #10b981 !important;
+  border-color: #16a34a !important;
+  background: #f0fdf4 !important;
+  color: #15803d !important;
 }
 
 .reloj__option--wrong {
-  border-color: #ef4444 !important;
-  background: rgba(239, 68, 68, 0.2) !important;
-  color: #ef4444 !important;
+  border-color: #dc2626 !important;
+  background: #fff1f2 !important;
+  color: #dc2626 !important;
 }

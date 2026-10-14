@@ -75,7 +75,7 @@ function AnalogClock({ hours, minutes }: { hours: number; minutes: number }) {
         y1={y1}
         x2={x2}
         y2={y2}
-        stroke="rgba(255,255,255,0.5)"
+        stroke="#1e293b"
         strokeWidth={i % 3 === 0 ? 3 : 1.5}
       />
     );
@@ -94,10 +94,9 @@ function AnalogClock({ hours, minutes }: { hours: number; minutes: number }) {
         y={ny}
         textAnchor="middle"
         dominantBaseline="middle"
-        fill="white"
-        fontSize={isMain ? "14" : "11"}
+        fill="#1e293b"
+        fontSize={isMain ? "16" : "13"}
         fontWeight="bold"
-        opacity={isMain ? "1" : "0.8"}
       >
         {n}
       </text>
@@ -111,15 +110,7 @@ function AnalogClock({ hours, minutes }: { hours: number; minutes: number }) {
       role="img"
       aria-label={`Reloj de agujas marcando las ${hours}`}
     >
-      <circle cx={cx} cy={cy} r={r} fill="#1e1b4b" stroke="rgba(167,139,250,0.5)" strokeWidth="3" />
-      <circle
-        cx={cx}
-        cy={cy}
-        r={r - 2}
-        fill="none"
-        stroke="rgba(255,255,255,0.06)"
-        strokeWidth="1"
-      />
+      <circle cx={cx} cy={cy} r={r} fill="#fff" stroke="#000" strokeWidth="4" />
       {markers}
       {nums}
       <line
@@ -127,12 +118,20 @@ function AnalogClock({ hours, minutes }: { hours: number; minutes: number }) {
         y1={cy}
         x2={mx}
         y2={my}
-        stroke="#a78bfa"
-        strokeWidth="3"
+        strokeWidth="4"
+        strokeLinecap="round"
+        style={{ stroke: "var(--color-primary, #2563eb)" }}
+      />
+      <line
+        x1={cx}
+        y1={cy}
+        x2={hx}
+        y2={hy}
+        stroke="#1e293b"
+        strokeWidth="6"
         strokeLinecap="round"
       />
-      <line x1={cx} y1={cy} x2={hx} y2={hy} stroke="white" strokeWidth="5" strokeLinecap="round" />
-      <circle cx={cx} cy={cy} r={5} fill="#a78bfa" />
+      <circle cx={cx} cy={cy} r={6} fill="#1e293b" />
     </svg>
   );
 }
@@ -157,14 +156,7 @@ function MiniAnalogClock({ value }: { value: string }) {
       viewBox="0 0 180 180"
       aria-hidden="true"
     >
-      <circle
-        cx={cx}
-        cy={cy}
-        r={82}
-        fill="#1e1b4b"
-        stroke="rgba(167,139,250,0.4)"
-        strokeWidth="4"
-      />
+      <circle cx={cx} cy={cy} r={82} fill="#fff" stroke="#000" strokeWidth="5" />
       {Array.from({ length: 12 }, (_, i) => {
         const a = ((i * 30 - 90) * Math.PI) / 180;
         return (
@@ -174,8 +166,8 @@ function MiniAnalogClock({ value }: { value: string }) {
             y1={cy + 70 * Math.sin(a)}
             x2={cx + 80 * Math.cos(a)}
             y2={cy + 80 * Math.sin(a)}
-            stroke="rgba(255,255,255,0.4)"
-            strokeWidth={i % 3 === 0 ? 3 : 1.5}
+            stroke="#1e293b"
+            strokeWidth={i % 3 === 0 ? 4 : 2}
           />
         );
       })}
@@ -184,12 +176,20 @@ function MiniAnalogClock({ value }: { value: string }) {
         y1={cy}
         x2={mx}
         y2={my}
-        stroke="#a78bfa"
-        strokeWidth="4"
+        strokeWidth="6"
+        strokeLinecap="round"
+        style={{ stroke: "var(--color-primary, #2563eb)" }}
+      />
+      <line
+        x1={cx}
+        y1={cy}
+        x2={hx}
+        y2={hy}
+        stroke="#1e293b"
+        strokeWidth="8"
         strokeLinecap="round"
       />
-      <line x1={cx} y1={cy} x2={hx} y2={hy} stroke="white" strokeWidth="6" strokeLinecap="round" />
-      <circle cx={cx} cy={cy} r={5} fill="#a78bfa" />
+      <circle cx={cx} cy={cy} r={7} fill="#1e293b" />
     </svg>
   );
 }
@@ -202,6 +202,19 @@ function DigitalDisplay({ hours, minutes }: { hours: number; minutes: number }) 
     >
       {hours}:{String(minutes).padStart(2, "0")}
     </div>
+  );
+}
+
+/** Envuelve las horas y números del enunciado (`3`, `10:45`) para pintarlos en primary. */
+function resaltarNumeros(texto: string) {
+  return texto.split(/(\d+(?::\d{2})?)/).map((parte, i) =>
+    i % 2 === 1 ? (
+      <span key={i} className="reloj__num">
+        {parte}
+      </span>
+    ) : (
+      parte
+    ),
   );
 }
 
@@ -322,13 +335,12 @@ export function RelojScreen({
     <div className="reloj">
       <ActivityHeader
         onExit={onExit}
-        exitLabel="← Salir"
         gradeTitle={gradeTitle}
         className={className}
         unitTitle={activity.title}
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
       />
 
       <div className={`reloj__stage ${stageClass}`}>
@@ -336,7 +348,9 @@ export function RelojScreen({
           <div className="reloj__celebration">¡Correcto! ⏰⭐</div>
         )}
 
-        <p className="reloj__question">{current.question}</p>
+        <p className="reloj__question">
+          {difficulty === "easy" ? current.question : resaltarNumeros(current.question)}
+        </p>
 
         <div className="reloj__clock-container">
           {/* Esfera analógica para leer un reloj y para las escenas. */}

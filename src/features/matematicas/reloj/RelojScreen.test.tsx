@@ -80,7 +80,7 @@ describe("RelojScreen smoke", () => {
 
     expect(container.querySelector(".reloj__question")?.textContent).toBe(session[0].question);
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
-      `1 / ${session.length}`,
+      `1/${session.length}`,
     );
   });
 
@@ -181,7 +181,7 @@ describe("RelojScreen smoke", () => {
     expect(container.querySelector(".summary")).toBeNull();
     expect(container.querySelector(".reloj__question")?.textContent).toBe(sesion[0].question);
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
-      `1 / ${sesion.length}`,
+      `1/${sesion.length}`,
     );
   });
 
