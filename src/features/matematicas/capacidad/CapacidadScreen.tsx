@@ -43,26 +43,62 @@ function freshSession(seed: number, difficulty: EngineScreenProps["difficulty"])
 function Vessel({
   liters,
   maxLiters,
-  heightPx = 120,
+  heightPx = 260,
+  showMarks = false,
+  showNumbers = false,
+  hint,
 }: {
   liters: number;
   maxLiters: number;
   heightPx?: number;
+  /** Marcas de graduación más visibles (lectura de nivel). */
+  showMarks?: boolean;
+  /** Números 1…max junto a las marcas (solo medium; hard/expert van sin números). */
+  showNumbers?: boolean;
+  /** Texto centrado bajo el recipiente (no bajo la escala). */
+  hint?: string;
 }) {
   const fillPct = (liters / maxLiters) * 100;
   return (
-    <div className="cap__vessel" style={{ height: heightPx }}>
-      <div className="cap__vessel-fill" style={{ height: `${fillPct}%` }} />
-      <div className="cap__vessel-marks" aria-hidden="true">
-        {Array.from({ length: maxLiters }, (_, i) => (
-          <div key={i} className="cap__vessel-mark" />
-        ))}
+    <div className={`cap__vessel-row${showMarks ? " cap__vessel-row--scale" : ""}`}>
+      <div className="cap__vessel-stack">
+        <div className="cap__vessel" style={{ height: heightPx }}>
+          <div className="cap__vessel-fill" style={{ height: `${fillPct}%` }} />
+          <div className="cap__vessel-marks" aria-hidden="true">
+            {Array.from({ length: maxLiters }, (_, i) => (
+              <div key={i} className="cap__vessel-mark" />
+            ))}
+          </div>
+        </div>
+        {hint && <span className="cap__vessel-hint">{hint}</span>}
       </div>
+      {showNumbers && (
+        <div className="cap__scale" style={{ height: heightPx }} aria-hidden="true">
+          {Array.from({ length: maxLiters }, (_, i) => {
+            const n = i + 1;
+            return (
+              <span
+                key={n}
+                className="cap__scale-label"
+                style={{ bottom: `${(n / maxLiters) * 100}%` }}
+              >
+                {n}
+              </span>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
 
-function ExerciseVisual({ ex }: { ex: CapacidadExercise }) {
+function ExerciseVisual({
+  ex,
+  difficulty,
+}: {
+  ex: CapacidadExercise;
+  difficulty: EngineScreenProps["difficulty"];
+}) {
   if (ex.type === "compare") {
     return (
       <div className="cap__vessels">
@@ -81,10 +117,19 @@ function ExerciseVisual({ ex }: { ex: CapacidadExercise }) {
   }
 
   if (ex.type === "read") {
+    // medium: marcas + números; hard/expert: solo marcas + pista inferior
+    const showNumbers = difficulty === "medium";
     return (
       <div className="cap__vessels">
         <div className="cap__vessel-wrap">
-          <Vessel liters={ex.liters!} maxLiters={ex.maxLiters!} heightPx={140} />
+          <Vessel
+            liters={ex.liters!}
+            maxLiters={ex.maxLiters!}
+            heightPx={280}
+            showMarks
+            showNumbers={showNumbers}
+            hint="Cada marca = 1 L"
+          />
         </div>
       </div>
     );
@@ -232,15 +277,14 @@ export function CapacidadScreen({
         {!isMultiChoice && <InputModeToggle mode={mode} onToggle={toggle} />}
       </ActivityHeader>
 
-      <div className={`ops__stage ${stageClass}`}>
+      <div className={`ops__stage ${stageClass} cap__stage--split`}>
         {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
 
-        <ExerciseVisual ex={current} />
-        <p className="cap__question">{current.question}</p>
-
-        {!isMultiChoice && (
-          <div className="ops__formula">
-            {mode === "numpad" ? (
+        <div className="cap__main">
+          <p className="cap__question">{current.question}</p>
+          <ExerciseVisual ex={current} difficulty={difficulty} />
+          {!isMultiChoice && mode === "numpad" && (
+            <div className="ops__formula">
               <div
                 className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : session.answerState === "wrong" ? "ops__answer-box--wrong" : ""}`}
               >
@@ -248,7 +292,47 @@ export function CapacidadScreen({
                   ? `${current.answer} L`
                   : session.input || <span className="ops__cursor">_</span>}
               </div>
-            ) : session.answerState === "idle" ? (
+            </div>
+          )}
+        </div>
+
+        <aside className="cap__side">
+          {isMultiChoice ? (
+            <div className="cap__options">
+              {(current.options ?? []).map((opt, i) => {
+                let cls = "cap__option";
+                if (session.answerState === "correct" && opt === current.answer)
+                  cls += " cap__option--correct";
+                else if (session.answerState === "wrong" && opt === session.chosen)
+                  cls += " cap__option--wrong";
+                return (
+                  <button
+                    key={opt}
+                    id={`cap-option-${i}`}
+                    className={cls}
+                    onClick={() => handleChoice(opt)}
+                    disabled={session.answerState !== "idle"}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+          ) : mode === "numpad" ? (
+            <Numpad
+              onDigit={(d) => {
+                if (session.answerState !== "idle") return;
+                setSession((s) => ({ ...s, input: s.input.length < 2 ? s.input + d : s.input }));
+              }}
+              onDelete={() => {
+                if (session.answerState !== "idle") return;
+                setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
+              }}
+              onConfirm={confirm}
+              disabled={session.answerState !== "idle"}
+            />
+          ) : session.answerState === "idle" ? (
+            <div className="cap__canvas">
               <LazyDigitCell
                 key={canvasKey}
                 isActive={true}
@@ -265,64 +349,21 @@ export function CapacidadScreen({
                 state={session.answerState}
                 value={session.input}
               />
-            ) : (
+            </div>
+          ) : (
+            <div className="ops__formula">
               <div
                 className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : "ops__answer-box--wrong"}`}
               >
                 {session.answerState === "correct" ? `${current.answer} L` : session.input || "?"}
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+          {session.answerState === "wrong" && (
+            <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+          )}
+        </aside>
       </div>
-
-      <footer className="ops__footer">
-        {isMultiChoice ? (
-          <div className="cap__options">
-            {(current.options ?? []).map((opt, i) => {
-              let cls = "cap__option";
-              if (session.answerState === "correct" && opt === current.answer)
-                cls += " cap__option--correct";
-              else if (session.answerState === "wrong" && opt === session.chosen)
-                cls += " cap__option--wrong";
-              return (
-                <button
-                  key={opt}
-                  id={`cap-option-${i}`}
-                  className={cls}
-                  onClick={() => handleChoice(opt)}
-                  disabled={session.answerState !== "idle"}
-                >
-                  {opt}
-                </button>
-              );
-            })}
-            {session.answerState === "wrong" && (
-              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-            )}
-          </div>
-        ) : (
-          <>
-            {mode === "numpad" && (
-              <Numpad
-                onDigit={(d) => {
-                  if (session.answerState !== "idle") return;
-                  setSession((s) => ({ ...s, input: s.input.length < 2 ? s.input + d : s.input }));
-                }}
-                onDelete={() => {
-                  if (session.answerState !== "idle") return;
-                  setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
-                }}
-                onConfirm={confirm}
-                disabled={session.answerState !== "idle"}
-              />
-            )}
-            {session.answerState === "wrong" && (
-              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-            )}
-          </>
-        )}
-      </footer>
     </div>
   );
 }
