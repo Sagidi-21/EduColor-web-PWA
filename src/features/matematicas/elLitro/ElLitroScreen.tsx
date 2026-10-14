@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useLayoutEffect, useRef } from "react";
 import { generateSession, validateAnswer } from "../../../core/activities/elLitro";
 import type { LitroExercise, LitroItem } from "../../../core/activities/elLitro";
 import { playFeedback } from "../../shared/audioFeedback";
@@ -24,6 +24,10 @@ interface SessionState {
   alreadyFailed: boolean;
 }
 
+/** Tamaño máximo del enunciado; se reduce si no cabe a una línea. */
+const ENUNCIADO_MAX_PX = 40;
+const ENUNCIADO_MIN_PX = 18;
+
 function freshSession(seed: number, difficulty: EngineScreenProps["difficulty"]): SessionState {
   return {
     exercises: generateSession(difficulty, seed),
@@ -40,12 +44,41 @@ function label(item: LitroItem): string {
   return item.name.charAt(0).toUpperCase() + item.name.slice(1);
 }
 
-function ItemCard({ item, testId }: { item: LitroItem; testId: string }) {
+function ItemCard({
+  item,
+  testId,
+  onSelect,
+  state = "idle",
+  disabled = false,
+}: {
+  item: LitroItem;
+  testId: string;
+  onSelect?: (value: string) => void;
+  state?: AnswerState;
+  disabled?: boolean;
+}) {
   const url = litroImageUrl(item);
+  const name = label(item);
+  const img = <img className="lit__img" src={url} alt={name} />;
+
+  if (onSelect) {
+    return (
+      <button
+        type="button"
+        className={`lit__image-box lit__image-box--pick lit__image-box--${state}`}
+        data-testid={testId}
+        data-value={name}
+        onClick={() => onSelect(name)}
+        disabled={disabled}
+      >
+        {img}
+      </button>
+    );
+  }
+
   return (
     <div className="lit__image-box" data-testid={testId}>
-      <img className="lit__img" src={url} alt={label(item)} />
-      <span className="lit__img-name">{label(item)}</span>
+      {img}
     </div>
   );
 }
@@ -63,9 +96,30 @@ export function ElLitroScreen({
   const [sessionSeed] = useState(() => seed);
   const [session, setSession] = useState<SessionState>(() => freshSession(sessionSeed, difficulty));
   const [finished, setFinished] = useState<SessionResult | null>(null);
+  const questionRef = useRef<HTMLParagraphElement>(null);
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
+
+  useLayoutEffect(() => {
+    const el = questionRef.current;
+    if (!el) return;
+
+    const ajustar = () => {
+      let size = ENUNCIADO_MAX_PX;
+      el.style.fontSize = `${size}px`;
+      while (size > ENUNCIADO_MIN_PX && el.scrollWidth > el.clientWidth + 1) {
+        size -= 1;
+        el.style.fontSize = `${size}px`;
+      }
+    };
+
+    ajustar();
+    const ro = new ResizeObserver(ajustar);
+    ro.observe(el);
+    if (el.parentElement) ro.observe(el.parentElement);
+    return () => ro.disconnect();
+  }, [current?.question, current?.type, session.currentIndex]);
 
   const handleNext = useCallback(() => {
     setSession((s) => {
@@ -126,6 +180,7 @@ export function ElLitroScreen({
     return <NoExerciseNotice activityTitle={activity.title} onExit={onExit} />;
   }
 
+  const esClasificar = current.type === "classify";
   const stageClass =
     session.answerState === "correct"
       ? "ops__stage--correct"
@@ -133,72 +188,97 @@ export function ElLitroScreen({
         ? "ops__stage--wrong"
         : "";
 
+  const questionText = esClasificar ? current.question : `${current.question} (pulsa sobre ella)`;
+
+  const pickState = (item: LitroItem): AnswerState => {
+    const value = label(item);
+    if (session.answerState === "correct" && value === current.answer) return "correct";
+    if (session.answerState === "wrong" && value === session.chosen) return "wrong";
+    return "idle";
+  };
+
   return (
-    <div className="ops">
+    <div className={`ops lit ${className ?? ""}`}>
       <ActivityHeader
         onExit={onExit}
         gradeTitle={gradeTitle}
-        className={className}
         unitTitle={activity.title}
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}
         progress={`${session.currentIndex + 1}/${total}`}
       />
 
-      <div className={`ops__stage ${stageClass}`}>
-        {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
+      <div
+        className={`ops__stage ${stageClass}${esClasificar ? " lit__stage--classify" : " lit__stage--compare"}`}
+      >
+        <p ref={questionRef} className="lit__question">
+          {questionText}
+        </p>
 
-        <div className="lit__card">
-          {current.type === "classify" ? (
-            <>
-              <div className="lit__images">
+        {esClasificar ? (
+          <div className="lit__body">
+            <div className="lit__visual">
+              <div className="lit__classify">
                 <ItemCard item={current.items[0]} testId="lit-item-0" />
+                <div className="lit__scale-hint">
+                  <img
+                    className="lit__ref-img"
+                    src={litroImageUrl(REFERENCE_ITEM)}
+                    alt={`${label(REFERENCE_ITEM)}: referencia de 1 litro`}
+                  />
+                  <span>Referencia: 1 L</span>
+                </div>
               </div>
-              <div className="lit__scale-hint">
-                <img
-                  className="lit__ref-img"
-                  src={litroImageUrl(REFERENCE_ITEM)}
-                  alt={`${label(REFERENCE_ITEM)}: referencia de 1 litro`}
-                />
-                <span>Referencia: 1 L</span>
-              </div>
-            </>
-          ) : (
-            <div className="lit__images">
-              <ItemCard item={current.items[0]} testId="lit-item-0" />
-              <span className="lit__vs" aria-hidden="true">
-                VS
-              </span>
-              <ItemCard item={current.items[1]} testId="lit-item-1" />
+              {session.answerState === "correct" && (
+                <div className="ops__celebration activity-celebration--inline">¡Correcto! 🧴⭐</div>
+              )}
             </div>
-          )}
 
-          <p className="lit__question">{current.question}</p>
-        </div>
+            <div className="lit__opts">
+              {current.options.map((opt, i) => {
+                let cls = "lit__opt";
+                if (session.answerState === "correct" && opt === current.answer)
+                  cls += " lit__opt--correct";
+                else if (session.answerState === "wrong" && opt === session.chosen)
+                  cls += " lit__opt--wrong";
+                return (
+                  <button
+                    key={opt}
+                    id={`lit-option-${i}`}
+                    type="button"
+                    className={cls}
+                    onClick={() => handleChoice(opt)}
+                    disabled={session.answerState !== "idle"}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="lit__images">
+              {current.items.map((item, i) => (
+                <ItemCard
+                  key={item.file}
+                  item={item}
+                  testId={`lit-item-${i}`}
+                  onSelect={handleChoice}
+                  state={pickState(item)}
+                  disabled={session.answerState !== "idle"}
+                />
+              ))}
+            </div>
+
+            {session.answerState === "correct" && (
+              <div className="ops__celebration activity-celebration--inline">¡Correcto! 🧴⭐</div>
+            )}
+          </>
+        )}
       </div>
 
       <footer className="ops__footer">
-        <div className="lit__opts">
-          {current.options.map((opt, i) => {
-            let cls = "lit__opt";
-            if (session.answerState === "correct" && opt === current.answer)
-              cls += " lit__opt--correct";
-            else if (session.answerState === "wrong" && opt === session.chosen)
-              cls += " lit__opt--wrong";
-            return (
-              <button
-                key={opt}
-                id={`lit-option-${i}`}
-                type="button"
-                className={cls}
-                onClick={() => handleChoice(opt)}
-                disabled={session.answerState !== "idle"}
-              >
-                {opt}
-              </button>
-            );
-          })}
-        </div>
         {session.answerState === "wrong" && (
           <ActionButtons onRetry={handleRetry} onNext={handleNext} />
         )}

@@ -38,6 +38,22 @@ const optionButton = (container: HTMLElement, text: string) => {
 const images = (container: HTMLElement) =>
   Array.from(container.querySelectorAll<HTMLImageElement>(".lit__img")).map((i) => i.alt);
 
+const questionShown = (ex: LitroExercise) =>
+  ex.type === "classify" ? ex.question : `${ex.question} (pulsa sobre ella)`;
+
+/** Clasificar → chip; comparar → imagen con el nombre de la respuesta. */
+const answerExercise = (container: HTMLElement, ex: LitroExercise) => {
+  if (ex.type === "classify") {
+    fireEvent.click(optionButton(container, ex.answer));
+    return;
+  }
+  const pick = container.querySelector<HTMLButtonElement>(
+    `.lit__image-box--pick[data-value="${ex.answer}"]`,
+  );
+  if (!pick) throw new Error(`No hay imagen pulsable para "${ex.answer}"`);
+  fireEvent.click(pick);
+};
+
 /** La pantalla avanza sola 900 ms después de acertar. */
 const AUTO_ADVANCE_MS = 900;
 
@@ -65,14 +81,14 @@ describe("ElLitroScreen smoke", () => {
 
     const { container } = render(<ElLitroScreen {...buildProps("easy", seed)} />);
 
-    expect(questionOf(container)).toBe(session[0].question);
+    expect(questionOf(container)).toBe(questionShown(session[0]));
     expect(options(container)).toEqual(session[0].options);
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
       `1/${session.length}`,
     );
   });
 
-  it("muestra el recipiente del ejercicio con su imagen y su nombre", () => {
+  it("muestra el recipiente del ejercicio con su imagen (sin etiqueta de nombre)", () => {
     const seed = 4242;
     const session = generateSession("easy", seed);
 
@@ -81,7 +97,7 @@ describe("ElLitroScreen smoke", () => {
     const item = session[0].items[0];
     const cap = item.name.charAt(0).toUpperCase() + item.name.slice(1);
     expect(images(container)).toEqual([cap]);
-    expect(container.querySelector(".lit__img-name")?.textContent).toBe(cap);
+    expect(container.querySelector(".lit__img-name")).toBeNull();
   });
 
   it("no monta Numpad ni toggle de modo: siempre es elección múltiple", () => {
@@ -120,7 +136,7 @@ describe("ElLitroScreen smoke", () => {
     expect(hint!.textContent?.trim()).toBe("Referencia: 1 L");
   });
 
-  it("comparar muestra los dos recipientes enfrentados", () => {
+  it("comparar muestra los dos recipientes pulsables y sin chips", () => {
     const seed = 5;
     const session = generateSession("expert", seed);
     const idx = session.findIndex((ex) => ex.type !== "classify");
@@ -129,17 +145,18 @@ describe("ElLitroScreen smoke", () => {
     const { container } = render(<ElLitroScreen {...buildProps("expert", seed)} />);
     // Se avanza hasta el primer ejercicio de comparación.
     for (let i = 0; i < idx; i++) {
-      fireEvent.click(optionButton(container, session[i].answer));
+      answerExercise(container, session[i]);
       runAutoAdvance();
     }
 
     const current = session[idx] as LitroExercise;
-    expect(container.querySelectorAll(".lit__image-box")).toHaveLength(2);
+    expect(container.querySelectorAll(".lit__image-box--pick")).toHaveLength(2);
+    expect(container.querySelector(".lit__opts")).toBeNull();
     expect(images(container)).toEqual(
       current.items.map((it) => it.name.charAt(0).toUpperCase() + it.name.slice(1)),
     );
     expect(container.querySelector(".lit__scale-hint")).toBeNull();
-    expect(questionOf(container)).toBe(current.question);
+    expect(questionOf(container)).toBe(questionShown(current));
   });
 
   it("acertar marca la opción correcta y avanza solo", () => {
@@ -147,12 +164,12 @@ describe("ElLitroScreen smoke", () => {
     const session = generateSession("easy", seed);
 
     const { container } = render(<ElLitroScreen {...buildProps("easy", seed)} />);
-    fireEvent.click(optionButton(container, session[0].answer));
+    answerExercise(container, session[0]);
 
     expect(container.querySelectorAll(".lit__opt--correct")).toHaveLength(1);
 
     runAutoAdvance();
-    expect(questionOf(container)).toBe(session[1].question);
+    expect(questionOf(container)).toBe(questionShown(session[1]));
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe(
       `2/${session.length}`,
     );
@@ -184,7 +201,7 @@ describe("ElLitroScreen smoke", () => {
 
     fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--retry")!);
 
-    expect(questionOf(container)).toBe(session[0].question);
+    expect(questionOf(container)).toBe(questionShown(session[0]));
     expect(optionButtons(container).every((b) => !b.disabled)).toBe(true);
   });
 
@@ -198,7 +215,7 @@ describe("ElLitroScreen smoke", () => {
     fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--retry")!);
 
     session.forEach((ex) => {
-      fireEvent.click(optionButton(container, ex.answer));
+      answerExercise(container, ex);
       runAutoAdvance();
     });
 
@@ -214,7 +231,7 @@ describe("ElLitroScreen smoke", () => {
 
     const { container } = render(<ElLitroScreen {...buildProps("easy", seed)} />);
     session.forEach((ex) => {
-      fireEvent.click(optionButton(container, ex.answer));
+      answerExercise(container, ex);
       runAutoAdvance();
     });
 
@@ -294,8 +311,8 @@ describe("ElLitroScreen recorrido completo", () => {
       const { container, unmount } = render(<ElLitroScreen {...buildProps(difficulty, seed)} />);
 
       session.forEach((ex) => {
-        expect(questionOf(container)).toBe(ex.question);
-        fireEvent.click(optionButton(container, ex.answer));
+        expect(questionOf(container)).toBe(questionShown(ex));
+        answerExercise(container, ex);
         runAutoAdvance();
       });
 
