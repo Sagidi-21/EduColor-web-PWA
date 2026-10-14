@@ -33,6 +33,7 @@ const COMPARTIDOS = {
   DifficultyReveal: "src/features/matematicas/components/DifficultyReveal.tsx",
   ActivityErrorBoundary: "src/features/matematicas/components/ActivityErrorBoundary.tsx",
   NoExerciseNotice: "src/features/matematicas/components/NoExerciseNotice.tsx",
+  ActivityCelebration: "src/features/matematicas/components/ActivityCelebration.tsx",
 };
 
 /**

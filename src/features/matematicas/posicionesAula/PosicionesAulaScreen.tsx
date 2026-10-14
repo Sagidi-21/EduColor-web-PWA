@@ -12,6 +12,7 @@ import type { EngineScreenProps } from "../engine-screens";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { ActionButtons } from "../components/ActivityActionButtons";
+import { ActivityCelebration } from "../components/ActivityCelebration";
 import "./PosicionesAulaScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -321,7 +322,7 @@ export default function PosicionesAulaScreen({
       />
 
       <div className={`pos__stage ${stageClass}`}>
-        {session.answerState === "correct" && <div className="pos__cheer">¡Correcto! ⭐</div>}
+        {session.answerState === "correct" && <ActivityCelebration />}
 
         <div className="pos__card">
           <div className="pos__scene-area">

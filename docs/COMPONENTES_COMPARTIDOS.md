@@ -32,6 +32,7 @@ Las decisiones de **por qué** cada pieza es como es están en
 | Elección de nivel y dificultad           | `DifficultyReveal.tsx`                              | —                        |
 | Aspa de cerrar modal                     | `shared/components/ModalCloseButton.tsx`            | —                        |
 | Barrera de error y aviso de sesión vacía | `ActivityErrorBoundary.tsx`, `NoExerciseNotice.tsx` | —                        |
+| Feedback de acierto («¡Correcto!»)       | `ActivityCelebration.tsx`                           | —                        |
 | Feedback sonoro                          | `shared/audioFeedback.ts`                           | —                        |
 | Layout base de pantalla                  | `operations/OperationsScreen.css`                   | —                        |
 
@@ -73,6 +74,22 @@ lienzo. En la **columna lateral del numpad** ese tamaño no cabe (ver §9) y hay
 apilarlos, pero **ese ajuste ya está hecho en `OperationsScreen.css`**: si los botones
 caen dentro de `.ops__body--with-numpad .ops__footer`, se estrechan solos. No añadas
 una variante a mano.
+
+## 2b. Feedback de acierto — `ActivityCelebration`
+
+```tsx
+import { ActivityCelebration } from "../components/ActivityCelebration";
+
+{
+  session.answerState === "correct" && <ActivityCelebration />;
+}
+```
+
+- Visual canónica del «¡Correcto! ⭐» de pizarra (verde, peso 800, animación pop).
+- Por defecto `variant="overlay"`: anclado arriba-centro del stage (`position: absolute`).
+- `variant="inline"`: en el flujo del layout (p. ej. entre bloques), sin absolute.
+- La **posición en pantalla** la decide el padre (dónde se monta el componente).
+- Las pantallas que aún usan la clase `.ops__celebration` comparten el mismo CSS.
 
 ## 3. Numpad — `Numpad`
 

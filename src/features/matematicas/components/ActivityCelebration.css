@@ -1,0 +1,82 @@
+/* Feedback de acierto compartido (pizarra).
+   Visual canónica = la de `.ops__celebration`.
+   Variante `--inline`: en el flujo del layout (sin absolute). */
+
+.activity-celebration,
+.ops__celebration {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(20px, 3vw, 32px);
+  font-weight: 800;
+  color: #16a34a;
+  animation: activity-celebration-in 0.5s ease-out both;
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.activity-celebration--inline {
+  position: static;
+  top: auto;
+  left: auto;
+  transform: none;
+  animation: activity-celebration-inline-in 0.5s ease-out both;
+}
+
+@keyframes activity-celebration-in {
+  from {
+    transform: translateX(-50%) scale(0.6);
+    opacity: 0;
+  }
+
+  60% {
+    transform: translateX(-50%) scale(1.15);
+  }
+
+  to {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes activity-celebration-inline-in {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.15);
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Compat: pantallas que aún usan la keyframe antigua `celebrate`. */
+@keyframes celebrate {
+  from {
+    transform: translateX(-50%) scale(0.6);
+    opacity: 0;
+  }
+
+  60% {
+    transform: translateX(-50%) scale(1.15);
+  }
+
+  to {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-celebration,
+  .ops__celebration {
+    animation: none;
+  }
+}
