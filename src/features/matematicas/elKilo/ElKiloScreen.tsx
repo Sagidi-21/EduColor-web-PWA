@@ -133,11 +133,10 @@ export function ElKiloScreen({
         : "";
 
   return (
-    <div className="ops">
+    <div className={`ops kil ${className ?? ""}`}>
       <ActivityHeader
         onExit={onExit}
         gradeTitle={gradeTitle}
-        className={className}
         unitTitle={activity.title}
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}
@@ -145,7 +144,11 @@ export function ElKiloScreen({
       />
 
       <div className={`ops__stage ${stageClass}`}>
-        {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
+        {session.answerState === "correct" && (
+          <div className="ops__celebration">¡Correcto! ⚖️⭐</div>
+        )}
+
+        <p className="kil__question">{current.question}</p>
 
         <div className="kil__card">
           <div className="kil__scale-hint">
@@ -165,12 +168,8 @@ export function ElKiloScreen({
               </Fragment>
             ))}
           </div>
-
-          <p className="kil__question">{current.question}</p>
         </div>
-      </div>
 
-      <footer className="ops__footer">
         <div className="kil__opts">
           {current.options.map((opt, i) => {
             let cls = "kil__opt";
@@ -192,6 +191,9 @@ export function ElKiloScreen({
             );
           })}
         </div>
+      </div>
+
+      <footer className="ops__footer">
         {session.answerState === "wrong" && (
           <ActionButtons onRetry={handleRetry} onNext={handleNext} />
         )}
