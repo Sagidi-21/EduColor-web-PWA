@@ -111,7 +111,7 @@ describe("RelojPonerHoraScreen smoke", () => {
     const { container } = render(<RelojPonerHoraScreen {...props("easy", seed)} />);
 
     expect(container.querySelector(".rph__target-big")?.textContent).toBe(sesion[0].target);
-    expect(contador(container)).toBe(`1 / ${sesion.length}`);
+    expect(contador(container)).toBe(`1/${sesion.length}`);
   });
 
   it("pinta el reloj con agujas y el título de la actividad en la cabecera", () => {
@@ -162,7 +162,7 @@ describe("RelojPonerHoraScreen smoke", () => {
     expect(container.querySelector(".activity-action--retry")).toBeNull();
 
     runTimers(AUTOAVANCE_MS);
-    expect(contador(container)).toBe(`2 / ${engine.generateSession("easy", 4242).length}`);
+    expect(contador(container)).toBe(`2/${engine.generateSession("easy", 4242).length}`);
   });
 
   it("acierto: el botón de comprobar desaparece, como en Electron", () => {
@@ -251,7 +251,7 @@ describe("RelojPonerHoraScreen smoke", () => {
     comprobar(container);
     runTimers(AUTOAVANCE_MS * 3);
 
-    expect(contador(container)).toBe(`1 / ${engine.generateSession("easy", 4242).length}`);
+    expect(contador(container)).toBe(`1/${engine.generateSession("easy", 4242).length}`);
     expect(container.querySelector(".summary")).toBeNull();
   });
 
@@ -280,7 +280,7 @@ describe("RelojPonerHoraScreen smoke", () => {
     comprobar(container);
     fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--next")!);
 
-    expect(contador(container)).toBe(`2 / ${sesion.length}`);
+    expect(contador(container)).toBe(`2/${sesion.length}`);
     expect(container.querySelector(".rph__target-big")?.textContent).toBe(sesion[1].target);
   });
 
@@ -337,7 +337,7 @@ describe("RelojPonerHoraScreen smoke", () => {
     fireEvent.click(container.querySelector(".summary__btn--primary")!);
 
     expect(container.querySelector(".summary")).toBeNull();
-    expect(contador(container)).toBe(`1 / ${sesion.length}`);
+    expect(contador(container)).toBe(`1/${sesion.length}`);
     expect(container.querySelector(".rph__target-big")?.textContent).toBe(sesion[0].target);
   });
 

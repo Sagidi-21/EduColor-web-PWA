@@ -206,7 +206,7 @@ export function RelojPonerHoraScreen({
         y1={CY + (R - 18) * Math.sin(a)}
         x2={CX + (R - 4) * Math.cos(a)}
         y2={CY + (R - 4) * Math.sin(a)}
-        stroke="rgba(255,255,255,0.55)"
+        stroke="#1e293b"
         strokeWidth={i % 3 === 0 ? 5 : 2.5}
       />
     );
@@ -221,10 +221,9 @@ export function RelojPonerHoraScreen({
         y={CY + (R - 42) * Math.sin(a)}
         textAnchor="middle"
         dominantBaseline="middle"
-        fill="white"
+        fill="#1e293b"
         fontSize={i % 3 === 0 ? 30 : 22}
         fontWeight="bold"
-        opacity={i % 3 === 0 ? 1 : 0.8}
       >
         {n}
       </text>
@@ -242,13 +241,12 @@ export function RelojPonerHoraScreen({
     <div className="reloj rph">
       <ActivityHeader
         onExit={onExit}
-        exitLabel="← Salir"
         gradeTitle={gradeTitle}
         className={className}
         unitTitle={activity.title}
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
       />
 
       <div className={`reloj__stage rph__stage ${stageClass}`}>
@@ -314,26 +312,19 @@ export function RelojPonerHoraScreen({
               onPointerLeave={onPointerUp}
               style={{ touchAction: "none" }}
             >
-              <circle
-                cx={CX}
-                cy={CY}
-                r={R}
-                fill="#1e1b4b"
-                stroke="rgba(167,139,250,0.6)"
-                strokeWidth="5"
-              />
+              <circle cx={CX} cy={CY} r={R} fill="#fff" stroke="#000" strokeWidth="6" />
               {markers}
               {nums}
 
-              {/* Aguja de los minutos (larga, morada) */}
+              {/* Aguja de los minutos (larga, primary) */}
               <line
                 x1={CX}
                 y1={CY}
                 x2={mh.x}
                 y2={mh.y}
-                stroke="#a78bfa"
                 strokeWidth="7"
                 strokeLinecap="round"
+                style={{ stroke: "var(--color-primary, #2563eb)" }}
               />
               <circle
                 cx={mh.x}
@@ -344,13 +335,13 @@ export function RelojPonerHoraScreen({
                 onPointerDown={(e) => onPointerDown(e, "minute")}
               />
 
-              {/* Aguja de las horas (corta, blanca) */}
+              {/* Aguja de las horas (corta, oscura) */}
               <line
                 x1={CX}
                 y1={CY}
                 x2={hh.x}
                 y2={hh.y}
-                stroke="#ffffff"
+                stroke="#1e293b"
                 strokeWidth="10"
                 strokeLinecap="round"
               />
@@ -363,7 +354,7 @@ export function RelojPonerHoraScreen({
                 onPointerDown={(e) => onPointerDown(e, "hour")}
               />
 
-              <circle cx={CX} cy={CY} r={10} fill="#a78bfa" />
+              <circle cx={CX} cy={CY} r={10} fill="#1e293b" />
             </svg>
           </div>
         </div>
