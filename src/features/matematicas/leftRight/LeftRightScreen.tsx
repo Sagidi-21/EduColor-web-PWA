@@ -386,7 +386,12 @@ export function LeftRightScreen({
               </div>
             </div>
 
-            <p className="lr__question">{charEx.question}</p>
+            <p className="lr__question">
+              {charEx.question}
+              {charEx.kind === "char-click" && (
+                <span className="lr__question-hint"> (pulsa sobre el recuadro correcto)</span>
+              )}
+            </p>
 
             {charEx.kind !== "char-click" && !answered && (
               <div className="lr__drag-area">
