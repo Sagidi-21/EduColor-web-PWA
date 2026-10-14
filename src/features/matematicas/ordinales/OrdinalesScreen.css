@@ -54,7 +54,9 @@
   padding: 8px;
   cursor: pointer;
   border-radius: 12px;
-  transition: transform 0.15s, background 0.15s;
+  transition:
+    transform 0.15s,
+    background 0.15s;
 }
 
 .ord__item--btn:hover:not(:disabled) {

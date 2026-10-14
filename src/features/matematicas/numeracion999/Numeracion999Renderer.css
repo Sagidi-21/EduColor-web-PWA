@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
-  color: #164e63;
+  background: #fff;
+  color: #1e293b;
   font-family: "Inter", sans-serif;
   overflow: hidden;
 }
@@ -12,14 +12,14 @@
   align-items: center;
   gap: 1rem;
   padding: 0.7rem 1.4rem;
-  background: rgba(6, 182, 212, 0.1);
-  border-bottom: 1px solid rgba(6, 182, 212, 0.25);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary, #2563eb) 25%, #fff);
   flex-shrink: 0;
 }
 .n999__exit {
-  background: rgba(6, 182, 212, 0.15);
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  color: #0e7490;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 15%, #fff);
+  border: 1px solid color-mix(in srgb, var(--color-primary, #2563eb) 30%, #fff);
+  color: var(--color-primary, #2563eb);
   padding: 0.4rem 0.9rem;
   border-radius: 10px;
   cursor: pointer;
@@ -28,7 +28,7 @@
   white-space: nowrap;
 }
 .n999__exit:hover {
-  background: rgba(6, 182, 212, 0.25);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 25%, #fff);
 }
 .n999__meta {
   flex: 1;
@@ -38,7 +38,7 @@
 }
 .n999__grade {
   font-size: 0.7rem;
-  color: #0891b2;
+  color: var(--color-primary, #2563eb);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -66,7 +66,7 @@
 }
 .n999__progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #06b6d4, #0891b2);
+  background: var(--color-primary, #2563eb);
   border-radius: 10px;
   transition: width 0.4s;
 }
@@ -77,8 +77,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 1.8rem;
+  justify-content: flex-start;
+  gap: 0;
   padding: 2rem;
   transition: background 0.3s;
   position: relative;
@@ -92,7 +92,7 @@
 }
 .n999__cheer {
   position: absolute;
-  top: 1rem;
+  top: 7rem;
   font-size: 2.5rem;
   font-weight: 900;
   color: #10b981;
@@ -112,23 +112,32 @@
 }
 
 .n999__question {
-  font-size: 1.8rem;
+  flex-shrink: 0;
+  font-size: 40px;
   font-weight: 700;
   text-align: center;
-  color: #164e63;
-  max-width: 560px;
-  text-wrap: balance;
+  color: #1e293b;
+  white-space: nowrap;
   line-height: 1.3;
-  margin-bottom: 2rem;
+  margin: 0;
+}
+
+/* Hueco entre enunciado y opciones: el número/CDU queda centrado dentro */
+.n999__stimulus {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Number display */
 .n999__number-display {
   font-size: 5rem;
   font-weight: 900;
-  color: #0891b2;
+  color: var(--color-primary, #2563eb);
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 30px rgba(6, 182, 212, 0.2);
 }
 
 /* CDU card */
@@ -136,8 +145,8 @@
   display: flex;
   gap: 1.5rem;
   padding: 1.5rem 2rem;
-  background: rgba(6, 182, 212, 0.08);
-  border: 2px solid rgba(6, 182, 212, 0.3);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 8%, #fff);
+  border: 2px solid color-mix(in srgb, var(--color-primary, #2563eb) 30%, #fff);
   border-radius: 20px;
 }
 .n999__cdu-col {
@@ -149,38 +158,47 @@
 .n999__cdu-val {
   font-size: 3.5rem;
   font-weight: 900;
-  color: #164e63;
+  color: #1e293b;
   font-variant-numeric: tabular-nums;
 }
 .n999__cdu-label {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #0891b2;
+  color: var(--color-primary, #2563eb);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 .n999__cdu-sep {
   font-size: 2rem;
-  color: rgba(6, 182, 212, 0.5);
+  color: color-mix(in srgb, var(--color-primary, #2563eb) 50%, #fff);
   align-self: center;
 }
 
 /* Options */
 .n999__options {
+  flex-shrink: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 1rem;
   justify-content: center;
-  max-width: 560px;
+  width: 100%;
+  max-width: 100%;
 }
+
+.n999__stage .activity-actions {
+  margin-top: 2.2rem;
+}
+
 .n999__opt {
   padding: 1rem 2rem;
   min-height: 60px;
   min-width: 100px;
+  flex: 0 0 auto;
+  white-space: nowrap;
   border-radius: 16px;
-  border: 2px solid rgba(6, 182, 212, 0.3);
-  background: rgba(6, 182, 212, 0.1);
-  color: #164e63;
+  border: 3px solid #000;
+  background: transparent;
+  color: var(--color-primary, #2563eb);
   font-size: 1.5rem;
   font-weight: 700;
   cursor: pointer;
@@ -190,10 +208,10 @@
   text-align: center;
 }
 .n999__opt:hover:not(:disabled) {
-  border-color: #0891b2;
-  background: rgba(6, 182, 212, 0.2);
+  border-color: var(--color-primary, #2563eb);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  color: var(--color-primary, #2563eb);
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 4px 8px rgba(6, 182, 212, 0.2);
 }
 .n999__opt:disabled {
   opacity: 0.7;
@@ -211,7 +229,7 @@
 }
 .n999__next {
   padding: 1rem 3rem;
-  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  background: var(--color-primary, #2563eb);
   border: none;
   border-radius: 16px;
   color: #fff;

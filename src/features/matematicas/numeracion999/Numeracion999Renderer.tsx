@@ -141,30 +141,32 @@ export function Numeracion999Screen({
 
         <p className="n999__question">{current.question}</p>
 
-        {(isCifraToC ||
-          current.type === "valor-posicional" ||
-          current.type === "anterior-posterior") && (
-          <div className="n999__number-display">{current.number}</div>
-        )}
+        <div className="n999__stimulus">
+          {(isCifraToC ||
+            current.type === "valor-posicional" ||
+            current.type === "anterior-posterior") && (
+            <div className="n999__number-display">{current.number}</div>
+          )}
 
-        {isCduToC && (
-          <div className="n999__cdu-card">
-            <div className="n999__cdu-col">
-              <span className="n999__cdu-val">{current.centenas}</span>
-              <span className="n999__cdu-label">Centenas</span>
+          {isCduToC && (
+            <div className="n999__cdu-card">
+              <div className="n999__cdu-col">
+                <span className="n999__cdu-val">{current.centenas}</span>
+                <span className="n999__cdu-label">Centenas</span>
+              </div>
+              <span className="n999__cdu-sep">·</span>
+              <div className="n999__cdu-col">
+                <span className="n999__cdu-val">{current.decenas}</span>
+                <span className="n999__cdu-label">Decenas</span>
+              </div>
+              <span className="n999__cdu-sep">·</span>
+              <div className="n999__cdu-col">
+                <span className="n999__cdu-val">{current.unidades}</span>
+                <span className="n999__cdu-label">Unidades</span>
+              </div>
             </div>
-            <span className="n999__cdu-sep">·</span>
-            <div className="n999__cdu-col">
-              <span className="n999__cdu-val">{current.decenas}</span>
-              <span className="n999__cdu-label">Decenas</span>
-            </div>
-            <span className="n999__cdu-sep">·</span>
-            <div className="n999__cdu-col">
-              <span className="n999__cdu-val">{current.unidades}</span>
-              <span className="n999__cdu-label">Unidades</span>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="n999__options">
           {current.options.map((opt) => {
