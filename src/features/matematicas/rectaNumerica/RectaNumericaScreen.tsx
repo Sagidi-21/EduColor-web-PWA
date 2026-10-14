@@ -3,6 +3,7 @@ import { generateSession } from "../../../core/activities/rectaNumerica";
 import { playFeedback } from "../../shared/audioFeedback";
 import type { EngineScreenProps } from "../engine-screens";
 import { ActivityHeader } from "../components/ActivityHeader";
+import { ActionButtons } from "../components/ActivityActionButtons";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import "./RectaNumericaScreen.css";
 
@@ -11,15 +12,19 @@ type Feedback = "none" | "ok" | "try";
 const X0 = 60,
   X1 = 940,
   W = X1 - X0,
-  LINE_Y = 220;
+  /** Recta más arriba que el layout original, con margen inferior para los botones. */
+  LINE_Y = 175,
+  SVG_H = 270;
+/** Recuadro claramente por encima de la recta (mismo offset relativo que acordamos). */
 const HOME_X = 500,
-  HOME_Y = 80;
+  HOME_Y = LINE_Y - 104;
+const CARD_PLACED_Y = LINE_Y - 104;
 
 function toSvg(clientX: number, clientY: number, svg: SVGSVGElement) {
   const r = svg.getBoundingClientRect();
   return {
     x: ((clientX - r.left) / r.width) * 1000,
-    y: ((clientY - r.top) / r.height) * 340,
+    y: ((clientY - r.top) / r.height) * SVG_H,
   };
 }
 
@@ -40,6 +45,7 @@ export function RectaNumericaScreen({
     currentIndex: 0,
     correctCount: 0,
     startTime: Date.now(),
+    alreadyFailed: false,
   }));
   const [card, setCard] = useState({ x: HOME_X, y: HOME_Y, placed: false });
   const [feedback, setFeedback] = useState<Feedback>("none");
@@ -67,17 +73,23 @@ export function RectaNumericaScreen({
         duration: Date.now() - session.startTime,
       });
     } else {
-      setSession((s) => ({ ...s, currentIndex: next }));
+      setSession((s) => ({ ...s, currentIndex: next, alreadyFailed: false }));
       setCard({ x: HOME_X, y: HOME_Y, placed: false });
       setFeedback("none");
+      setIsDragging(false);
     }
   }, [session, total]);
 
+  const handleRetry = useCallback(() => {
+    setCard({ x: HOME_X, y: HOME_Y, placed: false });
+    setFeedback("none");
+    setIsDragging(false);
+  }, []);
+
   const onDown = (e: React.PointerEvent) => {
-    if (feedback === "ok") return;
+    if (feedback === "ok" || feedback === "try") return;
     e.preventDefault();
     setIsDragging(true);
-    setFeedback("none");
     (e.target as Element).setPointerCapture?.(e.pointerId);
   };
   const onMove = (e: React.PointerEvent) => {
@@ -85,7 +97,7 @@ export function RectaNumericaScreen({
     const p = toSvg(e.clientX, e.clientY, svgRef.current);
     setCard({
       x: Math.max(X0, Math.min(X1, p.x)),
-      y: Math.max(50, Math.min(LINE_Y - 40, p.y)),
+      y: Math.max(HOME_Y - 20, Math.min(CARD_PLACED_Y, p.y)),
       placed: false,
     });
   };
@@ -93,14 +105,19 @@ export function RectaNumericaScreen({
     if (!isDragging || !current) return;
     setIsDragging(false);
     const v = valueAt(card.x);
-    setCard({ x: xOf(v), y: LINE_Y - 76, placed: true });
+    setCard({ x: xOf(v), y: CARD_PLACED_Y, placed: true });
     if (v === current.target) {
       playFeedback(true);
       setFeedback("ok");
-      setSession((s) => ({ ...s, correctCount: s.correctCount + 1 }));
+      setSession((s) => ({
+        ...s,
+        correctCount: s.alreadyFailed ? s.correctCount : s.correctCount + 1,
+      }));
       setTimeout(handleNext, 1300);
     } else {
+      playFeedback(false);
       setFeedback("try");
+      setSession((s) => ({ ...s, alreadyFailed: true }));
     }
   };
 
@@ -112,6 +129,7 @@ export function RectaNumericaScreen({
       currentIndex: 0,
       correctCount: 0,
       startTime: Date.now(),
+      alreadyFailed: false,
     });
     setCard({ x: HOME_X, y: HOME_Y, placed: false });
     setFeedback("none");
@@ -189,7 +207,7 @@ export function RectaNumericaScreen({
         <svg
           ref={svgRef}
           className="rct__svg"
-          viewBox="0 0 1000 340"
+          viewBox={`0 0 1000 ${SVG_H}`}
           onPointerMove={onMove}
           onPointerUp={onUp}
           onPointerLeave={onUp}
@@ -204,10 +222,6 @@ export function RectaNumericaScreen({
             strokeWidth="4"
             strokeLinecap="round"
           />
-          <polygon
-            points={`${X1},${LINE_Y} ${X1 - 14},${LINE_Y - 8} ${X1 - 14},${LINE_Y + 8}`}
-            fill="#334155"
-          />
           {ticks}
 
           {(isDragging || card.placed) && (
@@ -217,14 +231,14 @@ export function RectaNumericaScreen({
                 y1={LINE_Y - 6}
                 x2={markerX}
                 y2={LINE_Y + 6}
-                stroke={feedback === "try" ? "#dc2626" : "#16a34a"}
+                stroke={feedback === "try" ? "#dc2626" : "var(--color-primary, #2563eb)"}
                 strokeWidth="4"
               />
               <circle
                 cx={markerX}
                 cy={LINE_Y}
                 r={8}
-                fill={feedback === "try" ? "#dc2626" : "#16a34a"}
+                fill={feedback === "try" ? "#dc2626" : "var(--color-primary, #2563eb)"}
               />
             </g>
           )}
@@ -246,8 +260,8 @@ export function RectaNumericaScreen({
               width="88"
               height="68"
               rx="14"
-              fill="var(--color-primary-dark)"
-              stroke="#93c5fd"
+              fill={isDragging ? "var(--color-primary, #2563eb)" : "#fff"}
+              stroke="var(--color-primary, #2563eb)"
               strokeWidth="3"
             />
             <text
@@ -255,7 +269,7 @@ export function RectaNumericaScreen({
               y={card.y + 12}
               fontSize={42}
               fontWeight="900"
-              fill="#fff"
+              fill={isDragging ? "#fff" : "var(--color-primary, #2563eb)"}
               textAnchor="middle"
             >
               {current.target}
@@ -263,9 +277,7 @@ export function RectaNumericaScreen({
           </g>
         </svg>
 
-        {feedback === "try" && (
-          <p className="rct__hint">Casi… arrástralo justo a su marca y suéltalo.</p>
-        )}
+        {feedback === "try" && <ActionButtons onRetry={handleRetry} onNext={handleNext} />}
       </div>
     </div>
   );

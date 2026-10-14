@@ -15,8 +15,8 @@ const X0 = 60;
 const X1 = 940;
 const W = X1 - X0;
 const SVG_W = 1000;
-const SVG_H = 340;
-const LINE_Y = 220;
+const SVG_H = 270;
+const LINE_Y = 175;
 
 /** Coordenada de pantalla que corresponde a un valor de la recta. */
 const xOf = (value: number, max: number) => X0 + (value / max) * W;
@@ -36,7 +36,7 @@ const svgOf = (container: HTMLElement) =>
 /**
  * happy-dom devuelve siempre un `DOMRect` vacío, así que `toSvg` dividiría por
  * cero y el valor caería siempre en el extremo derecho, sin poder acertar nunca.
- * Se devuelve un rectángulo de 1000×340, que es exactamente el espacio de
+ * Se devuelve un rectángulo de 1000×270, que es exactamente el espacio de
  * coordenadas en el que el renderer trabaja, de modo que `clientX` coincide con
  * la coordenada SVG.
  */
@@ -61,7 +61,7 @@ const dragTo = (container: HTMLElement, clientX: number) => {
   expect(card).toBeDefined();
 
   fireEvent.pointerDown(card!);
-  fireEvent.pointerMove(svg, { clientX, clientY: LINE_Y - 76 });
+  fireEvent.pointerMove(svg, { clientX, clientY: LINE_Y - 104 });
   fireEvent.pointerUp(svg);
 };
 
@@ -142,7 +142,7 @@ describe("RectaNumericaScreen smoke", () => {
     }
   });
 
-  it("soltar en otro sitio avisa con la pista y no avanza", () => {
+  it("soltar en otro sitio muestra Reintentar/Siguiente y no avanza", () => {
     const seed = 4242;
     const ex = session("medium", seed)[0];
     // Un valor claramente distinto del objetivo.
@@ -155,9 +155,9 @@ describe("RectaNumericaScreen smoke", () => {
       dragTo(container, xOf(other, ex.max));
 
       expect(container.querySelector(".rct__celebration")).toBeNull();
-      expect(container.querySelector(".rct__hint")?.textContent).toContain("arrástralo");
-      // Este renderer no ofrece reintentar: se puede volver a intentarlo.
-      expect(container.querySelector(".activity-action--retry")).toBeNull();
+      expect(container.querySelector(".rct__hint")).toBeNull();
+      expect(container.querySelector(".activity-action--retry")).not.toBeNull();
+      expect(container.querySelector(".activity-action--next")).not.toBeNull();
       expect(container.querySelector(".activity-header__counter")?.textContent).toBe("1 / 10");
     } finally {
       restore();
@@ -173,8 +173,9 @@ describe("RectaNumericaScreen smoke", () => {
     try {
       const { container } = render(<RectaNumericaScreen {...buildProps("medium", seed)} />);
       dragTo(container, xOf(other, ex.max));
-      expect(container.querySelector(".rct__hint")).not.toBeNull();
+      expect(container.querySelector(".activity-action--retry")).not.toBeNull();
 
+      fireEvent.click(container.querySelector(".activity-action--retry")!);
       dragTo(container, xOf(ex.target, ex.max));
       expect(container.querySelector(".rct__celebration")).not.toBeNull();
     } finally {

@@ -12,30 +12,39 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  padding: 1.5rem;
+  justify-content: flex-start;
+  gap: 1.25rem;
+  padding: 1rem 1.5rem 1.5rem;
   position: relative;
   flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .rct__instruction {
-  font-size: 1.4rem;
+  font-size: 2.7rem;
   font-weight: 800;
   color: #1e293b;
   text-align: center;
   margin: 0;
 }
 .rct__target {
-  color: #d97706;
+  color: var(--color-primary, #2563eb);
   font-size: 1.5em;
 }
 
 .rct__svg {
   width: min(94vw, 1100px);
   height: auto;
+  max-height: min(48vh, 380px);
+  flex: 0 1 auto;
   user-select: none;
   -webkit-user-select: none;
+}
+
+.rct__stage .activity-actions {
+  flex-shrink: 0;
+  margin-top: 0.25rem;
 }
 
 .rct__celebration {
@@ -44,11 +53,4 @@
   font-size: 2rem;
   font-weight: 900;
   color: #10b981;
-}
-
-.rct__hint {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #dc2626;
-  margin: 0;
 }
