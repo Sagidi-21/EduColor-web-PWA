@@ -98,8 +98,10 @@ export interface WeekDaySheetExercise {
   question: string;
   /** Opciones MC (días) como en pizarra. */
   choiceLabels?: string[];
-  /** Día mencionado en el enunciado: se resalta en la tira L-M-X-J-V-S-D. */
+  /** Día mencionado en el enunciado: se resalta en la tira L-M-X-J-V-S-D (easy/medium). */
   highlightDay?: string;
+  /** Tira de días: false en expert (solo enunciado + opciones). Por defecto true. */
+  showStrip?: boolean;
   answer?: string;
 }
 

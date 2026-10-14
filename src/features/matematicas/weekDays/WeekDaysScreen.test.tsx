@@ -94,6 +94,21 @@ describe("WeekDaysScreen smoke", () => {
     expect(optionButtons(container).every((b) => !b.disabled)).toBe(true);
   });
 
+  it("hard muestra la tira sin marcar ningún día", () => {
+    const { container } = render(<WeekDaysScreen {...props("hard", 4242)} />);
+
+    expect(container.querySelector(".wd__strip")).not.toBeNull();
+    expect(container.querySelector(".wd__strip-day--active")).toBeNull();
+  });
+
+  it("expert oculta la tira y deja solo enunciado y opciones", () => {
+    const { container } = render(<WeekDaysScreen {...props("expert", 4242)} />);
+
+    expect(container.querySelector(".wd__strip")).toBeNull();
+    expect(container.querySelector(".wd__question")).not.toBeNull();
+    expect(optionButtons(container).length).toBeGreaterThan(0);
+  });
+
   it("no monta Numpad ni DigitCell: son actividades de opción", () => {
     const { container } = render(<WeekDaysScreen {...props("expert", 4242)} />);
 

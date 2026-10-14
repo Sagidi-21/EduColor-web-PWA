@@ -1376,14 +1376,20 @@ const WEEK_DAY_NAMES = [
   "domingo",
 ] as const;
 
-function mapWeekDay(ex: Record<string, unknown>): SheetExercise {
+function mapWeekDay(ex: Record<string, unknown>, config: SheetConfig): SheetExercise {
   const question = questionOf(ex);
   const choiceLabels = asStringArray(ex.options);
+  // Alineado con pizarra: easy/medium resaltan; hard tira sin marca; expert sin tira.
+  const highlightDay =
+    config.difficulty === "easy" || config.difficulty === "medium"
+      ? WEEK_DAY_NAMES.find((d) => question.includes(d))
+      : undefined;
   return {
     kind: "weekDay",
     question,
     choiceLabels: choiceLabels.length > 0 ? choiceLabels : undefined,
-    highlightDay: WEEK_DAY_NAMES.find((d) => question.includes(d)),
+    highlightDay,
+    showStrip: config.difficulty !== "expert",
     answer: asString(ex.answer) || undefined,
   };
 }
@@ -1861,7 +1867,7 @@ export function mapSessionToSheet(
     case "numeracion1119":
       return mapNumeracion1119(ex, config);
     case "weekDays":
-      return mapWeekDay(ex);
+      return mapWeekDay(ex, config);
     case "capacidad":
       return mapCapacidad(ex);
     case "ordinales":

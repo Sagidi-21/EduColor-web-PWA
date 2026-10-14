@@ -142,7 +142,12 @@ export function WeekDaysScreen({
 
   if (!current) return null;
 
-  const dayMentioned = DAYS.find((d) => current.question.includes(d));
+  // easy/medium: resaltan el día del enunciado; hard: tira sin marca; expert: sin tira
+  const dayMentioned =
+    difficulty === "easy" || difficulty === "medium"
+      ? DAYS.find((d) => current.question.includes(d))
+      : undefined;
+  const showStrip = difficulty !== "expert";
 
   const stageClass =
     session.answerState === "correct"
@@ -167,7 +172,7 @@ export function WeekDaysScreen({
       <div className={`wd__stage ${stageClass}`}>
         {session.answerState === "correct" && <div className="wd__celebration">¡Muy bien! ⭐</div>}
         <p className="wd__question">{current.question}</p>
-        <WeekStrip highlight={dayMentioned} />
+        {showStrip && <WeekStrip highlight={dayMentioned} />}
       </div>
 
       <footer className="wd__footer">

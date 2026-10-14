@@ -32,7 +32,8 @@ function questionWithHighlight(question: string, highlightDay?: string): JSX.Ele
 }
 
 /**
- * Alumno: pregunta + tira L-M-X-J-V-S-D (día del enunciado resaltado) + • opciones.
+ * Alumno: pregunta + tira L-M-X-J-V-S-D (resaltado en easy/medium; sin marca en hard;
+ * sin tira en expert) + • opciones.
  * Soluciones: las maneja ExerciseRenderer (solo la respuesta).
  */
 export function WeekDaysRenderer({ ex, showAnswer }: WeekDaysRendererProps): JSX.Element {
@@ -41,6 +42,7 @@ export function WeekDaysRenderer({ ex, showAnswer }: WeekDaysRendererProps): JSX
   }
 
   const choices = ex.choiceLabels ?? [];
+  const showStrip = ex.showStrip !== false;
 
   return (
     <div className="ficha-weekdays">
@@ -50,16 +52,18 @@ export function WeekDaysRenderer({ ex, showAnswer }: WeekDaysRendererProps): JSX
           <span className="ficha-weekdays__hint"> (redondea la correcta)</span>
         )}
       </p>
-      <div className="ficha-weekdays__strip" aria-label="Días de la semana">
-        {WEEK_STRIP.map(({ day, abbr }) => (
-          <span
-            key={day}
-            className={`ficha-weekdays__day${ex.highlightDay === day ? " ficha-weekdays__day--active" : ""}`}
-          >
-            {abbr}
-          </span>
-        ))}
-      </div>
+      {showStrip && (
+        <div className="ficha-weekdays__strip" aria-label="Días de la semana">
+          {WEEK_STRIP.map(({ day, abbr }) => (
+            <span
+              key={day}
+              className={`ficha-weekdays__day${ex.highlightDay === day ? " ficha-weekdays__day--active" : ""}`}
+            >
+              {abbr}
+            </span>
+          ))}
+        </div>
+      )}
       {choices.length > 0 && (
         <div className="ficha-weekdays__choices">
           {choices.map((label, i) => (

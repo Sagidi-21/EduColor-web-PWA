@@ -471,21 +471,27 @@ describe("mapSessionToSheet", () => {
   });
 
   it("mapea weekDays con opciones y día resaltado", () => {
-    const ex = mapSessionToSheet(
-      "weekDays",
-      {
-        question: "¿Qué día va después del martes?",
-        options: ["lunes", "miércoles", "jueves", "domingo"],
-        answer: "miércoles",
-      },
-      config,
-    );
+    const raw = {
+      question: "¿Qué día va después del martes?",
+      options: ["lunes", "miércoles", "jueves", "domingo"],
+      answer: "miércoles",
+    };
+    const ex = mapSessionToSheet("weekDays", raw, config);
     expect(ex).toMatchObject({
       kind: "weekDay",
       highlightDay: "martes",
+      showStrip: true,
       choiceLabels: ["lunes", "miércoles", "jueves", "domingo"],
       answer: "miércoles",
     });
+
+    const hard = mapSessionToSheet("weekDays", raw, { ...config, difficulty: "hard" });
+    expect(hard).toMatchObject({ kind: "weekDay", showStrip: true });
+    if (hard.kind === "weekDay") expect(hard.highlightDay).toBeUndefined();
+
+    const expert = mapSessionToSheet("weekDays", raw, { ...config, difficulty: "expert" });
+    expect(expert).toMatchObject({ kind: "weekDay", showStrip: false });
+    if (expert.kind === "weekDay") expect(expert.highlightDay).toBeUndefined();
   });
 
   it("mapea vecinosNumero con vía, pregunta y opciones", () => {
