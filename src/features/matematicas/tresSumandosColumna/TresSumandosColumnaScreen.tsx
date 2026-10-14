@@ -301,7 +301,13 @@ export function TresSumandosColumnaScreen({
         <InputModeToggle mode={mode} onToggle={toggle} />
       </ActivityHeader>
 
-      <div className={mode === "numpad" ? "tsc__body tsc__body--with-numpad" : "tsc__body"}>
+      <div
+        className={
+          mode === "numpad"
+            ? "tsc__body tsc__body--with-numpad"
+            : "tsc__body tsc__body--with-canvas"
+        }
+      >
         <div className={`tsc__stage ${stageClass}`}>
           {session.answerState === "correct" && (
             <div className="tsc__celebration">¡Muy bien! ⭐</div>

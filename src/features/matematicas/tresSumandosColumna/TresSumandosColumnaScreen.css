@@ -1,10 +1,11 @@
-/* ─── Contenedor principal ─────────────────────────────────────────── */
+/* Paridad visual con AlgoritmoColumnaScreen; tamaños algo menores (3 sumandos). */
+
 .tsc {
   display: flex;
   flex-direction: column;
   height: 100%;
   background: var(--color-bg, #f4f7fb);
-  font-family: var(--font-base, "Nunito", sans-serif);
+  font-family: "Segoe UI", system-ui, sans-serif;
 }
 
 .tsc__body {
@@ -22,10 +23,124 @@
 
 .tsc__body--with-numpad {
   justify-content: flex-start;
-  padding-top: 2rem;
+  padding-top: 1.25rem;
 }
 
-/* ─── Numpad lateral en pantallas grandes (patrón estándar) ─────────── */
+/* Numpad: operación grande pero cabiendo con 3 filas de sumandos */
+.tsc__body--with-numpad .tsc__grid {
+  grid-template-columns: 4rem 8rem 8rem;
+  row-gap: 0.45rem;
+}
+
+.tsc__body--with-numpad .tsc__digit,
+.tsc__body--with-numpad .tsc__op {
+  font-size: 4.25rem;
+  line-height: 1;
+  min-width: 3.5rem;
+}
+
+.tsc__body--with-numpad .tsc__col-label {
+  font-size: 1rem;
+}
+
+.tsc__body--with-numpad .tsc__separator {
+  height: 4px;
+  margin: 0.3rem 0;
+}
+
+.tsc__body--with-numpad .tsc__box {
+  width: 8rem;
+  height: 8rem;
+  font-size: 4.25rem;
+  border-radius: 1rem;
+  border-width: 4px;
+}
+
+/* Canvas: fondo blanco completo */
+.tsc:has(.tsc__body--with-canvas) {
+  background: #fff;
+}
+
+.tsc__body--with-canvas {
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 1.25rem 1.25rem;
+  background: #fff;
+  width: 100%;
+}
+
+.tsc__body--with-canvas .tsc__stage {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  background: #fff;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0.75rem 1.5rem;
+  justify-content: center;
+}
+
+.tsc__body--with-canvas .tsc__stage--correct {
+  background: #efffef;
+}
+
+.tsc__body--with-canvas .tsc__stage--wrong {
+  background: #fff4f4;
+}
+
+.tsc__body--with-canvas .tsc__grid {
+  grid-template-columns: 3rem 8.5rem 8.5rem;
+  column-gap: 0.6rem;
+  row-gap: 0.4rem;
+}
+
+.tsc__body--with-canvas .tsc__digit,
+.tsc__body--with-canvas .tsc__op {
+  font-size: clamp(36px, 4.5vw, 60px);
+  line-height: 1;
+  min-width: 2.5rem;
+}
+
+.tsc__body--with-canvas .tsc__col-label {
+  font-size: 0.95rem;
+}
+
+.tsc__body--with-canvas .tsc__separator {
+  height: 3px;
+  margin: 0.25rem 0;
+}
+
+.tsc__body--with-canvas .tsc__box {
+  width: clamp(4.25rem, 7.5vw, 6rem);
+  height: clamp(4.25rem, 7.5vw, 6rem);
+  font-size: clamp(32px, 4.5vw, 52px);
+  border-radius: 0.85rem;
+  border-width: 3px;
+}
+
+.tsc__body--with-canvas .dab {
+  min-width: clamp(80px, 10vw, 128px);
+  border-width: 3px;
+  border-radius: 14px;
+  gap: 6px;
+}
+
+.tsc__body--with-canvas .dab__canvas {
+  width: clamp(80px, 10vw, 128px);
+  height: clamp(80px, 10vw, 128px);
+}
+
+.tsc__body--with-canvas .dab__digit {
+  font-size: clamp(28px, 4vw, 48px);
+}
+
+.tsc__body--with-canvas .tsc__footer {
+  width: 100%;
+  padding: 0.5rem 0 0.25rem;
+}
+
+/* ─── Numpad lateral en pantallas grandes ───────────────────────────── */
 @media (min-width: 1500px) {
   .tsc__body--with-numpad {
     flex-direction: row;
@@ -46,6 +161,7 @@
     border-left: 2px solid #e2e8f0;
     padding: 20px;
     overflow-y: auto;
+    justify-content: center;
   }
 
   .tsc__body--with-numpad .tsc__footer .shared-numpad {
@@ -84,10 +200,10 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--color-success, #22c55e);
-  animation: pop 0.3s ease;
+  animation: tsc-pop 0.3s ease;
 }
 
-@keyframes pop {
+@keyframes tsc-pop {
   0% {
     transform: scale(0.8);
     opacity: 0;
@@ -98,17 +214,17 @@
   }
 }
 
-/* ─── Cuadrícula D/U con 3 sumandos ─────────────────────────────────── */
+/* ─── Cuadrícula D/U ────────────────────────────────────────────────── */
 .tsc__grid {
   display: grid;
-  grid-template-columns: 3rem 4rem 4rem;
-  row-gap: 0.4rem;
+  grid-template-columns: 3.5rem 5rem 5rem;
+  row-gap: 0.45rem;
   align-items: center;
   justify-items: center;
 }
 
 .tsc__col-label {
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
@@ -116,18 +232,18 @@
 }
 
 .tsc__digit {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 900;
+  color: var(--color-primary, #2563eb);
   line-height: 1;
   min-width: 2.5rem;
   text-align: center;
 }
 
 .tsc__op {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #64748b;
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 900;
+  color: var(--color-primary, #2563eb);
   justify-self: end;
   padding-right: 0.4rem;
 }
@@ -138,21 +254,21 @@
   height: 3px;
   background: #1e293b;
   border-radius: 2px;
-  margin: 0.3rem 0;
+  margin: 0.25rem 0;
 }
 
 /* ─── Cajas de respuesta ─────────────────────────────────────────────── */
 .tsc__box {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 4.5rem;
+  height: 4.5rem;
   border: 3px solid #cbd5e1;
-  border-radius: 0.6rem;
+  border-radius: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-size: clamp(32px, 4.5vw, 48px);
+  font-weight: 900;
+  color: var(--color-primary, #2563eb);
   cursor: pointer;
   background: #f8fafc;
   transition:
@@ -162,9 +278,9 @@
 }
 
 .tsc__box--active {
-  border-color: var(--color-primary, #6366f1);
-  background: #eef2ff;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  border-color: var(--color-primary, #2563eb);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 12%, #fff);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #2563eb) 25%, transparent);
 }
 
 .tsc__box--correct {
@@ -180,11 +296,11 @@
 }
 
 .tsc__cursor {
-  color: var(--color-primary, #6366f1);
-  animation: blink 1s step-end infinite;
+  color: var(--color-primary, #2563eb);
+  animation: tsc-blink 1s step-end infinite;
 }
 
-@keyframes blink {
+@keyframes tsc-blink {
   50% {
     opacity: 0;
   }
