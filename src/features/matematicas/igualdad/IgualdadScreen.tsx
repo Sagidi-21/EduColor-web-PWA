@@ -13,7 +13,11 @@ import "./IgualdadScreen.css";
 type AnswerState = "idle" | "correct" | "wrong";
 
 function formula(ex: IgualdadExercise, answerState: AnswerState) {
-  const blank = <span className="igl__blank">___</span>;
+  const blank = (
+    <span className="igl__blank" aria-label="Espacio en blanco">
+      ___
+    </span>
+  );
   const eq = <span className="igl__eq">=</span>;
   const num = (n: number) => <span className="igl__num">{n}</span>;
   const op = <span className="igl__op">+</span>;

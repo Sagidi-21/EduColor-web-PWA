@@ -135,7 +135,7 @@
 .igl__num {
   font-size: 72px;
   font-weight: 900;
-  color: #1e293b;
+  color: var(--color-primary, #2563eb);
   min-width: 60px;
   text-align: center;
 }
@@ -143,20 +143,24 @@
 .igl__op {
   font-size: 56px;
   font-weight: 700;
-  color: #7c3aed;
+  color: var(--color-primary, #2563eb);
 }
 
 .igl__eq {
   font-size: 56px;
   font-weight: 700;
-  color: var(--color-primary-dark);
+  color: var(--color-primary, #2563eb);
 }
 
 .igl__blank {
+  display: inline-block;
   font-size: 56px;
   font-weight: 900;
-  color: #bfdbfe;
   letter-spacing: 4px;
+  color: transparent;
+  border-bottom: 4px dashed #000;
+  line-height: 1;
+  vertical-align: text-bottom;
 }
 
 .igl__hint {
@@ -183,7 +187,7 @@
 .igl__img-sep {
   font-size: 28px;
   font-weight: 700;
-  color: #7c3aed;
+  color: var(--color-primary, #2563eb);
   margin: 0 8px;
 }
 
@@ -208,16 +212,17 @@
   border-radius: 16px;
   border: 3px solid #e2e8f0;
   background: #fff;
-  font-size: 28px;
+  font-size: 48px; /* ≥ 24px */
   font-weight: 800;
-  color: #1e293b;
+  color: var(--color-primary, #2563eb);
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .igl__option:hover:not(:disabled) {
-  border-color: #7c3aed;
-  background: #f5f3ff;
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
   transform: translateY(-2px);
 }
 
