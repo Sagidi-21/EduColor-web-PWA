@@ -1,20 +1,25 @@
+/* Posiciones en el aula — layout 50/50; tamaños en rem/% (body zoom 1.5). */
+
 .pos {
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 100%;
+  min-height: 0;
   background: var(--color-bg);
   font-family: var(--font-family-base);
+  overflow: hidden;
 }
 
 .pos__stage {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  min-height: 0;
+  position: relative;
   transition: background-color 0.2s ease;
 }
 
@@ -28,14 +33,15 @@
 
 .pos__cheer {
   position: absolute;
-  top: var(--spacing-md);
+  top: 0.75rem;
   left: 50%;
   transform: translateX(-50%);
-  font-size: var(--font-size-xl);
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--color-success);
   animation: pos__pop 0.3s ease-out;
   z-index: 10;
+  white-space: nowrap;
 }
 
 @keyframes pos__pop {
@@ -49,49 +55,78 @@
   }
 }
 
+/* Mitad izquierda: dibujo · Mitad derecha: pregunta + opciones */
 .pos__card {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: 1.5rem;
   width: 100%;
-  max-width: 500px;
+  max-width: 100%;
+  flex: 1;
+  min-height: 0;
+  box-sizing: border-box;
 }
 
 .pos__scene-area {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
 }
 
 .pos__svg {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 340 / 300;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
 }
 
+.pos__qa {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 8rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
 .pos__question {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
+  font-size: 2.5rem; /* 28px */
+  line-height: 1.35;
+  font-weight: 700;
   color: var(--color-text);
   text-align: center;
-  max-width: 90%;
-  margin: var(--spacing-sm) 0 var(--spacing-md);
+  margin: 0;
+  max-width: 100%;
+  text-wrap: balance;
 }
 
 .pos__opts {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--spacing-sm);
+  gap: 5rem;
+  width: 100%;
   max-width: 100%;
 }
 
 .pos__opt {
-  flex: 1 1 calc(50% - var(--spacing-sm));
-  min-width: 140px;
-  max-width: 180px;
-  padding: var(--spacing-md) var(--spacing-lg);
-  font-size: var(--font-size-md);
-  font-weight: 500;
+  flex: 1 1 calc(50% - 0.75rem);
+  min-width: 8rem;
+  max-width: 12rem;
+  padding: 0.85rem 1.1rem;
+  font-size: 2.25rem; /* 28px */
+  line-height: 1.25;
+  font-weight: 600;
   color: var(--color-text);
   background: var(--color-surface);
   border: 2px solid var(--color-border);
@@ -100,6 +135,7 @@
   transition:
     background-color 0.15s ease,
     border-color 0.15s ease,
+    color 0.15s ease,
     transform 0.1s ease,
     box-shadow 0.15s ease;
   text-align: center;
@@ -108,6 +144,7 @@
 .pos__opt:hover:not(:disabled) {
   background: var(--color-bg-hover);
   border-color: var(--color-primary);
+  color: var(--color-primary);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
@@ -168,29 +205,44 @@
 }
 
 .pos__wrong-feedback {
-  margin-top: var(--spacing-lg);
+  margin-top: 0.5rem;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: 0.75rem;
   color: var(--color-error);
   font-weight: 600;
+  font-size: 1.25rem;
 }
 
 .pos__wrong-feedback .actions {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 0.5rem;
 }
 
-/* Responsive: en móvil los botones a ancho completo */
-@media (max-width: 480px) {
+/* Pantallas estrechas: apilar sin vw/vh internos */
+@media (max-width: 40rem) {
+  .pos__card {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 1rem;
+  }
+
+  .pos__scene-area {
+    max-height: 45%;
+  }
+
+  .pos__qa {
+    gap: 1.5rem;
+  }
+
   .pos__opt {
     flex: 1 1 100%;
     max-width: none;
   }
 }
 
-/* Accesibilidad: reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .pos__cheer,
   .pos__opt--correct,

@@ -97,18 +97,20 @@
   border: 3px solid #e2e8f0;
   border-radius: 16px;
   background: #f8faff;
-  color: var(--color-primary-dark, #1e3a8a);
+  color: var(--color-text, #1e293b);
   cursor: pointer;
   transition:
     background 0.15s,
     border-color 0.15s,
+    color 0.15s,
     transform 0.15s;
   user-select: none;
   text-transform: capitalize;
 }
 .shp__option:hover:not(:disabled) {
-  background: #dbeafe;
-  border-color: var(--color-primary, #3b82f6);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
   transform: scale(1.04);
 }
 .shp__option:disabled {

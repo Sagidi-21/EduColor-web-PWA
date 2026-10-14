@@ -326,40 +326,41 @@ export default function PosicionesAulaScreen({
         <div className="pos__card">
           <div className="pos__scene-area">
             <svg
-              width={340}
-              height={300}
               viewBox="0 0 340 300"
               className="pos__svg"
               data-testid="posiciones-aula-svg"
+              aria-hidden="true"
             >
               <ContainerSVG type={current.container} />
               <ObjectSVG type={current.object} cx={oPos.cx} cy={oPos.cy} />
             </svg>
           </div>
 
-          <p className="pos__question">{current.question}</p>
+          <div className="pos__qa">
+            <p className="pos__question">{current.question}</p>
 
-          <div className="pos__opts">
-            {current.options.map((opt) => {
-              let cls = "pos__opt";
-              if (
-                session.answerState !== "idle" &&
-                opt.toLowerCase() === current.correctAnswer.toLowerCase()
-              )
-                cls += " pos__opt--correct";
-              else if (session.answerState === "wrong" && opt === session.selected)
-                cls += " pos__opt--wrong";
-              return (
-                <button
-                  key={opt}
-                  className={cls}
-                  onClick={() => handleAnswer(opt)}
-                  disabled={session.answerState !== "idle"}
-                >
-                  {opt}
-                </button>
-              );
-            })}
+            <div className="pos__opts">
+              {current.options.map((opt) => {
+                let cls = "pos__opt";
+                if (
+                  session.answerState !== "idle" &&
+                  opt.toLowerCase() === current.correctAnswer.toLowerCase()
+                )
+                  cls += " pos__opt--correct";
+                else if (session.answerState === "wrong" && opt === session.selected)
+                  cls += " pos__opt--wrong";
+                return (
+                  <button
+                    key={opt}
+                    className={cls}
+                    onClick={() => handleAnswer(opt)}
+                    disabled={session.answerState !== "idle"}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 

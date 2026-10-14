@@ -55,19 +55,20 @@
 }
 
 .shared-numpad__key--confirm {
+  background: #fff;
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+}
+
+.shared-numpad__key--confirm:hover:not(:disabled) {
   background: var(--color-primary, #2563eb);
   border-color: var(--color-primary, #2563eb);
   color: #fff;
 }
 
-.shared-numpad__key--confirm:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-primary, #2563eb) 85%, #000);
-  border-color: color-mix(in srgb, var(--color-primary, #2563eb) 85%, #000);
-}
-
 .shared-numpad__key--del {
-  background: #fef2f2;
-  border-color: #ef4444;
+  background: #fff;
+  border-color: #dc2626;
   border-width: 3px;
   color: #b91c1c;
   padding: 0;
@@ -86,7 +87,7 @@
 }
 
 .shared-numpad__key--del:hover:not(:disabled) {
-  background: #fee2e2;
-  border-color: #dc2626;
-  color: #991b1b;
+  background: #dc2626;
+  border-color: #b91c1c;
+  color: #fff;
 }
