@@ -175,11 +175,30 @@ export function Numeracion1119Screen({
       : session.answerState === "wrong"
         ? "ops__stage--wrong"
         : "";
+  const showCanvasPanel = !isMultiChoice && mode === "canvas";
   const bodyClass = isMultiChoice
     ? "ops__body"
     : mode === "numpad"
       ? "ops__body ops__body--with-numpad"
-      : "ops__body";
+      : showCanvasPanel
+        ? "ops__body ops__body--with-canvas"
+        : "ops__body";
+
+  const digitBoxes = (
+    <DigitBoxes
+      length={casillas}
+      values={boxes.values}
+      activeIndex={boxes.activeIndex}
+      order="ltr"
+      state={session.answerState}
+      mode={mode}
+      onSelect={boxes.onSelect}
+      onDigit={boxes.onDigit}
+      onDelete={boxes.onDelete}
+      canvasKey={canvasKey}
+      correctText={String(current.answer)}
+    />
+  );
 
   return (
     <div className="ops">
@@ -204,26 +223,13 @@ export function Numeracion1119Screen({
           <TensBlock number={current.number} />
           <div className="num__question">{current.question}</div>
 
-          {!isMultiChoice && (
-            <div className="ops__formula">
-              <DigitBoxes
-                length={casillas}
-                values={boxes.values}
-                activeIndex={boxes.activeIndex}
-                order="ltr"
-                state={session.answerState}
-                mode={mode}
-                onSelect={boxes.onSelect}
-                onDigit={boxes.onDigit}
-                onDelete={boxes.onDelete}
-                canvasKey={canvasKey}
-                correctText={String(current.answer)}
-              />
-            </div>
-          )}
+          {!isMultiChoice && !showCanvasPanel && <div className="ops__formula">{digitBoxes}</div>}
         </div>
 
-        {(isMultiChoice || mode === "numpad" || session.answerState === "wrong") && (
+        {(isMultiChoice ||
+          mode === "numpad" ||
+          showCanvasPanel ||
+          session.answerState === "wrong") && (
           <footer className="ops__footer">
             {isMultiChoice ? (
               <div className="num__options">
@@ -258,6 +264,7 @@ export function Numeracion1119Screen({
                     disabled={session.answerState !== "idle"}
                   />
                 )}
+                {showCanvasPanel && <div className="ops__formula">{digitBoxes}</div>}
                 {session.answerState === "wrong" && (
                   <ActionButtons onRetry={handleRetry} onNext={handleNext} />
                 )}

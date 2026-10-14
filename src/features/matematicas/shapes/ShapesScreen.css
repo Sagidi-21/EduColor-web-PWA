@@ -94,10 +94,10 @@
   padding: 12px 20px;
   font-size: clamp(20px, 2.8vw, 32px);
   font-weight: 800;
-  border: 3px solid #e2e8f0;
+  border: 3px solid #000;
   border-radius: 16px;
-  background: #f8faff;
-  color: var(--color-text, #1e293b);
+  background: transparent;
+  color: var(--color-primary, #2563eb);
   cursor: pointer;
   transition:
     background 0.15s,

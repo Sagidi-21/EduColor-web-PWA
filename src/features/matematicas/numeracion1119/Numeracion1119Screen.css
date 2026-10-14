@@ -7,8 +7,8 @@
   padding: 8px;
 }
 .num__decena {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   background: var(--color-primary);
   border-radius: 12px;
   color: #fff;
@@ -20,14 +20,14 @@
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 .num__unit-dot {
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   background: #f59e0b;
   border-radius: 50%;
   box-shadow: 0 2px 6px rgba(245, 158, 11, 0.4);
 }
 .num__question {
-  font-size: 22px;
+  font-size: 36px;
   font-weight: 700;
   color: #1e293b;
   text-align: center;
@@ -41,31 +41,94 @@
 }
 .num__option {
   min-width: 90px;
+  min-height: 68px;
   padding: 20px 24px;
   border-radius: 16px;
-  border: 3px solid #e2e8f0;
-  background: #fff;
+  border: 3px solid #000;
+  background: transparent;
   font-size: 32px;
   font-weight: 900;
-  color: #1e293b;
+  color: var(--color-primary, #2563eb);
   cursor: pointer;
-  transition: all 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.15s;
+  user-select: none;
 }
 .num__option:hover:not(:disabled) {
-  border-color: var(--color-primary);
-  background: #eff6ff;
-  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+  transform: scale(1.04);
 }
 .num__option:disabled {
   cursor: not-allowed;
 }
 .num__option--correct {
-  border-color: #16a34a;
-  background: #f0fdf4;
+  border-color: #16a34a !important;
+  background: #f0fdf4 !important;
   color: #15803d;
 }
 .num__option--wrong {
-  border-color: #dc2626;
-  background: #fff1f2;
+  border-color: #dc2626 !important;
+  background: #fff1f2 !important;
   color: #dc2626;
+}
+
+/* Canvas: misma disposición que el numpad, pero 50/50 */
+.ops__body--with-canvas {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.ops__body--with-canvas .ops__stage {
+  flex: 1 1 50%;
+  min-width: 0;
+}
+
+.ops__body--with-canvas .ops__footer {
+  flex: 1 1 50%;
+  width: auto;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  border-top: 0;
+  border-left: 2px solid #e2e8f0;
+  padding: 20px;
+  gap: 18px;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.ops__body--with-canvas .ops__footer .ops__formula {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.ops__body--with-canvas .ops__footer .ops__answer-boxes {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.ops__body--with-canvas .ops__footer .dab {
+  min-width: min(100%, 280px);
+  width: min(100%, 320px);
+}
+
+.ops__body--with-canvas .ops__footer .dab__canvas {
+  width: min(100%, 260px);
+  height: min(100%, 260px);
+  aspect-ratio: 1;
+}
+
+.ops__body--with-canvas .ops__footer .activity-actions {
+  width: 100%;
+  padding: 0;
+  gap: 10px;
 }

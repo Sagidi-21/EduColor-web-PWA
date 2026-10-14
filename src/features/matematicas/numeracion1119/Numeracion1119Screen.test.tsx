@@ -254,16 +254,17 @@ describe("Numeracion1119Screen smoke", () => {
     expect(container.querySelector(".activity-action--retry")).toBeNull();
   });
 
-  it("al cambiar a modo escritura se monta el DigitCell y desaparece el Numpad", () => {
+  it("al cambiar a modo escritura se monta el DigitCell a media pantalla y desaparece el Numpad", () => {
     const seed = 4242;
 
     const { container } = render(<Numeracion1119Screen {...buildProps("medium", seed)} />);
     switchToCanvas(container);
 
     expect(container.querySelector(".shared-numpad")).toBeNull();
-    // El DigitCell va con React.lazy: el fallback demuestra que se pidió sin
-    // necesidad de cargar el reconocedor.
-    expect(container.querySelector(".dab--loading")).not.toBeNull();
+    expect(container.querySelector(".ops__body--with-canvas")).not.toBeNull();
+    // El DigitCell va en el panel derecho (footer), no en el enunciado.
+    expect(container.querySelector(".ops__footer .dab--loading")).not.toBeNull();
+    expect(container.querySelector(".ops__stage .dab--loading")).toBeNull();
   });
 
   it("acabar la sesión muestra el resumen con el total de aciertos", () => {
