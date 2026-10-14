@@ -213,7 +213,7 @@ export function TresSumandosScreen({
   };
 
   return (
-    <div className="ops">
+    <div className="ops tres">
       <ActivityHeader
         onExit={onExit}
         exitLabel="← Salir"

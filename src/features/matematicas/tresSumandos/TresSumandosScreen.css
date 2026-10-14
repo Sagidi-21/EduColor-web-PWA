@@ -17,7 +17,96 @@
   align-items: center;
 }
 
+/* Operación grande aprovecha la altura del stage; sin scroll */
+.tres .ops__stage {
+  overflow: hidden;
+  justify-content: center;
+  container-type: size;
+  container-name: tres-stage;
+}
+
+.tres .ops__exercise {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  padding-left: clamp(0.5rem, 2vw, 1.5rem);
+  box-sizing: border-box;
+}
+
+.tres .tres__triple-imgs {
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.tres .ops__emoji-row {
+  justify-content: flex-start;
+}
+
 .tres__triple-imgs .ops__emoji-img {
   width: 160px;
   height: 160px;
+}
+
+.tres .ops__vertical {
+  --tres-cell: clamp(96px, 22cqh, 160px);
+  --tres-sym: clamp(52px, 12cqh, 80px);
+  margin-left: auto;
+  margin-right: auto;
+  grid-template-columns: var(--tres-sym) repeat(var(--ncols, 1), var(--tres-cell));
+  column-gap: 8px;
+  max-height: 100%;
+}
+
+.tres .ops__vcell {
+  width: var(--tres-cell);
+  height: var(--tres-cell);
+  font-size: clamp(48px, 14cqh, 100px);
+}
+
+.tres .ops__vcell--sym {
+  width: var(--tres-sym);
+  height: var(--tres-cell);
+  font-size: clamp(40px, 12cqh, 80px);
+}
+
+.tres .ops__vdivider {
+  height: 5px;
+  margin: 8px 0 10px;
+}
+
+.tres .ops__vbox {
+  width: var(--tres-cell);
+  height: var(--tres-cell);
+  font-size: clamp(48px, 14cqh, 100px);
+  border-width: 4px;
+  border-radius: 16px;
+}
+
+.tres .ops__vertical .dab {
+  width: var(--tres-cell);
+}
+
+.tres .ops__vertical .dab__canvas {
+  width: calc(var(--tres-cell) * 0.85);
+  height: calc(var(--tres-cell) * 0.85);
+}
+
+/* Fallback si el navegador no soporta cqh */
+@supports not (height: 1cqh) {
+  .tres .ops__vertical {
+    --tres-cell: clamp(96px, 14vh, 160px);
+    --tres-sym: clamp(52px, 7vh, 80px);
+  }
+
+  .tres .ops__vcell,
+  .tres .ops__vbox {
+    font-size: clamp(48px, 8vh, 100px);
+  }
+
+  .tres .ops__vcell--sym {
+    font-size: clamp(40px, 7vh, 80px);
+  }
 }
