@@ -19,8 +19,9 @@
   border-radius: 20px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
   padding: 20px 28px;
-  max-width: 700px;
+  max-width: 100%;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .prob__emoji {
@@ -36,7 +37,7 @@
 }
 
 .prob__story {
-  font-size: 17px;
+  font-size: 36px;
   font-weight: 600;
   color: #1e293b;
   line-height: 1.5;
@@ -44,14 +45,14 @@
 }
 
 .prob__question {
-  font-size: 17px;
+  font-size: 36px;
   font-weight: 800;
-  color: #6d28d9;
+  color: var(--color-primary, #2563eb);
   line-height: 1.4;
   margin: 0;
 }
 
-/* ── Section blocks (OPERACIÓN / SOLUCIÓN) ─────────────── */
+/* ── Section blocks (OPERACIÓN) ────────────────────────── */
 
 .prob__section-block {
   display: flex;
@@ -69,108 +70,78 @@
   align-self: flex-start;
 }
 
-/* ── Operation row (horizontal a op b = slots) ─────────── */
+/* ── Operation vertical (mismo patrón que suma/resta) ──── */
 
-.prob__op-row {
+.prob__op-vertical {
+  display: grid;
+  grid-template-columns: clamp(40px, 5vw, 64px) repeat(var(--ncols, 1), clamp(80px, 10vw, 130px));
+  row-gap: 0;
+  column-gap: 6px;
+  align-items: center;
+  justify-items: center;
+}
+
+.prob__vcell {
+  width: clamp(80px, 10vw, 130px);
+  height: clamp(68px, 9vw, 110px);
   display: flex;
   align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
   justify-content: center;
-}
-
-.prob__operand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.prob__num-box {
-  font-size: clamp(36px, 5vw, 56px);
+  font-size: clamp(40px, 6vw, 72px);
   font-weight: 900;
-  color: var(--color-primary-dark);
-  background: #fff;
-  border: 3px solid #cbd5e1;
-  border-radius: 16px;
-  padding: 10px 20px;
-  min-width: 80px;
-  text-align: center;
-  line-height: 1.1;
-}
-
-.prob__op-sym {
-  font-size: clamp(32px, 4vw, 48px);
-  font-weight: 900;
-  color: #475569;
+  color: var(--color-primary, #2563eb);
   line-height: 1;
-  flex-shrink: 0;
 }
 
-/* ── Answer slots (1 o 2, con D/U) ─────────────────────── */
-
-.prob__answer-slots {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
+.prob__vcell--sym {
+  width: clamp(40px, 5vw, 64px);
+  font-size: clamp(32px, 5vw, 56px);
+  color: var(--color-primary, #2563eb);
+  height: clamp(68px, 9vw, 110px);
 }
 
-.prob__dab-slot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.prob__du-label {
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  color: #94a3b8;
-  text-transform: uppercase;
-}
-
-/* Override canvas de DigitCell dentro de problemas para mantener compacto */
-.prob__dab-slot .dab__canvas {
-  width: clamp(100px, 14vw, 160px);
-  height: clamp(100px, 14vw, 160px);
-}
-.prob__dab-slot .dab {
-  min-width: clamp(100px, 14vw, 160px);
+.prob__op-divider {
+  grid-column: 1 / -1;
+  justify-self: stretch;
+  height: 5px;
+  background: #111;
+  border-radius: 3px;
+  margin: 6px 0 8px;
 }
 
 .prob__answer-box {
-  font-size: clamp(36px, 5vw, 56px);
+  width: clamp(80px, 10vw, 130px);
+  height: clamp(68px, 9vw, 110px);
+  font-size: clamp(40px, 6vw, 72px);
   font-weight: 900;
-  color: var(--color-primary-dark);
-  min-width: clamp(80px, 12vw, 110px);
+  color: var(--color-primary, #2563eb);
   text-align: center;
-  line-height: 1.1;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #fff;
   border: 3px solid #cbd5e1;
-  border-radius: 16px;
+  border-radius: 14px;
   cursor: pointer;
   transition:
     border-color 0.15s,
     background 0.15s,
     transform 0.08s;
-  height: clamp(72px, 10vw, 100px);
-  padding: 0 16px;
+  box-sizing: border-box;
 }
 
 .prob__answer-box:hover {
-  border-color: #2563eb;
+  border-color: var(--color-primary, #2563eb);
 }
 .prob__answer-box:active {
   transform: scale(0.98);
 }
 
 .prob__answer-box--active {
-  border-color: #2563eb;
-  background: #eff6ff;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  border-color: var(--color-primary, #2563eb);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #2563eb) 15%, transparent);
 }
 
 .prob__answer-box--correct {
@@ -185,31 +156,14 @@
   color: #7f1d1d;
 }
 
-/* ── Solution template ─────────────────────────────────── */
-
-.prob__solution-text {
-  font-size: clamp(18px, 2.4vw, 26px);
-  font-weight: 700;
-  color: #475569;
-  margin: 0;
-  padding: 14px 28px;
-  background: #f8fafc;
-  border: 2px dashed #cbd5e1;
-  border-radius: 14px;
-  letter-spacing: 0.01em;
-  min-width: 260px;
-  max-width: 720px;
-  width: 100%;
-  text-align: center;
-  transition: all 0.3s ease;
+.prob__op-vertical .dab {
+  min-width: 0;
+  width: clamp(80px, 10vw, 130px);
 }
 
-.prob__solution-text--filled {
-  color: #15803d;
-  background: #dcfce7;
-  border-color: #86efac;
-  border-style: solid;
-  font-size: clamp(20px, 2.6vw, 30px);
+.prob__op-vertical .dab__canvas {
+  width: clamp(68px, 9vw, 110px);
+  height: clamp(68px, 9vw, 110px);
 }
 
 /* ── Theme selector (colores por tarjeta) ──────────────── */
@@ -316,6 +270,34 @@
   text-shadow: 0 2px 12px rgba(22, 163, 74, 0.3);
 }
 
+/* ── Split enunciado | operación (50/50 del área útil) ─── */
+
+.prob__split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.prob__split-enunciado,
+.prob__split-op {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.prob__split-op {
+  align-items: center;
+}
+
 /* ── Stage ─────────────────────────────────────────────── */
 
 .prob__stage {
@@ -323,13 +305,13 @@
   min-height: 0;
   min-width: 0;
   position: relative;
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-start;
-  gap: 24px;
-  padding: 24px;
+  gap: 12px;
+  padding: 12px 16px 16px;
   transition: background 0.3s;
 }
 
@@ -341,40 +323,60 @@
   background: linear-gradient(160deg, #fee2e2 0%, #fef2f2 100%);
 }
 
-@media (min-width: 1500px) {
-  .prob__body {
-    flex-direction: row;
-    align-items: stretch;
+/* Numpad a la derecha: el stage (resto) ya va 50/50 por .prob__split */
+.prob__body--numpad {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.prob__body--numpad .prob__stage {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.prob__body--numpad .prob__footer {
+  flex: 0 0 320px;
+  width: 320px;
+  height: 100%;
+  min-height: 0;
+  border-top: 0;
+  border-left: 2px solid #e2e8f0;
+  background: #fff;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.prob__body--numpad .prob__footer .shared-numpad {
+  width: 100%;
+  max-width: 280px;
+}
+
+.prob__body--numpad .prob__footer .shared-numpad__key {
+  width: clamp(56px, 7vw, 76px);
+  height: clamp(52px, 7vw, 68px);
+}
+
+.prob__body--canvas .prob__stage {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .prob__split {
+    grid-template-columns: 1fr;
   }
 
-  .prob__stage {
-    flex: 1 1 auto;
-    min-width: 0;
-    min-height: 0;
-    justify-content: center;
-    overflow-x: hidden;
+  .prob__body--numpad {
+    flex-direction: column;
   }
 
-  .prob__footer {
-    flex: 0 0 320px;
-    width: 320px;
-    height: 100%;
-    min-height: 0;
-    border-top: 0;
-    border-left: 2px solid #e2e8f0;
-    background: #fff;
-    padding: 20px;
-    overflow-y: auto;
-  }
-
-  .prob__footer .shared-numpad {
+  .prob__body--numpad .prob__footer {
+    flex: 0 0 auto;
     width: 100%;
-    max-width: 280px;
-  }
-
-  .prob__footer .shared-numpad__key {
-    width: clamp(56px, 7vw, 76px);
-    height: clamp(52px, 7vw, 68px);
+    height: auto;
+    border-left: 0;
+    border-top: 2px solid #e2e8f0;
   }
 }
 
@@ -403,17 +405,5 @@
   }
   .prob__emoji {
     font-size: 44px;
-  }
-  .prob__op-row {
-    gap: 12px;
-  }
-  .prob__num-box {
-    min-width: 64px;
-    padding: 8px 14px;
-  }
-  .prob__answer-box {
-    min-width: clamp(64px, 14vw, 92px);
-    height: clamp(64px, 12vw, 88px);
-    padding: 0 12px;
   }
 }

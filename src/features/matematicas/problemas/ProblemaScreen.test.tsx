@@ -78,8 +78,7 @@ describe("ProblemaScreen smoke", () => {
   it("TR-3.1: estado inicial sin ejercicios (solo selector visible) y tras startSession genera 10 ejercicios", () => {
     render(<ProblemaScreen {...buildProps(42)} />);
 
-    expect(screen.queryByText("OPERACIÓN")).toBeNull();
-    expect(screen.queryByText("SOLUCIÓN")).toBeNull();
+    expect(screen.queryByText(/¿De qué trata el problema\?/)).not.toBeNull();
 
     const btnDeportes = screen
       .getAllByRole("button")
@@ -87,11 +86,11 @@ describe("ProblemaScreen smoke", () => {
     fireEvent.click(btnDeportes);
 
     expect(screen.queryByText(/¿De qué trata el problema\?/)).toBeNull();
-    expect(screen.queryAllByText("OPERACIÓN").length).toBeGreaterThanOrEqual(1);
-    expect(screen.queryAllByText("SOLUCIÓN").length).toBeGreaterThanOrEqual(1);
+    expect(screen.queryByText("OPERACIÓN")).toBeNull();
+    expect(screen.queryByText("SOLUCIÓN")).toBeNull();
   });
 
-  it("TR-1.2: no existe layout vertical (prob__vertical) en el DOM durante un ejercicio", () => {
+  it("TR-1.2: la operación se muestra en layout vertical por dígitos (como suma/resta)", () => {
     const { container } = render(<ProblemaScreen {...buildProps(42)} />);
 
     const btnDeportes = screen
@@ -99,7 +98,9 @@ describe("ProblemaScreen smoke", () => {
       .find((b) => (b.textContent ?? "").includes("Deportes")) as HTMLButtonElement;
     fireEvent.click(btnDeportes);
 
-    expect(container.querySelector("[class*='prob__vertical']")).toBeNull();
+    expect(container.querySelector(".prob__op-vertical")).not.toBeNull();
+    expect(container.querySelectorAll(".prob__vcell").length).toBeGreaterThan(0);
+    expect(container.querySelector(".prob__op-divider")).not.toBeNull();
   });
 
   it("TR-1.1 (sin 2 dígitos) y flujo numpad correcto: click Deportes → introduce respuesta correcta → score sube", () => {

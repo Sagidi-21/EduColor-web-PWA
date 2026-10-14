@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo, useState } from "react";
+import { useEffect, useCallback, useMemo, useState, type CSSProperties } from "react";
 import { generateSession } from "../../../core/activities/problemas";
 import type { ProblemaExercise, SessionResult, Theme } from "../../../core/activities/problemas";
 import type { EngineScreenProps } from "../engine-screens";
@@ -48,7 +48,12 @@ function sanitizeText(value: string): string {
 }
 
 function slotCount(answer: number): number {
-  return answer >= 10 ? 2 : 1;
+  return String(answer).length;
+}
+
+function padLeft(n: number, cols: number): (string | null)[] {
+  const s = String(n);
+  return [...Array(cols - s.length).fill(null), ...s.split("")];
 }
 
 export function ProblemaScreen({
@@ -84,15 +89,6 @@ export function ProblemaScreen({
 
   const safeStory = useMemo(() => (current ? sanitizeText(current.story) : ""), [current]);
   const safeQuestion = useMemo(() => (current ? sanitizeText(current.question) : ""), [current]);
-  const solutionText = useMemo(() => {
-    if (!current) return "";
-    const stageOk = session.answerState === "correct";
-    return sanitizeText(
-      stageOk
-        ? current.solutionTemplate.replace("___", String(current.answer))
-        : current.solutionTemplate,
-    );
-  }, [current, session.answerState]);
 
   const submitDigits = useCallback(
     (newDigits: string[]) => {
@@ -282,15 +278,22 @@ export function ProblemaScreen({
 
   if (!current) return null;
 
-  // NOTE: story, question y solutionTemplate hoy se generan con literales internos
-  // del core (generateSession), así que sanitizeText es una capa preventiva. Si
-  // en el futuro estos textos aceptan parámetros externos (backend/plantillas),
-  // esta sanitización ya evita XSS por HTML, `javascript:` o atributos on*= .
+  // NOTE: story y question hoy se generan con literales internos del core
+  // (generateSession), así que sanitizeText es una capa preventiva. Si en el
+  // futuro estos textos aceptan parámetros externos (backend/plantillas), esta
+  // sanitización ya evita XSS por HTML, `javascript:` o atributos on*= .
 
-  const isTwoDigits = slotCount(current.answer) === 2;
   const opSym = current.op === "suma" ? "+" : "−";
   const stageOk = session.answerState === "correct";
   const stageBad = session.answerState === "wrong";
+  const aLen = slotCount(current.answer);
+  const numCols = Math.max(String(current.a).length, String(current.b).length, aLen);
+  const aDigits = padLeft(current.a, numCols);
+  const bDigits = padLeft(current.b, numCols);
+  const boxValue = (i: number) => {
+    if (stageOk) return String(current.answer).padStart(aLen, "0")[i];
+    return session.digits[i] || "";
+  };
 
   return (
     <div className="prob">
@@ -306,93 +309,92 @@ export function ProblemaScreen({
         <InputModeToggle mode={mode} onToggle={toggle} />
       </ActivityHeader>
 
-      <div className="prob__body">
+      <div
+        className={`prob__body ${mode === "numpad" ? "prob__body--numpad" : "prob__body--canvas"}`}
+      >
         <div
           className={`prob__stage ${stageOk ? "prob__stage--correct" : stageBad ? "prob__stage--wrong" : ""}`}
         >
           {stageOk && <div className="prob__celebration">¡Muy bien! ⭐</div>}
 
-          <div className="prob__card">
-            <span className="prob__emoji">{current.emoji}</span>
-            <div className="prob__card-texts">
-              <p className="prob__story">{safeStory}</p>
-              <p className="prob__question">{safeQuestion}</p>
+          <div className="prob__split">
+            <div className="prob__split-enunciado">
+              <div className="prob__card">
+                <span className="prob__emoji">{current.emoji}</span>
+                <div className="prob__card-texts">
+                  <p className="prob__story">{safeStory}</p>
+                  <p className="prob__question">{safeQuestion}</p>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div className="prob__section-block">
-            <span className="prob__section-label">OPERACIÓN</span>
-            <div className="prob__op-row">
-              <div className="prob__operand">
-                <div className="prob__num-box">{current.a}</div>
-              </div>
+            <div className="prob__split-op">
+              <div className="prob__section-block">
+                <div className="prob__op-vertical" style={{ "--ncols": numCols } as CSSProperties}>
+                  <span className="prob__vcell prob__vcell--sym" />
+                  {aDigits.map((d, i) => (
+                    <span key={`a${i}`} className="prob__vcell">
+                      {d ?? ""}
+                    </span>
+                  ))}
 
-              <span className="prob__op-sym">{opSym}</span>
+                  <span className="prob__vcell prob__vcell--sym">{opSym}</span>
+                  {bDigits.map((d, i) => (
+                    <span key={`b${i}`} className="prob__vcell">
+                      {d ?? ""}
+                    </span>
+                  ))}
 
-              <div className="prob__operand">
-                <div className="prob__num-box">{current.b}</div>
-              </div>
+                  <div className="prob__op-divider" aria-hidden="true" />
 
-              <span className="prob__op-sym">=</span>
-
-              <div className="prob__answer-slots">
-                {session.digits.map((val, slot) => {
-                  const isActiveBox =
-                    session.answerState === "idle" && session.activeDigit === slot;
-                  const showCanvas = mode === "canvas" && isActiveBox;
-                  return (
-                    <div key={slot} className="prob__dab-slot">
-                      {isTwoDigits && (
-                        <span className="prob__du-label">{slot === 0 ? "D" : "U"}</span>
-                      )}
-                      {showCanvas ? (
+                  <span className="prob__vcell prob__vcell--sym" />
+                  {Array.from({ length: numCols - aLen }, (_, i) => (
+                    <span key={`pad${i}`} className="prob__vcell" />
+                  ))}
+                  {Array.from({ length: aLen }, (_, i) => {
+                    const isActiveBox = session.answerState === "idle" && session.activeDigit === i;
+                    if (mode === "canvas" && isActiveBox) {
+                      return (
                         <LazyDigitCell
-                          key={`dab-${slot}-${canvasKey}`}
+                          key={`dab-${i}-${canvasKey}`}
                           isActive={true}
                           onActivate={() => {}}
-                          onConfirm={(dig) => handleCanvasConfirm(slot, dig)}
+                          onConfirm={(dig) => handleCanvasConfirm(i, dig)}
                           onClear={() => {
                             const nd = [...session.digits];
-                            nd[slot] = "";
+                            nd[i] = "";
                             setSession((s) => ({ ...s, digits: nd }));
                           }}
-                          state={session.answerState !== "idle" ? session.answerState : "idle"}
-                          value={val}
+                          state="idle"
+                          value=""
                         />
-                      ) : (
-                        <div
-                          className={[
-                            "prob__answer-box",
-                            isActiveBox ? "prob__answer-box--active" : "",
-                            session.answerState === "correct" ? "prob__answer-box--correct" : "",
-                            session.answerState === "wrong" ? "prob__answer-box--wrong" : "",
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
-                          onClick={() => {
-                            if (session.answerState !== "idle") return;
-                            const nd = [...session.digits];
-                            nd[slot] = "";
-                            setSession((s) => ({ ...s, activeDigit: slot, digits: nd }));
-                          }}
-                        >
-                          {stageOk
-                            ? String(current.answer).padStart(slotCount(current.answer), "0")[slot]
-                            : val}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                      );
+                    }
+                    return (
+                      <div
+                        key={i}
+                        className={[
+                          "prob__answer-box",
+                          isActiveBox ? "prob__answer-box--active" : "",
+                          session.answerState === "correct" ? "prob__answer-box--correct" : "",
+                          session.answerState === "wrong" ? "prob__answer-box--wrong" : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        onClick={() => {
+                          if (session.answerState !== "idle") return;
+                          const nd = [...session.digits];
+                          nd[i] = "";
+                          setSession((s) => ({ ...s, activeDigit: i, digits: nd }));
+                        }}
+                      >
+                        {boxValue(i)}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className="prob__section-block">
-            <span className="prob__section-label">SOLUCIÓN</span>
-            <p className={`prob__solution-text ${stageOk ? "prob__solution-text--filled" : ""}`}>
-              {solutionText}
-            </p>
           </div>
 
           {stageBad && <ActionButtons onRetry={handleRetry} onNext={handleNext} />}
