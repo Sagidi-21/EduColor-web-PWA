@@ -75,7 +75,7 @@ describe("PoligonosScreen smoke", () => {
     for (const dificultad of ["easy", "medium", "hard", "expert"] as const) {
       const { container } = render(<PoligonosScreen {...props(dificultad)} />);
       expect(container.querySelector(".activity-header__counter")?.getAttribute("aria-label")).toBe(
-        `Ejercicio 1 / ${SESSION_SIZE[dificultad]}`,
+        `Ejercicio 1/${SESSION_SIZE[dificultad]}`,
       );
       cleanup();
     }
@@ -102,7 +102,7 @@ describe("PoligonosScreen smoke", () => {
     acertar(container, ex.answer);
 
     expect(container.querySelector(".pol__option--correct")).not.toBeNull();
-    expect(container.querySelector(".pol__celebration")?.textContent).toContain("¡Muy bien!");
+    expect(container.querySelector(".ops__celebration")?.textContent).toContain("¡Correcto!");
   });
 
   it("fallo: marca la pulsada, no celebra y ofrece reintentar", () => {
@@ -116,7 +116,7 @@ describe("PoligonosScreen smoke", () => {
 
     expect(container.querySelector(".pol__option--wrong")).not.toBeNull();
     expect(container.querySelector(".pol__option--correct")).toBeNull();
-    expect(container.querySelector(".pol__celebration")).toBeNull();
+    expect(container.querySelector(".ops__celebration")).toBeNull();
     expect(container.querySelector(".activity-action--retry")).not.toBeNull();
   });
 

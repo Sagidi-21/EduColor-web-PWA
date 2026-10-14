@@ -1,44 +1,23 @@
-.pol {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background: #f8faff;
-  overflow: hidden;
-  font-family: "Segoe UI", system-ui, sans-serif;
-}
+/* Poligonos — overlay sobre OperationsScreen.css (.ops). */
 
-/* -- Escenario -- */
-.pol__stage {
-  flex: 1;
-  display: flex;
-  align-items: center;
+/* Fondo blanco y sin línea del pie (como el resto de la pizarra). */
+.pol.ops {
+  background: #fff;
+}
+.pol .ops__footer {
+  border-top: none;
+  gap: 14px;
+  padding: 12px 24px 18px;
+}
+.pol .ops__stage {
+  gap: 24px;
   justify-content: center;
-  position: relative;
-  padding: 16px;
-  transition: background 0.3s;
-  min-height: 0;
+  padding: 12px 16px;
 }
-.pol__stage--correct {
-  background: #f0fdf4;
-}
-.pol__stage--wrong {
-  background: #fef2f2;
+.pol .ops__celebration.activity-celebration--inline {
+  margin-top: 0.15rem;
 }
 
-.pol__celebration {
-  position: absolute;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: clamp(22px, 3.5vw, 36px);
-  font-weight: 800;
-  color: #16a34a;
-  animation: polCelebrate 0.5s ease-out both;
-  z-index: 10;
-  white-space: nowrap;
-}
-
-/* -- Figura del escenario -- */
 .pol__shape-box {
   width: min(46vh, 46vw);
   height: min(46vh, 46vw);
@@ -46,10 +25,8 @@
   align-items: center;
   justify-content: center;
   background: #fff;
-  border: 3px dashed #cbd5e1;
-  border-radius: 28px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-  animation: polPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  border: 3px solid #000;
+  border-radius: 24px;
 }
 
 .pol__svg {
@@ -57,7 +34,12 @@
   max-height: 100%;
   overflow: visible;
   user-select: none;
-  filter: drop-shadow(0 6px 14px rgba(15, 23, 42, 0.18));
+}
+
+.pol__card .pol__svg {
+  width: min(150px, 100%);
+  height: auto;
+  aspect-ratio: 1;
 }
 
 /* Los vértices se agrandan al aparecer, para que se vea dónde están. */
@@ -72,19 +54,19 @@
 .pol__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(12px, 2vw, 28px);
-  width: min(78vh, 78vw);
+  gap: clamp(12px, 2vw, 24px);
+  width: min(82vh, 70vw);
 }
 
 .pol__card {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(8px, 1.4vw, 20px);
+  min-height: min(28vh, 200px);
+  padding: clamp(8px, 1.4vw, 16px);
   background: #fff;
-  border: 3px solid #e2e8f0;
-  border-radius: 20px;
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+  border: 3px solid #000;
+  border-radius: 16px;
   cursor: pointer;
   transition:
     transform 0.15s,
@@ -92,146 +74,89 @@
     background 0.15s;
 }
 .pol__card:hover:not(:disabled) {
-  border-color: var(--color-primary, #3b82f6);
-  transform: translateY(-3px);
+  border-color: var(--color-primary, #2563eb);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  transform: scale(1.03);
 }
 .pol__card:disabled {
   cursor: default;
 }
 .pol__card--correct {
-  background: #dcfce7 !important;
-  border-color: #22c55e !important;
-  animation: polCorrectPulse 0.4s ease-out;
+  background: #f0fdf4 !important;
+  border-color: #16a34a !important;
 }
 .pol__card--wrong {
-  background: #fee2e2 !important;
-  border-color: #ef4444 !important;
-  animation: polWrongShake 0.4s ease-out;
-}
-
-/* -- Pie: enunciado, opciones y pista -- */
-.pol__footer {
-  flex-shrink: 0;
-  padding: 10px 24px 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  background: #fff;
-  border-top: 2px solid #e2e8f0;
+  background: #fff1f2 !important;
+  border-color: #dc2626 !important;
 }
 
 .pol__question {
-  font-size: clamp(18px, 2.6vw, 28px);
+  margin: 0;
+  max-width: none;
+  font-size: 38px;
   font-weight: 700;
   color: #1e293b;
-  margin: 0;
   text-align: center;
 }
 
 .pol__hint {
-  font-size: clamp(15px, 1.9vw, 21px);
-  font-weight: 600;
-  color: #7c3aed;
   margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary, #2563eb);
   text-align: center;
 }
 
 .pol__options {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .pol__option {
-  min-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
   min-height: 68px;
   padding: 12px 20px;
-  font-size: clamp(18px, 2.4vw, 28px);
+  font-size: 28px;
   font-weight: 800;
-  border: 3px solid #e2e8f0;
+  line-height: 1;
+  border: 3px solid #000;
   border-radius: 16px;
-  background: #f8faff;
-  color: var(--color-primary-dark, #1e3a8a);
+  background: transparent;
+  color: var(--color-primary, #2563eb);
   cursor: pointer;
   transition:
     background 0.15s,
     border-color 0.15s,
+    color 0.15s,
     transform 0.15s;
   user-select: none;
 }
 .pol__option:hover:not(:disabled) {
-  background: #dbeafe;
-  border-color: var(--color-primary, #3b82f6);
-  transform: scale(1.04);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+  transform: scale(1.03);
 }
 .pol__option:disabled {
   cursor: default;
 }
 
 .pol__option--correct {
-  background: #dcfce7 !important;
-  border-color: #22c55e !important;
-  color: #15803d;
-  animation: polCorrectPulse 0.4s ease-out;
+  background: #f0fdf4 !important;
+  border-color: #16a34a !important;
+  color: #15803d !important;
 }
 .pol__option--wrong {
-  background: #fee2e2 !important;
-  border-color: #ef4444 !important;
-  color: #b91c1c;
-  animation: polWrongShake 0.4s ease-out;
+  background: #fff1f2 !important;
+  border-color: #dc2626 !important;
+  color: #dc2626 !important;
 }
 
-/* -- Sesión sin ejercicios -- */
-.pol--vacio {
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-}
-.pol__vacio-texto {
-  font-size: clamp(18px, 2.2vw, 24px);
-  font-weight: 700;
-  color: #334155;
-}
-.pol__btn {
-  padding: 12px 24px;
-  font-size: 20px;
-  font-weight: 700;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(90deg, #a855f7, #6366f1);
-  color: #fff;
-  cursor: pointer;
-}
-
-/* -- Animaciones -- */
-@keyframes polPopIn {
-  from {
-    transform: scale(0);
-    opacity: 0;
-  }
-  60% {
-    transform: scale(1.06);
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-@keyframes polCelebrate {
-  from {
-    transform: translateX(-50%) scale(0.6);
-    opacity: 0;
-  }
-  60% {
-    transform: translateX(-50%) scale(1.15);
-  }
-  to {
-    transform: translateX(-50%) scale(1);
-    opacity: 1;
-  }
-}
 @keyframes polVertex {
   0%,
   100% {
@@ -245,42 +170,16 @@
     transform-box: fill-box;
   }
 }
-@keyframes polCorrectPulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.08);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-@keyframes polWrongShake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  20% {
-    transform: translateX(-8px);
-  }
-  40% {
-    transform: translateX(8px);
-  }
-  60% {
-    transform: translateX(-5px);
-  }
-  80% {
-    transform: translateX(5px);
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
-  .pol__shape-box,
   .pol__vertex,
-  .pol__celebration,
   .pol__card,
   .pol__option {
     animation: none;
+    transition: none;
+  }
+  .pol__card:hover:not(:disabled),
+  .pol__option:hover:not(:disabled) {
+    transform: none;
   }
 }

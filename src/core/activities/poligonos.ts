@@ -187,7 +187,8 @@ export const SHAPES: readonly ShapeDef[] = [
       { x: 30, y: 150 },
     ],
     isPolygon: false,
-    path: "M 100 30 Q 150 100 170 150 L 30 150 Z",
+    /* Curva bien marcada (antes Q 150 100): en pizarra parecía un triángulo. */
+    path: "M 100 30 Q 195 55 170 150 L 30 150 Z",
     drawType: "curved_side",
     color: "#e2e8f0",
   },

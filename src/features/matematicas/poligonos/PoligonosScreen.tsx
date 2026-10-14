@@ -6,6 +6,8 @@ import { playFeedback } from "../../shared/audioFeedback";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { ActionButtons } from "../components/ActivityActionButtons";
+import { NoExerciseNotice } from "../components/NoExerciseNotice";
+import "../operations/OperationsScreen.css";
 import "./PoligonosScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -202,17 +204,8 @@ export function PoligonosScreen({
     );
   }
 
-  // La sesión siempre trae ejercicios, pero un `render` sin ellos dejaría la
-  // pantalla en blanco sin explicación. Se muestra el motivo y la salida.
   if (!current) {
-    return (
-      <div className="pol pol--vacio" role="alert">
-        <p className="pol__vacio-texto">No hay ningún ejercicio que mostrar en esta sesión.</p>
-        <button type="button" className="pol__btn" onClick={handleRestart}>
-          🔄 Generar otra
-        </button>
-      </div>
-    );
+    return <NoExerciseNotice activityTitle={activity.title} onExit={onExit} />;
   }
 
   /** Estado visual de una respuesta: correcto, fallado o sin tocar. */
@@ -222,36 +215,50 @@ export function PoligonosScreen({
     return "idle";
   };
 
+  const esExpert = current.type === "expert_select";
+  const stageClass =
+    session.answerState === "correct"
+      ? "ops__stage--correct"
+      : session.answerState === "wrong"
+        ? "ops__stage--wrong"
+        : "";
+
   return (
-    <div className={`pol ${className || ""}`}>
+    <div className={`ops pol ${className || ""}`}>
       <ActivityHeader
         onExit={onExit}
-        exitLabel="← Salir"
         gradeTitle={gradeTitle}
         unitTitle={activity.title}
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
       />
 
-      <div className={`pol__stage pol__stage--${session.answerState}`}>
-        {session.answerState === "correct" && <div className="pol__celebration">¡Muy bien! ⭐</div>}
-
-        {current.type === "expert_select" ? (
-          <div className="pol__grid">
-            {current.optionsList.map((shape) => (
-              <button
-                key={shape.id}
-                type="button"
-                id={`pol-card-${shape.id}`}
-                className={`pol__card pol__card--${estado(shape.id)}`}
-                onClick={() => handleAnswer(shape.id)}
-                disabled={session.answerState !== "idle"}
-              >
-                <ShapeVisual shape={shape} size={110} showVertices={false} />
-              </button>
-            ))}
-          </div>
+      <div className={`ops__stage ${stageClass}`}>
+        {esExpert ? (
+          <>
+            <p className="pol__question">{current.question}</p>
+            <div className="pol__grid">
+              {current.optionsList.map((shape) => (
+                <button
+                  key={shape.id}
+                  type="button"
+                  id={`pol-card-${shape.id}`}
+                  className={`pol__card pol__card--${estado(shape.id)}`}
+                  onClick={() => handleAnswer(shape.id)}
+                  disabled={session.answerState !== "idle"}
+                >
+                  <ShapeVisual shape={shape} size={150} showVertices={false} />
+                </button>
+              ))}
+            </div>
+            {session.answerState === "correct" && (
+              <>
+                {current.hint && <p className="pol__hint">{current.hint}</p>}
+                <div className="ops__celebration activity-celebration--inline">¡Correcto! 📐⭐</div>
+              </>
+            )}
+          </>
         ) : (
           <div className="pol__shape-box">
             <ShapeVisual
@@ -264,29 +271,35 @@ export function PoligonosScreen({
         )}
       </div>
 
-      <footer className="pol__footer">
-        <p className="pol__question">{current.question}</p>
+      <footer className="ops__footer">
+        {!esExpert && (
+          <>
+            <p className="pol__question">{current.question}</p>
 
-        {session.answerState === "correct" && current.hint && (
-          <p className="pol__hint">{current.hint}</p>
-        )}
+            {session.answerState === "correct" && current.hint && (
+              <p className="pol__hint">{current.hint}</p>
+            )}
 
-        {current.type !== "expert_select" && (
-          <div className="pol__options">
-            {current.options.map((opt, i) => (
-              <button
-                key={opt.value}
-                type="button"
-                id={`pol-option-${i}`}
-                data-value={opt.value}
-                className={`pol__option pol__option--${estado(opt.value)}`}
-                onClick={() => handleAnswer(opt.value)}
-                disabled={session.answerState !== "idle"}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
+            <div className="pol__options">
+              {current.options.map((opt, i) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  id={`pol-option-${i}`}
+                  data-value={opt.value}
+                  className={`pol__option pol__option--${estado(opt.value)}`}
+                  onClick={() => handleAnswer(opt.value)}
+                  disabled={session.answerState !== "idle"}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            {session.answerState === "correct" && (
+              <div className="ops__celebration activity-celebration--inline">¡Correcto! 📐⭐</div>
+            )}
+          </>
         )}
 
         {session.answerState === "wrong" && (
