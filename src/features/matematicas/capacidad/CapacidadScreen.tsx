@@ -263,6 +263,16 @@ export function CapacidadScreen({
         ? "ops__stage--wrong"
         : "";
 
+  const isNumpadLayout = !isMultiChoice && mode === "numpad";
+  const layoutClass = isNumpadLayout ? "cap__stage--numpad" : "cap__stage--split";
+
+  const answerBoxClass =
+    session.answerState === "correct"
+      ? "ops__answer-box ops__answer-box--correct"
+      : session.answerState === "wrong"
+        ? "ops__answer-box ops__answer-box--wrong"
+        : "ops__answer-box";
+
   return (
     <div className="ops">
       <ActivityHeader
@@ -277,92 +287,104 @@ export function CapacidadScreen({
         {!isMultiChoice && <InputModeToggle mode={mode} onToggle={toggle} />}
       </ActivityHeader>
 
-      <div className={`ops__stage ${stageClass} cap__stage--split`}>
+      <div className={`ops__stage ${stageClass} ${layoutClass}`}>
         {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
 
-        <div className="cap__main">
-          <p className="cap__question">{current.question}</p>
-          <ExerciseVisual ex={current} difficulty={difficulty} />
-          {!isMultiChoice && mode === "numpad" && (
-            <div className="ops__formula">
-              <div
-                className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : session.answerState === "wrong" ? "ops__answer-box--wrong" : ""}`}
-              >
-                {session.answerState === "correct"
-                  ? `${current.answer} L`
-                  : session.input || <span className="ops__cursor">_</span>}
+        {isNumpadLayout ? (
+          <>
+            <p className="cap__question cap__question--span2">{current.question}</p>
+            <div className="cap__main cap__main--third">
+              <ExerciseVisual ex={current} difficulty={difficulty} />
+            </div>
+            <div className="cap__answer-third">
+              <div className="ops__formula">
+                <div className={answerBoxClass}>
+                  {session.answerState === "correct"
+                    ? `${current.answer} L`
+                    : session.input || <span className="ops__cursor">_</span>}
+                </div>
               </div>
             </div>
-          )}
-        </div>
-
-        <aside className="cap__side">
-          {isMultiChoice ? (
-            <div className="cap__options">
-              {(current.options ?? []).map((opt, i) => {
-                let cls = "cap__option";
-                if (session.answerState === "correct" && opt === current.answer)
-                  cls += " cap__option--correct";
-                else if (session.answerState === "wrong" && opt === session.chosen)
-                  cls += " cap__option--wrong";
-                return (
-                  <button
-                    key={opt}
-                    id={`cap-option-${i}`}
-                    className={cls}
-                    onClick={() => handleChoice(opt)}
-                    disabled={session.answerState !== "idle"}
-                  >
-                    {opt}
-                  </button>
-                );
-              })}
-            </div>
-          ) : mode === "numpad" ? (
-            <Numpad
-              onDigit={(d) => {
-                if (session.answerState !== "idle") return;
-                setSession((s) => ({ ...s, input: s.input.length < 2 ? s.input + d : s.input }));
-              }}
-              onDelete={() => {
-                if (session.answerState !== "idle") return;
-                setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
-              }}
-              onConfirm={confirm}
-              disabled={session.answerState !== "idle"}
-            />
-          ) : session.answerState === "idle" ? (
-            <div className="cap__canvas">
-              <LazyDigitCell
-                key={canvasKey}
-                isActive={true}
-                onActivate={() => {}}
-                onConfirm={(digit) => {
+            <aside className="cap__side">
+              <Numpad
+                onDigit={(d) => {
                   if (session.answerState !== "idle") return;
-                  setSession((s) => ({
-                    ...s,
-                    input: s.input.length < 2 ? s.input + digit : s.input,
-                  }));
-                  setCanvasKey((k) => k + 1);
+                  setSession((s) => ({ ...s, input: s.input.length < 2 ? s.input + d : s.input }));
                 }}
-                onClear={() => setSession((s) => ({ ...s, input: "" }))}
-                state={session.answerState}
-                value={session.input}
+                onDelete={() => {
+                  if (session.answerState !== "idle") return;
+                  setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
+                }}
+                onConfirm={confirm}
+                disabled={session.answerState !== "idle"}
               />
+              {session.answerState === "wrong" && (
+                <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+              )}
+            </aside>
+          </>
+        ) : (
+          <>
+            <div className="cap__main">
+              <p className="cap__question">{current.question}</p>
+              <ExerciseVisual ex={current} difficulty={difficulty} />
             </div>
-          ) : (
-            <div className="ops__formula">
-              <div
-                className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : "ops__answer-box--wrong"}`}
-              >
-                {session.answerState === "correct" ? `${current.answer} L` : session.input || "?"}
-              </div>
-            </div>
-          )}
-          {session.answerState === "wrong" && (
-            <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-          )}
-        </aside>
+            <aside className="cap__side">
+              {isMultiChoice ? (
+                <div className="cap__options">
+                  {(current.options ?? []).map((opt, i) => {
+                    let cls = "cap__option";
+                    if (session.answerState === "correct" && opt === current.answer)
+                      cls += " cap__option--correct";
+                    else if (session.answerState === "wrong" && opt === session.chosen)
+                      cls += " cap__option--wrong";
+                    return (
+                      <button
+                        key={opt}
+                        id={`cap-option-${i}`}
+                        className={cls}
+                        onClick={() => handleChoice(opt)}
+                        disabled={session.answerState !== "idle"}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : session.answerState === "idle" ? (
+                <div className="cap__canvas">
+                  <LazyDigitCell
+                    key={canvasKey}
+                    isActive={true}
+                    onActivate={() => {}}
+                    onConfirm={(digit) => {
+                      if (session.answerState !== "idle") return;
+                      setSession((s) => ({
+                        ...s,
+                        input: s.input.length < 2 ? s.input + digit : s.input,
+                      }));
+                      setCanvasKey((k) => k + 1);
+                    }}
+                    onClear={() => setSession((s) => ({ ...s, input: "" }))}
+                    state={session.answerState}
+                    value={session.input}
+                  />
+                </div>
+              ) : (
+                <div className="ops__formula">
+                  <div className={answerBoxClass}>
+                    {session.answerState === "correct"
+                      ? `${current.answer} L`
+                      : session.input || "?"}
+                  </div>
+                </div>
+              )}
+              {session.answerState === "wrong" && (
+                <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+              )}
+            </aside>
+          </>
+        )}
       </div>
     </div>
   );
