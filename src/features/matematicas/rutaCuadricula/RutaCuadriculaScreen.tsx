@@ -197,23 +197,27 @@ export function RutaCuadriculaScreen({
           : "";
 
   return (
-    <div className={`ops ${className ?? ""}`}>
+    <div className={`ops rutac ${className ?? ""}`}>
       <ActivityHeader
         unitTitle={activity.title}
         gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
         onExit={onExit}
         mascotUrl={mascotUrl}
         difficultyStars={difficultyStars}
       />
 
       <div className={`ops__stage ${stageClass}`}>
-        {session.answerState === "correct" && <div className="ops__celebration">¡Llegaste! ⭐</div>}
+        {session.answerState === "correct" && (
+          <div className="ops__celebration">¡Correcto! 🚶⭐</div>
+        )}
 
         <div className="rutac__container" role="group" aria-label="Tablero de la ruta">
           <div
             className="rutac__grid"
-            style={{ gridTemplateColumns: `repeat(${current.gridSize.cols}, 50px)` }}
+            style={{
+              gridTemplateColumns: `repeat(${current.gridSize.cols}, var(--rutac-celda, 56px))`,
+            }}
           >
             {Array.from({ length: current.gridSize.rows * current.gridSize.cols }).map((_, i) => {
               const x = i % current.gridSize.cols;

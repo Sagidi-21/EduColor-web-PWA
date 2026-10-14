@@ -101,7 +101,7 @@ describe("RutaCuadriculaScreen — smoke", () => {
 
     const { container } = render(<RutaCuadriculaScreen {...props("easy")} />);
 
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
     expect(container.querySelectorAll(".rutac__cell")).toHaveLength(
       ex.gridSize.cols * ex.gridSize.rows,
     );
@@ -192,11 +192,11 @@ describe("RutaCuadriculaScreen — validación", () => {
     expect(container.querySelector(".ops__celebration")).not.toBeNull();
     // No hay botones de acción tras acertar: avanza solo.
     expect(retryBtn(container)).toBeNull();
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
 
     // Auto-avance al siguiente ejercicio.
     runTimers(AUTOAVANCE_MS);
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
   });
 
   it("una ruta que no llega a la meta marca error y ofrece reintentar y siguiente", () => {
@@ -212,11 +212,11 @@ describe("RutaCuadriculaScreen — validación", () => {
     expect(container.querySelector(".ops__celebration")).toBeNull();
     expect(retryBtn(container)).not.toBeNull();
     expect(nextBtn(container)).not.toBeNull();
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
 
     // No avanza solo tras un error.
     runTimers(AUTOAVANCE_MS * 2);
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("una ruta que sale del tablero marca error", () => {
@@ -289,7 +289,7 @@ describe("RutaCuadriculaScreen — interacción post-error", () => {
     expect(stageClass(container)).toContain("ops__stage--wrong");
 
     fireEvent.click(nextBtn(container)!);
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
     expect(seqItems(container)).toHaveLength(0);
   });
 
@@ -307,7 +307,7 @@ describe("RutaCuadriculaScreen — interacción post-error", () => {
     fireEvent.click(retryBtn(container)!);
     acertar(container, ejercicios, 0);
     // El avatar vuelve al inicio del ejercicio 2.
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
 
     // Ejercicios 2-10: acertar todos → 9 aciertos (no 10, el primero no cuenta).
     for (let i = 1; i < 10; i++) {
@@ -374,7 +374,7 @@ describe("RutaCuadriculaScreen — resumen y salida", () => {
     if (!repetir) throw new Error("El resumen no ofrece el botón de repetir");
     fireEvent.click(repetir);
 
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
     expect(container.querySelector(".rutac__cell")).not.toBeNull();
     // La ruta correcta sigue funcionando: validamos contra el primer ejercicio.
     addSequence(container, ruta0);

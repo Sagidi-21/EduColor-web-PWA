@@ -5,52 +5,73 @@
  * `../operations/OperationsScreen.css`. Aquí solo el tablero de la ruta.
  */
 
+/* Fondo blanco y sin línea del pie (como el resto de la pizarra). */
+.rutac.ops {
+  background: #fff;
+}
+.rutac .ops__footer {
+  border-top: none;
+}
+.rutac .ops__stage {
+  gap: 46px;
+}
+.rutac .ops__celebration {
+  top: 54px;
+}
+
 .rutac__container {
+  --rutac-celda: 56px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  margin: 1rem auto;
-  font-family: "Fredoka", "Nunito", sans-serif;
-  color: var(--text-color, #333);
+  gap: 1.75rem;
+  margin: 0 auto;
+  color: #1e293b;
   max-width: 42rem;
   width: 100%;
+  overflow: visible;
 }
 
 .rutac__grid {
   display: grid;
   gap: 4px;
-  background-color: #e1e1e1;
+  background-color: #e2e8f0;
   padding: 4px;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 2px solid #000;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: 100%;
+  overflow: visible;
 }
 
 .rutac__cell {
-  width: 50px;
-  height: 50px;
-  background-color: white;
+  width: var(--rutac-celda);
+  height: var(--rutac-celda);
+  box-sizing: border-box;
+  background-color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  border-radius: 4px;
+  font-size: 1.6rem;
+  border-radius: 6px;
   position: relative;
 }
 
 .rutac__cell--start {
-  background-color: #f1fcf0;
+  background-color: color-mix(in srgb, var(--color-primary, #2563eb) 12%, #fff);
 }
 
 .rutac__cell--end {
-  background-color: #fff5f5;
+  background-color: #fff7ed;
 }
 
 .rutac__obstacle {
-  font-size: 1.8rem;
+  font-size: 1.9rem;
 }
 
 .rutac__avatar {
-  font-size: 1.8rem;
+  font-size: 1.9rem;
   position: absolute;
   transition: all 0.3s ease-in-out;
   z-index: 10;
@@ -60,86 +81,107 @@
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-  min-height: 50px;
-  padding: 1rem;
-  background: #f4fafe;
-  border: 3px dashed #a0d8ff;
-  border-radius: 12px;
+  min-height: 56px;
+  padding: 0.85rem 1rem;
+  background: #fff;
+  border: 3px dashed var(--color-primary, #2563eb);
+  border-radius: 14px;
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   align-items: center;
   justify-content: center;
 }
 
 .rutac__seq-vacio {
-  color: #aaa;
-  font-size: 1.2rem;
+  color: #64748b;
+  font-size: 1.15rem;
+  font-weight: 700;
 }
 
 .rutac__seq-item {
-  width: 36px;
-  height: 36px;
-  background: white;
-  border: 2px solid #0097ff;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  border: 3px solid var(--color-primary, #2563eb);
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
-  color: #0097ff;
-  font-weight: bold;
+  font-size: 1.35rem;
+  color: var(--color-primary, #2563eb);
+  font-weight: 800;
 }
 
 .rutac__controls {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.65rem;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: 0.25rem;
 }
 
 .rutac__btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-  border: none;
-  background: #a0d8ff;
-  color: #0073cc;
-  font-size: 1.8rem;
-  font-weight: bold;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  border: 3px solid #000;
+  background: #fff;
+  color: var(--color-primary, #2563eb);
+  font-size: 1.85rem;
+  font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 4px 0 #73bfff;
-  transition: all 0.1s;
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    color 0.12s,
+    transform 0.12s;
 }
 
-.rutac__btn:active {
-  transform: translateY(4px);
-  box-shadow: 0 0 0 #73bfff;
+.rutac__btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  transform: scale(1.04);
+}
+
+.rutac__btn:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .rutac__btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: 0 4px 0 #73bfff;
+  opacity: 0.45;
+  cursor: default;
 }
 
 .rutac__btn--delete {
-  background: #ffb8b8;
-  color: #c0392b;
-  box-shadow: 0 4px 0 #ff8f8f;
+  color: #b91c1c;
 }
 
-.rutac__btn--delete:active {
-  box-shadow: 0 0 0 #ff8f8f;
+.rutac__btn--delete:hover:not(:disabled) {
+  background: #fff1f2;
+  border-color: #dc2626;
+  color: #dc2626;
 }
 
 .rutac__btn--play {
-  background: #b8e994;
-  color: #27ae60;
-  box-shadow: 0 4px 0 #78e08f;
+  color: #15803d;
 }
 
-.rutac__btn--play:active {
-  box-shadow: 0 0 0 #78e08f;
+.rutac__btn--play:hover:not(:disabled) {
+  background: #f0fdf4;
+  border-color: #16a34a;
+  color: #15803d;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rutac__avatar {
+    transition: none;
+  }
+
+  .rutac__btn {
+    transition: none;
+  }
+
+  .rutac__btn:hover:not(:disabled) {
+    transform: none;
+  }
 }
