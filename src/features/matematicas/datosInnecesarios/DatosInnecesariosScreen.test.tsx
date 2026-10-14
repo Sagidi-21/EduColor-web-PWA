@@ -87,10 +87,10 @@ describe("datosInnecesarios — validación", () => {
 
     expect(frases(container)[lista[0]!.innecesario]!.className).toContain("di__frase--correcta");
     expect(container.querySelector(".ops__stage")?.className).toContain("ops__stage--correct");
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
 
     runTimers(AUTOAVANCE_MS);
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
     expect(container.querySelector(".di__pregunta")?.textContent).toBe(lista[1]!.pregunta);
   });
 
@@ -108,7 +108,7 @@ describe("datosInnecesarios — validación", () => {
     expect(container.querySelector(".activity-action--retry")).not.toBeNull();
 
     runTimers(AUTOAVANCE_MS * 3);
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("no deja contestar dos veces el mismo ejercicio", () => {
@@ -120,7 +120,7 @@ describe("datosInnecesarios — validación", () => {
 
     acertar(container, ex.innecesario);
     expect(container.querySelector(".ops__stage")?.className).not.toContain("ops__stage--correct");
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("tras reintentar se puede acertar y desaparece el reintento", () => {
@@ -143,7 +143,7 @@ describe("datosInnecesarios — validación", () => {
     fallar(container, lista[0]!);
     fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--next")!);
 
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
     expect(container.querySelector(".di__frase--fallada")).toBeNull();
   });
 

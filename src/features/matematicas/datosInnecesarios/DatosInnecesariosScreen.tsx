@@ -164,11 +164,11 @@ export function DatosInnecesariosScreen({
         : "";
 
   return (
-    <div className={`ops ${className ?? ""}`}>
+    <div className={`ops di ${className ?? ""}`}>
       <ActivityHeader
         unitTitle={activity.title}
         gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
         onExit={onExit}
         mascotUrl={mascotUrl}
         difficultyStars={difficultyStars}
