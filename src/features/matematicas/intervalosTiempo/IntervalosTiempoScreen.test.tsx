@@ -91,8 +91,8 @@ describe("intervalosTiempo — comparar dos actividades", () => {
     fireEvent.click(tarjetas(container)[indiceDe(container, nombreCorrecto(ex.correctAnswer))]);
 
     expect(container.querySelector(".itm__activity--correct")).not.toBeNull();
-    expect(container.querySelector(".itm__cheer")?.textContent).toContain("¡Correcto!");
-    expect(container.querySelector(".itm__stage")?.className).toContain("itm__stage--correct");
+    expect(container.querySelector(".ops__celebration")?.textContent).toContain("¡Correcto!");
+    expect(container.querySelector(".ops__stage")?.className).toContain("ops__stage--correct");
 
     runTimers(AUTOAVANCE_MS);
     expect(container.querySelector(".itm__question")?.textContent).not.toBe(ex.question);
@@ -105,7 +105,7 @@ describe("intervalosTiempo — comparar dos actividades", () => {
     fireEvent.click(tarjetas(container)[indiceDe(container, incorrecta(ex))]);
 
     expect(container.querySelector(".itm__activity--wrong")).not.toBeNull();
-    expect(container.querySelector(".itm__cheer")).toBeNull();
+    expect(container.querySelector(".ops__celebration")).toBeNull();
     expect(container.querySelector(".activity-action--retry")).not.toBeNull();
     expect(container.querySelector(".activity-action--next")).not.toBeNull();
 
@@ -137,8 +137,8 @@ describe("intervalosTiempo — comparar dos actividades", () => {
     // El botón está deshabilitado, pero el guardia del núcleo tampoco deja
     // cambiar la respuesta: sigue en estado "fallado", sin celebrar ni avanzar.
     fireEvent.click(tarjetas(container)[indiceDe(container, nombreCorrecto(ex.correctAnswer))]);
-    expect(container.querySelector(".itm__cheer")).toBeNull();
-    expect(container.querySelector(".itm__stage")?.className).not.toContain("itm__stage--correct");
+    expect(container.querySelector(".ops__celebration")).toBeNull();
+    expect(container.querySelector(".ops__stage")?.className).not.toContain("ops__stage--correct");
     expect(container.querySelector(".itm__question")?.textContent).toBe(ex.question);
     expect(container.querySelector(".activity-action--retry")).not.toBeNull();
   });
@@ -205,7 +205,7 @@ describe("intervalosTiempo — clasificar más o menos de 1 hora", () => {
     expect(container.querySelector(".itm__classify-btn--correct")?.textContent).toBe(
       ex.correctAnswer,
     );
-    expect(container.querySelector(".itm__cheer")).not.toBeNull();
+    expect(container.querySelector(".ops__celebration")).not.toBeNull();
   });
 
   it("la frase acertada depende de si la actividad pasa de 1 hora", () => {
@@ -249,7 +249,7 @@ describe("intervalosTiempo — determinismo, resumen y salida", () => {
 
   it("la cabecera muestra el progreso real de la sesión", () => {
     const { container } = render(<IntervalosTiempoScreen {...props("medium")} />);
-    expect(container.textContent).toContain(`1 / ${generateSession("medium", 4242).length}`);
+    expect(container.textContent).toContain(`1/${generateSession("medium", 4242).length}`);
   });
 
   it("el botón de salir avisa y no cambia de ejercicio", () => {

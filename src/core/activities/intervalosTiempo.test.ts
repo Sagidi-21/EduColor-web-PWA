@@ -118,9 +118,14 @@ describe("intervalosTiempo — generateSession", () => {
     }
   });
 
-  it("en expert nunca muestra barras", () => {
-    for (const semilla of SEMILLAS) {
-      expect(generateSession("expert", semilla).every((ex) => ex.showBars === false)).toBe(true);
+  it("en hard y expert nunca muestra barras", () => {
+    for (const dificultad of ["hard", "expert"] as ActivityDifficulty[]) {
+      for (const semilla of SEMILLAS) {
+        expect(
+          generateSession(dificultad, semilla).every((ex) => ex.showBars === false),
+          `${dificultad}/${semilla}`,
+        ).toBe(true);
+      }
     }
   });
 
@@ -130,14 +135,6 @@ describe("intervalosTiempo — generateSession", () => {
       expect(clasifican("medium", semilla), `medium/${semilla}`).toBe(0);
       expect(clasifican("hard", semilla), `hard/${semilla}`).toBeGreaterThan(0);
       expect(clasifican("expert", semilla), `expert/${semilla}`).toBeGreaterThan(0);
-    }
-  });
-
-  it("en hard no siempre salen barras: aparecen alternadas", () => {
-    for (const semilla of SEMILLAS) {
-      const barras = generateSession("hard", semilla).map((ex) => ex.showBars);
-      expect(barras, `hard/${semilla}`).toContain(true);
-      expect(barras, `hard/${semilla}`).toContain(false);
     }
   });
 });

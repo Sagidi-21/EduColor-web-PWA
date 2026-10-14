@@ -149,22 +149,18 @@ function cap(s: string): string {
 /**
  * Genera una sesión sin repetir ni actividad ni pareja de actividades.
  *
- * - easy:   comparaciones de diferencia muy clara, cociente 3 o más.
+ * - easy:   comparaciones de diferencia muy clara, cociente 3 o más. Barras
+ *           siempre visibles.
  * - medium: comparaciones sin filtro de cercanía. Barras siempre visibles.
  * - hard:   comparaciones sin filtro y, con probabilidad aproximada del 40 %,
- *           ejercicios de `classify-hour`. Las barras se alternan por intento.
+ *           ejercicios de `classify-hour`. Sin barras (decisión pizarra
+ *           2026-10-14).
  * - expert: duraciones muy parecidas, con la más larga como mucho el doble que
  *           la más corta, más `classify-hour`. Nunca con barras.
  *
  * La diferencia entre `medium` y `expert` es el único filtro de cercanía: hasta
  * el 2026-10-02 las dos lo eran idénticas y las dos descripciones prometían
  * duraciones próximas, que es lo que se corrigió. Ver `RANGO_CERCANIA`.
- *
- * **Sobre las barras en `hard`:** el contador alterna en cada intento del
- * generador, no en cada ejercicio emitido, así que un duplicado descartado
- * invierte la alternancia. Se mantiene igual que en Electron a propósito: cambiar
- * el ritmo de aparición de las pistas es una decisión didáctica, no una
- * limpieza de código.
  */
 export function generateSession(
   difficulty: ActivityDifficulty,
@@ -174,18 +170,12 @@ export function generateSession(
   const out: IntervalosTiempoExercise[] = [];
   const used = new Set<string>();
   let tries = 0;
-  let hardBarCount = 0;
   const cuenta = { comparaciones: 0, clasificaciones: 0 };
 
   while (out.length < SESSION_SIZE && tries < 400) {
     tries++;
 
-    const showBars =
-      difficulty === "easy" || difficulty === "medium"
-        ? true
-        : difficulty === "hard"
-          ? hardBarCount++ % 2 === 0
-          : false;
+    const showBars = difficulty === "easy" || difficulty === "medium";
 
     // Hasta que los dos tipos estén cubiertos, no se deja el azar decidir cuál
     // sale primero: si faltara uno por azar, la sesión podría no tener ninguna

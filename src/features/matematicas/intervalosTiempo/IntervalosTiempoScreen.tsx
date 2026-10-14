@@ -6,6 +6,8 @@ import { playFeedback } from "../../shared/audioFeedback";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { ActionButtons } from "../components/ActivityActionButtons";
+import { NoExerciseNotice } from "../components/NoExerciseNotice";
+import "../operations/OperationsScreen.css";
 import "./IntervalosTiempoScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -140,17 +142,8 @@ export function IntervalosTiempoScreen({
     );
   }
 
-  // La sesión siempre trae ejercicios, pero un `render` sin ellos dejaría la
-  // pantalla en blanco sin explicación. Se muestra el motivo y la salida.
   if (!current) {
-    return (
-      <div className="itm itm--vacio" role="alert">
-        <p className="itm__vacio-texto">No hay ningún ejercicio que mostrar en esta sesión.</p>
-        <button type="button" className="itm__btn" onClick={handleRestart}>
-          🔄 Generar otra
-        </button>
-      </div>
-    );
+    return <NoExerciseNotice activityTitle={activity.title} onExit={onExit} />;
   }
 
   const esClasificacion = current.type === "classify-hour";
@@ -175,20 +168,26 @@ export function IntervalosTiempoScreen({
     ? current.activities[0].seconds
     : Math.max(current.activities[0].seconds, current.activities[1].seconds);
 
+  const stageClass =
+    session.answerState === "correct"
+      ? "ops__stage--correct"
+      : session.answerState === "wrong"
+        ? "ops__stage--wrong"
+        : "";
+
   return (
-    <div className={`itm ${className || ""}`}>
+    <div className={`ops itm ${className || ""}`}>
       <ActivityHeader
         onExit={onExit}
-        exitLabel="← Salir"
         gradeTitle={gradeTitle}
         unitTitle={activity.title}
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
       />
 
-      <div className={`itm__stage itm__stage--${session.answerState}`}>
-        {session.answerState === "correct" && <div className="itm__cheer">¡Correcto! ⭐</div>}
+      <div className={`ops__stage ${stageClass}`}>
+        <p className="itm__question">{current.question}</p>
 
         {esClasificacion ? (
           <>
@@ -214,6 +213,22 @@ export function IntervalosTiempoScreen({
                 </div>
               </div>
             )}
+
+            <div className="itm__classify-opts">
+              {current.options.map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  id={`itm-classify-${opt.startsWith("Más") ? "mas" : "menos"}`}
+                  data-value={opt}
+                  className={`itm__classify-btn itm__classify-btn--${estado(opt)}`}
+                  onClick={() => handleAnswer(opt)}
+                  disabled={session.answerState !== "idle"}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
           </>
         ) : (
           <>
@@ -250,29 +265,13 @@ export function IntervalosTiempoScreen({
             )}
           </>
         )}
+
+        {session.answerState === "correct" && (
+          <div className="ops__celebration activity-celebration--inline">¡Correcto! ⏱️⭐</div>
+        )}
       </div>
 
-      <footer className="itm__footer">
-        <p className="itm__question">{current.question}</p>
-
-        {esClasificacion && (
-          <div className="itm__classify-opts">
-            {current.options.map((opt) => (
-              <button
-                key={opt}
-                type="button"
-                id={`itm-classify-${opt.startsWith("Más") ? "mas" : "menos"}`}
-                data-value={opt}
-                className={`itm__classify-btn itm__classify-btn--${estado(opt)}`}
-                onClick={() => handleAnswer(opt)}
-                disabled={session.answerState !== "idle"}
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-        )}
-
+      <footer className="ops__footer">
         {session.answerState === "wrong" && (
           <ActionButtons onRetry={handleRetry} onNext={handleNext} />
         )}

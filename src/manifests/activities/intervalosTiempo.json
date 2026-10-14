@@ -17,7 +17,7 @@
     "difficultyDescriptions": {
       "easy": "Compara dos actividades con diferencia muy clara",
       "medium": "Compara dos actividades cualesquiera; las barras siempre visibles",
-      "hard": "También pregunta si una actividad dura más o menos de 1 hora; las barras van apareciendo y desapareciendo",
+      "hard": "También pregunta si una actividad dura más o menos de 1 hora; sin barras",
       "expert": "Duraciones muy parecidas entre sí, sin barras y con la pregunta de la hora"
     }
   },
