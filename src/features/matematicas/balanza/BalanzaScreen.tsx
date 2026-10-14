@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { generateSession, validateAnswer } from "../../../core/activities/balanza";
 import type { BalanzaExercise, BalanzaPlate, BalanzaTilt } from "../../../core/activities/balanza";
 import type { EngineScreenProps } from "../engine-screens";
@@ -37,6 +37,8 @@ const ARM = 210;
 const PLATE_DROP = 110;
 /** Inclinación máxima en grados. */
 const MAX_TILT_DEG = 9;
+/** Radio (viewBox) para soltar la pesa sobre el plato derecho en hard. */
+const DROP_RADIUS = 130;
 
 interface Punto {
   x: number;
@@ -51,6 +53,20 @@ interface Geometria {
   centroDerecho: Punto;
   grados: number;
 }
+
+/** Desplazamiento del token respecto a su sitio en el muelle (px de pantalla). */
+interface DragDelta {
+  x: number;
+  y: number;
+}
+
+/** Plato derecho vacío mientras la pesa de hard sigue en el muelle. */
+const EMPTY_RIGHT: BalanzaPlate = {
+  emoji: "🧱",
+  count: 0,
+  weightLabel: null,
+  unknown: false,
+};
 
 /**
  * Coloca los extremos del brazo según la inclinación.
@@ -90,8 +106,57 @@ function descripcionDe(tilt: BalanzaTilt): string {
   return "Balanza equilibrada: los dos platos están a la misma altura";
 }
 
+/**
+ * Cliente → viewBox respetando letterboxing (`preserveAspectRatio: meet`).
+ * El mapeo lineal por `getBoundingClientRect` desfasa el cursor si el SVG
+ * no estira el viewBox a todo el rectángulo.
+ */
+/** Zoom del `body` (la app lo pone a 1.5 por defecto en configuración). */
+function bodyZoom(): number {
+  if (typeof document === "undefined") return 1;
+  return parseFloat(getComputedStyle(document.body).zoom) || 1;
+}
+
+function toSvg(clientX: number, clientY: number, svg: SVGSVGElement): Punto {
+  const ctm = svg.getScreenCTM?.();
+  if (ctm) {
+    try {
+      const local = new DOMPoint(clientX, clientY).matrixTransform(ctm.inverse());
+      return { x: local.x, y: local.y };
+    } catch {
+      /* jsdom / entornos sin CTM completo */
+    }
+  }
+  const r = svg.getBoundingClientRect();
+  return {
+    x: ((clientX - r.left) / r.width) * VIEW.w,
+    y: ((clientY - r.top) / r.height) * VIEW.h,
+  };
+}
+
 /** Anchura del plato. Los dos cuelgan del mismo punto, así que comparten todo. */
 const PLATE_ANCHO = 150;
+/** Separación entre emojis en la rejilla del plato (coordenadas del viewBox). */
+const OBJ_GAP = 48;
+/** Altura de cada fila sobre el plato. */
+const OBJ_ROW = 46;
+
+/** Rejilla centrada horizontalmente sobre `cx`, apilada hacia arriba desde `baseY`. */
+function gridSlots(count: number, cx: number, baseY: number, gapX: number, gapY: number): Punto[] {
+  if (count <= 0) return [];
+  const porFila = count > 3 ? Math.ceil(count / 2) : count;
+  const slots: Punto[] = [];
+  for (let i = 0; i < count; i++) {
+    const columna = i % porFila;
+    const fila = Math.floor(i / porFila);
+    const enFila = Math.min(porFila, count - fila * porFila);
+    const rowWidth = (enFila - 1) * gapX;
+    const x = cx - rowWidth / 2 + columna * gapX;
+    const y = baseY - fila * gapY;
+    slots.push({ x, y });
+  }
+  return slots;
+}
 
 /**
  * Un plato de la balanza: donde se dibujan los objetos y, si los hay, las pesas
@@ -107,13 +172,27 @@ function Plato({
   plate: BalanzaPlate;
 }): JSX.Element {
   const izquierda = centro.x - PLATE_ANCHO / 2;
-  const objects = Array.from({ length: plate.count }, (_, i) => i);
   const weightBlocks = Math.max(0, plate.weightBlocks ?? 0);
   const blocksLabel = plate.weightBlocksLabel || (weightBlocks > 0 ? `${weightBlocks} kg` : null);
   // Expert con pesas: dos columnas (fruta | ladrillos); si no, una sola rejilla.
   const split = weightBlocks > 0 && plate.count > 0;
-  const colObjX = split ? izquierda + 36 : izquierda + PLATE_ANCHO / 2;
-  const colBlkX = izquierda + PLATE_ANCHO - 36;
+  const colObjX = split ? izquierda + 38 : centro.x;
+  const colBlkX = split ? izquierda + PLATE_ANCHO - 38 : centro.x;
+  const baseY = centro.y - 18;
+  const objectSlots = gridSlots(
+    plate.unknown ? 0 : plate.count,
+    colObjX,
+    baseY,
+    split ? 36 : OBJ_GAP,
+    OBJ_ROW,
+  );
+  const blockSlots = gridSlots(
+    plate.unknown ? 0 : weightBlocks,
+    colBlkX,
+    baseY,
+    split ? 28 : OBJ_GAP,
+    OBJ_ROW,
+  );
 
   return (
     <g className="blz__plato">
@@ -146,52 +225,36 @@ function Plato({
       {/* Plato desconocido (expert): bandeja vacía, sin revelar la respuesta. */}
       {!plate.unknown && (
         <>
-          {objects.map((i) => {
-            const porFila =
-              !split && plate.count > 3 ? Math.ceil(plate.count / 2) : plate.count || 1;
-            const columna = i % porFila;
-            const fila = Math.floor(i / porFila);
-            const x = split ? colObjX : izquierda + 8 + 12 + columna * (porFila === 1 ? 0 : 44);
-            const y = centro.y - 8 - 22 - fila * 30;
-            return (
-              <text
-                key={`o-${i}`}
-                x={x}
-                y={y}
-                textAnchor="middle"
-                className="blz__objeto"
-                data-lado={lado}
-              >
-                {plate.emoji}
-              </text>
-            );
-          })}
+          {objectSlots.map((slot, i) => (
+            <text
+              key={`o-${i}`}
+              x={slot.x}
+              y={slot.y}
+              textAnchor="middle"
+              dominantBaseline="auto"
+              className="blz__objeto"
+              data-lado={lado}
+            >
+              {plate.emoji}
+            </text>
+          ))}
           {split && plate.weightLabel ? (
             <text x={colObjX} y={centro.y + 34} textAnchor="middle" className="blz__pesa">
               {plate.weightLabel}
             </text>
           ) : null}
-          {Array.from({ length: weightBlocks }, (_, i) => {
-            const porFila = weightBlocks > 3 ? Math.ceil(weightBlocks / 2) : weightBlocks;
-            const columna = i % porFila;
-            const fila = Math.floor(i / porFila);
-            const x = split
-              ? colBlkX + (porFila === 1 ? 0 : (columna - (porFila - 1) / 2) * 28)
-              : izquierda + 8 + 12 + columna * (porFila === 1 ? 0 : 44);
-            const y = centro.y - 8 - 22 - fila * 30;
-            return (
-              <text
-                key={`w-${i}`}
-                x={x}
-                y={y}
-                textAnchor="middle"
-                className="blz__objeto"
-                data-lado={lado}
-              >
-                🧱
-              </text>
-            );
-          })}
+          {blockSlots.map((slot, i) => (
+            <text
+              key={`w-${i}`}
+              x={slot.x}
+              y={slot.y}
+              textAnchor="middle"
+              className="blz__objeto"
+              data-lado={lado}
+            >
+              🧱
+            </text>
+          ))}
           {split && blocksLabel ? (
             <text x={colBlkX} y={centro.y + 34} textAnchor="middle" className="blz__pesa">
               {blocksLabel}
@@ -209,16 +272,33 @@ function Plato({
 }
 
 /** La balanza completa: pie, brazo, platos y objetos. */
-function BalanzaDibujo({ exercise }: { exercise: BalanzaExercise }): JSX.Element {
-  const g = useMemo(() => geometria(exercise.tilt), [exercise.tilt]);
+function BalanzaDibujo({
+  exercise,
+  tilt,
+  rightPlate,
+  svgRef,
+  onMove,
+  onUp,
+}: {
+  exercise: BalanzaExercise;
+  tilt: BalanzaTilt;
+  rightPlate: BalanzaPlate;
+  svgRef: React.RefObject<SVGSVGElement | null>;
+  onMove: (e: React.PointerEvent) => void;
+  onUp: () => void;
+}): JSX.Element {
+  const g = useMemo(() => geometria(tilt), [tilt]);
 
   return (
     <svg
+      ref={svgRef}
       className="blz__svg"
       viewBox={`0 0 ${VIEW.w} ${VIEW.h}`}
       role="img"
-      aria-label={descripcionDe(exercise.tilt)}
-      data-tilt={exercise.tilt}
+      aria-label={descripcionDe(tilt)}
+      data-tilt={tilt}
+      onPointerMove={onMove}
+      onPointerUp={onUp}
     >
       {/* Pie: el triángulo del soporte y su base. */}
       <path
@@ -238,7 +318,7 @@ function BalanzaDibujo({ exercise }: { exercise: BalanzaExercise }): JSX.Element
       <circle cx={VIEW.w / 2} cy={PIVOT_Y} r={11} className="blz__fulcro" />
 
       <Plato centro={g.centroIzquierdo} lado="left" plate={exercise.left} />
-      <Plato centro={g.centroDerecho} lado="right" plate={exercise.right} />
+      <Plato centro={g.centroDerecho} lado="right" plate={rightPlate} />
     </svg>
   );
 }
@@ -264,9 +344,19 @@ export function BalanzaScreen({
     alreadyFailed: false,
   }));
   const [finished, setFinished] = useState<SessionResult | null>(null);
+  /** En hard: la pesa empieza fuera y hay que soltarla en el plato derecho. */
+  const [weightPlaced, setWeightPlaced] = useState(false);
+  /** Mueve la propia pesa: mismo delta que el puntero → sin desfase. */
+  const [dragDelta, setDragDelta] = useState<DragDelta | null>(null);
+  /** Posición del puntero en viewBox, para decidir si cae en el plato. */
+  const dragSvgRef = useRef<Punto | null>(null);
+  const dragOriginRef = useRef<Punto | null>(null);
+  const draggingRef = useRef(false);
+  const svgRef = useRef<SVGSVGElement | null>(null);
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
+  const isHard = difficulty === "hard";
 
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
@@ -284,6 +374,11 @@ export function BalanzaScreen({
         selectedAnswer: null,
         alreadyFailed: false,
       }));
+      setWeightPlaced(false);
+      draggingRef.current = false;
+      dragOriginRef.current = null;
+      dragSvgRef.current = null;
+      setDragDelta(null);
     }
   }, [session, total]);
 
@@ -302,6 +397,7 @@ export function BalanzaScreen({
   const handleAnswer = useCallback(
     (value: string) => {
       if (session.answerState !== "idle" || !current) return;
+      if (isHard && !weightPlaced) return;
       const isCorrect = validateAnswer(current, value);
       playFeedback(isCorrect);
       setSession((s) => ({
@@ -311,7 +407,7 @@ export function BalanzaScreen({
         correctCount: isCorrect && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
       }));
     },
-    [session.answerState, current],
+    [session.answerState, current, isHard, weightPlaced],
   );
 
   useEffect(() => {
@@ -322,6 +418,11 @@ export function BalanzaScreen({
 
   const handleRestart = useCallback(() => {
     setFinished(null);
+    setWeightPlaced(false);
+    draggingRef.current = false;
+    dragOriginRef.current = null;
+    dragSvgRef.current = null;
+    setDragDelta(null);
     setSession({
       exercises: generateSession(difficulty, sessionSeed),
       currentIndex: 0,
@@ -332,6 +433,63 @@ export function BalanzaScreen({
       alreadyFailed: false,
     });
   }, [difficulty, sessionSeed]);
+
+  const syncDragSvg = useCallback((clientX: number, clientY: number) => {
+    if (svgRef.current) {
+      dragSvgRef.current = toSvg(clientX, clientY, svgRef.current);
+    }
+  }, []);
+
+  const endDrag = useCallback(() => {
+    if (!draggingRef.current) return;
+    const d = dragSvgRef.current;
+    draggingRef.current = false;
+    dragOriginRef.current = null;
+    setDragDelta(null);
+    if (!d || !current) {
+      dragSvgRef.current = null;
+      return;
+    }
+    // Con la pesa aún fuera, la balanza está nivelada: el centro del plato
+    // derecho es el de `equal`.
+    const g = geometria("equal");
+    const sobrePlato = Math.hypot(d.x - g.centroDerecho.x, d.y - g.centroDerecho.y) < DROP_RADIUS;
+    setWeightPlaced(sobrePlato);
+    dragSvgRef.current = null;
+  }, [current]);
+
+  const startDrag = useCallback(
+    (e: React.PointerEvent) => {
+      if (!isHard || session.answerState === "correct") return;
+      e.preventDefault();
+      (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
+      draggingRef.current = true;
+      dragOriginRef.current = { x: e.clientX, y: e.clientY };
+      setDragDelta({ x: 0, y: 0 });
+      syncDragSvg(e.clientX, e.clientY);
+      if (weightPlaced) setWeightPlaced(false);
+    },
+    [isHard, session.answerState, weightPlaced, syncDragSvg],
+  );
+
+  const onMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!draggingRef.current || !dragOriginRef.current) return;
+      // `clientX` está en px de pantalla; `translate` CSS lo vuelve a multiplicar
+      // por el zoom del body → sin dividir, el desfase crece al mover el ratón.
+      const z = bodyZoom();
+      setDragDelta({
+        x: (e.clientX - dragOriginRef.current.x) / z,
+        y: (e.clientY - dragOriginRef.current.y) / z,
+      });
+      syncDragSvg(e.clientX, e.clientY);
+    },
+    [syncDragSvg],
+  );
+
+  const onUp = useCallback(() => {
+    endDrag();
+  }, [endDrag]);
 
   if (finished) {
     return (
@@ -365,22 +523,73 @@ export function BalanzaScreen({
     return "idle";
   };
 
+  // Hard: nivelada hasta colocar la pesa; luego se inclina según el motor.
+  const displayTilt: BalanzaTilt = isHard && !weightPlaced ? "equal" : current.tilt;
+  const rightPlate: BalanzaPlate = isHard && !weightPlaced ? EMPTY_RIGHT : current.right;
+  const optionsLocked = isHard && !weightPlaced;
+  const refLabel = current.right.weightLabel ?? "1 kg";
+  const showDockToken = isHard && !weightPlaced;
+  const dragging = dragDelta !== null;
+
   return (
-    <div className={`blz ${className || ""}`}>
+    <div className="blz">
       <ActivityHeader
         onExit={onExit}
-        exitLabel="← Salir"
         gradeTitle={gradeTitle}
+        className={className}
         unitTitle={activity.title}
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
       />
 
       <div className={`blz__stage blz__stage--${session.answerState}`}>
         {session.answerState === "correct" && <div className="blz__celebration">¡Muy bien! ⭐</div>}
 
-        <BalanzaDibujo exercise={current} />
+        <BalanzaDibujo
+          exercise={current}
+          tilt={displayTilt}
+          rightPlate={rightPlate}
+          svgRef={svgRef}
+          onMove={onMove}
+          onUp={onUp}
+        />
+
+        {isHard && (
+          <div className={`blz__dock${dragging ? " blz__dock--dragging" : ""}`}>
+            {showDockToken && (
+              <button
+                type="button"
+                className={`blz__ref-token${dragging ? " blz__ref-token--dragging" : ""}`}
+                aria-label={`Arrastra la pesa de ${refLabel} al plato derecho`}
+                onPointerDown={startDrag}
+                onPointerMove={onMove}
+                onPointerUp={onUp}
+                onPointerCancel={onUp}
+                disabled={session.answerState === "correct"}
+                style={{
+                  touchAction: "none",
+                  transform: dragDelta
+                    ? `translate(${dragDelta.x}px, ${dragDelta.y}px)`
+                    : undefined,
+                }}
+              >
+                <span className="blz__ref-token-emoji" aria-hidden>
+                  🧱
+                </span>
+                <span className="blz__pesa blz__pesa--dock">{refLabel}</span>
+              </button>
+            )}
+            {weightPlaced && (
+              <p className="blz__dock-hint">Pesa en el plato. Elige la respuesta.</p>
+            )}
+            {showDockToken && (
+              <p className={`blz__dock-hint${dragging ? " blz__dock-hint--hidden" : ""}`}>
+                Arrastra la pesa al plato derecho
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       <footer className="blz__footer">
@@ -397,9 +606,11 @@ export function BalanzaScreen({
               type="button"
               id={`blz-option-${i}`}
               data-value={opt.value}
-              className={`blz__option blz__option--${estado(opt.value)}`}
+              className={`blz__option blz__option--${estado(opt.value)}${
+                optionsLocked ? " blz__option--locked" : ""
+              }`}
               onClick={() => handleAnswer(opt.value)}
-              disabled={session.answerState !== "idle"}
+              disabled={session.answerState !== "idle" || optionsLocked}
             >
               {opt.label}
             </button>

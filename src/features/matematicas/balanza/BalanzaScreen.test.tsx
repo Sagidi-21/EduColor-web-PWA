@@ -34,6 +34,41 @@ const acertar = (c: HTMLElement, answer: string) =>
 const primerEjercicio = (difficulty: EngineScreenProps["difficulty"]): BalanzaExercise =>
   generateSession(difficulty, 4242)[0];
 
+/** Centro del plato derecho con la balanza nivelada (hard, antes de colocar). */
+const PLATO_DERECHO = { x: 510, y: 220 };
+
+/** Mock 1:1 cliente ↔ viewBox del SVG de balanza. */
+function mockSvgRect(svg: SVGSVGElement) {
+  vi.spyOn(svg, "getBoundingClientRect").mockReturnValue({
+    left: 0,
+    top: 0,
+    width: 600,
+    height: 400,
+    right: 600,
+    bottom: 400,
+    x: 0,
+    y: 0,
+    toJSON: () => ({}),
+  } as DOMRect);
+}
+
+/** En hard: arrastra la pesa del muelle al plato derecho. */
+function colocarPesa(container: HTMLElement) {
+  const svg = container.querySelector("svg.blz__svg") as SVGSVGElement;
+  const token = container.querySelector(".blz__ref-token") as HTMLElement;
+  mockSvgRect(svg);
+  act(() => {
+    fireEvent.pointerDown(token, {
+      clientX: PLATO_DERECHO.x,
+      clientY: PLATO_DERECHO.y,
+      pointerId: 1,
+    });
+  });
+  act(() => {
+    fireEvent.pointerUp(svg);
+  });
+}
+
 describe("BalanzaScreen smoke", () => {
   beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
@@ -44,6 +79,7 @@ describe("BalanzaScreen smoke", () => {
   afterEach(() => {
     cleanup();
     vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   it("monta la balanza, los dos platos y el enunciado que dicta el motor", () => {
@@ -106,7 +142,7 @@ describe("BalanzaScreen smoke", () => {
     for (const dificultad of ["easy", "medium", "hard", "expert"] as const) {
       const { container } = render(<BalanzaScreen {...props(dificultad)} />);
       expect(container.querySelector(".activity-header__counter")?.getAttribute("aria-label")).toBe(
-        `Ejercicio 1 / ${SESSION_SIZE[dificultad]}`,
+        `Ejercicio 1/${SESSION_SIZE[dificultad]}`,
       );
       cleanup();
     }
@@ -126,6 +162,7 @@ describe("BalanzaScreen smoke", () => {
     const ex = primerEjercicio("hard");
     const { container } = render(<BalanzaScreen {...props("hard")} />);
 
+    colocarPesa(container);
     acertar(container, ex.correctAnswer);
 
     expect(container.querySelector(".blz__option--correct")).not.toBeNull();
@@ -137,6 +174,7 @@ describe("BalanzaScreen smoke", () => {
     const falla = ex.options.find((o) => o.value !== ex.correctAnswer)!.value;
     const { container } = render(<BalanzaScreen {...props("hard")} />);
 
+    colocarPesa(container);
     fireEvent.click(
       container.querySelector<HTMLButtonElement>(`#blz-option-${indiceDe(container, falla)}`)!,
     );
@@ -152,6 +190,7 @@ describe("BalanzaScreen smoke", () => {
     const falla = ex.options.find((o) => o.value !== ex.correctAnswer)!.value;
     const { container } = render(<BalanzaScreen {...props("hard")} />);
 
+    colocarPesa(container);
     fireEvent.click(
       container.querySelector<HTMLButtonElement>(`#blz-option-${indiceDe(container, falla)}`)!,
     );
@@ -169,6 +208,7 @@ describe("BalanzaScreen smoke", () => {
     const { container } = render(<BalanzaScreen {...props("hard")} />);
 
     // El primer ejercicio se falla, se reintenta y se acierta: cuenta como fallado.
+    colocarPesa(container);
     fireEvent.click(
       container.querySelector<HTMLButtonElement>(`#blz-option-${indiceDe(container, falla)}`)!,
     );
@@ -178,6 +218,7 @@ describe("BalanzaScreen smoke", () => {
 
     // Los otros nueve se aciertan a la primera, así que el resumen queda en 9 de 10.
     for (const ex of sesion.slice(1)) {
+      colocarPesa(container);
       acertar(container, ex.correctAnswer);
       runTimers(AUTOAVANCE_MS);
     }
@@ -192,6 +233,7 @@ describe("BalanzaScreen smoke", () => {
 
     for (const ex of sesion) {
       expect(container.querySelector(".blz__question")?.textContent).toBe(ex.question);
+      colocarPesa(container);
       acertar(container, ex.correctAnswer);
       runTimers(AUTOAVANCE_MS);
     }
@@ -200,13 +242,30 @@ describe("BalanzaScreen smoke", () => {
     expect(container.querySelector(".summary__stat-value")?.textContent).toBe(`${total}/${total}`);
   });
 
-  it("en hard rotula la pesa de referencia una sola vez, junto a la bandeja", () => {
+  it("en hard la pesa empieza fuera del plato y las opciones están bloqueadas", () => {
     const ex = primerEjercicio("hard");
     const { container } = render(<BalanzaScreen {...props("hard")} />);
 
-    const pesas = container.querySelectorAll(".blz__pesa");
-    expect(pesas).toHaveLength(1);
-    expect(pesas[0].textContent).toBe(ex.right.weightLabel);
+    expect(container.querySelector(".blz__ref-token")).not.toBeNull();
+    expect(container.querySelector(".blz__pesa--dock")?.textContent).toBe(ex.right.weightLabel);
+    const [, derecho] = container.querySelectorAll(".blz__plato");
+    expect(derecho.querySelectorAll(".blz__objeto")).toHaveLength(0);
+    expect(container.querySelector("svg")?.getAttribute("data-tilt")).toBe("equal");
+    expect(optionButtons(container).every((b) => b.disabled)).toBe(true);
+  });
+
+  it("en hard al soltar la pesa en el plato se inclina y se desbloquean las opciones", () => {
+    const ex = primerEjercicio("hard");
+    const { container } = render(<BalanzaScreen {...props("hard")} />);
+
+    colocarPesa(container);
+
+    expect(container.querySelector(".blz__ref-token")).toBeNull();
+    const [, derecho] = container.querySelectorAll(".blz__plato");
+    expect(derecho.querySelectorAll(".blz__objeto")).toHaveLength(1);
+    expect(derecho.querySelector(".blz__pesa")?.textContent).toBe(ex.right.weightLabel);
+    expect(container.querySelector("svg")?.getAttribute("data-tilt")).toBe(ex.tilt);
+    expect(optionButtons(container).every((b) => !b.disabled)).toBe(true);
   });
 
   it("en expert deja vacío el plato que hay que deducir", () => {

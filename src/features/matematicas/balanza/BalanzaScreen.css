@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #f8faff;
+  background: #fff;
   overflow: hidden;
   font-family: "Segoe UI", system-ui, sans-serif;
 }
@@ -13,6 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 12px;
   position: relative;
   padding: 12px;
   transition: background 0.3s;
@@ -23,6 +24,68 @@
 }
 .blz__stage--wrong {
   background: #fef2f2;
+}
+
+/* Muelle de la pesa de referencia (hard): fuera del plato hasta arrastrarla. */
+.blz__dock {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 96px;
+  max-width: 140px;
+}
+.blz__dock--dragging {
+  z-index: 30;
+}
+.blz__ref-token {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  border: 3px dashed #94a3b8;
+  border-radius: 16px;
+  background: #f8fafc;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  will-change: transform;
+}
+.blz__ref-token--dragging {
+  cursor: grabbing;
+  z-index: 40;
+  box-shadow: 0 8px 20px rgb(0 0 0 / 18%);
+  border-style: solid;
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+.blz__ref-token:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.blz__ref-token-emoji {
+  font-size: clamp(40px, 6vw, 56px);
+  line-height: 1;
+}
+.blz__pesa--dock {
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 800;
+  color: #b45309;
+  fill: unset;
+}
+.blz__dock-hint {
+  margin: 0;
+  font-size: clamp(13px, 1.6vw, 16px);
+  font-weight: 600;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.25;
+}
+/* Se oculta sin quitar layout: si desaparece del DOM, la pesa salta al arrastrar. */
+.blz__dock-hint--hidden {
+  visibility: hidden;
 }
 
 .blz__celebration {
@@ -84,11 +147,11 @@
 }
 
 .blz__objeto {
-  font-size: 34px;
+  font-size: 52px;
 }
 
 .blz__pesa {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
   fill: #b45309;
 }
@@ -100,13 +163,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
   background: #fff;
-  border-top: 2px solid #e2e8f0;
+  border-top: none;
 }
 
 .blz__question {
-  font-size: clamp(17px, 2.4vw, 26px);
+  font-size: clamp(22px, 3vw, 36px);
   font-weight: 700;
   color: #1e293b;
   margin: 0;
@@ -115,55 +178,61 @@
 
 .blz__hint {
   font-size: clamp(15px, 1.9vw, 21px);
-  font-weight: 600;
-  color: #7c3aed;
+  font-weight: 500;
+  color: #64748b;
   margin: 0;
   text-align: center;
 }
 
 .blz__options {
   display: flex;
-  gap: 12px;
+  gap: 32px;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
 }
 
 .blz__option {
   min-width: 150px;
   min-height: 68px;
-  padding: 12px 20px;
-  font-size: clamp(17px, 2.2vw, 24px);
+  padding: 12px 24px;
+  font-size: clamp(20px, 2.8vw, 32px);
   font-weight: 800;
-  border: 3px solid #e2e8f0;
+  border: 3px solid #000;
   border-radius: 16px;
-  background: #f8faff;
-  color: var(--color-primary-dark, #1e3a8a);
+  background: transparent;
+  color: var(--color-primary, #2563eb);
   cursor: pointer;
   transition:
     background 0.15s,
     border-color 0.15s,
+    color 0.15s,
     transform 0.15s;
   user-select: none;
 }
 .blz__option:hover:not(:disabled) {
-  background: #dbeafe;
-  border-color: var(--color-primary, #3b82f6);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
   transform: scale(1.04);
 }
 .blz__option:disabled {
   cursor: default;
 }
+.blz__option--locked {
+  opacity: 0.45;
+}
 
 .blz__option--correct {
-  background: #dcfce7 !important;
-  border-color: #22c55e !important;
-  color: #15803d;
+  background: #f0fdf4 !important;
+  border-color: #16a34a !important;
+  color: #15803d !important;
   animation: blzCorrectPulse 0.4s ease-out;
 }
 .blz__option--wrong {
-  background: #fee2e2 !important;
-  border-color: #ef4444 !important;
-  color: #b91c1c;
+  background: #fff1f2 !important;
+  border-color: #dc2626 !important;
+  color: #dc2626 !important;
   animation: blzWrongShake 0.4s ease-out;
 }
 

@@ -46,14 +46,16 @@ describe("balanza — catálogo de pesos", () => {
     }
   });
 
-  it("usa ids únicos y pesos en gramos", () => {
+  it("usa ids únicos y pesos realistas en gramos", () => {
     expect(new Set(WEIGHT_ITEMS.map((i) => i.id)).size).toBe(WEIGHT_ITEMS.length);
-    // Gramos, no la escala sin declarar del original: ningún objeto pasa de 5 kg
-    // y ninguno baja de 10 g, así que los platos caben en una balanza de aula.
+    // Escala coherente con kilos de aula (no 100 g un perrito frente a «2 kg»).
     WEIGHT_ITEMS.forEach((item) => {
-      expect(item.weightGrams, item.id).toBeLessThanOrEqual(5000);
+      expect(item.weightGrams, item.id).toBeLessThanOrEqual(50000);
       expect(item.weightGrams, item.id).toBeGreaterThanOrEqual(10);
     });
+    expect(WEIGHT_ITEMS.find((i) => i.id === "sandia")!.weightGrams).toBe(5000);
+    expect(WEIGHT_ITEMS.find((i) => i.id === "perrito")!.weightGrams).toBeGreaterThanOrEqual(5000);
+    expect(WEIGHT_ITEMS.find((i) => i.id === "manzana")!.weightGrams).toBe(200);
   });
 
   it("cada objeto tiene a alguien con quien compararse en `easy`", () => {
@@ -176,18 +178,16 @@ describe("balanza — direct (easy)", () => {
     }
   });
 
-  it("nombra los dos objetos con el artículo que declara el catálogo", () => {
-    // El enunciado dice "el" o "la" según el género del objeto. Si no casara,
-    // el niño leería "el sandía" o "la elefante", así que se comprueba contra
-    // el propio catálogo, para que el test siga valiendo si el enunciado
-    // cambia de redacción.
+  it("nombra los dos objetos con el artículo en el enunciado y sin él en las opciones", () => {
+    // El enunciado dice "el" o "la" según el género; las opciones solo el nombre
+    // («Elefante», «Bicicleta»).
     const articuloDe = (id: string) => {
       const item = WEIGHT_ITEMS.find((i) => i.id === id)!;
       return item.gender === "m" ? `el ${item.name}` : `la ${item.name}`;
     };
     const opcionDe = (id: string) => {
-      const label = articuloDe(id);
-      return label.charAt(0).toUpperCase() + label.slice(1);
+      const item = WEIGHT_ITEMS.find((i) => i.id === id)!;
+      return item.name.charAt(0).toUpperCase() + item.name.slice(1);
     };
     for (const semilla of SEMILLAS) {
       for (const ex of generateSession("easy", semilla)) {
@@ -195,8 +195,6 @@ describe("balanza — direct (easy)", () => {
         const der = WEIGHT_ITEMS.find((i) => i.emoji === ex.right.emoji)!;
         expect(ex.question, ex.question).toContain(articuloDe(izq.id));
         expect(ex.question, ex.question).toContain(articuloDe(der.id));
-        // Opciones con artículo en mayúscula («El coche»), distinto del
-        // enunciado en minúscula («…el coche o…»).
         expect(ex.options.map((o) => o.label)).toEqual([opcionDe(izq.id), opcionDe(der.id)]);
       }
     }
@@ -310,14 +308,11 @@ describe("balanza — kilo (hard)", () => {
     }
   });
 
-  it("el único caso de igualdad, 4 raciones de 250 g contra la pesa de 1 kg, sale siempre", () => {
+  it("el caso de igualdad (2 libros = 1 kg) sale siempre", () => {
     // El enunciado pide "más, menos o igual" y una de las tres respuestas tiene
-    // que ser alcanzable. El catálogo entero solo produce 1 kg exacto de una
-    // manera (4 raciones de 250 g), así que ese ejercicio se garantiza en todas
-    // las sesiones: si dependiera del azar, el niño podría recorrer la sesión
-    // entera sin ver nunca una balanza equilibrada.
-    const racionDe250 = WEIGHT_ITEMS.find((i) => i.id === "sandia")!;
-    expect(racionDe250.weightGrams * 4).toBe(1000);
+    // que ser alcanzable. Se garantiza 2×500 g = 1 kg en todas las sesiones.
+    const libro = WEIGHT_ITEMS.find((i) => i.id === "libro")!;
+    expect(libro.weightGrams * 2).toBe(1000);
 
     for (const semilla of SEMILLAS) {
       const iguales = generateSession("hard", semilla).filter(
@@ -325,11 +320,33 @@ describe("balanza — kilo (hard)", () => {
       );
       expect(iguales, `seed ${semilla}`).toHaveLength(1);
       const [ex] = iguales;
-      expect(ex.left.count).toBe(4);
-      expect(ex.left.emoji).toBe("🍉");
+      expect(ex.left.count).toBe(2);
+      expect(ex.left.emoji).toBe("📘");
       expect(ex.right.weightLabel).toBe("1 kg");
       expect(ex.correctAnswer).toBe("equal");
       expect(ex.tilt).toBe("equal");
+    }
+  });
+
+  it("en hard la inclinación y la respuesta coinciden con los gramos reales", () => {
+    for (const semilla of SEMILLAS) {
+      for (const ex of generateSession("hard", semilla)) {
+        expect(ex.leftTotalGrams).toBeGreaterThan(0);
+        expect(ex.rightTotalGrams).toBeGreaterThan(0);
+        if (ex.leftTotalGrams > ex.rightTotalGrams) {
+          expect(ex.tilt).toBe("left");
+          expect(ex.correctAnswer).toBe("more");
+        } else if (ex.leftTotalGrams < ex.rightTotalGrams) {
+          expect(ex.tilt).toBe("right");
+          expect(ex.correctAnswer).toBe("less");
+        } else {
+          expect(ex.tilt).toBe("equal");
+          expect(ex.correctAnswer).toBe("equal");
+        }
+        // Relación plausible: el grupo no es 4× más ligero/pesado que la pesa.
+        expect(ex.leftTotalGrams).toBeGreaterThanOrEqual(ex.rightTotalGrams / 4);
+        expect(ex.leftTotalGrams).toBeLessThanOrEqual(ex.rightTotalGrams * 4);
+      }
     }
   });
 

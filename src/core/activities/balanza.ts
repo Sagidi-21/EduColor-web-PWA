@@ -119,6 +119,11 @@ export interface BalanzaExercise {
   hint?: string;
 }
 
+/**
+ * Pesos realistas en gramos (escala de aula / kg de 1.º–2.º).
+ * Deben ser coherentes con las pesas de referencia (¼–3 kg): p. ej. un perrito
+ * no puede pesar 100 g si luego se compara con «2 kg».
+ */
 export const WEIGHT_ITEMS: readonly WeightItem[] = [
   {
     id: "elefante",
@@ -126,20 +131,21 @@ export const WEIGHT_ITEMS: readonly WeightItem[] = [
     name: "elefante",
     gender: "m",
     plural: "elefantes",
-    weightGrams: 5000,
+    weightGrams: 50000,
   },
-  { id: "coche", emoji: "🚗", name: "coche", gender: "m", plural: "coches", weightGrams: 1200 },
+  { id: "coche", emoji: "🚗", name: "coche", gender: "m", plural: "coches", weightGrams: 12000 },
   {
     id: "bicicleta",
     emoji: "🚲",
     name: "bicicleta",
     gender: "f",
     plural: "bicicletas",
-    weightGrams: 150,
+    weightGrams: 12000,
   },
-  { id: "piedra", emoji: "🪨", name: "piedra", gender: "f", plural: "piedras", weightGrams: 300 },
-  { id: "sandia", emoji: "🍉", name: "sandía", gender: "f", plural: "sandías", weightGrams: 250 },
-  { id: "piña", emoji: "🍍", name: "piña", gender: "f", plural: "piñas", weightGrams: 150 },
+  // 🪨 (rock, Unicode 13) no pinta en Windows 10 / Segoe UI Emoji → 🗿 (sí soportado).
+  { id: "piedra", emoji: "🗿", name: "piedra", gender: "f", plural: "piedras", weightGrams: 400 },
+  { id: "sandia", emoji: "🍉", name: "sandía", gender: "f", plural: "sandías", weightGrams: 5000 },
+  { id: "piña", emoji: "🍍", name: "piña", gender: "f", plural: "piñas", weightGrams: 1000 },
   {
     id: "manzana",
     emoji: "🍎",
@@ -156,16 +162,16 @@ export const WEIGHT_ITEMS: readonly WeightItem[] = [
     plural: "plátanos",
     weightGrams: 200,
   },
-  { id: "libro", emoji: "📘", name: "libro", gender: "m", plural: "libros", weightGrams: 800 },
+  { id: "libro", emoji: "📘", name: "libro", gender: "m", plural: "libros", weightGrams: 500 },
   {
     id: "perrito",
     emoji: "🐶",
     name: "perrito",
     gender: "m",
     plural: "perritos",
-    weightGrams: 100,
+    weightGrams: 6000,
   },
-  { id: "raton", emoji: "🐭", name: "ratón", gender: "m", plural: "ratones", weightGrams: 10 },
+  { id: "raton", emoji: "🐭", name: "ratón", gender: "m", plural: "ratones", weightGrams: 20 },
   {
     id: "magdalena",
     emoji: "🧁",
@@ -251,10 +257,9 @@ function articleOf(item: WeightItem): string {
   return item.gender === "m" ? `el ${item.name}` : `la ${item.name}`;
 }
 
-/** Artículo + nombre con mayúscula inicial (opciones MC de easy). */
+/** Nombre con mayúscula inicial (opciones MC de easy; sin artículo). */
 function articleChoiceOf(item: WeightItem): string {
-  const label = articleOf(item);
-  return label.charAt(0).toUpperCase() + label.slice(1);
+  return item.name.charAt(0).toUpperCase() + item.name.slice(1);
 }
 
 /** `1 sandía` o `3 bicicletas`, en el género que corresponda al objeto. */
@@ -327,9 +332,8 @@ function scaleExercise(item: WeightItem, countLeft: number, countRight: number):
  * `hard`: comparar un grupo pequeño con una pesa de referencia.
  *
  * Las tres opciones se ofrecen siempre, y "igual" se decide comparando los
- * gramos en vez de suponer que la coincidencia es imposible: con 4 raciones de
- * 250 g y una pesa de 1 kg sí ocurre, y es justo el caso que enseña a usar la
- * balanza de verdad.
+ * gramos reales: p. ej. 2 libros de 500 g frente a 1 kg. Solo se generan
+ * comparaciones plausibles (el grupo no es 4× más ligero/pesado que la pesa).
  */
 function kiloExercise(
   item: WeightItem,
@@ -495,16 +499,19 @@ function candidatos(dificultad: ActivityDifficulty): {
       for (const item of KILO_ITEMS) {
         for (let count = 1; count <= 4; count++) {
           for (const referencia of KILO_REFERENCES) {
-            if (count * item.weightGrams === referencia.grams) continue;
+            const total = count * item.weightGrams;
+            if (total === referencia.grams) continue;
+            // Evita grupos absurdos frente a pesas grandes (p. ej. 1 magdalena vs 3 kg).
+            if (total < referencia.grams / 4) continue;
+            if (total > referencia.grams * 4) continue;
             libres.push(() => kiloExercise(item, count, referencia));
           }
         }
       }
-      // 4 raciones de 250 g contra la pesa de 1 kg: el único grupo del
-      // catálogo que se equilibra justo con una pesa entera.
-      const racion = WEIGHT_ITEMS.find((item) => item.id === "sandia")!;
+      // 2 libros de 500 g = 1 kg: igualdad garantizada (enseñar balanza equilibrada).
+      const libro = WEIGHT_ITEMS.find((item) => item.id === "libro")!;
       const kilo = KILO_REFERENCES.find((r) => r.grams === 1000)!;
-      return { garantizados: [() => kiloExercise(racion, 4, kilo)], libres };
+      return { garantizados: [() => kiloExercise(libro, 2, kilo)], libres };
     }
     case "expert":
       return {
