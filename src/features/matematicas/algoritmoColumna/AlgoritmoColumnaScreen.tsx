@@ -319,7 +319,11 @@ export function AlgoritmoColumnaScreen({
       </ActivityHeader>
 
       <div
-        className={mode === "numpad" ? "algcol__body algcol__body--with-numpad" : "algcol__body"}
+        className={
+          mode === "numpad"
+            ? "algcol__body algcol__body--with-numpad"
+            : "algcol__body algcol__body--with-canvas"
+        }
       >
         <div className={`algcol__stage ${stageClass}`}>
           {session.answerState === "correct" && (
