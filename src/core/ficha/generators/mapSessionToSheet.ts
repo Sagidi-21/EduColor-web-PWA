@@ -1224,11 +1224,14 @@ const TABLA_CELL_STATES: readonly TablaNumericaCellKind[] = [
 
 function mapTablaNumerica(ex: Record<string, unknown>): TablaNumericaSheetExercise {
   const gridRaw = Array.isArray(ex.gridState) ? ex.gridState : [];
+  const gridStart = asNumber(ex.gridStart, 0);
   const symbolMap =
     ex.symbolMap && typeof ex.symbolMap === "object"
       ? (ex.symbolMap as Record<string, unknown>)
       : {};
-  const cells: TablaNumericaSheetCell[] = gridRaw.map((raw, value) => {
+  // `gridState` es relativo a `gridStart` (easy ±20, medium banda de 40).
+  const cells: TablaNumericaSheetCell[] = gridRaw.map((raw, i) => {
+    const value = gridStart + i;
     const state = TABLA_CELL_STATES.includes(raw as TablaNumericaCellKind)
       ? (raw as TablaNumericaCellKind)
       : "visible";

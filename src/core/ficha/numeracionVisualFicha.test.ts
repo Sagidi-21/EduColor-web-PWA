@@ -35,15 +35,19 @@ function generate<T>(id: string, difficulty: Difficulty): T[] {
 const html = (el: Parameters<typeof renderToStaticMarkup>[0]) => renderToStaticMarkup(el);
 
 describe("tablaNumerica ficha", () => {
-  it("easy: tabla hasta respuesta+10 con casilla amarilla y respuesta numérica", () => {
+  it("easy: ventana ±20 con casilla amarilla y respuesta numérica", () => {
     const list = generate<TablaNumericaSheetExercise>("tablaNumerica", "easy");
     expect(list).toHaveLength(10);
     for (const ex of list) {
       expect(ex.kind).toBe("tablaNumerica");
       expect(ex.variant).toBe("missing");
       const answer = Number(ex.answer);
-      const expectedLen = Math.min(100, answer + 10 + 1);
+      const start = Math.max(0, answer - 20);
+      const end = Math.min(99, answer + 20);
+      const expectedLen = end - start + 1;
       expect(ex.cells).toHaveLength(expectedLen);
+      expect(ex.cells[0]!.value).toBe(start);
+      expect(ex.cells[ex.cells.length - 1]!.value).toBe(end);
       expect(ex.cols).toBe(10);
       expect(ex.rows).toBe(Math.ceil(expectedLen / 10));
       expect(ex.cells.length).toBeLessThanOrEqual(100);
@@ -57,14 +61,14 @@ describe("tablaNumerica ficha", () => {
     expect((markup.match(/<tr>/g) ?? []).length).toBeGreaterThanOrEqual(2);
   });
 
-  it("medium: 4–10 en rejilla, 2–4 a buscar y respuesta = casillas", () => {
+  it("medium: 3–5 a buscar (+3 señuelos), respuesta = casillas", () => {
     const [ex] = generate<TablaNumericaSheetExercise>("tablaNumerica", "medium");
     expect(ex!.variant).toBe("symbol");
     const symbols = ex!.cells.filter((c) => c.state === "symbol");
-    expect(symbols.length).toBeGreaterThanOrEqual(4);
-    expect(symbols.length).toBeLessThanOrEqual(10);
-    expect(ex!.targetSymbols!.length).toBeGreaterThanOrEqual(2);
-    expect(ex!.targetSymbols!.length).toBeLessThanOrEqual(4);
+    expect(symbols.length).toBeGreaterThanOrEqual(6);
+    expect(symbols.length).toBeLessThanOrEqual(8);
+    expect(ex!.targetSymbols!.length).toBeGreaterThanOrEqual(3);
+    expect(ex!.targetSymbols!.length).toBeLessThanOrEqual(5);
     expect(String(ex!.answer)).toMatch(/^\d+(, \d+)+$/);
     const askedCells = String(ex!.answer).split(", ").map(Number);
     expect(askedCells).toHaveLength(ex!.targetSymbols!.length);
