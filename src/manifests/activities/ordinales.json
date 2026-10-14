@@ -15,7 +15,7 @@
     "unit": 6,
     "unitLabel": "Hacemos deporte",
     "difficultyDescriptions": {
-      "easy": "Señala cuál es el 1º al 5º (multi-choice)",
+      "easy": "Pulsa cuál es el 1º al 5º en la fila",
       "medium": "¿Qué posición ocupa? Del 1º al 7º",
       "hard": "Contando de izquierda a derecha, hasta el 10º",
       "expert": "Los 3 tipos mezclados, hasta el 10º"

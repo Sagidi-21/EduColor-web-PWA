@@ -44,7 +44,12 @@ export function OrdinalesRenderer({ ex, showAnswer }: OrdinalesRendererProps): J
     ) : null;
 
   const question = <p className="ficha-ordinales__question">{ex.question}</p>;
-  const showDirection = ex.fromRight || (circleMode && ex.difficulty === "expert");
+  // position / fromRight (y expert identify): sentido del conteo izquierda → derecha
+  const showDirection =
+    ex.fromRight ||
+    ex.variant === "position" ||
+    ex.variant === "fromRight" ||
+    (circleMode && ex.difficulty === "expert");
   const direction = showDirection ? (
     <p className="ficha-ordinales__direction" aria-label="De izquierda a derecha">
       <span className="ficha-ordinales__arrow" aria-hidden>

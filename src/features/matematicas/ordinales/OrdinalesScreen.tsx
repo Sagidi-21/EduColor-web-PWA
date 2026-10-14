@@ -44,38 +44,71 @@ function freshSession(seed: number, difficulty: EngineScreenProps["difficulty"])
   };
 }
 
-function OrdinalRow({ ex }: { ex: OrdinalExercise }) {
-  const showLabels = ex.rowSize <= 7;
+function OrdinalRow({
+  ex,
+  interactive = false,
+  chosen = null,
+  answerState = "idle",
+  onPick,
+}: {
+  ex: OrdinalExercise;
+  /** identify: pulsar sobre la imagen (sin marca previa ni etiquetas). */
+  interactive?: boolean;
+  chosen?: number | null;
+  answerState?: AnswerState;
+  onPick?: (pos: number) => void;
+}) {
+  // position/fromRight: etiquetas si caben; identify: sin etiquetas (darían la respuesta).
+  const showLabels = !interactive && ex.rowSize <= 7;
 
   return (
     <>
-      {ex.fromRight && (
-        <div className="ord__direction" aria-label="De izquierda a derecha">
-          <span className="ord__direction-arrow" aria-hidden="true">
-            →
-          </span>
-          <span className="ord__direction-hint">(de izquierda a derecha)</span>
-        </div>
-      )}
-      <div className="ord__row">
+      <div className={`ord__row${interactive ? " ord__row--interactive" : ""}`}>
         {Array.from({ length: ex.rowSize }, (_, i) => {
           const pos1based = i + 1;
-          const isHighlight = pos1based === ex.target;
-          return (
-            <div key={pos1based} className="ord__item">
-              <span
-                className={`ord__object ${isHighlight ? "ord__object--highlight" : ""}`}
-                aria-hidden="true"
-              >
+          const isHighlight = !interactive && pos1based === ex.target;
+          let objectCls = "ord__object";
+          if (isHighlight) objectCls += " ord__object--highlight";
+          if (interactive && answerState === "correct" && pos1based === ex.answer)
+            objectCls += " ord__object--correct";
+          if (interactive && answerState === "wrong" && pos1based === chosen)
+            objectCls += " ord__object--wrong";
+
+          const label = ORDINAL_LABELS[pos1based - 1];
+          const content = (
+            <>
+              <span className={objectCls} aria-hidden="true">
                 {ex.emoji}
               </span>
               {showLabels && (
                 <span
                   className={`ord__pos-label ${isHighlight ? "ord__pos-label--highlight" : ""}`}
                 >
-                  {ORDINAL_LABELS[pos1based - 1]}
+                  {label}
                 </span>
               )}
+            </>
+          );
+
+          if (interactive) {
+            return (
+              <button
+                key={pos1based}
+                type="button"
+                id={`ord-item-${pos1based}`}
+                className="ord__item ord__item--btn"
+                onClick={() => onPick?.(pos1based)}
+                disabled={answerState !== "idle"}
+                aria-label={label}
+              >
+                {content}
+              </button>
+            );
+          }
+
+          return (
+            <div key={pos1based} className="ord__item">
+              {content}
             </div>
           );
         })}
@@ -94,7 +127,6 @@ export function OrdinalesScreen({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps) {
-  const isMultiChoice = difficulty === "easy";
   const [sessionSeed] = useState(() => seed);
 
   const [session, setSession] = useState<SessionState>(() => freshSession(sessionSeed, difficulty));
@@ -104,6 +136,8 @@ export function OrdinalesScreen({
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
+  /** «¿Cuál es el Nº?» → pulsar la imagen (easy y expert cuando toca identify). */
+  const isIdentify = current?.type === "identify";
 
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
@@ -155,7 +189,7 @@ export function OrdinalesScreen({
   }, [session, current]);
 
   useEffect(() => {
-    if (isMultiChoice) return;
+    if (isIdentify) return;
     if (mode !== "canvas") return;
     if (session.answerState !== "idle") return;
     // Con escritura se confirma al introducir un dígito, o dos si la respuesta es 10.
@@ -163,17 +197,17 @@ export function OrdinalesScreen({
     if (session.input.length < maxDigits) return;
     const t = setTimeout(() => confirm(), 0);
     return () => clearTimeout(t);
-  }, [isMultiChoice, session.input.length, mode, session.answerState, current?.answer, confirm]);
+  }, [isIdentify, session.input.length, mode, session.answerState, current?.answer, confirm]);
 
-  const handleChoice = useCallback(
-    (opt: number) => {
+  const handlePickObject = useCallback(
+    (pos: number) => {
       if (session.answerState !== "idle" || !current) return;
-      const ok = validateAnswer(current, String(opt));
+      const ok = validateAnswer(current, String(pos));
       playFeedback(ok);
       setSession((s) => ({
         ...s,
         answerState: ok ? "correct" : "wrong",
-        chosen: opt,
+        chosen: pos,
         correctCount: ok && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
       }));
     },
@@ -203,6 +237,30 @@ export function OrdinalesScreen({
         ? "ops__stage--wrong"
         : "";
 
+  const layoutClass = isIdentify ? "ord__stage--tap" : "ord__stage--position";
+
+  const answerLabel =
+    session.answerState === "correct"
+      ? ORDINAL_LABELS[current.answer - 1]
+      : session.input
+        ? (ORDINAL_LABELS[Number(session.input) - 1] ?? session.input)
+        : null;
+
+  const answerBoxClass =
+    session.answerState === "correct"
+      ? "ops__answer-box ops__answer-box--correct"
+      : session.answerState === "wrong"
+        ? "ops__answer-box ops__answer-box--wrong"
+        : "ops__answer-box";
+
+  const answerBox = (
+    <div className="ops__formula">
+      <div className={answerBoxClass}>
+        {answerLabel ?? (mode === "numpad" ? <span className="ops__cursor">_</span> : "?")}
+      </div>
+    </div>
+  );
+
   return (
     <div className="ops">
       <ActivityHeader
@@ -214,106 +272,93 @@ export function OrdinalesScreen({
         mascotUrl={mascotUrl}
         progress={`${session.currentIndex + 1}/${total}`}
       >
-        {!isMultiChoice && <InputModeToggle mode={mode} onToggle={toggle} />}
+        {!isIdentify && <InputModeToggle mode={mode} onToggle={toggle} />}
       </ActivityHeader>
 
-      <div className={`ops__stage ${stageClass}`}>
+      <div className={`ops__stage ${stageClass} ${layoutClass}`}>
         {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
 
-        <OrdinalRow ex={current} />
-        <p className="ord__question">{current.question}</p>
-
-        {!isMultiChoice && (
-          <div className="ops__formula">
-            {mode === "numpad" ? (
-              <div
-                className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : session.answerState === "wrong" ? "ops__answer-box--wrong" : ""}`}
-              >
-                {session.answerState === "correct" ? (
-                  ORDINAL_LABELS[current.answer - 1]
-                ) : session.input ? (
-                  (ORDINAL_LABELS[Number(session.input) - 1] ?? session.input)
-                ) : (
-                  <span className="ops__cursor">_</span>
-                )}
-              </div>
-            ) : session.answerState === "idle" ? (
-              <LazyDigitCell
-                key={canvasKey}
-                isActive={true}
-                onActivate={() => {}}
-                onConfirm={(digit) => {
-                  if (session.answerState !== "idle") return;
-                  setSession((s) => ({
-                    ...s,
-                    input: s.input.length < 2 ? s.input + digit : s.input,
-                  }));
-                  setCanvasKey((k) => k + 1);
-                }}
-                onClear={() => setSession((s) => ({ ...s, input: "" }))}
-                state={session.answerState}
-                value={session.input}
-              />
-            ) : (
-              <div
-                className={`ops__answer-box ${session.answerState === "correct" ? "ops__answer-box--correct" : "ops__answer-box--wrong"}`}
-              >
-                {session.answerState === "correct"
-                  ? ORDINAL_LABELS[current.answer - 1]
-                  : session.input || "?"}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      <footer className="ops__footer">
-        {isMultiChoice ? (
-          <div className="ord__options">
-            {(current.options ?? []).map((opt, i) => {
-              let cls = "ord__option";
-              if (session.answerState === "correct" && opt === current.answer)
-                cls += " ord__option--correct";
-              else if (session.answerState === "wrong" && opt === session.chosen)
-                cls += " ord__option--wrong";
-              return (
-                <button
-                  key={opt}
-                  id={`ord-option-${i}`}
-                  className={cls}
-                  onClick={() => handleChoice(opt)}
-                  disabled={session.answerState !== "idle"}
-                >
-                  {ORDINAL_LABELS[opt - 1]}
-                </button>
-              );
-            })}
+        {isIdentify ? (
+          <div className="ord__main ord__main--tap">
+            <p className="ord__question">{current.question}</p>
+            <div className="ord__direction" aria-label="De izquierda a derecha">
+              <span className="ord__direction-arrow" aria-hidden="true">
+                →
+              </span>
+              <span className="ord__direction-hint">(de izquierda a derecha)</span>
+            </div>
+            <OrdinalRow
+              ex={current}
+              interactive
+              chosen={session.chosen}
+              answerState={session.answerState}
+              onPick={handlePickObject}
+            />
             {session.answerState === "wrong" && (
               <ActionButtons onRetry={handleRetry} onNext={handleNext} />
             )}
           </div>
         ) : (
           <>
-            {mode === "numpad" && (
-              <Numpad
-                onDigit={(d) => {
-                  if (session.answerState !== "idle") return;
-                  setSession((s) => ({ ...s, input: s.input.length < 2 ? s.input + d : s.input }));
-                }}
-                onDelete={() => {
-                  if (session.answerState !== "idle") return;
-                  setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
-                }}
-                onConfirm={confirm}
-                disabled={session.answerState !== "idle"}
-              />
-            )}
-            {session.answerState === "wrong" && (
-              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-            )}
+            <div className="ord__band ord__band--question">
+              <p className="ord__question">{current.question}</p>
+              <div className="ord__direction" aria-label="De izquierda a derecha">
+                <span className="ord__direction-arrow" aria-hidden="true">
+                  →
+                </span>
+                <span className="ord__direction-hint">(de izquierda a derecha)</span>
+              </div>
+            </div>
+            <div className="ord__band ord__band--images">
+              <OrdinalRow ex={current} />
+            </div>
+            <div className="ord__band ord__band--answer">
+              {mode === "numpad" || session.answerState !== "idle" ? answerBox : null}
+            </div>
+            <aside className="ord__side">
+              {mode === "numpad" ? (
+                <Numpad
+                  onDigit={(d) => {
+                    if (session.answerState !== "idle") return;
+                    setSession((s) => ({
+                      ...s,
+                      input: s.input.length < 2 ? s.input + d : s.input,
+                    }));
+                  }}
+                  onDelete={() => {
+                    if (session.answerState !== "idle") return;
+                    setSession((s) => ({ ...s, input: s.input.slice(0, -1) }));
+                  }}
+                  onConfirm={confirm}
+                  disabled={session.answerState !== "idle"}
+                />
+              ) : session.answerState === "idle" ? (
+                <div className="ord__canvas">
+                  <LazyDigitCell
+                    key={canvasKey}
+                    isActive={true}
+                    onActivate={() => {}}
+                    onConfirm={(digit) => {
+                      if (session.answerState !== "idle") return;
+                      setSession((s) => ({
+                        ...s,
+                        input: s.input.length < 2 ? s.input + digit : s.input,
+                      }));
+                      setCanvasKey((k) => k + 1);
+                    }}
+                    onClear={() => setSession((s) => ({ ...s, input: "" }))}
+                    state={session.answerState}
+                    value={session.input}
+                  />
+                </div>
+              ) : null}
+              {session.answerState === "wrong" && (
+                <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+              )}
+            </aside>
           </>
         )}
-      </footer>
+      </div>
     </div>
   );
 }

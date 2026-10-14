@@ -97,10 +97,10 @@ const TYPES: Record<ActivityDifficulty, OrdinalType[]> = {
 /**
  * Genera ejercicios de números ordinales.
  *
- * - easy:   identifica el ordinal entre 4 opciones (hasta el 5º).
- * - medium: pregunta la posición del dibujo marcado (hasta el 7º).
- * - hard:   misma lógica con flecha → (izquierda a derecha), hasta el 10º.
- * - expert: los tres tipos mezclados, hasta el 10º.
+ * - easy:   identify — «¿Cuál es el Nº?» (pulsar la imagen; hasta el 5º).
+ * - medium: position — pregunta la posición del dibujo marcado (hasta el 7º).
+ * - hard:   fromRight — misma lógica con flecha → (izquierda a derecha), hasta el 10º.
+ * - expert: los tres tipos mezclados, hasta el 10º (identify también por pulsación).
  */
 export function generateSession(difficulty: ActivityDifficulty, seed = 42): OrdinalExercise[] {
   const rng = lcg(seed);
