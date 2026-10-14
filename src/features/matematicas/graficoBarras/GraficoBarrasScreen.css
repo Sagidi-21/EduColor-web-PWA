@@ -19,29 +19,89 @@
  * eso hay un `--gb-alto` fijo y el porcentaje es lo único que cambia de un
  * ejercicio a otro. */
 
-.gb__titulo {
-  margin: 0;
-  font-size: clamp(1rem, 2.4vw, 1.3rem);
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #4338ca;
+/* Fondo blanco y sin línea del pie (como el resto de la pizarra). */
+.gb.ops {
+  background: #fff;
+}
+.gb .ops__footer {
+  border-top: none;
+}
+.gb .ops__stage {
+  gap: 46px;
+}
+.gb .ops__celebration {
+  top: 54px;
 }
 
 .gb__enunciado {
-  margin: 0;
-  max-width: 46rem;
-  font-size: clamp(1.1rem, 2.8vw, 1.5rem);
-  font-weight: 800;
+  margin: -20px 0 -10px;
+  max-width: none;
+  font-size: 40px;
+  font-weight: 700;
   text-align: center;
   color: #1e293b;
+  white-space: nowrap;
 }
 
 .gb__opciones {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: calc(1rem + 30px);
   justify-content: center;
+  margin-top: 10px;
+}
+
+.gb__opcion {
+  min-width: 96px;
+  min-height: 68px;
+  padding: 12px 24px;
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--color-primary, #2563eb);
+  background: transparent;
+  border: 3px solid #000;
+  border-radius: 16px;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.15s;
+}
+
+.gb__opcion:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+  transform: scale(1.04);
+}
+
+.gb__opcion:disabled {
+  cursor: default;
+}
+
+.gb__opcion--correcta {
+  border-color: #16a34a !important;
+  background: #f0fdf4 !important;
+  color: #15803d !important;
+}
+
+.gb__opcion--fallada {
+  border-color: #dc2626 !important;
+  background: #fff1f2 !important;
+  color: #dc2626 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gb__opcion {
+    transition: none;
+  }
+
+  .gb__opcion:hover:not(:disabled) {
+    transform: none;
+  }
 }
 
 /* ── El gráfico ─────────────────────────────────────────────────────────────── */

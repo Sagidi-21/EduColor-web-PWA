@@ -243,11 +243,11 @@ export function GraficoBarrasScreen({
         : "";
 
   return (
-    <div className={`ops ${className ?? ""}`}>
+    <div className={`ops gb ${className ?? ""}`}>
       <ActivityHeader
         unitTitle={activity.title}
         gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
         onExit={onExit}
         mascotUrl={mascotUrl}
         difficultyStars={difficultyStars}
@@ -258,26 +258,24 @@ export function GraficoBarrasScreen({
           <div className="ops__celebration">¡Correcto! 📊⭐</div>
         )}
 
-        <p className="gb__titulo">{current.titulo}</p>
+        <p className="gb__enunciado">{current.question}</p>
 
         <Grafico exercise={current} />
-
-        <p className="gb__enunciado">{current.question}</p>
 
         <div className="gb__opciones">
           {current.options.map((opt) => {
             const clase =
               session.answerState === "correct" && opt === current.correctAnswer
-                ? " ops__option-btn--correct"
+                ? " gb__opcion--correcta"
                 : session.answerState === "wrong" && opt === session.selected
-                  ? " ops__option-btn--wrong"
+                  ? " gb__opcion--fallada"
                   : "";
             return (
               <button
                 key={opt}
                 type="button"
                 data-value={opt}
-                className={`ops__option-btn${clase}`}
+                className={`gb__opcion${clase}`}
                 disabled={session.answerState !== "idle"}
                 onClick={() => handleAnswer(opt)}
               >

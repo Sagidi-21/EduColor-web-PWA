@@ -19,7 +19,7 @@ const runTimers = (ms: number) => {
 };
 
 const opciones = (c: HTMLElement) =>
-  Array.from(c.querySelectorAll<HTMLButtonElement>(".gb__opciones .ops__option-btn"));
+  Array.from(c.querySelectorAll<HTMLButtonElement>(".gb__opcion"));
 
 const columnas = (c: HTMLElement) => Array.from(c.querySelectorAll<HTMLElement>(".gb__columna"));
 const marcas = (c: HTMLElement) =>
@@ -78,7 +78,8 @@ describe("graficoBarras — el gráfico", () => {
     const cols = columnas(container);
     expect(cols).toHaveLength(ex.bars.length);
     expect(cols.map((c) => c.dataset.etiqueta)).toEqual(ex.bars.map((b) => b.etiqueta));
-    expect(container.querySelector(".gb__titulo")?.textContent).toBe(ex.titulo);
+    expect(container.querySelector(".gb__titulo")).toBeNull();
+    expect(container.querySelector(".gb__enunciado")?.textContent).toBe(ex.question);
     for (const [i, barra] of ex.bars.entries()) {
       expect(cols[i]!.querySelector(".gb__emoji")?.textContent).toBe(barra.emoji);
     }
@@ -204,7 +205,7 @@ describe("graficoBarras — el enunciado y las opciones", () => {
 
     expect(container.querySelector(".gb__enunciado")?.textContent).toBe(ex.question);
     expect(opciones(container).map((b) => b.dataset.value)).toEqual(ex.options);
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("el enunciado de máximo y mínimo usa el sustantivo en singular", () => {
@@ -239,12 +240,12 @@ describe("graficoBarras — el enunciado y las opciones", () => {
     const { container } = render(<GraficoBarrasScreen {...props("easy")} />);
 
     acertar(container, lista[0]!.correctAnswer);
-    expect(container.querySelector(".ops__option-btn--correct")).not.toBeNull();
+    expect(container.querySelector(".gb__opcion--correcta")).not.toBeNull();
     expect(container.querySelector(".ops__stage")?.className).toContain("ops__stage--correct");
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
 
     runTimers(AUTOAVANCE_MS);
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
     expect(container.querySelector(".gb__enunciado")?.textContent).toBe(lista[1]!.question);
   });
 
@@ -254,13 +255,13 @@ describe("graficoBarras — el enunciado y las opciones", () => {
 
     acertar(container, otra(lista[0]!));
 
-    expect(container.querySelector(".ops__option-btn--wrong")).not.toBeNull();
-    expect(container.querySelector(".ops__option-btn--correct")).toBeNull();
+    expect(container.querySelector(".gb__opcion--fallada")).not.toBeNull();
+    expect(container.querySelector(".gb__opcion--correcta")).toBeNull();
     expect(container.querySelector(".ops__stage")?.className).toContain("ops__stage--wrong");
     expect(container.querySelector(".activity-action--retry")).not.toBeNull();
 
     runTimers(AUTOAVANCE_MS * 3);
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("no deja contestar dos veces el mismo ejercicio", () => {
@@ -272,7 +273,7 @@ describe("graficoBarras — el enunciado y las opciones", () => {
 
     acertar(container, ex.correctAnswer);
     expect(container.querySelector(".ops__stage")?.className).not.toContain("ops__stage--correct");
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("tras reintentar se puede acertar y desaparece el reintento", () => {
@@ -281,10 +282,10 @@ describe("graficoBarras — el enunciado y las opciones", () => {
 
     acertar(container, otra(ex));
     fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--retry")!);
-    expect(container.querySelector(".ops__option-btn--wrong")).toBeNull();
+    expect(container.querySelector(".gb__opcion--fallada")).toBeNull();
 
     acertar(container, ex.correctAnswer);
-    expect(container.querySelector(".ops__option-btn--correct")).not.toBeNull();
+    expect(container.querySelector(".gb__opcion--correcta")).not.toBeNull();
     expect(container.querySelector(".activity-action--retry")).toBeNull();
   });
 
@@ -295,8 +296,8 @@ describe("graficoBarras — el enunciado y las opciones", () => {
     acertar(container, otra(lista[0]!));
     fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--next")!);
 
-    expect(progreso(container)).toBe("2 / 10");
-    expect(container.querySelector(".ops__option-btn--wrong")).toBeNull();
+    expect(progreso(container)).toBe("2/10");
+    expect(container.querySelector(".gb__opcion--fallada")).toBeNull();
   });
 
   it("acertar tras fallar no puntúa doble", () => {
@@ -346,7 +347,7 @@ describe("graficoBarras — determinismo y salida", () => {
     fireEvent.click(repetir);
 
     expect(container.querySelector(".gb__enunciado")?.textContent).toBe(lista[0]!.question);
-    expect(container.querySelector(".ops__option-btn--correct")).toBeNull();
+    expect(container.querySelector(".gb__opcion--correcta")).toBeNull();
   });
 
   it("el botón de salir avisa y no cambia de ejercicio", () => {
