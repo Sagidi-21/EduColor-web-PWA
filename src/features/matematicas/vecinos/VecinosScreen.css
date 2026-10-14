@@ -118,10 +118,10 @@
 }
 
 .vec__question {
-  font-size: 1.35rem;
+  font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
-  color: var(--color-primary-dark, #1e3a8a);
+  color: var(--color-primary, #2563eb);
   max-width: 560px;
   text-wrap: balance;
 }
@@ -139,30 +139,30 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  width: 96px;
-  height: 96px;
+  width: 120px;
+  height: 120px;
   border-radius: 16px;
-  background: rgba(99, 179, 237, 0.12);
-  border: 2px solid rgba(99, 179, 237, 0.3);
-  font-size: 2.2rem;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 12%, transparent);
+  border: 2px solid color-mix(in srgb, var(--color-primary, #2563eb) 30%, transparent);
+  font-size: 4rem;
   font-weight: 900;
-  color: var(--color-primary-dark, #1e3a8a);
+  color: var(--color-primary, #2563eb);
   justify-content: center;
   font-variant-numeric: tabular-nums;
   transition: border-color 0.2s;
 }
 .vec__house--blank {
-  border-color: rgba(99, 179, 237, 0.6);
-  background: rgba(99, 179, 237, 0.06);
-  color: #63b3ed;
+  border-color: color-mix(in srgb, var(--color-primary, #2563eb) 60%, transparent);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 6%, transparent);
+  color: var(--color-primary, #2563eb);
 }
 .vec__house--center {
-  background: rgba(99, 179, 237, 0.22);
-  border-color: #63b3ed;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 22%, transparent);
+  border-color: var(--color-primary, #2563eb);
   color: #fff;
-  font-size: 2.5rem;
-  width: 110px;
-  height: 110px;
+  font-size: 4rem;
+  width: 120px;
+  height: 120px;
 }
 .vec__house-label {
   font-size: 0.65rem;
@@ -172,41 +172,48 @@
   letter-spacing: 0.05em;
 }
 .vec__arrow {
-  font-size: 1.5rem;
-  color: rgba(99, 179, 237, 0.5);
+  font-size: 3rem;
+  color: color-mix(in srgb, var(--color-primary, #2563eb) 50%, transparent);
   font-weight: 700;
 }
 
 /* Options */
 .vec__options {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  flex-wrap: nowrap;
+  gap: 3rem;
   justify-content: center;
-  max-width: 520px;
+  max-width: none;
+  margin-top: 3rem;
+}
+.vec__options--ambos {
+  flex-wrap: wrap;
+  max-width: 100%;
 }
 .vec__options--ambos .vec__opt {
   min-width: 140px;
-  font-size: 1.1rem;
+  font-size: 56px; /* ≥ 24px */
 }
 .vec__opt {
   padding: 0.75rem 1.6rem;
   min-height: 52px;
   min-width: 80px;
   border-radius: 14px;
-  border: 2px solid rgba(99, 179, 237, 0.25);
-  background: rgba(99, 179, 237, 0.08);
-  color: var(--color-primary-dark, #1e3a8a);
-  font-size: 1.35rem;
+  border: 2px solid #e2e8f0;
+  background: #fff;
+  color: var(--color-primary, #2563eb);
+  font-size: 56px; /* ≥ 24px */
   font-weight: 800;
   cursor: pointer;
   transition: all 0.16s;
   font-family: "Inter", sans-serif;
   font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
 }
 .vec__opt:hover:not(:disabled) {
-  border-color: #63b3ed;
-  background: rgba(99, 179, 237, 0.2);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
   transform: translateY(-2px);
 }
 .vec__opt:disabled {
@@ -224,12 +231,12 @@
   color: #ef4444 !important;
 }
 .vec__opt-pair {
-  font-size: 1.25rem;
+  font-size: 2.7rem;
   font-weight: 900;
 }
 .vec__opt-sep {
   color: #64748b;
-  margin: 0 0.3rem;
+  margin: 0 2.5rem;
 }
 
 /* Wrong feedback actions */
