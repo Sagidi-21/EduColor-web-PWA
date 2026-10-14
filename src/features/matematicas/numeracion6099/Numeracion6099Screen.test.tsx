@@ -120,7 +120,7 @@ describe("Numeracion6099Screen smoke", () => {
     const { container } = render(<Numeracion6099Screen {...buildProps("hard", seed)} />);
     answerWithNumpad(container, exercises[0].answer);
 
-    expect(container.querySelector(".ops__celebration")?.textContent).toContain("¡Muy bien!");
+    expect(container.querySelector(".ops__celebration")?.textContent).toContain("¡Correcto!");
     expect(container.querySelector(".ops__answer-box--correct")).not.toBeNull();
   });
 

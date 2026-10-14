@@ -44,20 +44,14 @@ function TensBlock({ number }: { number: number }) {
   const units = number % 10;
   return (
     <div className="n6099__blocks">
-      <div className="n6099__tens-row">
-        {Array.from({ length: decenas }, (_, i) => (
-          <div key={i} className="n6099__decena">
-            10
-          </div>
-        ))}
-      </div>
-      {units > 0 && (
-        <div className="n6099__units-row">
-          {Array.from({ length: units }, (_, i) => (
-            <div key={i} className="n6099__unit-dot" />
-          ))}
+      {Array.from({ length: decenas }, (_, i) => (
+        <div key={`d${i}`} className="n6099__decena">
+          10
         </div>
-      )}
+      ))}
+      {Array.from({ length: units }, (_, i) => (
+        <div key={`u${i}`} className="n6099__unit-dot" />
+      ))}
     </div>
   );
 }
@@ -179,11 +173,30 @@ export function Numeracion6099Screen({
       : session.answerState === "wrong"
         ? "ops__stage--wrong"
         : "";
+  const showCanvasPanel = !isMultiChoice && mode === "canvas";
   const bodyClass = isMultiChoice
     ? "ops__body"
     : mode === "numpad"
       ? "ops__body ops__body--with-numpad"
-      : "ops__body";
+      : showCanvasPanel
+        ? "ops__body ops__body--with-canvas"
+        : "ops__body";
+
+  const digitBoxes = (
+    <DigitBoxes
+      length={casillas}
+      values={boxes.values}
+      activeIndex={boxes.activeIndex}
+      order="ltr"
+      state={session.answerState}
+      mode={mode}
+      onSelect={boxes.onSelect}
+      onDigit={boxes.onDigit}
+      onDelete={boxes.onDelete}
+      canvasKey={canvasKey}
+      correctText={String(current.answer)}
+    />
+  );
 
   return (
     <div className="ops">
@@ -202,55 +215,40 @@ export function Numeracion6099Screen({
       <div className={bodyClass}>
         <div className={`ops__stage ${stageClass}`}>
           {session.answerState === "correct" && (
-            <div className="ops__celebration">¡Muy bien! ⭐</div>
+            <div className="ops__celebration">¡Correcto! ⭐</div>
           )}
 
           {current.type === "identify" && <TensBlock number={current.number} />}
 
           <div className="n6099__question">{current.question}</div>
 
-          {!isMultiChoice && (
-            <div className="ops__formula">
-              <DigitBoxes
-                length={casillas}
-                values={boxes.values}
-                activeIndex={boxes.activeIndex}
-                order="ltr"
-                state={session.answerState}
-                mode={mode}
-                onSelect={boxes.onSelect}
-                onDigit={boxes.onDigit}
-                onDelete={boxes.onDelete}
-                canvasKey={canvasKey}
-                correctText={String(current.answer)}
-              />
-            </div>
-          )}
+          {!isMultiChoice && !showCanvasPanel && <div className="ops__formula">{digitBoxes}</div>}
         </div>
 
-        {(isMultiChoice || mode === "numpad" || session.answerState === "wrong") && (
+        {(isMultiChoice ||
+          mode === "numpad" ||
+          showCanvasPanel ||
+          session.answerState === "wrong") && (
           <footer className="ops__footer">
             {isMultiChoice ? (
               <div className="n6099__options">
-                <div className="n6099__options-grid">
-                  {(current.options ?? []).map((opt, i) => {
-                    let cls = "n6099__option";
-                    if (session.answerState === "correct" && opt === current.answer)
-                      cls += " n6099__option--correct";
-                    else if (session.answerState === "wrong" && opt === session.chosen)
-                      cls += " n6099__option--wrong";
-                    return (
-                      <button
-                        key={i}
-                        className={cls}
-                        onClick={() => handleChoice(opt)}
-                        disabled={session.answerState !== "idle"}
-                      >
-                        {opt}
-                      </button>
-                    );
-                  })}
-                </div>
+                {(current.options ?? []).map((opt, i) => {
+                  let cls = "n6099__option";
+                  if (session.answerState === "correct" && opt === current.answer)
+                    cls += " n6099__option--correct";
+                  else if (session.answerState === "wrong" && opt === session.chosen)
+                    cls += " n6099__option--wrong";
+                  return (
+                    <button
+                      key={i}
+                      className={cls}
+                      onClick={() => handleChoice(opt)}
+                      disabled={session.answerState !== "idle"}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
                 {session.answerState === "wrong" && (
                   <ActionButtons onRetry={handleRetry} onNext={handleNext} />
                 )}
@@ -265,6 +263,7 @@ export function Numeracion6099Screen({
                     disabled={session.answerState !== "idle"}
                   />
                 )}
+                {showCanvasPanel && <div className="ops__formula">{digitBoxes}</div>}
                 {session.answerState === "wrong" && (
                   <ActionButtons onRetry={handleRetry} onNext={handleNext} />
                 )}
