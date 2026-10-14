@@ -291,7 +291,7 @@ function BalanzaDibujo({
 
   return (
     <svg
-      ref={svgRef}
+      ref={svgRef as React.Ref<SVGSVGElement>}
       className="blz__svg"
       viewBox={`0 0 ${VIEW.w} ${VIEW.h}`}
       role="img"
