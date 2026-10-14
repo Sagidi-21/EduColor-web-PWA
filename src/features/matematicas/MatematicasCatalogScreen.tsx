@@ -102,10 +102,6 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
           onBlockChange={setBlockId}
         />
 
-        <p className="mat__migration-note">
-          El catálogo procede de los manifiestos. Solo se inician los motores ya migrados a la PWA.
-        </p>
-
         {activityGroups.map(({ block, activities }) => (
           <section key={block.id} className="mat__section">
             <h2 className="mat__section-title">
