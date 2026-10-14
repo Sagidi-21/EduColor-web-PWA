@@ -10,22 +10,29 @@
 }
 
 .activity-header__exit {
-  padding: 7px 14px;
+  padding: 8px 18px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.2);
-  color: inherit;
-  font-size: 13px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-size: 15px;
   font-weight: 700;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid #fff;
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: background 0.15s;
+  transition: all 0.15s ease;
 }
 
 .activity-header__exit:hover,
 .activity-header__exit:focus-visible {
-  background: rgba(255, 255, 255, 0.32);
+  background: #fff;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.activity-header__exit:active {
+  transform: translateY(0);
 }
 
 .activity-header__info {
