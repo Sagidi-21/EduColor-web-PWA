@@ -188,7 +188,7 @@ export function ParImparScreen({
   }`;
 
   return (
-    <div className="ops">
+    <div className="ops pi">
       <ActivityHeader
         onExit={onExit}
         gradeTitle={gradeTitle}
@@ -206,6 +206,10 @@ export function ParImparScreen({
       <div className={`ops__stage ${stageClass}`}>
         {session.answerState === "correct" && <div className="ops__celebration">¡Muy bien! ⭐</div>}
 
+        <p className={`pi__question${difficulty !== "easy" ? " pi__question--lg" : ""}`}>
+          {questionWithParityWords(current.question)}
+        </p>
+
         {current.visualItems && (
           <div className="pi__objects" aria-label={`${current.visualItems.count} objetos`}>
             {Array.from({ length: current.visualItems.count }, (_, i) => (
@@ -215,8 +219,6 @@ export function ParImparScreen({
             ))}
           </div>
         )}
-
-        <p className="pi__question">{questionWithParityWords(current.question)}</p>
 
         {isWriting && (
           <div className="ops__formula">
