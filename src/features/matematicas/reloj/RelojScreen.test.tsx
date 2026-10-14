@@ -206,7 +206,7 @@ describe("RelojScreen smoke", () => {
     );
   });
 
-  it("analog_to_digital y match_scene muestran agujas; los otros dos, display digital", () => {
+  it("analog_to_digital y match_scene muestran agujas; digital_read el display; digital_to_analog solo el enunciado", () => {
     for (const tipo of [
       "analog_to_digital",
       "digital_to_analog",
@@ -218,7 +218,10 @@ describe("RelojScreen smoke", () => {
 
       const conAgujas = tipo === "analog_to_digital" || tipo === "match_scene";
       expect(container.querySelector(".reloj__clock-svg") !== null).toBe(conAgujas);
-      expect(container.querySelector(".reloj__digital-display") !== null).toBe(!conAgujas);
+      // En digital_to_analog la hora ya va en el enunciado: no se repite el display.
+      expect(container.querySelector(".reloj__digital-display") !== null).toBe(
+        tipo === "digital_read",
+      );
 
       cleanup();
     }
@@ -226,6 +229,7 @@ describe("RelojScreen smoke", () => {
 
   it("en digital_to_analog las opciones son relojes, no textos", () => {
     const { diff, semilla } = semillaQueEmpiezaCon("digital_to_analog");
+    const ex = relojEngine.generateSession(diff, semilla)[0];
     const { container } = render(<RelojScreen {...props(diff, semilla)} />);
 
     const botones = optionButtons(container);
@@ -238,9 +242,10 @@ describe("RelojScreen smoke", () => {
       expect(svg.getAttribute("width")).toBe("96");
       expect(svg.getAttribute("height")).toBe("96");
     });
-    // El enunciado anuncia la hora digital, que es lo que hay que traducir.
-    expect(container.querySelector(".reloj__digital-display")?.textContent).toContain(
-      relojEngine.generateSession(diff, semilla)[0].hours,
+    // La hora digital solo aparece en el enunciado, no como display duplicado.
+    expect(container.querySelector(".reloj__digital-display")).toBeNull();
+    expect(container.querySelector(".reloj__question")?.textContent).toContain(
+      `${ex.hours}:${String(ex.minutes).padStart(2, "0")}`,
     );
   });
 

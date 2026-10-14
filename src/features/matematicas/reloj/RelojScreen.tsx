@@ -343,7 +343,11 @@ export function RelojScreen({
         progress={`${session.currentIndex + 1}/${total}`}
       />
 
-      <div className={`reloj__stage ${stageClass}`}>
+      <div
+        className={`reloj__stage ${stageClass}${
+          current.type === "digital_read" ? " reloj__stage--digital-read" : ""
+        }`}
+      >
         {session.answerState === "correct" && (
           <div className="reloj__celebration">¡Correcto! ⏰⭐</div>
         )}
@@ -359,8 +363,8 @@ export function RelojScreen({
               <AnalogClock hours={current.hours} minutes={current.minutes} />
             </div>
           )}
-          {/* Display digital para traducir a agujas y para leer en voz alta. */}
-          {(current.type === "digital_to_analog" || current.type === "digital_read") && (
+          {/* Solo en digital_read: en digital_to_analog la hora ya va en el enunciado. */}
+          {current.type === "digital_read" && (
             <DigitalDisplay hours={current.hours} minutes={current.minutes} />
           )}
         </div>

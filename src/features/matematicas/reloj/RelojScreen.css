@@ -43,6 +43,11 @@
   top: calc(1rem + 40px);
 }
 
+/* Con display digital el enunciado ocupa menos alto: el aviso baja 20px menos. */
+.reloj .reloj__stage--digital-read .reloj__celebration {
+  top: calc(1rem + 20px);
+}
+
 .reloj__stage--correct {
   background: #f0fdf4;
 }
@@ -78,7 +83,7 @@
 }
 
 .reloj__question {
-  font-size: 42px;
+  font-size: 40px;
   font-weight: 700;
   text-align: center;
   color: #1e293b;

@@ -53,8 +53,8 @@ const EXPERT_MINS: RelojMinutes[] = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 5
  * tarde), las 2 (comer o merendar), las 3 y media (siesta o vuelta de la tarde)
  * y las 9 de dormir, que además chocaba con "Comienzan las clases" a las 9:30.
  *
- * Va exportado para que los tests puedan afirmar sobre la escena sin reescribir
- * los emojis, que es donde lo ve el alumno.
+ * Lista histórica de escenas (ya no se meten en el enunciado: hard/expert
+ * preguntan solo «¿Qué hora marca el reloj?»). Se exporta para tests.
  */
 export const SCENES = [
   { hour: 7, min: 0, scene: "☀️ Hora de despertarse" },
@@ -195,10 +195,9 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Relo
       });
       continue;
     } else {
-      const scene = SCENES.find((s) => s.hour === hours && s.min === minutes);
-      question = scene
-        ? `Son ${timeLabel(hours, minutes)}. ${scene.scene}. ¿Qué hora es?`
-        : `La actividad es a ${timeLabel(hours, minutes)}. ¿Qué hora marca el reloj?`;
+      // match_scene (hard y expert): leer el reloj, sin pista escrita de la hora
+      // (ni escena ni «la actividad es a…»).
+      question = "¿Qué hora marca el reloj?";
     }
 
     out.push({ type, hours, minutes, question, options: allOpts, correctAnswer: correctStr });

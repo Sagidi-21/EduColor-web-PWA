@@ -150,17 +150,11 @@ describe("reloj — generateSession", () => {
       );
     });
 
-    it("cada match_scene enuncia la escena de SCENES o, si no hay, la actividad", () => {
+    it("cada match_scene pregunta solo qué hora marca el reloj, sin pista escrita", () => {
       generateSession("hard", 42)
         .filter((ex) => ex.type === "match_scene")
         .forEach((ex) => {
-          const escena = SCENES.find((s) => s.hour === ex.hours && s.min === ex.minutes);
-          const spoken = timeLabel(ex.hours, ex.minutes);
-          expect(ex.question).toBe(
-            escena
-              ? `Son ${spoken}. ${escena.scene}. ¿Qué hora es?`
-              : `La actividad es a ${spoken}. ¿Qué hora marca el reloj?`,
-          );
+          expect(ex.question).toBe("¿Qué hora marca el reloj?");
         });
     });
 
@@ -184,6 +178,14 @@ describe("reloj — generateSession", () => {
 
     it("no usa analog_to_digital, que es el tipo exclusivo de easy", () => {
       generateSession("expert", 42).forEach((ex) => expect(ex.type).not.toBe("analog_to_digital"));
+    });
+
+    it("cada match_scene pregunta solo qué hora marca el reloj, sin pista escrita", () => {
+      generateSession("expert", 42)
+        .filter((ex) => ex.type === "match_scene")
+        .forEach((ex) => {
+          expect(ex.question).toBe("¿Qué hora marca el reloj?");
+        });
     });
   });
 
@@ -398,17 +400,15 @@ describe("reloj — SCENES", () => {
     expect(new Set(claves).size).toBe(SCENES.length);
   });
 
-  it("el emoji de cada escena sigue llegando al enunciado del ejercicio que la usa", () => {
-    // Sin reescribir los textos: se toma el de la propia lista.
-    const conEscena = generateSession("hard", 42).filter(
-      (ex) =>
-        ex.type === "match_scene" &&
-        SCENES.some((s) => s.hour === ex.hours && s.min === ex.minutes),
-    );
-    expect(conEscena.length).toBeGreaterThan(0);
-    conEscena.forEach((ex) => {
-      const escena = SCENES.find((s) => s.hour === ex.hours && s.min === ex.minutes)!;
-      expect(ex.question).toContain(escena.scene);
+  it("hard y expert ya no meten la escena ni la hora hablada en el enunciado", () => {
+    (["hard", "expert"] as const).forEach((diff) => {
+      generateSession(diff, 42)
+        .filter((ex) => ex.type === "match_scene")
+        .forEach((ex) => {
+          expect(ex.question).toBe("¿Qué hora marca el reloj?");
+          SCENES.forEach((s) => expect(ex.question).not.toContain(s.scene));
+          expect(ex.question).not.toMatch(/actividad es a|Son /);
+        });
     });
   });
 });
