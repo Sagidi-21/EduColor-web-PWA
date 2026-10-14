@@ -166,8 +166,8 @@ export function WeekDaysScreen({
 
       <div className={`wd__stage ${stageClass}`}>
         {session.answerState === "correct" && <div className="wd__celebration">¡Muy bien! ⭐</div>}
-        <WeekStrip highlight={dayMentioned} />
         <p className="wd__question">{current.question}</p>
+        <WeekStrip highlight={dayMentioned} />
       </div>
 
       <footer className="wd__footer">
