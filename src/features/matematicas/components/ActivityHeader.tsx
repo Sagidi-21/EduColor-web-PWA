@@ -13,6 +13,7 @@ export interface ActivityHeaderProps {
   difficultyStars?: string;
   mascotUrl?: string;
   progress?: string;
+  /** Slot central: entre el título y las estrellas. */
   children?: ReactNode;
 }
 
@@ -51,6 +52,9 @@ export function ActivityHeader({
         {headerTitle && <span className="activity-header__title">{headerTitle}</span>}
       </div>
 
+      {/* Hueco flexible entre título y estrellas; centra lo que haya (p. ej. Verificar/Siguiente). */}
+      <div className="activity-header__center">{children}</div>
+
       <div className="activity-header__right">
         {showLevelChips ? (
           <div className="activity-header__levels" role="group" aria-label="Nivel de dificultad">
@@ -78,7 +82,6 @@ export function ActivityHeader({
             </span>
           )
         )}
-        {children}
         {progress && (
           <span className="activity-header__counter" aria-label={`Ejercicio ${progress}`}>
             {progress}

@@ -36,11 +36,22 @@
 }
 
 .activity-header__info {
-  flex: 1;
+  flex: 0 1 auto;
   display: flex;
   flex-direction: column;
   gap: 1px;
   min-width: 0;
+  max-width: 42%;
+}
+
+.activity-header__center {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  align-self: stretch;
 }
 
 .activity-header__meta {

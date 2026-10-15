@@ -10,14 +10,9 @@ import {
 import type { EngineScreenProps } from "../engine-screens";
 import { playFeedback } from "../../shared/audioFeedback";
 import { ActivityHeader } from "../components/ActivityHeader";
-import { ActionButtons } from "../components/ActivityActionButtons";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { NoExerciseNotice } from "../components/NoExerciseNotice";
-import { ActivityErrorBoundary } from "../components/ActivityErrorBoundary";
 import { Numpad } from "../../shared/components/Numpad";
-import InputModeToggle from "../../shared/components/InputModeToggle";
-import { useInputMode } from "../../shared/hooks/useInputMode";
-import { LazyDigitCell } from "../../shared/DigitCell";
 
 import "./LaberintoMatematicoScreen.css";
 
@@ -32,7 +27,6 @@ const BG_MODS = import.meta.glob<string>("../../../assets/laberinto/*.{jpg,jpeg,
 const bgList: string[] = Object.values(BG_MODS).filter(Boolean);
 
 // ── Geometría del tablero ──────────────────────────────────────────────────
-// Filas al 27 / 52 / 77 % (subidas para que los nodos no se junten al pie).
 const NODE_POS: Record<NodeId, [number, number]> = {
   S: [20, 27],
   A: [40, 27],
@@ -45,55 +39,47 @@ const NODE_POS: Record<NodeId, [number, number]> = {
   H: [80, 77],
 };
 
-// Los círculos de operación se quedan en el CENTRO de cada hueco, alineados con
-// los nodos (misma fila y mismo nivel de columna).
 const OP_POS: [number, number][] = [
   [30, 27],
   [50, 27],
-  [70, 27], // horizontal: fila 1
+  [70, 27],
   [40, 39.5],
-  [60, 39.5], // vertical: entre filas 1 y 2 (27↔52)
+  [60, 39.5],
   [40, 64.5],
-  [60, 64.5], // vertical: entre filas 2 y 3 (52↔77)
-  [70, 77], // G→H: fila 3
+  [60, 64.5],
+  [70, 77],
 ];
 
 /** Las tres salidas. Solo se usa para saber qué nodos se pintan como meta. */
 const FIN_LABEL: Partial<Record<NodeId, string>> = { C: "FIN A", F: "FIN B", H: "FIN C" };
 
-// Flechas del SVG: van por el LADO, nunca sobre los círculos ni sobre las casillas.
-// viewBox 1200×675; nodos 100×56 (mitad 50×28); círculos ø70 centrados en cada hueco.
-// Enlaces horizontales: la flecha flota ARRIBA de la fila (círculos en y≈182) → y=125.
-// El enlace G→H flota ABAJO de la fila 3 (borde inferior 514) → y=545.
-// Enlaces verticales: la flecha baja por la IZQUIERDA de la columna → x=398 / 638.
+/**
+ * Botones sobre el dibujo (mismos % que los nodos):
+ * Y = 2.ª fila de columnas (D/E, 52%); Verificar X = INICIO (20%); Siguiente X = finales (80%).
+ */
+const BTN_VERIFY_POS: [number, number] = [NODE_POS.S[0], NODE_POS.D[1]];
+const BTN_NEXT_POS: [number, number] = [NODE_POS.C[0], NODE_POS.D[1]];
+
 const SVG_LINES: [number, number, number, number][] = [
-  [300, 125, 420, 125], // S→A, sobre la fila 1
-  [540, 125, 660, 125], // A→B
-  [780, 125, 900, 125], // B→C
-  [398, 220, 398, 300], // A→D, a la izquierda de la columna A
-  [638, 220, 638, 300], // B→E, a la izquierda de la columna B
-  [398, 389, 398, 469], // D→F, a la izquierda de la columna A
-  [638, 389, 638, 469], // E→G, a la izquierda de la columna B
-  [780, 577, 900, 577], // G→H, bajo la fila 3
+  [300, 125, 420, 125],
+  [540, 125, 660, 125],
+  [780, 125, 900, 125],
+  [398, 220, 398, 300],
+  [638, 220, 638, 300],
+  [398, 389, 398, 469],
+  [638, 389, 638, 469],
+  [780, 577, 900, 577],
 ];
 
-// Valores posicionales (primero las unidades): índice 0 = unidades.
-const PLACE_ABBR = ["U", "D", "C", "UM"];
-const PLACE_NAMES = ["unidades", "decenas", "centenas", "unidades de millar"];
-
 type ValState = "empty" | "ok" | "err";
-/** Qué está activo: un nodo del tablero, la respuesta final, o nada. */
-type ActiveTgt = NodeId | "final" | null;
+type ActiveTgt = NodeId | null;
+/** Tras Verificar con errores, el botón pasa a Reintentar. */
+type VerifyPhase = "idle" | "hasErrors";
 
 const emptyVals = (): Record<string, string> =>
   Object.fromEntries(FILLABLE_NODES.map((n) => [n, ""]));
 const emptyState = (): Record<string, ValState> =>
   Object.fromEntries(FILLABLE_NODES.map((n) => [n, "empty" as ValState]));
-
-/** Cuántas cifras tiene el número que va en un nodo. */
-function digitosDe(n: number): number {
-  return String(n).length;
-}
 
 export function LaberintoMatematicoScreen({
   activity,
@@ -105,202 +91,142 @@ export function LaberintoMatematicoScreen({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps): JSX.Element {
-  /**
-   * Curso del motor. El original lo sacaba del texto de la cabecera
-   * (`gradeLabel.includes("2")`); aquí sale del manifiesto, que es donde vive el
-   * dato y no depende de cómo se escriba el título. `laberintoMatematico` es de
-   * 1.º y `laberintoMatematico2` de 2.º, y cada uno tiene su tabla de límites.
-   */
   const grade: LaberintoGrade = activity.gradeIds.includes("grade-2") ? "2" : "1";
-
-  const { mode, toggle } = useInputMode();
 
   const [exercises] = useState<LaberintoExercise[]>(() => generateSession(difficulty, seed, grade));
   const [exIdx, setExIdx] = useState(0);
   const [vals, setVals] = useState(emptyVals);
   const [states, setStates] = useState(emptyState);
-  const [finalAns, setFinalAns] = useState("");
-  const [finalSt, setFinalSt] = useState<ValState>("empty");
-  const [revealed, setRevealed] = useState(false);
+  const [verifyPhase, setVerifyPhase] = useState<VerifyPhase>("idle");
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState<SessionResult | null>(null);
   const [startTime] = useState(() => Date.now());
   const [active, setActive] = useState<ActiveTgt>(null);
-  const [digitIdx, setDigitIdx] = useState(0);
   const didScore = useRef(false);
 
   const bgUrl = bgList.length > 0 ? bgList[seed % bgList.length] : undefined;
   const ex = exercises[exIdx];
   const total = exercises.length;
 
-  // Un setter combinado: activar un nodo deja el cursor de cifra en el principio.
   const activateNode = (t: ActiveTgt) => {
     setActive(t);
-    setDigitIdx(0);
   };
 
   /**
-   * Las cifras se guardan de unidades hacia delante (U=pos0, D=pos1, C=pos2), que
-   * es como se opera en el tablero; al pintar se da la vuelta.
+   * Las cifras se guardan de unidades hacia delante (U=pos0, D=pos1, C=pos2);
+   * al pintar se da la vuelta.
    */
   const assembleNum = (s: string): number => {
     if (!s) return NaN;
     return parseInt(s.split("").reverse().join(""), 10);
   };
 
-  /** Cuántas cifras pide cada nodo, para saber cuándo dejar de aceptar más. */
-  const nDigits = (nid: string): number =>
-    nid === "final"
-      ? digitosDe(ex?.answers[ex.correctFin] ?? 0)
-      : digitosDe(ex?.answers[nid as NodeId] ?? 0);
-
-  // ── Validación ──────────────────────────────────────────────────────────
-  // `val` siempre va de unidades hacia delante (numpad y lienzo).
-  const validateNodeVal = (nodeId: string, val?: string) => {
-    if (!ex) return;
-    const num = assembleNum(val ?? vals[nodeId] ?? "");
-    if (isNaN(num)) return;
-    const ok = validateNode(ex, nodeId as Exclude<NodeId, "S">, num);
-    playFeedback(ok);
-    setStates((s) => ({ ...s, [nodeId]: ok ? "ok" : "err" }));
-    if (!ok) {
-      // El error se ve unos instantes y la casilla vuelve a quedar vacía.
-      setTimeout(() => setStates((s) => ({ ...s, [nodeId]: "empty" })), 380);
-    }
-  };
-
-  const validateFinalVal = (ans: string) => {
-    if (!ex) return;
-    const num = parseInt(ans, 10);
-    if (isNaN(num)) return;
-    /**
-     * Se compara con el nodo que el motor marca como respuesta, que puede ser
-     * una salida o un nodo intermedio, y solo en el caso extremo de que el mayor
-     * (o el menor) sea el número de inicio sería `S`, que no es rellenable.
-     */
-    const ok = num === ex.answers[ex.correctFin];
-    playFeedback(ok);
-    setFinalSt(ok ? "ok" : "err");
-    if (ok) {
-      if (!revealed && !didScore.current) {
-        didScore.current = true;
-        setScore((s) => s + 1);
-      }
-    } else {
-      setTimeout(() => setFinalSt("empty"), 380);
-    }
-  };
-
-  // ── Numpad ──────────────────────────────────────────────────────────────
+  // ── Numpad: solo escribe; la corrección es con Verificar ─────────────────
   const handleDigit = (key: string) => {
-    if (!active || revealed) return;
-    if (active === "final") setFinalAns((v) => (v + key).slice(-4));
-    else setVals((v) => ({ ...v, [active]: (v[active] + key).slice(-4) }));
+    if (!active || states[active] === "ok") return;
+    setVals((v) => ({ ...v, [active]: (v[active] + key).slice(-4) }));
+    if (states[active] === "err") {
+      setStates((s) => ({ ...s, [active]: "empty" }));
+    }
   };
 
   const handleDelete = () => {
-    if (!active || revealed) return;
-    if (active === "final") setFinalAns((v) => v.slice(0, -1));
-    else setVals((v) => ({ ...v, [active]: v[active].slice(0, -1) }));
-  };
-
-  const handleConfirm = () => {
-    if (!active || revealed) return;
-    if (active === "final") validateFinalVal(finalAns);
-    else validateNodeVal(active);
-    activateNode(null);
-  };
-
-  // ── Clic en un nodo ─────────────────────────────────────────────────────
-  const handleNodeClick = (nid: NodeId) => {
-    if (revealed || states[nid] === "ok") return;
-    activateNode(nid);
-  };
-
-  // ── Confirmación de cifra escrita a mano (avanza y valida solo) ──────────
-  const handleCanvasConfirm = (digit: string) => {
-    if (!active || active === "final" || !ex) return;
-    const nid = active;
-    const dCount = nDigits(nid);
-    const cur = vals[nid] ?? "";
-    if (cur.length >= dCount) return; // ya está lleno: se ignora un confirm doble
-    const newVal = cur + digit;
-    setVals((v) => ({ ...v, [nid]: newVal }));
-    if (newVal.length >= dCount) {
-      const num = assembleNum(newVal);
-      const ok = num === ex.answers[nid];
-      playFeedback(ok);
-      setStates((s) => ({ ...s, [nid]: ok ? "ok" : "err" }));
-      if (!ok) {
-        setTimeout(() => {
-          setStates((s) => ({ ...s, [nid]: "empty" }));
-          setVals((v) => ({ ...v, [nid]: "" }));
-        }, 380);
-      }
-      activateNode(null);
-    } else {
-      setDigitIdx(newVal.length); // índice absoluto: no se pasa de largo
+    if (!active || states[active] === "ok") return;
+    setVals((v) => ({ ...v, [active]: v[active].slice(0, -1) }));
+    if (states[active] === "err") {
+      setStates((s) => ({ ...s, [active]: "empty" }));
     }
   };
 
-  // ── Revelar y avanzar ───────────────────────────────────────────────────
-  const handleReveal = () => {
-    if (!ex) return;
-    const nv: Record<string, string> = {};
-    const ns: Record<string, ValState> = {};
-    // Se guarda de unidades hacia delante para que el nodo se pinte bien.
-    FILLABLE_NODES.forEach((n) => {
-      nv[n] = String(ex.answers[n]).split("").reverse().join("");
-      ns[n] = "ok";
-    });
-    setVals(nv);
-    setStates(ns);
-    // La respuesta final es una cadena normal, no hay que darle la vuelta.
-    setFinalAns(String(ex.answers[ex.correctFin]));
-    setFinalSt("ok");
-    setRevealed(true);
+  const handleConfirm = () => {
+    if (!active) return;
     activateNode(null);
   };
 
-  /** Solo se puede pasar de exercise having acertado la pregunta o revelando. */
-  const canAdvance = finalSt === "ok" || revealed;
+  const handleNodeClick = (nid: NodeId) => {
+    if (states[nid] === "ok") return;
+    activateNode(nid);
+  };
 
+  /** Comprueba todos los nodos rellenables y pinta ok / err. */
+  const handleVerify = () => {
+    if (!ex) return;
+    const next: Record<string, ValState> = { ...states };
+
+    FILLABLE_NODES.forEach((nid) => {
+      if (states[nid] === "ok") {
+        next[nid] = "ok";
+        return;
+      }
+      const num = assembleNum(vals[nid] ?? "");
+      const ok = !isNaN(num) && validateNode(ex, nid as Exclude<NodeId, "S">, num);
+      next[nid] = ok ? "ok" : "err";
+    });
+
+    const allOk = FILLABLE_NODES.every((nid) => next[nid] === "ok");
+    const anyErr = FILLABLE_NODES.some((nid) => next[nid] === "err");
+
+    setStates(next);
+    activateNode(null);
+    playFeedback(allOk);
+
+    if (allOk) {
+      if (!didScore.current) {
+        didScore.current = true;
+        setScore((s) => s + 1);
+      }
+      setVerifyPhase("idle");
+    } else if (anyErr) {
+      setVerifyPhase("hasErrors");
+    }
+  };
+
+  /** Solo limpia los nodos fallados; los correctos se mantienen. */
+  const handleRetryFailed = () => {
+    setVals((v) => {
+      const nv = { ...v };
+      FILLABLE_NODES.forEach((nid) => {
+        if (states[nid] === "err") nv[nid] = "";
+      });
+      return nv;
+    });
+    setStates((s) => {
+      const ns = { ...s };
+      FILLABLE_NODES.forEach((nid) => {
+        if (s[nid] === "err") ns[nid] = "empty";
+      });
+      return ns;
+    });
+    setVerifyPhase("idle");
+    activateNode(null);
+  };
+
+  /** Pasa al siguiente laberinto sin exigir verificar. */
   const handleNext = () => {
-    if (!canAdvance) return;
     if (exIdx >= exercises.length - 1) {
       setFinished({ correct: score, total: exercises.length, duration: Date.now() - startTime });
     } else {
       setExIdx((i) => i + 1);
       setVals(emptyVals());
       setStates(emptyState());
-      setFinalAns("");
-      setFinalSt("empty");
-      setRevealed(false);
+      setVerifyPhase("idle");
       didScore.current = false;
       activateNode(null);
     }
   };
 
-  /**
-   * "Repetir" reinicia el tablero. Como en el original, la sesión es la misma:
-   * el botón repite los mismos cinco laberintos, no tienta otros.
-   */
   const handleRestart = () => {
     setFinished(null);
     setExIdx(0);
     setVals(emptyVals());
     setStates(emptyState());
-    setFinalAns("");
-    setFinalSt("empty");
-    setRevealed(false);
+    setVerifyPhase("idle");
     setScore(0);
     setActive(null);
-    setDigitIdx(0);
+    didScore.current = false;
   };
 
-  // ── Qué se ve en cada momento ────────────────────────────────────────────
-  const showNumpad = (mode === "numpad" || active === "final") && active !== null && !revealed;
-  const showCanvas = mode === "canvas" && active !== null && active !== "final" && !revealed;
+  const showNumpad = active !== null;
 
   if (finished) {
     return (
@@ -315,24 +241,13 @@ export function LaberintoMatematicoScreen({
 
   if (!ex) return <NoExerciseNotice activityTitle={activity.title} onExit={onExit} />;
 
-  const popupDCount = active && active !== "final" ? nDigits(active) : 1;
-
-  const canvasState =
-    active && active !== "final"
-      ? states[active] === "ok"
-        ? "correct"
-        : states[active] === "err"
-          ? "wrong"
-          : "idle"
-      : "idle";
-
   return (
     <div
       className={`lm-wrap ${className || ""}`}
       onClick={(e) => {
-        // Un clic fuera de los nodos, del pie y del lienzo desactiva lo activo.
-        if ((e.target as HTMLElement).closest(".lm-node,.lm-foot,.lm-canvas-overlay") === null)
+        if ((e.target as HTMLElement).closest(".lm-node,.lm-foot,.lm-board-btn") === null) {
           activateNode(null);
+        }
       }}
     >
       <ActivityHeader
@@ -343,11 +258,8 @@ export function LaberintoMatematicoScreen({
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}
         progress={`${exIdx + 1}/${total}`}
-      >
-        <InputModeToggle mode={mode} onToggle={toggle} />
-      </ActivityHeader>
+      />
 
-      {/* Tablero */}
       <div className="lm-canvas">
         {bgUrl && <img className="lm-layer lm-bg" src={bgUrl} alt="" />}
 
@@ -400,7 +312,6 @@ export function LaberintoMatematicoScreen({
             INICIO
           </span>
 
-          {/* Nodo de inicio: lo pone el motor y no se toca */}
           <div
             className="lm-node lm-node-start"
             style={{ left: `${NODE_POS.S[0]}%`, top: `${NODE_POS.S[1]}%` }}
@@ -408,12 +319,34 @@ export function LaberintoMatematicoScreen({
             <span>{ex.start}</span>
           </div>
 
-          {/* Nodos rellenables */}
+          <button
+            type="button"
+            className="lm-board-btn lm-board-btn--verify"
+            style={{ left: `${BTN_VERIFY_POS[0]}%`, top: `${BTN_VERIFY_POS[1]}%` }}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (verifyPhase === "hasErrors") handleRetryFailed();
+              else handleVerify();
+            }}
+          >
+            {verifyPhase === "hasErrors" ? "Reintentar" : "Verificar"}
+          </button>
+          <button
+            type="button"
+            className="lm-board-btn lm-board-btn--next"
+            style={{ left: `${BTN_NEXT_POS[0]}%`, top: `${BTN_NEXT_POS[1]}%` }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNext();
+            }}
+          >
+            {exIdx >= exercises.length - 1 ? "Ver resultado" : "Siguiente"}
+          </button>
+
           {FILLABLE_NODES.map((nid) => {
             const isFin = nid in FIN_LABEL;
             const [l, t] = NODE_POS[nid];
             const isActive = active === nid;
-            // Sin nada escrito el valor es `NaN`, que es lo que se pinta como hueco.
             const displayVal = assembleNum(vals[nid] ?? "");
             return (
               <div
@@ -428,68 +361,10 @@ export function LaberintoMatematicoScreen({
             );
           })}
         </div>
-
-        {/* Escritura a mano */}
-        {showCanvas && (
-          <div className="lm-canvas-overlay" onClick={() => activateNode(null)}>
-            {/*
-              La escritura a mano arrastra TensorFlow.js. Va dentro de su propia
-              barrera para que, si ese trozo no llega a descargarse, el laberinto
-              siga en pantalla en vez de desaparecer entero.
-            */}
-            <ActivityErrorBoundary activityTitle={activity.title} onExit={onExit}>
-              <div className="lm-canvas-popup" onClick={(e) => e.stopPropagation()}>
-                <div className="lm-canvas-popup-label">
-                  {popupDCount > 1 && (
-                    <span className="lm-popup-digit-hint">
-                      Escribe las {PLACE_NAMES[digitIdx] ?? "cifras"}
-                    </span>
-                  )}
-                </div>
-                {/* Las casillas se leen como un número: la de la izquierda es la de
-                  mayor valor y la de la derecha, las unidades. Se escribe de
-                  unidades hacia delante, así que la primera activa es la derecha. */}
-                <div className={`lm-multi-digit lm-multi-digit-${popupDCount}`}>
-                  {Array.from({ length: popupDCount }).map((_, vi) => {
-                    const place = popupDCount - 1 - vi; // caja derecha → lugar 0 (unidades)
-                    return (
-                      <div key={vi} className="lm-digit-slot">
-                        <LazyDigitCell
-                          isActive={digitIdx === place}
-                          onActivate={() => {
-                            setDigitIdx(place);
-                            setVals((v) => ({
-                              ...v,
-                              [active as NodeId]: v[active as NodeId].slice(0, place),
-                            }));
-                          }}
-                          onConfirm={handleCanvasConfirm}
-                          onClear={() => {
-                            setVals((v) => ({
-                              ...v,
-                              [active as NodeId]: v[active as NodeId].slice(0, place),
-                            }));
-                            setDigitIdx(place);
-                          }}
-                          state={canvasState}
-                          value={vals[active as NodeId]?.[place] ?? ""}
-                        />
-                        {popupDCount > 1 && (
-                          <span className="lm-digit-place">{PLACE_ABBR[place]}</span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </ActivityErrorBoundary>
-          </div>
-        )}
       </div>
 
-      {/* Pie */}
-      <div className="lm-foot">
-        {showNumpad ? (
+      {showNumpad && (
+        <div className="lm-foot">
           <Numpad
             layout="horizontal"
             onDigit={handleDigit}
@@ -497,33 +372,8 @@ export function LaberintoMatematicoScreen({
             onConfirm={handleConfirm}
             disabled={false}
           />
-        ) : (
-          <>
-            <span className="lm-question">{ex.question}</span>
-            <input
-              className={`lm-final-input lm-ns-${finalSt}`}
-              type="button"
-              value={finalAns || "□"}
-              aria-label="Respuesta final"
-              onClick={() => {
-                if (!revealed) activateNode("final");
-              }}
-            />
-            {/*
-              Los dos botones del original ("Revelar" y "Siguiente →") salen del
-              par compartido de la app. "Revelar" hace de reintentar: es
-              idempotente, y al estar revelada ya no cambia nada.
-            */}
-            <ActionButtons
-              onRetry={handleReveal}
-              onNext={handleNext}
-              retryLabel="👁 Revelar"
-              nextLabel={exIdx >= exercises.length - 1 ? "Ver resultado" : "Siguiente →"}
-              className="lm-actions"
-            />
-          </>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

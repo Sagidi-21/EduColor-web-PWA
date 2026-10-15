@@ -42,9 +42,17 @@ export function smokeProps(
 export const DIFFICULTIES = ["easy", "medium", "hard", "expert"] as const;
 
 const numpadKey = (container: HTMLElement, key: string) => {
+  const alias =
+    key === "←" || key === deleteKey
+      ? "Borrar"
+      : key === "✓" || key === confirmKey
+        ? "Confirmar"
+        : null;
   const button = Array.from(
     container.querySelectorAll<HTMLButtonElement>(".shared-numpad__key"),
-  ).find((k) => k.textContent === key);
+  ).find(
+    (k) => k.textContent === key || (alias !== null && k.getAttribute("aria-label") === alias),
+  );
   if (!button) throw new Error(`El Numpad no tiene la tecla "${key}"`);
   return button;
 };
