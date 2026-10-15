@@ -41,7 +41,7 @@ export default defineConfig({
         screenshots: [],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2,json,bin}"],
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2,json,bin,mp4,webp,jpg,jpeg}"],
         globIgnores: ["**/benchmark-digit.html"],
         runtimeCaching: [
           {

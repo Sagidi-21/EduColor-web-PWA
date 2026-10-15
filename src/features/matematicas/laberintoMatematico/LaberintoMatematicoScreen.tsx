@@ -17,14 +17,33 @@ import { Numpad } from "../../shared/components/Numpad";
 import "./LaberintoMatematicoScreen.css";
 
 /**
- * Fondos del laberinto. La secuencia por ejercicio es determinista con la
- * semilla y garantiza que dos consecutivos no repitan (si hay ≥2 imágenes).
+ * Fondos + celebraciones. `bg_<slug>` ↔ `celeb_<slug>.mp4`.
+ * Secuencia por ejercicio determinista; vecinos no repiten fondo (si hay ≥2).
  */
-const BG_MODS = import.meta.glob<string>("../../../assets/laberinto/*.{jpg,jpeg,png,webp}", {
+const BG_MODS = import.meta.glob<string>("../../../assets/laberinto/bg_*.{jpg,jpeg,png,webp}", {
   eager: true,
   import: "default",
 });
-const bgList: string[] = Object.values(BG_MODS).filter(Boolean);
+const CELEB_MODS = import.meta.glob<string>("../../../assets/laberinto/celebraciones/celeb_*.mp4", {
+  eager: true,
+  import: "default",
+});
+
+type BgEntry = { url: string; slug: string };
+
+const bgEntries: BgEntry[] = Object.entries(BG_MODS)
+  .map(([path, url]) => {
+    const m = path.match(/bg_([^/\\]+)\.(?:jpg|jpeg|png|webp)$/i);
+    return m && url ? { url, slug: m[1] } : null;
+  })
+  .filter((e): e is BgEntry => e !== null)
+  .sort((a, b) => a.slug.localeCompare(b.slug));
+
+const celebBySlug: Record<string, string> = {};
+for (const [path, url] of Object.entries(CELEB_MODS)) {
+  const m = path.match(/celeb_([^/\\]+)\.mp4$/i);
+  if (m && url) celebBySlug[m[1]] = url;
+}
 
 /** Índices de fondo por ejercicio: distintos entre vecinos. */
 function bgIndexForExercise(seed: number, exIdx: number, n: number): number {
@@ -143,11 +162,11 @@ function arrowPath(x1: number, y1: number, x2: number, y2: number): string {
 type ValState = "empty" | "filled" | "ok" | "err";
 type ActiveTgt = (typeof FILLABLE_NODES)[number] | null;
 /** Tras Verificar con errores, el botón pasa a Reintentar. */
-type VerifyPhase = "idle" | "revealing" | "hasErrors";
+type VerifyPhase = "idle" | "revealing" | "hasErrors" | "celebrating";
 
 /** Desfase entre casillas al pintar el resultado de Verificar. */
 const VERIFY_STAGGER_MS = 700;
-/** Autoavance al siguiente laberinto tras acertar todo (patrón PWA). */
+/** Pausa antes/después de la celebración (patrón PWA). */
 const AUTOAVANCE_MS = 900;
 
 const emptyVals = (): Record<string, string> =>
@@ -195,11 +214,16 @@ export function LaberintoMatematicoScreen({
   const didScore = useRef(false);
   const revealTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const scoreRef = useRef(0);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const celebUrlRef = useRef<string | undefined>(undefined);
 
-  const bgUrl =
-    bgList.length > 0 ? bgList[bgIndexForExercise(seed, exIdx, bgList.length)] : undefined;
+  const bgEntry =
+    bgEntries.length > 0 ? bgEntries[bgIndexForExercise(seed, exIdx, bgEntries.length)] : undefined;
+  const bgUrl = bgEntry?.url;
+  const celebUrl = bgEntry ? celebBySlug[bgEntry.slug] : undefined;
   const ex = exercises[exIdx];
   const total = exercises.length;
+  const celebrating = verifyPhase === "celebrating";
 
   const clearRevealTimers = () => {
     revealTimers.current.forEach(clearTimeout);
@@ -210,7 +234,32 @@ export function LaberintoMatematicoScreen({
     scoreRef.current = score;
   }, [score]);
 
+  useEffect(() => {
+    celebUrlRef.current = celebUrl;
+  }, [celebUrl]);
+
   useEffect(() => () => clearRevealTimers(), []);
+
+  /** Precarga el vídeo del fondo actual mientras el niño completa el ejercicio. */
+  useEffect(() => {
+    if (!celebUrl) return;
+    const link = document.createElement("link");
+    link.rel = "prefetch";
+    link.as = "video";
+    link.href = celebUrl;
+    document.head.appendChild(link);
+    void fetch(celebUrl).catch(() => undefined);
+    const warm = document.createElement("video");
+    warm.preload = "auto";
+    warm.muted = true;
+    warm.src = celebUrl;
+    warm.load();
+    return () => {
+      link.remove();
+      warm.removeAttribute("src");
+      warm.load();
+    };
+  }, [celebUrl]);
 
   const activateNode = (t: ActiveTgt) => {
     setActive(t);
@@ -307,23 +356,10 @@ export function LaberintoMatematicoScreen({
           setScore(scoreRef.current);
         }
         setVerifyPhase("idle");
-        // Tras pintar todo en verde, autoavance (900 ms estándar PWA).
+        // 900 ms → celebración (fondo cobra vida) o avance si no hay vídeo.
         const t = setTimeout(() => {
-          clearRevealTimers();
-          if (exIdx >= exercises.length - 1) {
-            setFinished({
-              correct: scoreRef.current,
-              total: exercises.length,
-              duration: Date.now() - startTime,
-            });
-          } else {
-            setExIdx((i) => i + 1);
-            setVals(emptyVals());
-            setStates(emptyState());
-            setVerifyPhase("idle");
-            didScore.current = false;
-            activateNode(FILLABLE_NODES[0]);
-          }
+          if (celebUrlRef.current) setVerifyPhase("celebrating");
+          else advanceAfterSuccess();
         }, AUTOAVANCE_MS);
         revealTimers.current.push(t);
       } else if (anyErr) {
@@ -383,8 +419,8 @@ export function LaberintoMatematicoScreen({
     activateNode(firstFailed);
   };
 
-  /** Pasa al siguiente laberinto sin exigir verificar. */
-  const handleNext = () => {
+  /** Avanza tras acierto (siguiente laberinto o resumen). */
+  const advanceAfterSuccess = () => {
     clearRevealTimers();
     if (exIdx >= exercises.length - 1) {
       setFinished({
@@ -401,6 +437,44 @@ export function LaberintoMatematicoScreen({
       activateNode(FILLABLE_NODES[0]);
     }
   };
+
+  /** Pasa al siguiente laberinto sin exigir verificar (no disponible en el último). */
+  const handleNext = () => {
+    if (exIdx >= exercises.length - 1) return;
+    advanceAfterSuccess();
+  };
+
+  const isLastExercise = exIdx >= exercises.length - 1;
+
+  const handleCelebEnded = () => {
+    // Cancela el fallback de autoplay fallido si el vídeo sí llegó a terminar.
+    clearRevealTimers();
+    const t = setTimeout(() => advanceAfterSuccess(), AUTOAVANCE_MS);
+    revealTimers.current.push(t);
+  };
+
+  /** Al entrar en celebración: play del vídeo (muted si el autoplay lo exige). */
+  useEffect(() => {
+    if (verifyPhase !== "celebrating") return;
+    const el = videoRef.current;
+    if (!el || !celebUrl) {
+      const t = setTimeout(() => advanceAfterSuccess(), AUTOAVANCE_MS);
+      revealTimers.current.push(t);
+      return;
+    }
+    el.currentTime = 0;
+    el.muted = false;
+    const tryPlay = el.play();
+    if (tryPlay) {
+      tryPlay.catch(() => {
+        el.muted = true;
+        void el.play().catch(() => {
+          const t = setTimeout(() => advanceAfterSuccess(), AUTOAVANCE_MS);
+          revealTimers.current.push(t);
+        });
+      });
+    }
+  }, [verifyPhase, celebUrl, exIdx]);
 
   const handleRestart = () => {
     clearRevealTimers();
@@ -428,129 +502,146 @@ export function LaberintoMatematicoScreen({
   if (!ex) return <NoExerciseNotice activityTitle={activity.title} onExit={onExit} />;
 
   return (
-    <div className={`lm-wrap ${className || ""}`}>
-      <ActivityHeader
-        onExit={onExit}
-        gradeTitle={gradeTitle}
-        className={className}
-        unitTitle={activity.title}
-        difficultyStars={difficultyStars}
-        mascotUrl={mascotUrl}
-        progress={`${exIdx + 1}/${total}`}
-      />
+    <div className={`lm-wrap ${celebrating ? "lm-wrap--celebrating" : ""} ${className || ""}`}>
+      {!celebrating && (
+        <ActivityHeader
+          onExit={onExit}
+          gradeTitle={gradeTitle}
+          className={className}
+          unitTitle={activity.title}
+          difficultyStars={difficultyStars}
+          mascotUrl={mascotUrl}
+          progress={`${exIdx + 1}/${total}`}
+        />
+      )}
 
       <div className="lm-canvas">
         {bgUrl && <img className="lm-layer lm-bg" src={bgUrl} alt="" />}
 
-        <div className="lm-playfield">
-          <svg
-            className="lm-layer lm-svg"
-            viewBox="0 0 1200 675"
-            preserveAspectRatio="xMidYMid meet"
-            aria-hidden="true"
-          >
-            {SVG_LINES.map(([x1, y1, x2, y2], i) => (
-              <path key={i} className="lm-arrow" d={arrowPath(x1, y1, x2, y2)} />
-            ))}
-          </svg>
+        {celebrating && celebUrl && (
+          <video
+            ref={videoRef}
+            className="lm-layer lm-celeb"
+            src={celebUrl}
+            playsInline
+            preload="auto"
+            onEnded={handleCelebEnded}
+            aria-label="Celebración"
+          />
+        )}
 
-          <div className="lm-layer lm-nodes-layer">
-            {ex.edges.map((edge, i) => (
-              <div
-                key={i}
-                className="lm-op"
-                style={{ left: `${OP_POS[i][0]}%`, top: `${OP_POS[i][1]}%` }}
-              >
-                {edge.op}
-                {edge.value}
-              </div>
-            ))}
-
-            <span
-              className="lm-lbl lm-lbl-start"
-              style={{ left: "20%", top: "calc(27% - 7% - 60px)" }}
+        {!celebrating && (
+          <div className="lm-playfield">
+            <svg
+              className="lm-layer lm-svg"
+              viewBox="0 0 1200 675"
+              preserveAspectRatio="xMidYMid meet"
+              aria-hidden="true"
             >
-              Inicio
-            </span>
+              {SVG_LINES.map(([x1, y1, x2, y2], i) => (
+                <path key={i} className="lm-arrow" d={arrowPath(x1, y1, x2, y2)} />
+              ))}
+            </svg>
 
-            <div
-              className="lm-node lm-node-start"
-              style={{ left: `${NODE_POS.S[0]}%`, top: `${NODE_POS.S[1]}%` }}
-            >
-              <span>{ex.start}</span>
-            </div>
-
-            <button
-              type="button"
-              className={`lm-board-btn lm-board-btn--verify${
-                verifyPhase === "idle" && !allChecked
-                  ? " lm-board-btn--waiting"
-                  : verifyPhase === "idle" && allChecked
-                    ? " lm-board-btn--ready"
-                    : ""
-              }`}
-              style={{
-                left: `${BTN_VERIFY_POS[0]}%`,
-                top: `calc(${BTN_VERIFY_POS[1]}% - ${BTN_GAP_SHRINK_PX}px)`,
-              }}
-              disabled={verifyPhase === "revealing" || (verifyPhase === "idle" && !allChecked)}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (verifyPhase === "hasErrors") handleRetryFailed();
-                else handleVerify();
-              }}
-            >
-              <span className="lm-board-btn__label">
-                {verifyPhase === "hasErrors" ? "Reintentar" : "Verificar"}
-              </span>
-            </button>
-            <button
-              type="button"
-              className="lm-board-btn lm-board-btn--next"
-              style={{
-                left: `${BTN_NEXT_POS[0]}%`,
-                top: `calc(${BTN_NEXT_POS[1]}% + ${BTN_GAP_SHRINK_PX}px)`,
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleNext();
-              }}
-            >
-              {exIdx >= exercises.length - 1 ? "Ver resultado" : "Siguiente"}
-            </button>
-
-            {FILLABLE_NODES.map((nid) => {
-              const isFin = nid in FIN_LABEL;
-              const [l, t] = NODE_POS[nid];
-              const isActive = active === nid && states[nid] !== "ok" && !allChecked;
-              const isLockedErr = verifyPhase === "hasErrors" && states[nid] === "err";
-              const displayVal = assembleNum(vals[nid] ?? "");
-              return (
+            <div className="lm-layer lm-nodes-layer">
+              {ex.edges.map((edge, i) => (
                 <div
-                  key={nid}
-                  className={`lm-node ${isFin ? "lm-node-end" : "lm-node-reg"} lm-ns-${states[nid]} ${isActive ? "lm-node-active" : ""}${isLockedErr ? " lm-node-locked" : ""}`}
-                  style={{ left: `${l}%`, top: `${t}%` }}
-                  data-node={nid}
-                  onClick={() => handleNodeClick(nid)}
+                  key={i}
+                  className="lm-op"
+                  style={{ left: `${OP_POS[i][0]}%`, top: `${OP_POS[i][1]}%` }}
                 >
-                  <span>{isNaN(displayVal) ? "" : displayVal}</span>
+                  {edge.op}
+                  {edge.value}
                 </div>
-              );
-            })}
+              ))}
 
-            <div
-              className="lm-board-numpad"
-              style={{ left: `${NUMPAD_POS[0]}%`, top: `${NUMPAD_POS[1]}%` }}
-            >
-              <Numpad
-                onDigit={handleDigit}
-                onDelete={handleDelete}
-                onConfirm={handleConfirm}
-                disabled={false}
-              />
+              <span
+                className="lm-lbl lm-lbl-start"
+                style={{ left: "20%", top: "calc(27% - 7% - 60px)" }}
+              >
+                Inicio
+              </span>
+
+              <div
+                className="lm-node lm-node-start"
+                style={{ left: `${NODE_POS.S[0]}%`, top: `${NODE_POS.S[1]}%` }}
+              >
+                <span>{ex.start}</span>
+              </div>
+
+              <button
+                type="button"
+                className={`lm-board-btn lm-board-btn--verify${
+                  verifyPhase === "idle" && !allChecked
+                    ? " lm-board-btn--waiting"
+                    : verifyPhase === "idle" && allChecked
+                      ? " lm-board-btn--ready"
+                      : ""
+                }`}
+                style={{
+                  left: `${BTN_VERIFY_POS[0]}%`,
+                  top: `calc(${BTN_VERIFY_POS[1]}% - ${BTN_GAP_SHRINK_PX}px)`,
+                }}
+                disabled={verifyPhase === "revealing" || (verifyPhase === "idle" && !allChecked)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (verifyPhase === "hasErrors") handleRetryFailed();
+                  else handleVerify();
+                }}
+              >
+                <span className="lm-board-btn__label">
+                  {verifyPhase === "hasErrors" ? "Reintentar" : "Verificar"}
+                </span>
+              </button>
+              <button
+                type="button"
+                className={`lm-board-btn lm-board-btn--next${isLastExercise ? " lm-board-btn--last" : ""}`}
+                style={{
+                  left: `${BTN_NEXT_POS[0]}%`,
+                  top: `calc(${BTN_NEXT_POS[1]}% + ${BTN_GAP_SHRINK_PX}px)`,
+                }}
+                disabled={isLastExercise}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNext();
+                }}
+              >
+                {isLastExercise ? "Último Ejercicio" : "Siguiente"}
+              </button>
+
+              {FILLABLE_NODES.map((nid) => {
+                const isFin = nid in FIN_LABEL;
+                const [l, t] = NODE_POS[nid];
+                const isActive = active === nid && states[nid] !== "ok" && !allChecked;
+                const isLockedErr = verifyPhase === "hasErrors" && states[nid] === "err";
+                const displayVal = assembleNum(vals[nid] ?? "");
+                return (
+                  <div
+                    key={nid}
+                    className={`lm-node ${isFin ? "lm-node-end" : "lm-node-reg"} lm-ns-${states[nid]} ${isActive ? "lm-node-active" : ""}${isLockedErr ? " lm-node-locked" : ""}`}
+                    style={{ left: `${l}%`, top: `${t}%` }}
+                    data-node={nid}
+                    onClick={() => handleNodeClick(nid)}
+                  >
+                    <span>{isNaN(displayVal) ? "" : displayVal}</span>
+                  </div>
+                );
+              })}
+
+              <div
+                className="lm-board-numpad"
+                style={{ left: `${NUMPAD_POS[0]}%`, top: `${NUMPAD_POS[1]}%` }}
+              >
+                <Numpad
+                  onDigit={handleDigit}
+                  onDelete={handleDelete}
+                  onConfirm={handleConfirm}
+                  disabled={false}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

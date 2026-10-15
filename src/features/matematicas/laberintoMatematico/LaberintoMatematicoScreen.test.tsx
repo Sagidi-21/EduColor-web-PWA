@@ -73,16 +73,33 @@ const flushVerifyReveal = async () => {
 
 const AUTOAVANCE_MS = 900;
 
+/**
+ * Tras todo correcto: 900 ms → (vídeo o avance) → si hay celebración,
+ * ended + 900 ms → siguiente. Con `play` rechazado el efecto usa el
+ * mismo timer de fallback.
+ */
+const flushSuccessAdvance = async (container: HTMLElement) => {
+  await vi.advanceTimersByTimeAsync(AUTOAVANCE_MS);
+  const video = container.querySelector<HTMLVideoElement>("video.lm-celeb");
+  if (video) {
+    fireEvent.ended(video);
+    await vi.advanceTimersByTimeAsync(AUTOAVANCE_MS);
+  }
+};
+
 describe("LaberintoMatematicoScreen smoke", () => {
   beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     localStorage.clear();
     mockOnExit.mockReset();
+    // jsdom no reproduce vídeo; forzamos el fallback muted→advance.
+    vi.spyOn(HTMLMediaElement.prototype, "play").mockRejectedValue(new Error("autoplay"));
   });
 
   afterEach(() => {
     cleanup();
     vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   it.each(NOMBRES)("monta el tablero, contador y botones sobre el dibujo (%s)", (nombre) => {
@@ -238,20 +255,44 @@ describe("LaberintoMatematicoScreen smoke", () => {
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe("2/4");
   });
 
-  it("acabar la sesión con Siguiente muestra el resumen", () => {
+  it("en el último ejercicio Siguiente queda deshabilitado como Último Ejercicio", () => {
     const { container } = render(
       <LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium")} />,
     );
 
-    for (let i = 0; i < 4; i++) {
-      fireEvent.click(boardBtn(container, i < 3 ? "Siguiente" : "Ver resultado")!);
+    for (let i = 0; i < 3; i++) {
+      fireEvent.click(boardBtn(container, "Siguiente")!);
     }
+
+    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("4/4");
+    const ultimo = boardBtn(container, "Último Ejercicio");
+    expect(ultimo).toBeTruthy();
+    expect(ultimo).toBeDisabled();
+    expect(boardBtn(container, "Siguiente")).toBeUndefined();
+    expect(boardBtn(container, "Ver resultado")).toBeUndefined();
+  });
+
+  it("completar el último laberinto muestra el resumen", async () => {
+    const session = generateSession("medium", 4242, "1");
+    const { container } = render(
+      <LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium")} />,
+    );
+
+    for (let i = 0; i < 3; i++) {
+      fireEvent.click(boardBtn(container, "Siguiente")!);
+    }
+    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("4/4");
+
+    rellenarTodoCorrecto(container, session[3].answers);
+    fireEvent.click(boardBtn(container, "Verificar")!);
+    await flushVerifyReveal();
+    await flushSuccessAdvance(container);
 
     expect(container.querySelector(".activity-header__counter")).toBeNull();
     expect(container.querySelector(".summary")).not.toBeNull();
   });
 
-  it("Verificar todo correcto deja los nodos en ok y autoavanza a los 900 ms", async () => {
+  it("Verificar todo correcto deja los nodos en ok y avanza tras la celebración", async () => {
     const ex = generateSession("medium", 4242, "1")[0];
 
     const { container } = render(
@@ -266,7 +307,44 @@ describe("LaberintoMatematicoScreen smoke", () => {
     }
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe("1/4");
 
+    await flushSuccessAdvance(container);
+    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("2/4");
+  });
+
+  it("con vídeo de celebración oculta el tablero y lo muestra tras el ended", async () => {
+    // Semilla cuyo 1.er fondo es bosque (tiene celeb_bosque.mp4).
+    const seedBosque = (() => {
+      for (let s = 0; s < 500; s++) {
+        // Misma lógica que bgIndexForExercise con n fondos ordenados.
+        // Probamos montando: si aparece celeb tras acierto, sirve.
+        const { container, unmount } = render(
+          <LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium", s)} />,
+        );
+        const src = container.querySelector<HTMLImageElement>(".lm-bg")?.getAttribute("src") ?? "";
+        unmount();
+        if (src.includes("bg_bosque")) return s;
+      }
+      return null;
+    })();
+    expect(seedBosque).not.toBeNull();
+
+    const ex = generateSession("medium", seedBosque!, "1")[0];
+    const { container } = render(
+      <LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium", seedBosque!)} />,
+    );
+    rellenarTodoCorrecto(container, ex.answers);
+    fireEvent.click(boardBtn(container, "Verificar")!);
+    await flushVerifyReveal();
     await vi.advanceTimersByTimeAsync(AUTOAVANCE_MS);
+
+    expect(container.querySelector(".lm-playfield")).toBeNull();
+    expect(container.querySelector("video.lm-celeb")).not.toBeNull();
+    expect(container.querySelector(".activity-header__counter")).toBeNull();
+
+    fireEvent.ended(container.querySelector("video.lm-celeb")!);
+    await vi.advanceTimersByTimeAsync(AUTOAVANCE_MS);
+
+    expect(container.querySelector(".lm-playfield")).not.toBeNull();
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe("2/4");
   });
 
@@ -297,7 +375,7 @@ describe("LaberintoMatematicoScreen smoke", () => {
     rellenarTodoCorrecto(container, ex.answers);
     fireEvent.click(boardBtn(container, "Verificar")!);
     await flushVerifyReveal();
-    await vi.advanceTimersByTimeAsync(AUTOAVANCE_MS);
+    await flushSuccessAdvance(container);
 
     const fondo2 = container.querySelector<HTMLImageElement>(".lm-bg")?.getAttribute("src");
     expect(fondo1).toBeTruthy();

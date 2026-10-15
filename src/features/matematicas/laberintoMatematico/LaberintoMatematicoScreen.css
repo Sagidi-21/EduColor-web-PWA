@@ -36,6 +36,23 @@
   pointer-events: none;
 }
 
+/* Mismo encuadre que el fondo: el vídeo “cobra vida” encima del JPG. */
+.lm-celeb {
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  z-index: 2;
+  background: transparent;
+}
+
+.lm-wrap--celebrating {
+  background: #000;
+}
+
+.lm-wrap--celebrating .lm-canvas {
+  flex: 1;
+}
+
 /* Flechas + recuadros + botones: un bloque desplazable sobre el fondo. */
 .lm-playfield {
   position: absolute;
@@ -205,6 +222,25 @@
 .lm-board-btn--waiting:focus-visible,
 .lm-board-btn--waiting:active,
 .lm-board-btn--waiting:disabled:hover {
+  background: #cbd5e1;
+  border-color: #cbd5e1;
+  color: #fff;
+  transform: translate(-50%, -50%);
+}
+
+/* Último ejercicio: Siguiente deshabilitado (mismo aspecto que Verificar en espera). */
+.lm-board-btn--last:disabled {
+  background: #cbd5e1;
+  border-color: #cbd5e1;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.lm-board-btn--last:disabled:hover,
+.lm-board-btn--last:disabled:focus-visible,
+.lm-board-btn--last:disabled:active {
   background: #cbd5e1;
   border-color: #cbd5e1;
   color: #fff;
