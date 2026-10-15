@@ -378,10 +378,12 @@
     border-color 0.15s,
     box-shadow 0.15s;
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 .lm-final-input::-webkit-inner-spin-button,
 .lm-final-input::-webkit-outer-spin-button {
   -webkit-appearance: none;
+  appearance: none;
 }
 .lm-final-input:focus {
   border-color: var(--color-primary);
