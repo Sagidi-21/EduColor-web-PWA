@@ -453,12 +453,17 @@ export function LaberintoMatematicoScreen({
     revealTimers.current.push(t);
   };
 
+  const advanceAfterSuccessRef = useRef(advanceAfterSuccess);
+  useEffect(() => {
+    advanceAfterSuccessRef.current = advanceAfterSuccess;
+  });
+
   /** Al entrar en celebración: play del vídeo (muted si el autoplay lo exige). */
   useEffect(() => {
     if (verifyPhase !== "celebrating") return;
     const el = videoRef.current;
     if (!el || !celebUrl) {
-      const t = setTimeout(() => advanceAfterSuccess(), AUTOAVANCE_MS);
+      const t = setTimeout(() => advanceAfterSuccessRef.current(), AUTOAVANCE_MS);
       revealTimers.current.push(t);
       return;
     }
@@ -469,12 +474,12 @@ export function LaberintoMatematicoScreen({
       tryPlay.catch(() => {
         el.muted = true;
         void el.play().catch(() => {
-          const t = setTimeout(() => advanceAfterSuccess(), AUTOAVANCE_MS);
+          const t = setTimeout(() => advanceAfterSuccessRef.current(), AUTOAVANCE_MS);
           revealTimers.current.push(t);
         });
       });
     }
-  }, [verifyPhase, celebUrl, exIdx]);
+  }, [verifyPhase, celebUrl]);
 
   const handleRestart = () => {
     clearRevealTimers();

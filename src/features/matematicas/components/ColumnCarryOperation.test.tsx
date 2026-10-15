@@ -34,8 +34,9 @@ const bandeja = () => c().querySelector('[data-testid="cco-bandeja"]');
 const filaLlevar = () => c().querySelector('[data-testid="cco-fila-llevar"]')!;
 
 const tecla = (t: string) => {
+  const alias = t === "←" ? "Borrar" : t === "✓" ? "Confirmar" : null;
   const boton = Array.from(c().querySelectorAll<HTMLButtonElement>(".shared-numpad__key")).find(
-    (k) => k.textContent === t,
+    (k) => k.textContent === t || (alias !== null && k.getAttribute("aria-label") === alias),
   );
   if (!boton) throw new Error(`El Numpad no tiene la tecla "${t}"`);
   fireEvent.click(boton);

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { TablaNumericaScreen } from "./TablaNumericaScreen";
 import { generateSession } from "../../../core/activities/tablaNumerica";
-import { smokeProps } from "../testing/smoke";
+import { deleteKey, numpadKey, smokeProps } from "../testing/smoke";
 import type { EngineScreenProps } from "../engine-screens";
 
 const mockOnExit = vi.fn();
@@ -10,10 +10,6 @@ const props = (difficulty: EngineScreenProps["difficulty"], seed = 4242) =>
   smokeProps("tablaNumerica", mockOnExit, difficulty, seed);
 
 const cells = (c: HTMLElement) => Array.from(c.querySelectorAll<HTMLElement>(".tbl__cell"));
-const numpadKey = (c: HTMLElement, key: string) =>
-  Array.from(c.querySelectorAll<HTMLButtonElement>(".shared-numpad__key")).find(
-    (k) => k.textContent === key,
-  )!;
 
 describe("TablaNumericaScreen smoke", () => {
   beforeEach(() => {
@@ -118,7 +114,7 @@ describe("TablaNumericaScreen smoke", () => {
     fireEvent.click(numpadKey(container, "4"));
     expect(box()).toContain("74");
 
-    fireEvent.click(numpadKey(container, "←"));
+    fireEvent.click(numpadKey(container, deleteKey));
     expect(box()).not.toContain("74");
   });
 

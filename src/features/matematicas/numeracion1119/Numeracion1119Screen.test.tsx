@@ -95,8 +95,10 @@ describe("Numeracion1119Screen smoke", () => {
       const { container } = render(<Numeracion1119Screen {...buildProps(difficulty, seed)} />);
       expect(container.querySelector(".shared-numpad")).not.toBeNull();
       expect(
-        Array.from(container.querySelectorAll(".shared-numpad__key")).map((k) => k.textContent),
-      ).toEqual(["7", "8", "9", "4", "5", "6", "1", "2", "3", "←", "0", "✓"]);
+        Array.from(container.querySelectorAll<HTMLButtonElement>(".shared-numpad__key")).map(
+          (k) => k.getAttribute("aria-label") ?? k.textContent,
+        ),
+      ).toEqual(["7", "8", "9", "4", "5", "6", "1", "2", "3", "Borrar", "0", "Confirmar"]);
       expect(container.querySelector(".input-toggle")).not.toBeNull();
       cleanup();
     });

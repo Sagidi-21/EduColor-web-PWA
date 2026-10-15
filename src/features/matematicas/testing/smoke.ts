@@ -41,7 +41,8 @@ export function smokeProps(
 /** Las 4 dificultades, en el orden en que las usa el catálogo. */
 export const DIFFICULTIES = ["easy", "medium", "hard", "expert"] as const;
 
-const numpadKey = (container: HTMLElement, key: string) => {
+/** Localiza una tecla del Numpad (incluye ← / ✓ por aria-label). */
+export const numpadKey = (container: HTMLElement, key: string) => {
   const alias =
     key === "←" || key === deleteKey
       ? "Borrar"
@@ -104,6 +105,15 @@ export const confirmKey = "✓";
 
 /** Atajo de la tecla de borrar del Numpad. */
 export const deleteKey = "←";
+
+/**
+ * Etiquetas visibles/accesibles de las teclas del Numpad.
+ * Borrar es un SVG, así que se lee por `aria-label`.
+ */
+export const numpadKeyLabels = (container: HTMLElement): (string | null)[] =>
+  Array.from(container.querySelectorAll<HTMLButtonElement>(".shared-numpad__key")).map(
+    (k) => k.getAttribute("aria-label") ?? k.textContent,
+  );
 
 /** Cambia entre Numpad y DigitCell mediante el toggle del header. */
 export function switchToCanvas(container: HTMLElement): void {

@@ -19,7 +19,9 @@ const questionOf = (container: HTMLElement) =>
   container.querySelector(".cap__question")?.textContent ?? "";
 
 const numpadKeys = (container: HTMLElement) =>
-  Array.from(container.querySelectorAll(".shared-numpad__key")).map((k) => k.textContent);
+  Array.from(container.querySelectorAll<HTMLButtonElement>(".shared-numpad__key")).map(
+    (k) => k.getAttribute("aria-label") ?? k.textContent,
+  );
 
 const digitKey = (container: HTMLElement, digit: string) =>
   Array.from(container.querySelectorAll<HTMLButtonElement>(".shared-numpad__key")).find(
@@ -83,9 +85,9 @@ describe("CapacidadScreen smoke", () => {
       "1",
       "2",
       "3",
-      "←",
+      "Borrar",
       "0",
-      "✓",
+      "Confirmar",
     ]);
     expect(container.querySelector(".input-toggle")).not.toBeNull();
   });
