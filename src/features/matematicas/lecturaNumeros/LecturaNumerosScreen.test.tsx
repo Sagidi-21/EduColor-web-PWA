@@ -19,11 +19,15 @@ const runTimers = (ms: number) => {
 
 const opciones = (c: HTMLElement) => Array.from(c.querySelectorAll<HTMLButtonElement>(".lec__opt"));
 
-const correcta = (ex: LecturaExercise): string => ex.correctAnswer;
+/** Misma capitalización que pinta el renderer en las opciones de texto. */
+const labelOf = (ex: LecturaExercise, value: string): string =>
+  ex.type === "cifra-to-palabra" ? value.charAt(0).toLocaleUpperCase("es") + value.slice(1) : value;
+
+const correcta = (ex: LecturaExercise): string => labelOf(ex, ex.correctAnswer);
 const otra = (ex: LecturaExercise): string => {
   const distinta = ex.options.find((o) => o !== ex.correctAnswer);
   if (distinta === undefined) throw new Error("No hay opciones distintas de la correcta");
-  return distinta;
+  return labelOf(ex, distinta);
 };
 
 beforeEach(() => {

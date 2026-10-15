@@ -1,93 +1,151 @@
-/* LecturaNumerosScreen — solo clases lec__*, el layout base viene de OperationsScreen.css */
+/* LecturaNumeros — overlay sobre OperationsScreen.css (.ops). */
 
-/* Enunciado ─────────────────────────────────────────────────── */
-.lec__question {
-  font-size: 1.3rem;
-  font-weight: 800;
-  text-align: center;
-  color: #1e293b;
-  max-width: 520px;
-  text-wrap: balance;
-  margin: 0;
+.lec.ops {
+  background: #fff;
+}
+.lec .ops__footer {
+  border-top: none;
+}
+.lec .ops__stage {
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding-top: 16px;
+  min-height: 0;
+}
+.lec .ops__celebration {
+  top: 54px;
 }
 
-/* Display del número o palabra ──────────────────────────────── */
+.lec__question {
+  margin: 12px 0 0;
+  max-width: none;
+  font-size: 38px;
+  font-weight: 700;
+  text-align: center;
+  color: #1e293b;
+  flex-shrink: 0;
+}
+
+/* Mitad izquierda: número · mitad derecha: opciones en columna. */
+.lec__split {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 0;
+  width: 100%;
+  gap: 0;
+}
+
+.lec__split-left {
+  flex: 1 1 50%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+}
+
 .lec__display {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.2rem 2.5rem;
-  background: rgba(30, 58, 138, 0.06);
-  border: 3px solid #93c5fd;
-  border-radius: 20px;
-  min-width: 180px;
+  padding: 1.5rem 2.75rem;
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 16px;
+  min-width: 200px;
 }
 
 .lec__display--word {
-  padding: 1.2rem 2rem;
-  min-width: 240px;
+  padding: 1.5rem 2.25rem;
+  min-width: 280px;
 }
 
 .lec__display-value {
-  font-size: 3.5rem;
+  font-size: 5.5rem;
   font-weight: 900;
-  color: #1e3a8a;
+  color: var(--color-primary, #2563eb);
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
 .lec__display--word .lec__display-value {
-  font-size: 1.9rem;
+  font-size: 2.75rem;
   font-weight: 800;
   font-variant-numeric: normal;
   text-align: center;
   line-height: 1.2;
 }
 
-/* Opciones de respuesta ─────────────────────────────────────── */
 .lec__options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  flex: 1 1 50%;
+  min-width: 0;
+  display: grid;
+  /* Columna = ancho de la opción más larga; todos los botones la rellenan. */
+  grid-template-columns: max-content;
   justify-content: center;
-  max-width: 560px;
+  align-content: center;
+  gap: 1rem;
+  max-width: none;
+  padding: 1rem 1.5rem 1rem 1rem;
 }
 
 .lec__opt {
-  padding: 0.75rem 1.4rem;
-  min-height: 52px;
-  min-width: 80px;
-  border-radius: 14px;
-  border: 3px solid #e2e8f0;
-  background: #fff;
-  color: #1e293b;
-  font-size: 1.1rem;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 28px;
+  min-height: 72px;
+  width: auto;
+  box-sizing: border-box;
+  border-radius: 16px;
+  border: 3px solid #000;
+  background: transparent;
+  color: var(--color-primary, #2563eb);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.15;
   cursor: pointer;
-  transition: all 0.16s;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    color 0.15s,
+    transform 0.15s;
   font-family: inherit;
   font-variant-numeric: tabular-nums;
   text-align: center;
+  user-select: none;
 }
 
 .lec__opt:hover:not(:disabled) {
-  border-color: #94a3b8;
-  transform: translateY(-2px);
+  border-color: var(--color-primary, #2563eb);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  color: var(--color-primary, #2563eb);
+  transform: scale(1.02);
 }
 
 .lec__opt:disabled {
-  opacity: 0.7;
   cursor: default;
 }
 
 .lec__opt--correct {
-  border-color: #22c55e !important;
+  border-color: #16a34a !important;
   background: #f0fdf4 !important;
-  color: #16a34a !important;
+  color: #15803d !important;
 }
 
 .lec__opt--wrong {
-  border-color: #ef4444 !important;
-  background: #fef2f2 !important;
-  color: #ef4444 !important;
+  border-color: #dc2626 !important;
+  background: #fff1f2 !important;
+  color: #dc2626 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lec__opt,
+  .lec__opt:hover:not(:disabled) {
+    transition: none;
+    transform: none;
+  }
 }

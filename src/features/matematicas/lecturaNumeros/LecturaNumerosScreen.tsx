@@ -15,6 +15,12 @@ type AnswerState = "idle" | "correct" | "wrong";
 /** Pausa visual antes de pasar al siguiente ejercicio. */
 const AUTOAVANCE_MS = 900;
 
+/** Primera letra en mayúscula; el valor original se conserva para validar. */
+function capitalizeFirst(text: string): string {
+  if (!text) return text;
+  return text.charAt(0).toLocaleUpperCase("es") + text.slice(1);
+}
+
 interface SessionState {
   exercises: LecturaExercise[];
   currentIndex: number;
@@ -147,48 +153,54 @@ export function LecturaNumerosScreen({
 
   const isCifraToWord = current.type === "cifra-to-palabra";
   const prompt = isCifraToWord ? "Elige cómo se escribe este número:" : "¿Qué número es este?";
-  const display = isCifraToWord ? String(current.number) : `"${current.word}"`;
+  const display = isCifraToWord ? String(current.number) : capitalizeFirst(current.word);
 
   return (
-    <div className={`ops ${className ?? ""}`}>
+    <div className={`ops lec ${className ?? ""}`}>
       <ActivityHeader
         unitTitle={activity.title}
         gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
         onExit={onExit}
         mascotUrl={mascotUrl}
         difficultyStars={difficultyStars}
       />
 
       <div className={`ops__stage ${stageClass}`}>
-        {session.answerState === "correct" && <div className="ops__celebration">¡Correcto! ⭐</div>}
+        {session.answerState === "correct" && (
+          <div className="ops__celebration">¡Correcto! 📖⭐</div>
+        )}
 
         <p className="lec__question">{prompt}</p>
 
-        <div className={`lec__display${!isCifraToWord ? " lec__display--word" : ""}`}>
-          <span className="lec__display-value">{display}</span>
-        </div>
+        <div className="lec__split">
+          <div className="lec__split-left">
+            <div className={`lec__display${!isCifraToWord ? " lec__display--word" : ""}`}>
+              <span className="lec__display-value">{display}</span>
+            </div>
+          </div>
 
-        <div className="lec__options">
-          {current.options.map((opt) => {
-            const estado =
-              session.answerState === "correct" && opt === current.correctAnswer
-                ? " lec__opt--correct"
-                : session.answerState === "wrong" && opt === session.selected
-                  ? " lec__opt--wrong"
-                  : "";
-            return (
-              <button
-                key={opt}
-                type="button"
-                className={`lec__opt${estado}`}
-                disabled={session.answerState !== "idle"}
-                onClick={() => handleAnswer(opt)}
-              >
-                {opt}
-              </button>
-            );
-          })}
+          <div className="lec__options">
+            {current.options.map((opt) => {
+              const estado =
+                session.answerState === "correct" && opt === current.correctAnswer
+                  ? " lec__opt--correct"
+                  : session.answerState === "wrong" && opt === session.selected
+                    ? " lec__opt--wrong"
+                    : "";
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  className={`lec__opt${estado}`}
+                  disabled={session.answerState !== "idle"}
+                  onClick={() => handleAnswer(opt)}
+                >
+                  {isCifraToWord ? capitalizeFirst(opt) : opt}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
