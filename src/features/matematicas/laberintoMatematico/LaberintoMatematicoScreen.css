@@ -183,8 +183,13 @@
   text-shadow: 0 0 6px #fff;
 }
 .lm-lbl-start {
-  color: #c2410c;
-  text-shadow: 0 0 6px #fff;
+  color: #16a34a;
+  text-shadow: none;
+  font-size: 28px;
+  padding: 6px 14px;
+  background: #fff;
+  border: 3px solid #16a34a;
+  border-radius: 10px;
 }
 
 /* ── Pie ─────────────────────────────────────────────────────────────────── */

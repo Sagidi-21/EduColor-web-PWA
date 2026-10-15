@@ -27,27 +27,41 @@ const BG_MODS = import.meta.glob<string>("../../../assets/laberinto/*.{jpg,jpeg,
 const bgList: string[] = Object.values(BG_MODS).filter(Boolean);
 
 // ── Geometría del tablero ──────────────────────────────────────────────────
+/**
+ * Paso vertical cols. 1–2 = distancia 1.er recuadro → bola de abajo
+ * (antes 39.5% + 15px), repetido: caja, bola, caja, bola, caja.
+ */
+const COL_TOP_Y = 27;
+const COL_STEP_Y = 39.5 + (15 / 675) * 100 - COL_TOP_Y; // ≈ 14.72% ≈ 99.4px
+const COL_Y = {
+  box1: COL_TOP_Y,
+  ball1: COL_TOP_Y + COL_STEP_Y,
+  box2: COL_TOP_Y + 2 * COL_STEP_Y,
+  ball2: COL_TOP_Y + 3 * COL_STEP_Y,
+  box3: COL_TOP_Y + 4 * COL_STEP_Y,
+} as const;
+
 const NODE_POS: Record<NodeId, [number, number]> = {
   S: [20, 27],
-  A: [40, 27],
-  B: [60, 27],
+  A: [40, COL_Y.box1],
+  B: [60, COL_Y.box1],
   C: [80, 27],
-  D: [40, 52],
-  E: [60, 52],
-  F: [40, 77],
-  G: [60, 77],
-  H: [80, 77],
+  D: [40, COL_Y.box2],
+  E: [60, COL_Y.box2],
+  F: [40, COL_Y.box3],
+  G: [60, COL_Y.box3],
+  H: [80, COL_Y.box3], // misma fila inferior que F/G
 };
 
 const OP_POS: [number, number][] = [
   [30, 27],
   [50, 27],
   [70, 27],
-  [40, 39.5],
-  [60, 39.5],
-  [40, 64.5],
-  [60, 64.5],
-  [70, 77],
+  [40, COL_Y.ball1], // A↔D
+  [60, COL_Y.ball1], // B↔E
+  [40, COL_Y.ball2], // D↔F
+  [60, COL_Y.ball2], // E↔G
+  [70, COL_Y.box3], // G↔H
 ];
 
 /** Las tres salidas. Solo se usa para saber qué nodos se pintan como meta. */
@@ -55,20 +69,25 @@ const FIN_LABEL: Partial<Record<NodeId, string>> = { C: "FIN A", F: "FIN B", H: 
 
 /**
  * Botones sobre el dibujo (mismos % que los nodos):
- * Y = 2.ª fila de columnas (D/E, 52%); Verificar X = INICIO (20%); Siguiente X = finales (80%).
+ * Y = 2.ª fila de columnas; Verificar X = INICIO (20%); Siguiente X = finales (80%).
  */
-const BTN_VERIFY_POS: [number, number] = [NODE_POS.S[0], NODE_POS.D[1]];
-const BTN_NEXT_POS: [number, number] = [NODE_POS.C[0], NODE_POS.D[1]];
+const BTN_VERIFY_POS: [number, number] = [NODE_POS.S[0], COL_Y.box2];
+const BTN_NEXT_POS: [number, number] = [NODE_POS.C[0], COL_Y.box2];
+
+/** Convierte % de alto del tablero a unidades del viewBox (675). */
+const vy = (pct: number) => (pct / 100) * 675;
+/** Flechas verticales: margen respecto al centro del nodo. */
+const ARROW_PAD = 38;
 
 const SVG_LINES: [number, number, number, number][] = [
   [300, 125, 420, 125],
   [540, 125, 660, 125],
   [780, 125, 900, 125],
-  [398, 220, 398, 300],
-  [638, 220, 638, 300],
-  [398, 389, 398, 469],
-  [638, 389, 638, 469],
-  [780, 577, 900, 577],
+  [358, vy(COL_Y.box1) + ARROW_PAD, 358, vy(COL_Y.box2) - ARROW_PAD], // A→D
+  [658, vy(COL_Y.box1) + ARROW_PAD, 658, vy(COL_Y.box2) - ARROW_PAD], // B→E
+  [358, vy(COL_Y.box2) + ARROW_PAD, 358, vy(COL_Y.box3) - ARROW_PAD], // D→F
+  [658, vy(COL_Y.box2) + ARROW_PAD, 658, vy(COL_Y.box3) - ARROW_PAD], // E→G
+  [780, vy(COL_Y.box3) + 57, 900, vy(COL_Y.box3) + 57], // G→H (bajo la fila)
 ];
 
 type ValState = "empty" | "ok" | "err";
@@ -308,8 +327,11 @@ export function LaberintoMatematicoScreen({
             </div>
           ))}
 
-          <span className="lm-lbl lm-lbl-start" style={{ left: "20%", top: "calc(27% - 7%)" }}>
-            INICIO
+          <span
+            className="lm-lbl lm-lbl-start"
+            style={{ left: "20%", top: "calc(27% - 7% - 60px)" }}
+          >
+            Inicio
           </span>
 
           <div
