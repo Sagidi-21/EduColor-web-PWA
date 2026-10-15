@@ -47,9 +47,19 @@ export function Numpad({
                 aria-label={isDel ? "Borrar" : isConf ? "Confirmar" : undefined}
               >
                 {isDel ? (
-                  <span className="shared-numpad__del-glyph" aria-hidden="true">
-                    ←
-                  </span>
+                  <svg
+                    className="shared-numpad__del-icon"
+                    viewBox="0 0 24 24"
+                    width="1em"
+                    height="1em"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path
+                      d="M20 11H7.83l4.58-4.59L11 5l-7 7 7 7 1.41-1.41L7.83 13H20v-2z"
+                      fill="currentColor"
+                    />
+                  </svg>
                 ) : (
                   k
                 )}

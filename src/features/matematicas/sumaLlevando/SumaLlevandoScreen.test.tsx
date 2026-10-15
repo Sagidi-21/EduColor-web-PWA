@@ -24,15 +24,13 @@ const boxByTitle = (c: HTMLElement, title: string) => {
 };
 
 /**
- * Recorre los tres pasos del algoritmo manual: unidades del resultado, lo que
- * se lleva a las decenas y decenas del resultado.
+ * Recorre los tres pasos del algoritmo manual: unidades → llevar → decenas
+ * (autoavance del numpad).
  */
 function answerByHand(container: HTMLElement, ex: { answer: number; addends: number[] }) {
-  const units = ex.answer % 10;
-  const tens = Math.floor(ex.answer / 10);
-  typeOnNumpad(container, units);
+  typeOnNumpad(container, ex.answer % 10);
   typeOnNumpad(container, carryOf(ex.addends));
-  typeOnNumpad(container, tens);
+  typeOnNumpad(container, Math.floor(ex.answer / 10));
 }
 
 describe("SumaLlevandoScreen smoke", () => {
@@ -47,7 +45,7 @@ describe("SumaLlevandoScreen smoke", () => {
     vi.useRealTimers();
   });
 
-  it("muestra las casillas de unidades, llevar y decenas, empezando por las unidades", () => {
+  it("muestra las casillas empezando por unidades y el numpad visible", () => {
     const seed = 4242;
     const ex = generateSession("easy", seed)[0];
 
@@ -59,15 +57,15 @@ describe("SumaLlevandoScreen smoke", () => {
       .sort();
     expect(titles).toEqual(["Decenas", "Llevar", "Unidades"]);
 
-    // Paso 0: las unidades, que es por donde empieza la suma manual.
     expect(boxByTitle(container, "Unidades").className).toContain("sumall__box--active");
     expect(
       boxes(container).filter((b) => b.className.includes("sumall__box--active")),
     ).toHaveLength(1);
+    expect(container.querySelector(".shared-numpad")).not.toBeNull();
     expect(ex.addends.reduce((a, b) => a + b, 0)).toBe(ex.answer);
   });
 
-  it("avanza por los tres pasos y valida al terminar", () => {
+  it("autoavanza unidades → llevar → decenas y valida al terminar", () => {
     const seed = 4242;
     const ex = generateSession("easy", seed)[0];
 
@@ -75,12 +73,14 @@ describe("SumaLlevandoScreen smoke", () => {
 
     typeOnNumpad(container, ex.answer % 10);
     expect(boxByTitle(container, "Llevar").className).toContain("sumall__box--active");
+    expect(container.querySelector(".shared-numpad")).not.toBeNull();
 
     typeOnNumpad(container, carryOf(ex.addends));
     expect(boxByTitle(container, "Decenas").className).toContain("sumall__box--active");
 
     typeOnNumpad(container, Math.floor(ex.answer / 10));
-    expect(container.querySelector(".sumall__celebration")?.textContent).toContain("¡Muy bien!");
+    expect(container.querySelector(".sumall__celebration")?.textContent).toContain("¡Correcto!");
+    expect(container.querySelector(".shared-numpad")).toBeNull();
   });
 
   it("hard usa tres sumandos y la misma secuencia de tres pasos", () => {
@@ -92,39 +92,41 @@ describe("SumaLlevandoScreen smoke", () => {
     const { container } = render(<SumaLlevandoScreen {...props("hard", seed)} />);
 
     answerByHand(container, ex);
-    expect(container.querySelector(".sumall__celebration")?.textContent).toContain("¡Muy bien!");
+    expect(container.querySelector(".sumall__celebration")?.textContent).toContain("¡Correcto!");
   });
 
-  it("fallo: no celebra y ofrece reintentar o siguiente", () => {
+  it("fallo: no celebra, oculta el numpad y ofrece reintentar o siguiente", () => {
     const seed = 4242;
     const ex = generateSession("easy", seed)[0];
 
     const { container } = render(<SumaLlevandoScreen {...props("easy", seed)} />);
 
-    //units correctas, carried mal: no debe celebrar.
     typeOnNumpad(container, ex.answer % 10);
     typeOnNumpad(container, 9);
     typeOnNumpad(container, Math.floor(ex.answer / 10));
 
     expect(container.querySelector(".sumall__celebration")).toBeNull();
+    expect(container.querySelector(".shared-numpad")).toBeNull();
     expect(container.querySelector(".activity-action--retry")).not.toBeNull();
   });
 
-  it("la casilla pulsada pasa a ser el paso activo", () => {
+  it("la casilla pulsada pasa a ser el paso activo sin ocultar el numpad", () => {
     const { container } = render(<SumaLlevandoScreen {...props("easy", 4242)} />);
 
     fireEvent.click(boxByTitle(container, "Decenas"));
 
     expect(boxByTitle(container, "Decenas").className).toContain("sumall__box--active");
     expect(boxByTitle(container, "Unidades").className).not.toContain("sumall__box--active");
+    expect(container.querySelector(".shared-numpad")).not.toBeNull();
   });
 
-  it("al cambiar a modo escritura se monta el DigitCell y desaparece el Numpad", () => {
+  it("al cambiar a modo escritura el DigitCell queda montado (panel no desaparece)", () => {
     const { container } = render(<SumaLlevandoScreen {...props("easy", 4242)} />);
 
     switchToCanvas(container);
 
     expect(container.querySelector(".shared-numpad")).toBeNull();
+    expect(boxByTitle(container, "Unidades").className).toContain("sumall__box--active");
     expect(container.querySelector(".dab--loading")).not.toBeNull();
   });
 
@@ -138,7 +140,6 @@ describe("SumaLlevandoScreen smoke", () => {
 
     session.forEach((ex) => {
       answerByHand(container, ex);
-      // Su autoavance tras acertar es de 1200 ms, no los 900 unificados de otras.
       act(() => {
         vi.advanceTimersByTime(1200);
       });

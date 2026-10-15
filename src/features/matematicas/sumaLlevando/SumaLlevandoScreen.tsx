@@ -7,23 +7,33 @@ import { LazyDigitCell } from "../../shared/DigitCell";
 import { SummaryScreen } from "../components/SummaryScreen";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { ActionButtons } from "../components/ActivityActionButtons";
+import { NoExerciseNotice } from "../components/NoExerciseNotice";
 import { Numpad } from "../../shared/components/Numpad";
 import InputModeToggle from "../../shared/components/InputModeToggle";
 import { useInputMode } from "../../shared/hooks/useInputMode";
 import "./SumaLlevandoScreen.css";
 
-// ────────────────────────────────────────────────────────────────
-// Tipos internos
-// ────────────────────────────────────────────────────────────────
-
 type AnswerState = "idle" | "correct" | "wrong";
 
 /**
- * Orden de entrada (derecha a izquierda, luego carry):
- *   step 0 → Unidades del resultado
- *   step 1 → Dígito de "llevar" (carry)
- *   step 2 → Decenas del resultado
+ * Índices de casilla:
+ *   0 → Unidades del resultado
+ *   1 → Dígito de "llevar" (carry)
+ *   2 → Decenas del resultado
+ *
+ * Por defecto empieza en unidades y autoavanza 0→1→2.
+ * El alumno puede pulsar otro recuadro para cambiar el orden.
+ * El panel (numpad/canvas) solo se oculta en correcto o en reintentar/siguiente.
  */
+
+/** Siguiente casilla vacía en orden circular tras `from`, o null si están todas llenas. */
+function nextEmptyStep(inputs: [string, string, string], from: 0 | 1 | 2): 0 | 1 | 2 | null {
+  for (let i = 1; i <= 3; i++) {
+    const s = ((from + i) % 3) as 0 | 1 | 2;
+    if (inputs[s] === "") return s;
+  }
+  return null;
+}
 interface SessionState {
   exercises: SumaLlevandoExercise[];
   currentIndex: number;
@@ -31,14 +41,16 @@ interface SessionState {
   startTime: number;
   alreadyFailed?: boolean;
   answerState: AnswerState;
-  step: 0 | 1 | 2;
+  step: 0 | 1 | 2 | null;
   /** [U, carry, D] */
   inputs: [string, string, string];
 }
 
-// ────────────────────────────────────────────────────────────────
-// Subcomponente: cuadrícula vertical con carry
-// ────────────────────────────────────────────────────────────────
+const BOX_HINT: Record<0 | 1 | 2, string> = {
+  0: "Unidades",
+  1: "¿cuántas me llevo?",
+  2: "Decenas",
+};
 
 function SumaLlevandoGrid({
   ex,
@@ -46,20 +58,12 @@ function SumaLlevandoGrid({
   inputs,
   step,
   onBoxClick,
-  mode,
-  canvasKey,
-  onCanvasConfirm,
-  onCanvasClear,
 }: {
   ex: SumaLlevandoExercise;
   answerState: AnswerState;
   inputs: [string, string, string];
-  step: 0 | 1 | 2;
+  step: 0 | 1 | 2 | null;
   onBoxClick: (s: 0 | 1 | 2) => void;
-  mode: "numpad" | "canvas";
-  canvasKey: number;
-  onCanvasConfirm: (s: 0 | 1 | 2, d: string) => void;
-  onCanvasClear: (s: 0 | 1 | 2) => void;
 }) {
   const sumU = ex.addends.reduce((acc, v) => acc + (v % 10), 0);
   const expectedCarry = Math.floor(sumU / 10);
@@ -78,21 +82,8 @@ function SumaLlevandoGrid({
     return [base, active, correct, wrong].filter(Boolean).join(" ");
   };
 
-  const renderBox = (s: 0 | 1 | 2, val: string, label?: string) => {
+  const renderBox = (s: 0 | 1 | 2, val: string, label: string) => {
     const isActive = answerState === "idle" && step === s;
-    if (mode === "canvas" && isActive) {
-      return (
-        <LazyDigitCell
-          key={`canvas-${s}-${canvasKey}`}
-          isActive
-          onActivate={() => {}}
-          onConfirm={(d) => onCanvasConfirm(s, d)}
-          onClear={() => onCanvasClear(s)}
-          state="idle"
-          value=""
-        />
-      );
-    }
     return (
       <div key={s} className={boxClass(s)} onClick={() => onBoxClick(s)} title={label}>
         {val || (isActive ? <span className="sumall__cursor">_</span> : "")}
@@ -104,31 +95,28 @@ function SumaLlevandoGrid({
 
   return (
     <div className="sumall__grid">
-      {/* Fila carry (encima de columna D) */}
       <span />
       <span className="sumall__carry-label">llevar</span>
       {renderBox(1, ansCarry, "Llevar")}
       <span />
 
-      {/* Cabecera D / U */}
       <span />
       <span className="sumall__col-label">D</span>
       <span className="sumall__col-label">U</span>
       <span />
 
-      {/* Sumando a */}
       <span />
-      <span className="sumall__digit">{Math.floor(a / 10) > 0 ? Math.floor(a / 10) : ""}</span>
-      <span className="sumall__digit">{a % 10}</span>
+      <span className="sumall__digit sumall__digit--under-labels">
+        {Math.floor(a / 10) > 0 ? Math.floor(a / 10) : ""}
+      </span>
+      <span className="sumall__digit sumall__digit--under-labels">{a % 10}</span>
       <span />
 
-      {/* Sumando b */}
       {c === null ? <span className="sumall__op">+</span> : <span />}
       <span className="sumall__digit">{Math.floor(b / 10) > 0 ? Math.floor(b / 10) : ""}</span>
       <span className="sumall__digit">{b % 10}</span>
       <span />
 
-      {/* Sumando c (opcional) */}
       {c !== null && (
         <>
           <span className="sumall__op">+</span>
@@ -138,10 +126,8 @@ function SumaLlevandoGrid({
         </>
       )}
 
-      {/* Separador */}
       <span className="sumall__separator" />
 
-      {/* Respuesta: [vacío] [D] [U] */}
       <span />
       {renderBox(2, ansD, "Decenas")}
       {renderBox(0, ansU, "Unidades")}
@@ -149,10 +135,6 @@ function SumaLlevandoGrid({
     </div>
   );
 }
-
-// ────────────────────────────────────────────────────────────────
-// Componente principal
-// ────────────────────────────────────────────────────────────────
 
 export function SumaLlevandoScreen({
   activity,
@@ -164,7 +146,7 @@ export function SumaLlevandoScreen({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps) {
-  const { mode, toggle } = useInputMode();
+  const { mode, toggle: toggleMode } = useInputMode();
   const [canvasKey, setCanvasKey] = useState(0);
 
   const makeSession = useCallback(
@@ -188,10 +170,16 @@ export function SumaLlevandoScreen({
     duration: number;
   } | null>(null);
 
+  /** Al cambiar de modo se reinicia en unidades (panel sigue visible). */
+  const toggle = useCallback(() => {
+    toggleMode();
+    setSession((s) => (s.answerState === "idle" ? { ...s, step: 0 } : s));
+    setCanvasKey((k) => k + 1);
+  }, [toggleMode]);
+
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
 
-  /** Valida los 3 inputs [U, carry, D] */
   const submitInputs = useCallback(
     (newInputs: [string, string, string]) => {
       const u = parseInt(newInputs[0], 10);
@@ -207,6 +195,7 @@ export function SumaLlevandoScreen({
       setSession((s) => ({
         ...s,
         inputs: newInputs,
+        step: null,
         answerState: isCorrect ? "correct" : "wrong",
         correctCount: isCorrect && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
         alreadyFailed: !isCorrect || s.alreadyFailed,
@@ -215,50 +204,52 @@ export function SumaLlevandoScreen({
     [current],
   );
 
-  const advanceStep = useCallback(
-    (currentStep: 0 | 1 | 2, newInputs: [string, string, string]) => {
-      if (currentStep === 0) {
-        setSession((s) => ({ ...s, inputs: newInputs, step: 1 }));
-      } else if (currentStep === 1) {
-        setSession((s) => ({ ...s, inputs: newInputs, step: 2 }));
-      } else {
+  /** Rellena la casilla activa y autoavanza a la siguiente vacía; si están las 3, valida. */
+  const fillActiveBox = useCallback(
+    (d: string) => {
+      if (session.answerState !== "idle" || session.step === null) return;
+      const filled = session.step;
+      const newInputs = [...session.inputs] as [string, string, string];
+      newInputs[filled] = d;
+      if (newInputs.every((v) => v !== "")) {
         submitInputs(newInputs);
+      } else {
+        const next = nextEmptyStep(newInputs, filled) ?? 0;
+        setSession((st) => ({ ...st, inputs: newInputs, step: next }));
+        setCanvasKey((k) => k + 1);
       }
     },
-    [submitInputs],
+    [session.answerState, session.inputs, session.step, submitInputs],
   );
 
   const handleDigit = useCallback(
     (d: string) => {
-      if (session.answerState !== "idle") return;
-      const newInputs = [...session.inputs] as [string, string, string];
-      newInputs[session.step] = d;
-      advanceStep(session.step, newInputs);
+      fillActiveBox(d);
     },
-    [session, advanceStep],
+    [fillActiveBox],
   );
 
   const handleCanvasConfirm = useCallback(
     (s: 0 | 1 | 2, d: string) => {
+      if (session.answerState !== "idle") return;
       const newInputs = [...session.inputs] as [string, string, string];
       newInputs[s] = d;
-      advanceStep(s, newInputs);
-      setCanvasKey((k) => k + 1);
+      if (newInputs.every((v) => v !== "")) {
+        submitInputs(newInputs);
+      } else {
+        const next = nextEmptyStep(newInputs, s) ?? 0;
+        setSession((st) => ({ ...st, inputs: newInputs, step: next }));
+        setCanvasKey((k) => k + 1);
+      }
     },
-    [session.inputs, advanceStep],
+    [session.answerState, session.inputs, submitInputs],
   );
 
   const handleDelete = useCallback(() => {
-    if (session.answerState !== "idle") return;
+    if (session.answerState !== "idle" || session.step === null) return;
     const nd = [...session.inputs] as [string, string, string];
-    if (nd[session.step]) {
-      nd[session.step] = "";
-      setSession((s) => ({ ...s, inputs: nd }));
-    } else if (session.step > 0) {
-      const prevStep = (session.step - 1) as 0 | 1 | 2;
-      nd[prevStep] = "";
-      setSession((s) => ({ ...s, inputs: nd, step: prevStep }));
-    }
+    nd[session.step] = "";
+    setSession((s) => ({ ...s, inputs: nd }));
   }, [session]);
 
   const handleConfirm = useCallback(() => {
@@ -274,6 +265,7 @@ export function SumaLlevandoScreen({
       inputs: ["", "", ""],
       alreadyFailed: true,
     }));
+    setCanvasKey((k) => k + 1);
   }, []);
 
   const handleNext = useCallback(() => {
@@ -293,6 +285,7 @@ export function SumaLlevandoScreen({
         inputs: ["", "", ""],
         alreadyFailed: false,
       }));
+      setCanvasKey((k) => k + 1);
     }
   }, [session, total]);
 
@@ -316,21 +309,21 @@ export function SumaLlevandoScreen({
     );
   }
 
-  if (!current) return null;
+  if (!current) {
+    return <NoExerciseNotice activityTitle={activity.title} onExit={onExit} />;
+  }
 
-  const stageClass =
-    session.answerState === "correct"
-      ? "sumall__stage--correct"
-      : session.answerState === "wrong"
-        ? "sumall__stage--wrong"
-        : "";
+  const feedbackClass =
+    session.answerState === "correct" ? "correct" : session.answerState === "wrong" ? "wrong" : "";
+
+  /** Solo se oculta el panel de entrada con correcto o reintentar/siguiente. */
+  const showInputPanel = session.answerState === "idle" && session.step !== null;
 
   return (
-    <div className="sumall">
+    <div className={`sumall sumall--${difficulty} sumall--${mode} ${className ?? ""}`}>
       <ActivityHeader
         onExit={onExit}
         gradeTitle={gradeTitle}
-        className={className}
         unitTitle={activity.title}
         mascotUrl={mascotUrl}
         difficultyStars={difficultyStars}
@@ -340,12 +333,9 @@ export function SumaLlevandoScreen({
       </ActivityHeader>
 
       <div
-        className={mode === "numpad" ? "sumall__body sumall__body--with-numpad" : "sumall__body"}
+        className={`sumall__body sumall__body--split${feedbackClass ? ` sumall__body--${feedbackClass}` : ""}`}
       >
-        <div className={`sumall__stage ${stageClass}`}>
-          {session.answerState === "correct" && (
-            <div className="sumall__celebration">¡Muy bien! ⭐</div>
-          )}
+        <div className="sumall__stage">
           <SumaLlevandoGrid
             ex={current}
             answerState={session.answerState}
@@ -354,33 +344,49 @@ export function SumaLlevandoScreen({
             onBoxClick={(s) => {
               if (session.answerState !== "idle") return;
               setSession((st) => ({ ...st, step: s }));
-            }}
-            mode={mode}
-            canvasKey={canvasKey}
-            onCanvasConfirm={handleCanvasConfirm}
-            onCanvasClear={(s) => {
-              const nd = [...session.inputs] as [string, string, string];
-              nd[s] = "";
-              setSession((st) => ({ ...st, inputs: nd }));
+              if (mode === "canvas") setCanvasKey((k) => k + 1);
             }}
           />
         </div>
 
-        {(mode === "numpad" || session.answerState === "wrong") && (
-          <footer className="sumall__footer">
-            {mode === "numpad" && (
+        <aside className="sumall__side-panel" aria-live="polite">
+          {session.answerState === "correct" && (
+            <div className="sumall__celebration">¡Correcto! ➕⭐</div>
+          )}
+
+          {showInputPanel && mode === "canvas" && (
+            <>
+              <p className="sumall__side-hint">{BOX_HINT[session.step!]}</p>
+              <LazyDigitCell
+                key={`side-canvas-${session.step}-${canvasKey}`}
+                isActive
+                onActivate={() => {}}
+                onConfirm={(d) => handleCanvasConfirm(session.step as 0 | 1 | 2, d)}
+                onClear={() => {
+                  /* solo limpia el trazo; el valor del recuadro se mantiene */
+                }}
+                state="idle"
+                value=""
+              />
+            </>
+          )}
+
+          {showInputPanel && mode === "numpad" && (
+            <>
+              <p className="sumall__side-hint">{BOX_HINT[session.step!]}</p>
               <Numpad
                 onDigit={handleDigit}
                 onDelete={handleDelete}
                 onConfirm={handleConfirm}
-                disabled={session.answerState !== "idle"}
+                disabled={false}
               />
-            )}
-            {session.answerState === "wrong" && (
-              <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-            )}
-          </footer>
-        )}
+            </>
+          )}
+
+          {session.answerState === "wrong" && (
+            <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+          )}
+        </aside>
       </div>
     </div>
   );

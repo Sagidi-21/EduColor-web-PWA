@@ -72,18 +72,17 @@
   border-width: 3px;
   color: #b91c1c;
   padding: 0;
+  line-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.shared-numpad__del-glyph {
+.shared-numpad__del-icon {
   display: block;
-  font-size: clamp(30px, 5vw, 48px);
-  font-weight: 900;
-  line-height: 1;
-  /* Compensa el sesgo óptico del glifo ← en tipografías de sistema */
-  transform: translateY(0.01em);
+  width: clamp(28px, 4.5vw, 40px);
+  height: clamp(28px, 4.5vw, 40px);
+  flex-shrink: 0;
 }
 
 .shared-numpad__key--del:hover:not(:disabled) {

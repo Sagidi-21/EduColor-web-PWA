@@ -1,10 +1,10 @@
-/* ─── Contenedor principal ─────────────────────────────────────────── */
+/* Fondo blanco y tipografía de pizarra. */
 .sumall {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--color-bg, #f4f7fb);
-  font-family: var(--font-base, "Nunito", sans-serif);
+  background: #fff;
+  font-family: "Segoe UI", system-ui, sans-serif;
 }
 
 .sumall__body {
@@ -18,152 +18,126 @@
   padding: 1.5rem 1rem;
   gap: 1.5rem;
   overflow-y: auto;
+  transition: background 0.2s;
 }
 
-.sumall__body--with-numpad {
-  justify-content: flex-start;
-  padding-top: 2rem;
-}
-
-/* ─── Numpad lateral en pantallas grandes (patrón estándar) ─────────── */
-@media (min-width: 1500px) {
-  .sumall__body--with-numpad {
-    flex-direction: row;
-    align-items: stretch;
-  }
-
-  .sumall__body--with-numpad .sumall__stage {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  .sumall__body--with-numpad .sumall__footer {
-    flex: 0 0 320px;
-    width: 320px;
-    height: 100%;
-    min-height: 0;
-    border-top: 0;
-    border-left: 2px solid #e2e8f0;
-    padding: 20px;
-    overflow-y: auto;
-  }
-
-  .sumall__body--with-numpad .sumall__footer .shared-numpad {
-    width: 100%;
-    max-width: 280px;
-  }
-
-  .sumall__body--with-numpad .sumall__footer .shared-numpad__key {
-    width: clamp(56px, 7vw, 76px);
-    height: clamp(52px, 7vw, 68px);
-  }
-}
-
-/* ─── Stage ─────────────────────────────────────────────────────────── */
 .sumall__stage {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
   padding: 1.5rem 2rem;
   background: #fff;
-  border-radius: 1rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+  border-radius: 16px;
+  border: 3px solid #000;
   transition: background 0.2s;
-  min-width: 220px;
+  min-width: 260px;
 }
 
-.sumall__stage--correct {
-  background: #efffef;
+.sumall__stage--correct,
+.sumall__body--correct {
+  background: #f0fdf4;
 }
-.sumall__stage--wrong {
-  background: #fff4f4;
+.sumall__stage--wrong,
+.sumall__body--wrong {
+  background: #fff1f2;
+}
+
+.sumall__body--correct .sumall__stage,
+.sumall__body--correct .sumall__side-panel,
+.sumall__body--wrong .sumall__stage,
+.sumall__body--wrong .sumall__side-panel {
+  background: transparent;
 }
 
 .sumall__celebration {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-success, #22c55e);
-  animation: pop 0.3s ease;
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 800;
+  color: #16a34a;
+  animation: sumall-celebrate 0.5s ease-out both;
 }
 
-@keyframes pop {
-  0% {
-    transform: scale(0.8);
+@keyframes sumall-celebrate {
+  from {
+    transform: scale(0.6);
     opacity: 0;
   }
-  100% {
+  60% {
+    transform: scale(1.15);
+  }
+  to {
     transform: scale(1);
     opacity: 1;
   }
 }
 
-/* ─── Cuadrícula (5 columnas: op + D + U + reserva carry) ───────────── */
-/*     col-template: [op] [carry-space] [D] [U] [extra] */
+/* Cuadrícula: [op] [D] [U] [_] */
 .sumall__grid {
   display: grid;
-  grid-template-columns: 3rem 3rem 4rem 4rem;
-  row-gap: 0.35rem;
+  grid-template-columns: 3.25rem 3.25rem 4.5rem 4.5rem;
+  row-gap: 0.45rem;
   align-items: center;
   justify-items: center;
 }
 
 .sumall__col-label {
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 800;
   color: #94a3b8;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
 }
 
 .sumall__carry-label {
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: #f59e0b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary, #2563eb);
   text-align: center;
   line-height: 1.1;
 }
 
 .sumall__digit {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--color-primary, #2563eb);
   line-height: 1;
   min-width: 2.5rem;
   text-align: center;
 }
 
 .sumall__op {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #64748b;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-primary, #2563eb);
   justify-self: end;
   padding-right: 0.4rem;
 }
 
+/* Ocupa toda la fila (evita desplazar cajas) y la línea cubre solo D+U. */
 .sumall__separator {
   grid-column: 1 / -1;
-  width: 100%;
-  height: 3px;
-  background: #1e293b;
+  height: 4px;
+  background: #000;
   border-radius: 2px;
-  margin: 0.3rem 0;
+  margin: 0.35rem 0 0.35rem 3.25rem;
+  width: calc(3.25rem + 4.5rem);
+  justify-self: start;
 }
 
-/* ─── Cajas de respuesta ─────────────────────────────────────────────── */
 .sumall__box {
-  width: 3.5rem;
-  height: 3.5rem;
-  border: 3px solid #cbd5e1;
-  border-radius: 0.6rem;
+  width: 3.75rem;
+  height: 3.75rem;
+  border: 3px solid #000;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--color-primary, #2563eb);
   cursor: pointer;
-  background: #f8fafc;
+  background: #fff;
   transition:
     border-color 0.15s,
     background 0.15s;
@@ -172,47 +146,166 @@
 
 /* La caja de "llevar" es más pequeña */
 .sumall__box:nth-child(3) {
-  width: 2.5rem;
-  height: 2.5rem;
-  font-size: 1.5rem;
-  border-color: #fbbf24;
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: 1.55rem;
+  border-color: #000;
 }
 
-.sumall__box--active {
-  border-color: var(--color-primary, #6366f1);
-  background: #eef2ff;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+.sumall__box--active,
+.sumall__box--active:nth-child(3) {
+  border-color: var(--color-primary, #2563eb) !important;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  box-shadow: none;
 }
 
 .sumall__box--correct {
-  border-color: var(--color-success, #22c55e);
-  background: #f0fdf4;
-  color: var(--color-success, #22c55e);
+  border-color: #16a34a !important;
+  background: #f0fdf4 !important;
+  color: #15803d !important;
 }
 
 .sumall__box--wrong {
-  border-color: var(--color-error, #ef4444);
-  background: #fef2f2;
-  color: var(--color-error, #ef4444);
+  border-color: #dc2626 !important;
+  background: #fff1f2 !important;
+  color: #dc2626 !important;
 }
 
 .sumall__cursor {
-  color: var(--color-primary, #6366f1);
-  animation: blink 1s step-end infinite;
+  color: var(--color-primary, #2563eb);
+  animation: sumall-blink 1s step-end infinite;
 }
 
-@keyframes blink {
+@keyframes sumall-blink {
   50% {
     opacity: 0;
   }
 }
 
-/* ─── Footer ─────────────────────────────────────────────────────────── */
-.sumall__footer {
-  width: 100%;
+/* Split: izquierda operación · derecha input (canvas o numpad). */
+.sumall__body--split {
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: stretch;
+  gap: 0;
+  padding: 20px 1.25rem 1.25rem;
+}
+
+.sumall__body--split .sumall__stage {
+  flex: 1 1 50%;
+  min-width: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  justify-content: flex-start;
+  padding: 0 1.5rem 1rem;
+}
+
+.sumall__body--split .sumall__grid {
+  grid-template-columns: 5.5rem 6.5rem 6.5rem 2rem;
+  row-gap: 0.9rem;
+}
+
+.sumall__body--split .sumall__digit {
+  font-size: 5.25rem;
+  min-width: 4.5rem;
+  line-height: 0.85;
+}
+
+.sumall__body--split .sumall__op {
+  font-size: 4.75rem;
+  line-height: 0.85;
+}
+
+.sumall__body--split .sumall__col-label {
+  font-size: 1.5rem;
+  line-height: 1;
+  align-self: end;
+}
+
+.sumall__body--split .sumall__digit--under-labels {
+  align-self: start;
+  margin-top: -0.2em;
+}
+
+.sumall__body--split .sumall__carry-label {
+  font-size: 1.15rem;
+}
+
+.sumall__body--split .sumall__separator {
+  height: 6px;
+  margin: 0.55rem 0 0.55rem 5.5rem;
+  width: calc(6.5rem + 6.5rem);
+}
+
+.sumall__body--split .sumall__box {
+  width: 6rem;
+  height: 6rem;
+  font-size: 3.5rem;
+  border-radius: 16px;
+}
+
+.sumall__body--split .sumall__box:nth-child(3) {
+  width: 4.25rem;
+  height: 4.25rem;
+  font-size: 2.4rem;
+}
+
+.sumall__side-panel {
+  flex: 1 1 50%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
-  padding: 0.5rem 0;
+  padding: 0 1rem 1rem;
+}
+
+.sumall__side-hint {
+  margin: 0;
+  font-size: calc(1.35rem + 6px);
+  font-weight: 800;
+  color: var(--color-primary, #2563eb);
+  text-align: center;
+}
+
+.sumall__side-placeholder {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-align: center;
+  max-width: 16rem;
+}
+
+.sumall__body--split .dab {
+  min-width: 160px;
+  gap: 8px;
+  border-width: 3px;
+  border-radius: 16px;
+}
+
+.sumall__body--split .dab__canvas {
+  width: clamp(140px, 22vw, 220px);
+  height: clamp(140px, 22vw, 220px);
+}
+
+.sumall__body--split .shared-numpad {
+  width: 100%;
+  max-width: 280px;
+}
+
+.sumall__body--split .shared-numpad__key {
+  width: clamp(56px, 7vw, 76px);
+  height: clamp(52px, 7vw, 68px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sumall__celebration,
+  .sumall__cursor,
+  .sumall__box {
+    animation: none;
+    transition: none;
+  }
 }
