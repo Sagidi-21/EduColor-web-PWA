@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   generateSession,
   validateNode,
@@ -17,14 +17,23 @@ import { Numpad } from "../../shared/components/Numpad";
 import "./LaberintoMatematicoScreen.css";
 
 /**
- * Fondo del laberinto. El original elige uno por semilla, así que la misma
- * semilla da el mismo fondo: es parte del determinismo de la sesión.
+ * Fondos del laberinto. La secuencia por ejercicio es determinista con la
+ * semilla y garantiza que dos consecutivos no repitan (si hay ≥2 imágenes).
  */
 const BG_MODS = import.meta.glob<string>("../../../assets/laberinto/*.{jpg,jpeg,png,webp}", {
   eager: true,
   import: "default",
 });
 const bgList: string[] = Object.values(BG_MODS).filter(Boolean);
+
+/** Índices de fondo por ejercicio: distintos entre vecinos. */
+function bgIndexForExercise(seed: number, exIdx: number, n: number): number {
+  if (n <= 0) return 0;
+  if (n === 1) return 0;
+  const start = ((seed % n) + n) % n;
+  const step = (Math.floor(Math.abs(seed) / n) % (n - 1)) + 1;
+  return (start + exIdx * step) % n;
+}
 
 // ── Geometría del tablero ──────────────────────────────────────────────────
 /**
@@ -68,11 +77,25 @@ const OP_POS: [number, number][] = [
 const FIN_LABEL: Partial<Record<NodeId, string>> = { C: "FIN A", F: "FIN B", H: "FIN C" };
 
 /**
- * Botones sobre el dibujo (mismos % que los nodos):
- * Y = 2.ª fila de columnas; Verificar X = INICIO (20%); Siguiente X = finales (80%).
+ * Botones en la columna derecha (X = finales C/H):
+ * el tramo vertical C→H se divide en 4; Siguiente en el 1.er cuarto,
+ * Verificar en el 4.º (el más bajo). Gap vertical reducido 100px (50px c/u).
  */
-const BTN_VERIFY_POS: [number, number] = [NODE_POS.S[0], COL_Y.box2];
-const BTN_NEXT_POS: [number, number] = [NODE_POS.C[0], COL_Y.box2];
+const RIGHT_SPAN_Y = COL_Y.box3 - COL_Y.box1; // = 4 * COL_STEP_Y
+const BTN_GAP_SHRINK_PX = 50;
+const BTN_NEXT_POS: [number, number] = [
+  NODE_POS.C[0],
+  COL_Y.box1 + RIGHT_SPAN_Y / 8, // centro del 1.er cuarto
+];
+const BTN_VERIFY_POS: [number, number] = [
+  NODE_POS.C[0],
+  COL_Y.box1 + (7 * RIGHT_SPAN_Y) / 8, // centro del 4.º cuarto
+];
+/**
+ * Numpad en tablero: X = columna Inicio; Y = 2.º recuadro de respuesta (D/E).
+ * El CSS ancla el centro de la tecla 5 a esa altura.
+ */
+const NUMPAD_POS: [number, number] = [NODE_POS.S[0], COL_Y.box2];
 
 /** Convierte % de alto del tablero a unidades del viewBox (675). */
 const vy = (pct: number) => (pct / 100) * 675;
@@ -90,15 +113,63 @@ const SVG_LINES: [number, number, number, number][] = [
   [780, vy(COL_Y.box3) + 57, 900, vy(COL_Y.box3) + 57], // G→H (bajo la fila)
 ];
 
-type ValState = "empty" | "ok" | "err";
-type ActiveTgt = NodeId | null;
+/** Flecha como path cerrado: interior blanco + borde primary (sin marker). */
+function arrowPath(x1: number, y1: number, x2: number, y2: number): string {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const len = Math.hypot(dx, dy) || 1;
+  const ux = dx / len;
+  const uy = dy / len;
+  const px = -uy;
+  const py = ux;
+  const halfW = 2;
+  const headLen = 14;
+  const headHalfW = 7;
+  const bx = x2 - ux * headLen;
+  const by = y2 - uy * headLen;
+  const pts = [
+    [x1 + px * halfW, y1 + py * halfW],
+    [bx + px * halfW, by + py * halfW],
+    [bx + px * headHalfW, by + py * headHalfW],
+    [x2, y2],
+    [bx - px * headHalfW, by - py * headHalfW],
+    [bx - px * halfW, by - py * halfW],
+    [x1 - px * halfW, y1 - py * halfW],
+  ] as const;
+  return `${pts.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`).join(" ")} Z`;
+}
+
+/** filled = confirmado en el numpad (borde primary), pendiente de Verificar. */
+type ValState = "empty" | "filled" | "ok" | "err";
+type ActiveTgt = (typeof FILLABLE_NODES)[number] | null;
 /** Tras Verificar con errores, el botón pasa a Reintentar. */
-type VerifyPhase = "idle" | "hasErrors";
+type VerifyPhase = "idle" | "revealing" | "hasErrors";
+
+/** Desfase entre casillas al pintar el resultado de Verificar. */
+const VERIFY_STAGGER_MS = 700;
+/** Autoavance al siguiente laberinto tras acertar todo (patrón PWA). */
+const AUTOAVANCE_MS = 900;
 
 const emptyVals = (): Record<string, string> =>
   Object.fromEntries(FILLABLE_NODES.map((n) => [n, ""]));
 const emptyState = (): Record<string, ValState> =>
   Object.fromEntries(FILLABLE_NODES.map((n) => [n, "empty" as ValState]));
+
+type FillableNode = (typeof FILLABLE_NODES)[number];
+
+/** Primera casilla editable (no ok); si todas están ok, la primera. */
+const firstEditable = (st: Record<string, ValState>): FillableNode =>
+  FILLABLE_NODES.find((nid) => st[nid] !== "ok") ?? FILLABLE_NODES[0];
+
+/** Siguiente casilla editable tras `from` (cíclico). */
+const nextEditableAfter = (from: FillableNode, st: Record<string, ValState>): FillableNode => {
+  const start = FILLABLE_NODES.indexOf(from);
+  for (let i = 1; i <= FILLABLE_NODES.length; i++) {
+    const nid = FILLABLE_NODES[(start + i) % FILLABLE_NODES.length];
+    if (st[nid] !== "ok") return nid;
+  }
+  return from;
+};
 
 export function LaberintoMatematicoScreen({
   activity,
@@ -120,12 +191,26 @@ export function LaberintoMatematicoScreen({
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState<SessionResult | null>(null);
   const [startTime] = useState(() => Date.now());
-  const [active, setActive] = useState<ActiveTgt>(null);
+  const [active, setActive] = useState<ActiveTgt>(FILLABLE_NODES[0]);
   const didScore = useRef(false);
+  const revealTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const scoreRef = useRef(0);
 
-  const bgUrl = bgList.length > 0 ? bgList[seed % bgList.length] : undefined;
+  const bgUrl =
+    bgList.length > 0 ? bgList[bgIndexForExercise(seed, exIdx, bgList.length)] : undefined;
   const ex = exercises[exIdx];
   const total = exercises.length;
+
+  const clearRevealTimers = () => {
+    revealTimers.current.forEach(clearTimeout);
+    revealTimers.current = [];
+  };
+
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
+
+  useEffect(() => () => clearRevealTimers(), []);
 
   const activateNode = (t: ActiveTgt) => {
     setActive(t);
@@ -140,11 +225,11 @@ export function LaberintoMatematicoScreen({
     return parseInt(s.split("").reverse().join(""), 10);
   };
 
-  // ── Numpad: solo escribe; la corrección es con Verificar ─────────────────
+  // ── Numpad fijo: solo escribe; la corrección es con Verificar ────────────
   const handleDigit = (key: string) => {
     if (!active || states[active] === "ok") return;
     setVals((v) => ({ ...v, [active]: (v[active] + key).slice(-4) }));
-    if (states[active] === "err") {
+    if (states[active] === "err" || states[active] === "filled") {
       setStates((s) => ({ ...s, [active]: "empty" }));
     }
   };
@@ -152,26 +237,51 @@ export function LaberintoMatematicoScreen({
   const handleDelete = () => {
     if (!active || states[active] === "ok") return;
     setVals((v) => ({ ...v, [active]: v[active].slice(0, -1) }));
-    if (states[active] === "err") {
+    if (states[active] === "err" || states[active] === "filled") {
       setStates((s) => ({ ...s, [active]: "empty" }));
     }
   };
 
   const handleConfirm = () => {
     if (!active) return;
-    activateNode(null);
+    const confirmed: ValState = vals[active] ? "filled" : "empty";
+    const afterConfirm = { ...states, [active]: confirmed };
+    setStates(afterConfirm);
+    const allDone = FILLABLE_NODES.every((nid) => {
+      const st = afterConfirm[nid];
+      return st === "filled" || st === "ok";
+    });
+    // Con todas chekeadas no queda ninguna seleccionada.
+    activateNode(allDone ? null : nextEditableAfter(active, afterConfirm));
   };
 
   const handleNodeClick = (nid: NodeId) => {
     if (states[nid] === "ok") return;
-    activateNode(nid);
+    // Con Reintentar visible no se puede tocar ningún recuadro (ni los rojos).
+    if (verifyPhase === "hasErrors") return;
+    if (!FILLABLE_NODES.includes(nid as FillableNode)) return;
+    // Fallados en rojo (tras Reintentar ya están vacíos): por si quedara alguno.
+    if (states[nid] === "err") {
+      setVals((v) => ({ ...v, [nid]: "" }));
+      setStates((s) => ({ ...s, [nid]: "empty" }));
+    }
+    activateNode(nid as FillableNode);
   };
 
-  /** Comprueba todos los nodos rellenables y pinta ok / err. */
-  const handleVerify = () => {
-    if (!ex) return;
-    const next: Record<string, ValState> = { ...states };
+  /**
+   * Comprueba nodos y pinta solo los pendientes uno a uno (0.7s):
+   * ok = verde, err = rojo. Las ya correctas se saltan y siguen en verde.
+   * Al terminar, si hay errores el botón pasa a Reintentar.
+   */
+  const allChecked = FILLABLE_NODES.every(
+    (nid) => states[nid] === "filled" || states[nid] === "ok",
+  );
 
+  const handleVerify = () => {
+    if (!ex || verifyPhase === "revealing" || !allChecked) return;
+    clearRevealTimers();
+
+    const next: Record<string, ValState> = { ...states };
     FILLABLE_NODES.forEach((nid) => {
       if (states[nid] === "ok") {
         next[nid] = "ok";
@@ -184,24 +294,77 @@ export function LaberintoMatematicoScreen({
 
     const allOk = FILLABLE_NODES.every((nid) => next[nid] === "ok");
     const anyErr = FILLABLE_NODES.some((nid) => next[nid] === "err");
+    // Solo las no validadas aún entran en la secuencia de pintado.
+    const toReveal = FILLABLE_NODES.filter((nid) => states[nid] !== "ok");
 
-    setStates(next);
-    activateNode(null);
-    playFeedback(allOk);
-
-    if (allOk) {
-      if (!didScore.current) {
-        didScore.current = true;
-        setScore((s) => s + 1);
+    const finishReveal = () => {
+      playFeedback(allOk);
+      if (allOk) {
+        activateNode(null);
+        if (!didScore.current) {
+          didScore.current = true;
+          scoreRef.current += 1;
+          setScore(scoreRef.current);
+        }
+        setVerifyPhase("idle");
+        // Tras pintar todo en verde, autoavance (900 ms estándar PWA).
+        const t = setTimeout(() => {
+          clearRevealTimers();
+          if (exIdx >= exercises.length - 1) {
+            setFinished({
+              correct: scoreRef.current,
+              total: exercises.length,
+              duration: Date.now() - startTime,
+            });
+          } else {
+            setExIdx((i) => i + 1);
+            setVals(emptyVals());
+            setStates(emptyState());
+            setVerifyPhase("idle");
+            didScore.current = false;
+            activateNode(FILLABLE_NODES[0]);
+          }
+        }, AUTOAVANCE_MS);
+        revealTimers.current.push(t);
+      } else if (anyErr) {
+        activateNode(null);
+        setVerifyPhase("hasErrors");
+      } else {
+        activateNode(firstEditable(next));
+        setVerifyPhase("idle");
       }
-      setVerifyPhase("idle");
-    } else if (anyErr) {
-      setVerifyPhase("hasErrors");
+    };
+
+    if (toReveal.length === 0) {
+      finishReveal();
+      return;
     }
+
+    // Pendientes: vacío hasta que les toque; las ok se mantienen verdes.
+    setStates((s) => {
+      const ns = { ...s };
+      toReveal.forEach((nid) => {
+        ns[nid] = "empty";
+      });
+      return ns;
+    });
+    setVerifyPhase("revealing");
+
+    toReveal.forEach((nid, i) => {
+      const t = setTimeout(() => {
+        setStates((s) => ({ ...s, [nid]: next[nid] }));
+        if (i < toReveal.length - 1) return;
+        finishReveal();
+      }, i * VERIFY_STAGGER_MS);
+      revealTimers.current.push(t);
+    });
   };
 
   /** Solo limpia los nodos fallados; los correctos se mantienen. */
   const handleRetryFailed = () => {
+    if (verifyPhase === "revealing") return;
+    const firstFailed = FILLABLE_NODES.find((nid) => states[nid] === "err") ?? FILLABLE_NODES[0];
+    clearRevealTimers();
     setVals((v) => {
       const nv = { ...v };
       FILLABLE_NODES.forEach((nid) => {
@@ -217,35 +380,39 @@ export function LaberintoMatematicoScreen({
       return ns;
     });
     setVerifyPhase("idle");
-    activateNode(null);
+    activateNode(firstFailed);
   };
 
   /** Pasa al siguiente laberinto sin exigir verificar. */
   const handleNext = () => {
+    clearRevealTimers();
     if (exIdx >= exercises.length - 1) {
-      setFinished({ correct: score, total: exercises.length, duration: Date.now() - startTime });
+      setFinished({
+        correct: scoreRef.current,
+        total: exercises.length,
+        duration: Date.now() - startTime,
+      });
     } else {
       setExIdx((i) => i + 1);
       setVals(emptyVals());
       setStates(emptyState());
       setVerifyPhase("idle");
       didScore.current = false;
-      activateNode(null);
+      activateNode(FILLABLE_NODES[0]);
     }
   };
 
   const handleRestart = () => {
+    clearRevealTimers();
     setFinished(null);
     setExIdx(0);
     setVals(emptyVals());
     setStates(emptyState());
     setVerifyPhase("idle");
     setScore(0);
-    setActive(null);
+    setActive(FILLABLE_NODES[0]);
     didScore.current = false;
   };
-
-  const showNumpad = active !== null;
 
   if (finished) {
     return (
@@ -261,14 +428,7 @@ export function LaberintoMatematicoScreen({
   if (!ex) return <NoExerciseNotice activityTitle={activity.title} onExit={onExit} />;
 
   return (
-    <div
-      className={`lm-wrap ${className || ""}`}
-      onClick={(e) => {
-        if ((e.target as HTMLElement).closest(".lm-node,.lm-foot,.lm-board-btn") === null) {
-          activateNode(null);
-        }
-      }}
-    >
+    <div className={`lm-wrap ${className || ""}`}>
       <ActivityHeader
         onExit={onExit}
         gradeTitle={gradeTitle}
@@ -282,120 +442,116 @@ export function LaberintoMatematicoScreen({
       <div className="lm-canvas">
         {bgUrl && <img className="lm-layer lm-bg" src={bgUrl} alt="" />}
 
-        <svg
-          className="lm-layer lm-svg"
-          viewBox="0 0 1200 675"
-          preserveAspectRatio="xMidYMid meet"
-          aria-hidden="true"
-        >
-          <defs>
-            <marker
-              id="lm-arr"
-              markerWidth="18"
-              markerHeight="13"
-              refX="18"
-              refY="6.5"
-              orient="auto"
-              markerUnits="userSpaceOnUse"
-            >
-              <polygon points="0 0,18 6.5,0 13" fill="#1a2a6c" />
-            </marker>
-          </defs>
-          {SVG_LINES.map(([x1, y1, x2, y2], i) => (
-            <line
-              key={i}
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke="#1a2a6c"
-              strokeWidth="4"
-              markerEnd="url(#lm-arr)"
-            />
-          ))}
-        </svg>
-
-        <div className="lm-layer lm-nodes-layer">
-          {ex.edges.map((edge, i) => (
-            <div
-              key={i}
-              className="lm-op"
-              style={{ left: `${OP_POS[i][0]}%`, top: `${OP_POS[i][1]}%` }}
-            >
-              {edge.op}
-              {edge.value}
-            </div>
-          ))}
-
-          <span
-            className="lm-lbl lm-lbl-start"
-            style={{ left: "20%", top: "calc(27% - 7% - 60px)" }}
+        <div className="lm-playfield">
+          <svg
+            className="lm-layer lm-svg"
+            viewBox="0 0 1200 675"
+            preserveAspectRatio="xMidYMid meet"
+            aria-hidden="true"
           >
-            Inicio
-          </span>
+            {SVG_LINES.map(([x1, y1, x2, y2], i) => (
+              <path key={i} className="lm-arrow" d={arrowPath(x1, y1, x2, y2)} />
+            ))}
+          </svg>
 
-          <div
-            className="lm-node lm-node-start"
-            style={{ left: `${NODE_POS.S[0]}%`, top: `${NODE_POS.S[1]}%` }}
-          >
-            <span>{ex.start}</span>
-          </div>
-
-          <button
-            type="button"
-            className="lm-board-btn lm-board-btn--verify"
-            style={{ left: `${BTN_VERIFY_POS[0]}%`, top: `${BTN_VERIFY_POS[1]}%` }}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (verifyPhase === "hasErrors") handleRetryFailed();
-              else handleVerify();
-            }}
-          >
-            {verifyPhase === "hasErrors" ? "Reintentar" : "Verificar"}
-          </button>
-          <button
-            type="button"
-            className="lm-board-btn lm-board-btn--next"
-            style={{ left: `${BTN_NEXT_POS[0]}%`, top: `${BTN_NEXT_POS[1]}%` }}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleNext();
-            }}
-          >
-            {exIdx >= exercises.length - 1 ? "Ver resultado" : "Siguiente"}
-          </button>
-
-          {FILLABLE_NODES.map((nid) => {
-            const isFin = nid in FIN_LABEL;
-            const [l, t] = NODE_POS[nid];
-            const isActive = active === nid;
-            const displayVal = assembleNum(vals[nid] ?? "");
-            return (
+          <div className="lm-layer lm-nodes-layer">
+            {ex.edges.map((edge, i) => (
               <div
-                key={nid}
-                className={`lm-node ${isFin ? "lm-node-end" : "lm-node-reg"} lm-ns-${states[nid]} ${isActive ? "lm-node-active" : ""}`}
-                style={{ left: `${l}%`, top: `${t}%` }}
-                data-node={nid}
-                onClick={() => handleNodeClick(nid)}
+                key={i}
+                className="lm-op"
+                style={{ left: `${OP_POS[i][0]}%`, top: `${OP_POS[i][1]}%` }}
               >
-                <span>{isNaN(displayVal) ? "" : displayVal}</span>
+                {edge.op}
+                {edge.value}
               </div>
-            );
-          })}
+            ))}
+
+            <span
+              className="lm-lbl lm-lbl-start"
+              style={{ left: "20%", top: "calc(27% - 7% - 60px)" }}
+            >
+              Inicio
+            </span>
+
+            <div
+              className="lm-node lm-node-start"
+              style={{ left: `${NODE_POS.S[0]}%`, top: `${NODE_POS.S[1]}%` }}
+            >
+              <span>{ex.start}</span>
+            </div>
+
+            <button
+              type="button"
+              className={`lm-board-btn lm-board-btn--verify${
+                verifyPhase === "idle" && !allChecked
+                  ? " lm-board-btn--waiting"
+                  : verifyPhase === "idle" && allChecked
+                    ? " lm-board-btn--ready"
+                    : ""
+              }`}
+              style={{
+                left: `${BTN_VERIFY_POS[0]}%`,
+                top: `calc(${BTN_VERIFY_POS[1]}% - ${BTN_GAP_SHRINK_PX}px)`,
+              }}
+              disabled={verifyPhase === "revealing" || (verifyPhase === "idle" && !allChecked)}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (verifyPhase === "hasErrors") handleRetryFailed();
+                else handleVerify();
+              }}
+            >
+              <span className="lm-board-btn__label">
+                {verifyPhase === "hasErrors" ? "Reintentar" : "Verificar"}
+              </span>
+            </button>
+            <button
+              type="button"
+              className="lm-board-btn lm-board-btn--next"
+              style={{
+                left: `${BTN_NEXT_POS[0]}%`,
+                top: `calc(${BTN_NEXT_POS[1]}% + ${BTN_GAP_SHRINK_PX}px)`,
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNext();
+              }}
+            >
+              {exIdx >= exercises.length - 1 ? "Ver resultado" : "Siguiente"}
+            </button>
+
+            {FILLABLE_NODES.map((nid) => {
+              const isFin = nid in FIN_LABEL;
+              const [l, t] = NODE_POS[nid];
+              const isActive = active === nid && states[nid] !== "ok" && !allChecked;
+              const isLockedErr = verifyPhase === "hasErrors" && states[nid] === "err";
+              const displayVal = assembleNum(vals[nid] ?? "");
+              return (
+                <div
+                  key={nid}
+                  className={`lm-node ${isFin ? "lm-node-end" : "lm-node-reg"} lm-ns-${states[nid]} ${isActive ? "lm-node-active" : ""}${isLockedErr ? " lm-node-locked" : ""}`}
+                  style={{ left: `${l}%`, top: `${t}%` }}
+                  data-node={nid}
+                  onClick={() => handleNodeClick(nid)}
+                >
+                  <span>{isNaN(displayVal) ? "" : displayVal}</span>
+                </div>
+              );
+            })}
+
+            <div
+              className="lm-board-numpad"
+              style={{ left: `${NUMPAD_POS[0]}%`, top: `${NUMPAD_POS[1]}%` }}
+            >
+              <Numpad
+                onDigit={handleDigit}
+                onDelete={handleDelete}
+                onConfirm={handleConfirm}
+                disabled={false}
+              />
+            </div>
+          </div>
         </div>
       </div>
-
-      {showNumpad && (
-        <div className="lm-foot">
-          <Numpad
-            layout="horizontal"
-            onDigit={handleDigit}
-            onDelete={handleDelete}
-            onConfirm={handleConfirm}
-            disabled={false}
-          />
-        </div>
-      )}
     </div>
   );
 }

@@ -55,6 +55,24 @@ const rellenarTodoCorrecto = (container: HTMLElement, answers: Record<string, nu
   }
 };
 
+/** Rellena todo; el nodo `mal` queda incorrecto (para poder pulsar Verificar). */
+const rellenarConErrorEn = (
+  container: HTMLElement,
+  answers: Record<string, number>,
+  mal: string,
+) => {
+  for (const n of FILLABLE_NODES) {
+    teclearNodo(container, n, n === mal ? answers[n] + 9 : answers[n]);
+  }
+};
+
+/** Avanza la secuencia de pintado tras Verificar (8 casillas × 700 ms). */
+const flushVerifyReveal = async () => {
+  await vi.advanceTimersByTimeAsync(FILLABLE_NODES.length * 700);
+};
+
+const AUTOAVANCE_MS = 900;
+
 describe("LaberintoMatematicoScreen smoke", () => {
   beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
@@ -92,35 +110,27 @@ describe("LaberintoMatematicoScreen smoke", () => {
     expect(container.querySelector('[data-node="H"].lm-node-end')).not.toBeNull();
   });
 
-  it("sin nada activo no hay Numpad", () => {
+  it("por defecto selecciona la primera casilla y muestra el Numpad", () => {
     const { container } = render(
       <LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium")} />,
     );
 
-    expect(container.querySelector(".shared-numpad")).toBeNull();
-    expect(container.querySelector(".lm-foot")).toBeNull();
-  });
-
-  it("activar un nodo abre el Numpad con el teclado completo", () => {
-    const { container } = render(
-      <LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium")} />,
-    );
-    activarNodo(container, "A");
-
+    expect(nodo(container, "A")?.className).toContain("lm-node-active");
+    expect(container.querySelector(".lm-board-numpad")).not.toBeNull();
     expect(container.querySelector(".shared-numpad")).not.toBeNull();
     const keys = Array.from(container.querySelectorAll<HTMLButtonElement>(".shared-numpad__key"));
     expect(keys.map((k) => k.getAttribute("aria-label") ?? k.textContent)).toEqual([
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
       "7",
       "8",
       "9",
-      "0",
+      "4",
+      "5",
+      "6",
+      "1",
+      "2",
+      "3",
       "Borrar",
+      "0",
       "Confirmar",
     ]);
   });
@@ -134,37 +144,45 @@ describe("LaberintoMatematicoScreen smoke", () => {
     teclearNodo(container, "A", ex.answers.A);
 
     expect(textoNodo(container, "A")).toBe(String(ex.answers.A));
-    expect(nodo(container, "A")?.className).toContain("lm-ns-empty");
-    expect(container.querySelector(".shared-numpad")).toBeNull();
+    expect(nodo(container, "A")?.className).toContain("lm-ns-filled");
+    expect(container.querySelector(".shared-numpad")).not.toBeNull();
   });
 
-  it("Verificar marca correctos en verde e incorrectos en rojo", () => {
+  it("Verificar marca correctos en verde e incorrectos en rojo", async () => {
     const ex = generateSession("medium", 4242, "1")[0];
 
     const { container } = render(
       <LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium")} />,
     );
-    teclearNodo(container, "A", ex.answers.A);
-    teclearNodo(container, "B", ex.answers.B + 9);
+    rellenarConErrorEn(container, ex.answers, "B");
 
     fireEvent.click(boardBtn(container, "Verificar")!);
+    expect(boardBtn(container, "Verificar")).toBeTruthy();
+    expect(boardBtn(container, "Reintentar")).toBeUndefined();
+
+    await flushVerifyReveal();
 
     expect(nodo(container, "A")?.className).toContain("lm-ns-ok");
     expect(nodo(container, "B")?.className).toContain("lm-ns-err");
     expect(boardBtn(container, "Reintentar")).toBeTruthy();
     expect(boardBtn(container, "Verificar")).toBeUndefined();
     expect(boardBtn(container, "Siguiente")).toBeTruthy();
+
+    // Con Reintentar visible no se puede tocar el rojo.
+    activarNodo(container, "B");
+    expect(nodo(container, "B")?.className).toContain("lm-ns-err");
+    expect(textoNodo(container, "B")).not.toBe("");
   });
 
-  it("Reintentar solo limpia los fallados", () => {
+  it("Reintentar solo limpia los fallados y la siguiente verificación no repinta los ok", async () => {
     const ex = generateSession("medium", 4242, "1")[0];
 
     const { container } = render(
       <LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium")} />,
     );
-    teclearNodo(container, "A", ex.answers.A);
-    teclearNodo(container, "B", ex.answers.B + 9);
+    rellenarConErrorEn(container, ex.answers, "B");
     fireEvent.click(boardBtn(container, "Verificar")!);
+    await flushVerifyReveal();
     fireEvent.click(boardBtn(container, "Reintentar")!);
 
     expect(nodo(container, "A")?.className).toContain("lm-ns-ok");
@@ -172,19 +190,27 @@ describe("LaberintoMatematicoScreen smoke", () => {
     expect(nodo(container, "B")?.className).toContain("lm-ns-empty");
     expect(textoNodo(container, "B")).toBe("");
     expect(boardBtn(container, "Verificar")).toBeTruthy();
+    expect(boardBtn(container, "Verificar")).toBeDisabled();
+
+    teclearNodo(container, "B", ex.answers.B);
+    fireEvent.click(boardBtn(container, "Verificar")!);
+    // A no se repinta: sigue ok desde el primer instante de la 2.ª verificación.
+    expect(nodo(container, "A")?.className).toContain("lm-ns-ok");
   });
 
-  it("un nodo ya correcto no se vuelve a abrir", () => {
+  it("un nodo ya correcto no se vuelve a seleccionar", async () => {
     const ex = generateSession("medium", 4242, "1")[0];
 
     const { container } = render(
       <LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium")} />,
     );
-    teclearNodo(container, "A", ex.answers.A);
+    rellenarTodoCorrecto(container, ex.answers);
     fireEvent.click(boardBtn(container, "Verificar")!);
+    await flushVerifyReveal();
     activarNodo(container, "A");
 
-    expect(container.querySelector(".shared-numpad")).toBeNull();
+    expect(nodo(container, "A")?.className).not.toContain("lm-node-active");
+    expect(container.querySelector(".shared-numpad")).not.toBeNull();
   });
 
   it("borrar en el Numpad quita la última cifra", () => {
@@ -225,7 +251,7 @@ describe("LaberintoMatematicoScreen smoke", () => {
     expect(container.querySelector(".summary")).not.toBeNull();
   });
 
-  it("Verificar todo correcto deja los nodos en ok", () => {
+  it("Verificar todo correcto deja los nodos en ok y autoavanza a los 900 ms", async () => {
     const ex = generateSession("medium", 4242, "1")[0];
 
     const { container } = render(
@@ -233,14 +259,18 @@ describe("LaberintoMatematicoScreen smoke", () => {
     );
     rellenarTodoCorrecto(container, ex.answers);
     fireEvent.click(boardBtn(container, "Verificar")!);
+    await flushVerifyReveal();
 
     for (const n of FILLABLE_NODES) {
       expect(nodo(container, n)?.className, `nodo ${n}`).toContain("lm-ns-ok");
     }
-    expect(boardBtn(container, "Verificar")).toBeTruthy();
+    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("1/4");
+
+    await vi.advanceTimersByTimeAsync(AUTOAVANCE_MS);
+    expect(container.querySelector(".activity-header__counter")?.textContent).toBe("2/4");
   });
 
-  it("el fondo del laberinto es el mismo con la misma semilla", () => {
+  it("la misma semilla reproduce el fondo del primer ejercicio", () => {
     const una = render(<LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium")} />);
     const fondoA = una.container.querySelector<HTMLImageElement>(".lm-bg")?.getAttribute("src");
     cleanup();
@@ -255,5 +285,23 @@ describe("LaberintoMatematicoScreen smoke", () => {
     expect(fondoA).toBeTruthy();
     expect(fondoA).toBe(fondoC);
     expect(fondoA).not.toBe(fondoB);
+  });
+
+  it("al cambiar de laberinto el fondo es distinto al anterior", async () => {
+    const ex = generateSession("medium", 4242, "1")[0];
+    const { container } = render(
+      <LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium")} />,
+    );
+    const fondo1 = container.querySelector<HTMLImageElement>(".lm-bg")?.getAttribute("src");
+
+    rellenarTodoCorrecto(container, ex.answers);
+    fireEvent.click(boardBtn(container, "Verificar")!);
+    await flushVerifyReveal();
+    await vi.advanceTimersByTimeAsync(AUTOAVANCE_MS);
+
+    const fondo2 = container.querySelector<HTMLImageElement>(".lm-bg")?.getAttribute("src");
+    expect(fondo1).toBeTruthy();
+    expect(fondo2).toBeTruthy();
+    expect(fondo2).not.toBe(fondo1);
   });
 });

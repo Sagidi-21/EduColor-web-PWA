@@ -36,8 +36,23 @@
   pointer-events: none;
 }
 
+/* Flechas + recuadros + botones: un bloque desplazable sobre el fondo. */
+.lm-playfield {
+  position: absolute;
+  inset: 0;
+  transform: translateY(-30px);
+}
+
 .lm-svg {
   pointer-events: none;
+}
+
+.lm-arrow {
+  fill: var(--color-primary, #2563eb);
+  stroke: var(--color-primary, #2563eb);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
 /* ── Casillas del laberinto ──────────────────────────────────────────────── */
@@ -91,19 +106,58 @@
   border-color: #c026d3;
 }
 .lm-node-active {
-  border-color: var(--color-primary) !important;
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4) !important;
+  border-width: 4px !important; /* base 2px + 2px */
+  border-color: var(--color-primary, #2563eb);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary, #2563eb) 40%, transparent);
+  animation: lm-active-blink 1.6s ease-in-out infinite;
 }
 
-/* Estados tras Verificar (recuadros de respuesta del alumno). */
+@keyframes lm-active-blink {
+  0%,
+  100% {
+    background-color: #fff;
+    border-color: color-mix(in srgb, var(--color-primary, #2563eb) 35%, #fff);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    background-color: color-mix(in srgb, var(--color-primary, #2563eb) 30%, #fff);
+    border-color: var(--color-primary, #2563eb);
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lm-node-active {
+    animation: none;
+    background-color: color-mix(in srgb, var(--color-primary, #2563eb) 30%, #fff);
+    border-color: var(--color-primary, #2563eb);
+  }
+}
+
+/* Confirmado en el numpad (✓): borde primary hasta Verificar. */
+.lm-ns-filled {
+  border-color: var(--color-primary, #2563eb) !important;
+  box-shadow: none;
+}
+
+/* Estados tras Verificar (secuencia: verde/blanco = ok, rojo/blanco = err). */
 .lm-ns-ok {
   border-color: #16a34a !important;
-  background: color-mix(in srgb, #16a34a 10%, #fff) !important;
+  background: #16a34a !important;
+  color: #fff !important;
   box-shadow: none;
 }
 .lm-ns-err {
   border-color: #dc2626 !important;
+  background: #dc2626 !important;
+  color: #fff !important;
   box-shadow: none;
+}
+
+/* Rojos bloqueados mientras Reintentar está visible. */
+.lm-node-locked {
+  cursor: not-allowed;
+  pointer-events: auto;
 }
 
 /* Botones sobre el dibujo (mismas coordenadas % que los nodos). */
@@ -128,12 +182,70 @@
     transform 0.15s;
 }
 
-.lm-board-btn:hover,
-.lm-board-btn:focus-visible,
-.lm-board-btn:active {
+.lm-board-btn:hover:not(:disabled),
+.lm-board-btn:focus-visible:not(:disabled),
+.lm-board-btn:active:not(:disabled) {
   background: #fff;
   color: var(--color-primary, #2563eb);
   transform: translate(-50%, -50%) scale(1.04);
+}
+
+/* Verificar pendiente: gris claro + texto blanco (aspecto desactivado). */
+.lm-board-btn--waiting,
+.lm-board-btn--waiting:disabled {
+  background: #cbd5e1;
+  border-color: #cbd5e1;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.lm-board-btn--waiting:hover,
+.lm-board-btn--waiting:focus-visible,
+.lm-board-btn--waiting:active,
+.lm-board-btn--waiting:disabled:hover {
+  background: #cbd5e1;
+  border-color: #cbd5e1;
+  color: #fff;
+  transform: translate(-50%, -50%);
+}
+
+/*
+ * Una sola animación: el scale del botón agranda texto y recuadro a la par
+ * (+6%, mismo ritmo que el recuadro activo).
+ */
+.lm-board-btn--ready {
+  animation: lm-verify-ready 1.6s ease-in-out infinite;
+}
+
+.lm-board-btn--ready:hover,
+.lm-board-btn--ready:focus-visible,
+.lm-board-btn--ready:active {
+  animation: none;
+}
+
+@keyframes lm-verify-ready {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    background: var(--color-primary, #2563eb);
+    border-color: color-mix(in srgb, var(--color-primary, #2563eb) 35%, #fff);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.06);
+    background: color-mix(in srgb, var(--color-primary, #2563eb) 70%, #fff);
+    border-color: var(--color-primary, #2563eb);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary, #2563eb) 40%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lm-board-btn--ready {
+    animation: none;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary, #2563eb) 40%, transparent);
+  }
 }
 
 @keyframes lm-shake {
@@ -192,7 +304,43 @@
   border-radius: 10px;
 }
 
-/* ── Pie ─────────────────────────────────────────────────────────────────── */
+/* Numpad sobre el tablero (columna Inicio, zona inferior izquierda). */
+.lm-board-numpad {
+  --lm-np-key-h: clamp(48px, 6.2vw, 68px);
+  --lm-np-gap: 7px;
+  position: absolute;
+  /* Ancla: centro de la tecla 5 (2.ª fila) = top del contenedor. */
+  transform: translate(-50%, calc(-1.5 * var(--lm-np-key-h) - var(--lm-np-gap)));
+  z-index: 6;
+  width: clamp(190px, 24vw, 260px);
+  pointer-events: auto;
+}
+
+.lm-board-numpad .shared-numpad {
+  max-width: none;
+  width: 100%;
+  gap: var(--lm-np-gap);
+  margin: 0;
+}
+
+.lm-board-numpad .shared-numpad__row {
+  gap: var(--lm-np-gap);
+}
+
+.lm-board-numpad .shared-numpad__key {
+  width: clamp(54px, 7vw, 76px);
+  height: var(--lm-np-key-h);
+  font-size: clamp(20px, 2.8vw, 32px);
+  border-radius: 12px;
+  border-width: 2px;
+}
+
+.lm-board-numpad .shared-numpad__del-icon {
+  width: clamp(26px, 3.8vw, 36px);
+  height: clamp(26px, 3.8vw, 36px);
+}
+
+/* ── Pie (legacy / otros usos) ───────────────────────────────────────────── */
 .lm-foot {
   display: flex;
   align-items: center;
