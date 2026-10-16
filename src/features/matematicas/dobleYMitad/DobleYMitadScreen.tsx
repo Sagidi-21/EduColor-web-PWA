@@ -7,7 +7,6 @@ import { ActivityHeader } from "../components/ActivityHeader";
 import { ActionButtons } from "../components/ActivityActionButtons";
 import { NoExerciseNotice } from "../components/NoExerciseNotice";
 import { playFeedback } from "../../shared/audioFeedback";
-import "../operations/OperationsScreen.css";
 import "./DobleYMitadScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -139,9 +138,9 @@ export function DobleYMitadScreen({
 
   const stageClass =
     session.answerState === "correct"
-      ? "ops__stage--correct"
+      ? "dob__stage--correct"
       : session.answerState === "wrong"
-        ? "ops__stage--wrong"
+        ? "dob__stage--wrong"
         : "";
 
   // El enunciado da el número del que se parte o el resultado; el hueco va en el
@@ -151,7 +150,7 @@ export function DobleYMitadScreen({
   const etiquetaResultado = current.operacion === "x2" ? "Doble" : "Mitad";
 
   return (
-    <div className="ops">
+    <div className="dob">
       <ActivityHeader
         unitTitle={activity.title}
         gradeTitle={gradeTitle}
@@ -162,26 +161,34 @@ export function DobleYMitadScreen({
         difficultyStars={difficultyStars}
       />
 
-      <div className={`ops__stage ${stageClass}`}>
-        {session.answerState === "correct" && <div className="ops__celebration">¡Correcto! ⭐</div>}
+      <div className={`dob__stage ${stageClass}`}>
+        {session.answerState === "correct" && <div className="dob__cheer">¡Correcto! ⭐</div>}
 
         <p className="dob__question">{current.question}</p>
 
-        <div className="dob__visual">
-          <div className={`dob__box${huecoEnResultado ? "" : " dob__box--blank"}`}>
-            <span className="dob__box-value">{huecoEnResultado ? current.number : "?"}</span>
-            <span className="dob__box-label">Número</span>
-          </div>
+        <div className="dob__mid">
+          <div className="dob__visual">
+            <div className={`dob__box${huecoEnResultado ? "" : " dob__box--blank"}`}>
+              <span className="dob__box-value">{huecoEnResultado ? current.number : "?"}</span>
+              <span className="dob__box-label">Número</span>
+            </div>
 
-          <span className="dob__arrow" aria-hidden="true">
-            {flecha}
-          </span>
+            <span className="dob__arrow" aria-hidden="true">
+              {flecha}
+            </span>
 
-          <div className={`dob__box${huecoEnResultado ? " dob__box--blank" : ""}`}>
-            <span className="dob__box-value">{huecoEnResultado ? "?" : current.number}</span>
-            <span className="dob__box-label">{etiquetaResultado}</span>
+            <div className={`dob__box${huecoEnResultado ? " dob__box--blank" : ""}`}>
+              <span className="dob__box-value">{huecoEnResultado ? "?" : current.number}</span>
+              <span className="dob__box-label">{etiquetaResultado}</span>
+            </div>
           </div>
         </div>
+
+        {session.answerState === "wrong" && (
+          <div className="dob__actions">
+            <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+          </div>
+        )}
 
         <div className="dob__options">
           {current.options.map((opt) => {
@@ -206,12 +213,6 @@ export function DobleYMitadScreen({
           })}
         </div>
       </div>
-
-      <footer className="ops__footer">
-        {session.answerState === "wrong" && (
-          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-        )}
-      </footer>
     </div>
   );
 }

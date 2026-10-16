@@ -139,7 +139,7 @@ describe("dobleYMitad — responder", () => {
     expect(container.querySelector(".dob__opt--correct")?.textContent).toBe(
       String(ex.correctAnswer),
     );
-    expect(container.querySelector(".ops__stage")?.className).toContain("ops__stage--correct");
+    expect(container.querySelector(".dob__stage")?.className).toContain("dob__stage--correct");
 
     runTimers(AUTOAVANCE_MS);
     expect(progreso(container)).toBe("2/10");
@@ -153,7 +153,7 @@ describe("dobleYMitad — responder", () => {
 
     expect(container.querySelector(".dob__opt--wrong")).not.toBeNull();
     expect(container.querySelector(".dob__opt--correct")).toBeNull();
-    expect(container.querySelector(".ops__stage")?.className).toContain("ops__stage--wrong");
+    expect(container.querySelector(".dob__stage")?.className).toContain("dob__stage--wrong");
     expect(container.querySelector(".activity-action--retry")).not.toBeNull();
 
     runTimers(AUTOAVANCE_MS * 3);
@@ -168,7 +168,7 @@ describe("dobleYMitad — responder", () => {
     for (const boton of opciones(container)) expect(boton.disabled).toBe(true);
 
     acertar(container, ex.correctAnswer);
-    expect(container.querySelector(".ops__stage")?.className).not.toContain("ops__stage--correct");
+    expect(container.querySelector(".dob__stage")?.className).not.toContain("dob__stage--correct");
     expect(progreso(container)).toBe("1/10");
   });
 

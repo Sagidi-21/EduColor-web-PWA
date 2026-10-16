@@ -7,7 +7,6 @@ import { ActivityHeader } from "../components/ActivityHeader";
 import { ActionButtons } from "../components/ActivityActionButtons";
 import { NoExerciseNotice } from "../components/NoExerciseNotice";
 import { playFeedback } from "../../shared/audioFeedback";
-import "../operations/OperationsScreen.css";
 import "./CintaMetricaScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
@@ -122,13 +121,13 @@ export function CintaMetricaScreen({
 
   const stageClass =
     session.answerState === "correct"
-      ? "ops__stage--correct"
+      ? "cmt__stage--correct"
       : session.answerState === "wrong"
-        ? "ops__stage--wrong"
+        ? "cmt__stage--wrong"
         : "";
 
   return (
-    <div className="ops">
+    <div className="cmt">
       <ActivityHeader
         unitTitle={activity.title}
         gradeTitle={gradeTitle}
@@ -139,45 +138,19 @@ export function CintaMetricaScreen({
         difficultyStars={difficultyStars}
       />
 
-      <div className={`ops__stage ${stageClass}`}>
-        {session.answerState === "correct" && <div className="ops__celebration">¡Correcto! ⭐</div>}
+      <div className={`cmt__stage ${stageClass}`}>
+        {session.answerState === "correct" && <div className="cmt__cheer">¡Correcto! ⭐</div>}
 
-        <div className="cmt__card">
+        <div className="cmt__header">
           {current.type === "choose-unit" ? (
             <p className="cmt__instruction">Elige entre cm y m</p>
           ) : null}
+          <p className="cmt__question">{current.question}</p>
+        </div>
+
+        <div className="cmt__mid">
           <div className="cmt__object-display">
             <span className="cmt__emoji">{current.item.emoji}</span>
-          </div>
-
-          <p className="cmt__question">{current.question}</p>
-
-          <div className="cmt__opts">
-            {current.options.map((opt) => {
-              const isSelected = session.selectedOption === opt;
-              let cls = "cmt__opt";
-
-              if (
-                session.answerState !== "idle" &&
-                opt.toLowerCase() === current.correctAnswer.toLowerCase()
-              ) {
-                cls += " cmt__opt--correct";
-              } else if (session.answerState === "wrong" && isSelected) {
-                cls += " cmt__opt--wrong";
-              }
-
-              return (
-                <button
-                  key={opt}
-                  type="button"
-                  className={cls}
-                  onClick={() => handleAnswer(opt)}
-                  disabled={session.answerState !== "idle"}
-                >
-                  {opt}
-                </button>
-              );
-            })}
           </div>
 
           {session.answerState !== "idle" && (
@@ -186,13 +159,41 @@ export function CintaMetricaScreen({
             </p>
           )}
         </div>
-      </div>
 
-      <footer className="ops__footer">
         {session.answerState === "wrong" && (
-          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+          <div className="cmt__actions">
+            <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+          </div>
         )}
-      </footer>
+
+        <div className="cmt__opts">
+          {current.options.map((opt) => {
+            const isSelected = session.selectedOption === opt;
+            let cls = "cmt__opt";
+
+            if (
+              session.answerState !== "idle" &&
+              opt.toLowerCase() === current.correctAnswer.toLowerCase()
+            ) {
+              cls += " cmt__opt--correct";
+            } else if (session.answerState === "wrong" && isSelected) {
+              cls += " cmt__opt--wrong";
+            }
+
+            return (
+              <button
+                key={opt}
+                type="button"
+                className={cls}
+                onClick={() => handleAnswer(opt)}
+                disabled={session.answerState !== "idle"}
+              >
+                {opt}
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
