@@ -15,7 +15,7 @@
     "unit": 13,
     "unitLabel": "Figuras y cuerpos geométricos",
     "difficultyDescriptions": {
-      "easy": "Clasifica figuras SVG con enunciados variados",
+      "easy": "4 figuras SVG (círculo o circunferencia)",
       "medium": "4 figuras SVG + 6 objetos reales",
       "hard": "Solo objetos reales cotidianos",
       "expert": "Solo objetos reales, ejemplos más sutiles"

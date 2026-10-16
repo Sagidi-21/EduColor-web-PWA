@@ -65,8 +65,10 @@
 }
 
 .cc__real-object {
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", "Segoe UI", sans-serif;
   font-size: clamp(2.5rem, 8vw, 4.5rem);
   text-align: center;
+  line-height: 1;
 }
 
 .cc__label-hint {
@@ -77,6 +79,7 @@
 }
 
 .cc__question {
+  font-family: "Segoe UI", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", system-ui, sans-serif;
   font-size: clamp(1.1rem, 2.4vw, 1.4rem);
   font-weight: 700;
   text-align: center;
@@ -143,6 +146,69 @@
   border-radius: 0.5rem;
   background: color-mix(in srgb, var(--color-primary, #2563eb) 6%, #fff);
   border: 1px solid color-mix(in srgb, var(--color-primary, #2563eb) 20%, #fff);
+}
+
+/* Medium / hard / expert: figura más arriba, enunciado 32px, tipografía y chips ampliados */
+.cc__wrap--medium .cc__stage,
+.cc__wrap--hard .cc__stage,
+.cc__wrap--expert .cc__stage {
+  justify-content: flex-start;
+  padding-top: 1rem;
+  padding-bottom: 2.5rem;
+  gap: 1.25rem;
+}
+
+.cc__wrap--medium .cc__card,
+.cc__wrap--hard .cc__card,
+.cc__wrap--expert .cc__card {
+  max-width: 640px;
+  gap: 1.25rem;
+  margin-top: 0.25rem;
+}
+
+.cc__wrap--medium .cc__real-object,
+.cc__wrap--hard .cc__real-object,
+.cc__wrap--expert .cc__real-object {
+  font-size: clamp(3.5rem, 10vw, 6rem);
+}
+
+.cc__wrap--medium .cc__label-hint,
+.cc__wrap--hard .cc__label-hint,
+.cc__wrap--expert .cc__label-hint {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.cc__wrap--medium .cc__question,
+.cc__wrap--hard .cc__question,
+.cc__wrap--expert .cc__question {
+  font-size: 32px;
+  line-height: 1.25;
+}
+
+.cc__wrap--medium .cc__opts,
+.cc__wrap--hard .cc__opts,
+.cc__wrap--expert .cc__opts {
+  margin-top: 2.5rem;
+  gap: 1.35rem;
+}
+
+.cc__wrap--medium .cc__opt,
+.cc__wrap--hard .cc__opt,
+.cc__wrap--expert .cc__opt {
+  min-width: 220px;
+  min-height: 88px;
+  padding: 1.1rem 1.75rem;
+  font-size: 1.55rem;
+  border-radius: 18px;
+  gap: 0.4rem;
+}
+
+.cc__wrap--medium .cc__opt-icon,
+.cc__wrap--hard .cc__opt-icon,
+.cc__wrap--expert .cc__opt-icon {
+  font-size: 2.1rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

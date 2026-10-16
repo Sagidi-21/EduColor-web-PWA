@@ -916,8 +916,8 @@ describe("mapSessionToSheet", () => {
       type: "real-object",
       shapeType: "circulo",
       objectName: "una moneda",
-      objectEmoji: "🪙",
-      question: "🪙 Una moneda… ¿es un círculo o una circunferencia?",
+      objectEmoji: "💰",
+      question: "💰 Una moneda… ¿es un círculo o una circunferencia?",
       options: ["Círculo", "Circunferencia"],
       correctAnswer: "Círculo",
     };
@@ -926,7 +926,7 @@ describe("mapSessionToSheet", () => {
       kind: "circuloCircunferencia",
       type: "real-object",
       shapeType: "circulo",
-      objectEmoji: "🪙",
+      objectEmoji: "💰",
       choiceLabels: ["Círculo", "Circunferencia"],
       answer: "Círculo",
     });

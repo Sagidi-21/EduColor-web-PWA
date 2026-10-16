@@ -18,7 +18,8 @@ const REAL_OBJECTS: { name: string; emoji: string; type: CCShape }[] = [
   { name: "un aro de gimnasia", emoji: "⭕", type: "circunferencia" },
   { name: "la esfera de un reloj", emoji: "🕐", type: "circulo" },
   { name: "el borde de una rueda", emoji: "🚗", type: "circunferencia" },
-  { name: "una moneda", emoji: "🪙", type: "circulo" },
+  // 💰 (no 🪙): el coin U+1FA99 sale como □ en muchas pizarras Windows sin Segoe UI Emoji actualizado.
+  { name: "una moneda", emoji: "💰", type: "circulo" },
   { name: "un salvavidas", emoji: "🔵", type: "circunferencia" },
   { name: "un botón", emoji: "🔘", type: "circulo" },
   { name: "una pulsera", emoji: "💍", type: "circunferencia" },
@@ -89,14 +90,14 @@ function makeRealEx(obj: (typeof REAL_OBJECTS)[number]): CCExercise {
 
 /**
  * Cuántos ejercicios SVG vs objeto real por dificultad.
- * easy: solo figuras (antes repetían el mismo enunciado 10 veces).
+ * easy: 4 figuras (solo 2 clases: círculo / circunferencia).
  * medium: mezcla con mayoría de objetos reales.
  * hard/expert: solo objetos reales.
  */
 function planCounts(difficulty: ActivityDifficulty): { shapes: number; reals: number } {
   switch (difficulty) {
     case "easy":
-      return { shapes: 10, reals: 0 };
+      return { shapes: 4, reals: 0 };
     case "medium":
       return { shapes: 4, reals: 6 };
     case "hard":
@@ -105,7 +106,7 @@ function planCounts(difficulty: ActivityDifficulty): { shapes: number; reals: nu
   }
 }
 
-/** Genera una sesión de 10 ejercicios de círculo/circunferencia. */
+/** Genera la sesión de círculo/circunferencia (4 en easy; 10 en el resto). */
 export function generateCCSession(seed: number, difficulty: ActivityDifficulty): CCExercise[] {
   const rng = lcg(seed);
   const { shapes: nShapes, reals: nReals } = planCounts(difficulty);

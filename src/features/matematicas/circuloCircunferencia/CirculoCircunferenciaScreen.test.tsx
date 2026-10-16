@@ -58,7 +58,7 @@ describe("CirculoCircunferenciaScreen smoke tests", () => {
   it("TR-CC.4: Muestra el componente de Summary al terminar y permite reiniciar", () => {
     render(<CirculoCircunferenciaScreen {...mockProps} />);
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 4; i++) {
       const buttons = screen.getAllByRole("button").filter((b) => b.className.includes("cc__opt"));
 
       fireEvent.click(buttons[0]!);

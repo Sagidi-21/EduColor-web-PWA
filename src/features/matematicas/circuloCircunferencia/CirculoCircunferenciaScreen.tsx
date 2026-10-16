@@ -157,8 +157,10 @@ export function CirculoCircunferenciaScreen({
         : "";
   const revealed = session.answerState !== "idle";
 
+  const shapeSize = difficulty === "easy" ? 180 : 260;
+
   return (
-    <div className="cc__wrap">
+    <div className={`cc__wrap cc__wrap--${difficulty}`}>
       <ActivityHeader
         onExit={onExit}
         gradeTitle={gradeTitle}
@@ -175,7 +177,7 @@ export function CirculoCircunferenciaScreen({
         <div className="cc__card">
           <div className="cc__shape-area">
             {current.type === "classify-shape" ? (
-              <ShapeSVG shapeType={current.shapeType} size={180} />
+              <ShapeSVG shapeType={current.shapeType} size={shapeSize} />
             ) : (
               <div className="cc__real-object" aria-hidden="true">
                 {current.objectEmoji}

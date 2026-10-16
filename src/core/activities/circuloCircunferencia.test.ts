@@ -2,9 +2,9 @@ import { describe, it, expect } from "vitest";
 import { generateCCSession, validateCCAnswer } from "./circuloCircunferencia";
 
 describe("CirculoCircunferencia engine", () => {
-  it("generates 10 exercises for easy difficulty", () => {
+  it("easy genera 4 ejercicios (solo dos clases posibles)", () => {
     const session = generateCCSession(1234, "easy");
-    expect(session).toHaveLength(10);
+    expect(session).toHaveLength(4);
     expect(session[0].options).toHaveLength(2);
     expect(["classify-shape", "real-object"]).toContain(session[0].type);
   });
@@ -19,8 +19,8 @@ describe("CirculoCircunferencia engine", () => {
     expect(new Set(questions).size).toBe(questions.length);
     const circulos = session.filter((ex) => ex.shapeType === "circulo").length;
     const circunferencias = session.filter((ex) => ex.shapeType === "circunferencia").length;
-    expect(circulos).toBe(5);
-    expect(circunferencias).toBe(5);
+    expect(circulos).toBe(2);
+    expect(circunferencias).toBe(2);
   });
 
   it("medium mixes shapes and real objects without repeating real objects", () => {
