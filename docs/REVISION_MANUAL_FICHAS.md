@@ -53,21 +53,21 @@ Sirven de **baseline obligatorio** antes/después de unificar preview y Word.
 
 | ID                    | Actividad                     | Alumno | Soluciones | Print A4 | Word = preview | Notas / baseline                                                                                                                          |
 | --------------------- | ----------------------------- | ------ | ---------- | -------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `counting`            | Contamos objetos              | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: objetos+pregunta, 10/hoja, soluciones con número. **Revalidar Word=preview.**                                        |
+| `counting`            | Contamos objetos              | [x]    | [x]        | [x]      | [x]            | OK ficha 2026-10-09; **Word=preview 2026-10-17**.                                                                                         |
 | `comparison`          | Mayor y menor                 | [x]    | [x]        | [x]      | [x]            | OK 2026-10-09: fila A\|B, sin +N, hard/expert con iguales, soluciones sin dibujos, **Word=vista previa** ya anotado.                      |
-| `relacionar`          | Relacionar número y cantidad  | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09: líneas+figuras; soluciones número→letra; paginación por nivel. **Revalidar Word=preview.**                           |
-| `ordenar`             | Ordenar números               | [x]    | [x]        | [x]      | [ ]            | OK ficha 2026-10-09 alumno/print. **Baseline Word≠preview (2026-10-09):** ver hallazgos abajo.                                            |
+| `relacionar`          | Relacionar número y cantidad  | [x]    | [x]        | [x]      | [x]            | OK ficha 2026-10-09; **Word=preview 2026-10-17**.                                                                                         |
+| `ordenar`             | Ordenar números               | [x]    | [x]        | [x]      | [x]            | OK ficha 2026-10-09; baseline Word≠preview documentado y **cerrado 2026-10-17** tras layout Word-safe.                                    |
 | `amigos10`            | Los amigos del 10             | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: ten-frame + operación a la derecha, casilla de respuesta, soluciones solo número, **Word=vista previa**.                   |
 | `shapes`              | Formas y tamaños              | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: figura/foto + opciones texto como pizarra, soluciones solo nombre, PDF alineado (○ tipográfico).                           |
-| `suma`                | La suma                       | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: imágenes izq. + algoritmo der., sin casillas discontinuas, 32px bajo línea, thumbs scoped. **Revalidar Word.**             |
-| `resta`               | La resta                      | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: mismo layout que suma (objetos tachados en resta). **Revalidar Word=preview.**                                             |
-| `posicionesAula`      | Posiciones en el aula         | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: escena aula SVG + ○ opciones, soluciones solo respuesta. **Revalidar Word=preview.**                                       |
-| `numeracion1119`      | Números del 11 al 19          | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: easy/expert identify con opciones; medium+ enunciado bajo imagen; huecos dobles solo ficha. **Revalidar Word.**            |
+| `suma`                | La suma                       | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10; **Word=preview 2026-10-17**.                                                                                               |
+| `resta`               | La resta                      | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10; **Word=preview 2026-10-17**.                                                                                               |
+| `posicionesAula`      | Posiciones en el aula         | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10; **Word=preview 2026-10-17**.                                                                                               |
+| `numeracion1119`      | Números del 11 al 19          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10; **Word=preview 2026-10-17**.                                                                                               |
 | `numeracion4059`      | Números del 40 al 59          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-11: visual como 1119; identify MC sin • (stack); medium/hard/jump bloques en fila; huecos dobles; soluciones solo respuesta.   |
 | `numeracion6099`      | Números del 60 al 99          | [x]    | [x]        | [x]      | [x]            | OK 2026-10-11: misma visual que 4059; `word` MC sin bloques; jump/units/sequence en fila.                                                 |
-| `igualdad`            | El signo igual                | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: enunciados por tipo; imágenes+op en fila (easy); centrado sin imágenes; hard opciones en línea con •. **Revalidar Word.**  |
-| `lineTypes`           | Tipos de líneas               | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: SVG + opciones •; hint «(redondea la correcta)»; gap 120px línea↔opciones. **Revalidar Word.**                             |
-| `rectaNumerica`       | Coloca el número en la recta  | [x]    | [x]        | [x]      | [ ]            | OK 2026-10-10: sin flecha/recuadro; hard/expert 1/fila; soluciones con recta + marca vertical. **Revalidar Word.**                        |
+| `igualdad`            | El signo igual                | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10; **Word=preview 2026-10-17**.                                                                                               |
+| `lineTypes`           | Tipos de líneas               | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10; **Word=preview 2026-10-17**.                                                                                               |
+| `rectaNumerica`       | Coloca el número en la recta  | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10; **Word=preview 2026-10-17**.                                                                                               |
 | `laberintoMatematico` | Laberinto matemático (1.º)    | [x]    | [x]        | [x]      | [x]            | OK 2026-10-10: tablero grande color de clase; nodo INICIO soft; soluciones con casillas rellenas (sin enunciado); modal ficha afinado.    |
 | `capacidad`           | Capacidad y litros            | [x]    | [x]        | [x]      | [x]            | OK 2026-10-11: easy opciones centradas; medium/hard pregunta izq. + medida dcha. y casilla grande; plural vaso/vasos; expert por tipo.    |
 | `ordinales`           | Números ordinales             | [x]    | [x]        | [x]      | [x]            | OK 2026-10-11: mismo emoji+anillo; LTR; identify redondea; easy 2/fila; hard/expert casilla dcha.; flecha+hint; emojis variados.          |
@@ -98,9 +98,9 @@ Comparación captura vista previa vs Word (misma actividad «Ordenar números»)
 
 **Causa probable (no es bug del renderer de ordenar):** mismo HTML/CSS en teoría (`OrderingRenderer` + `OrderingRenderer.print.css`), pero el motor HTML de Word no respeta grid/flex/`border-radius`/`@page` como el navegador. Encaja con Fase 2 (layout Word-safe) y Fase 3 (preview = HTML canónico). Ver D-026.
 
-**Estado Fase 0 para `ordenar`:** fallo documentado — sirve de caso de regresión obligatorio tras las fases 1–4.
+**Estado Fase 0 para `ordenar`:** hallazgo histórico (2026-10-09). **Cerrado el 2026-10-17:** toda la tabla de regresión tiene `Word = preview` en `[x]`.
 
-**Regla de cierre de las fases 1–4:** no dar por cerrada la unificación preview↔Word hasta que las filas de la tabla de regresión tengan `Word = preview` en `[x]` con `seed=42`.
+**Regla de cierre de las fases 1–4:** cumplida — todas las filas de regresión tienen `Word = preview` en `[x]` (seed=42).
 
 Cuando se valide una actividad nueva de la lista general, añadirla también a esta tabla de regresión si aporta un caso de layout distinto (imágenes densas, SVG, full-width, etc.).
 

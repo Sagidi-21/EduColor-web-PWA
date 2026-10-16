@@ -147,28 +147,22 @@ Trasladar gradualmente las actividades con mayor valor pedagógico, sin una migr
 **El detalle de qué está migrado está en
 [INVENTARIO_MIGRACION_ACTIVIDADES.md](INVENTARIO_MIGRACION_ACTIVIDADES.md),** que
 es la fuente de verdad y se verifica contra `src/core/content/engine-registry.ts`.
-Verificado el 2026-10-06: **55 de 62 actividades migradas y lanzables**, con
-núcleo, renderer y tests, y 7 pendientes.
 
-Lo que sí pertenece a este documento es el cierre de la fase, no el recuento:
+**Cerrada el 2026-10-17:**
 
-- Las 32 actividades migradas están técnicamente terminadas: núcleo puro en
-  `src/core/activities/`, renderer en `src/features/matematicas/`, registro lazy
-  en `engine-screens.tsx` y `status: "available"` en `engine-registry.ts`.
-  Comparten `ActivityHeader`, `SummaryScreen`, `ActionButtons` y audio unificado.
-- Quedan 30 pendientes, de las que 12 son P2 y son las candidatas naturales a
-  seguir. La primera es `poligonos`; la lista completa, con la prioridad que le
-  fijó el profesor, está en el inventario.
-- **Correcciones de bug heredadas del motor de Electron**, registradas una a una
-  en [MIGRACION_CHANGELOG.md](MIGRACION_CHANGELOG.md): bucle infinito de
-  `tablaNumerica` en `hard` (9 reglas posibles para 10 ejercicios), deduplicación
-  de `easy` en `parImpar` que devolvía 9 ejercicios, deduplicación con `&&` en
-  `elLitro` y `elKilo` que podía devolver menos de 10, y el resaltado de la
-  respuesta correcta en `elKilo` tras fallar, que entregaba la solución.
-- La validación manual en escritorio, tableta y pizarra, junto
-  con el feedback docente, sigue siendo requisito antes de declarar cada
-  actividad cerrada pedagógicamente. **Ninguna de las 32 la tiene todavía**, de
-  modo que la Fase 2 no está cerrada aunque el catálogo técnico esté completo.
+- **62 de 62** actividades migradas y lanzables (núcleo, renderer, registro lazy,
+  tests). Comparten `ActivityHeader`, `SummaryScreen`, `ActionButtons` y audio.
+- **Validación en pizarra:** las 62 llevan verificación documentada en el
+  inventario (1.º y/o 2.º según curso).
+- **Generador de fichas:** las 62 marcadas OK en
+  [REVISION_MANUAL_FICHAS.md](REVISION_MANUAL_FICHAS.md) (alumno, soluciones,
+  print A4 y Word=preview).
+- Correcciones heredadas de Electron: ver
+  [MIGRACION_CHANGELOG.md](MIGRACION_CHANGELOG.md).
+
+**Fase 8** cerrada el mismo día (flujo docente validado en uso real).
+**Aplazadas a propósito:** Fase 6 (offline/PWA) más adelante; Fase 4 (pizarra
+física) a la espera de feedback del colegio.
 
 ---
 
@@ -354,22 +348,17 @@ Reutilizar el valor del generador actual y entregar fichas imprimibles reproduci
 
 Ofrecer un flujo rápido de aula antes de introducir cuentas y datos personales.
 
+## Estado: CERRADA ✅ (2026-10-17)
+
+Validada en uso real por el profesorado al recorrer pizarra y generador de las
+62 actividades: inicio → clase → pizarra/ficha → lanzar → salir/repetir →
+configuración de aula. El flujo actual es correcto; no requiere cambios
+adicionales de momento.
+
 ## Ya disponible
 
-- 🟡 Pantalla de inicio, perfiles/temas de clase, selector de actividades y generador local.
-
-## Qué hacer
-
-1. Diseñar dashboard local: continuar sesión, lanzar actividad, crear ficha y configurar aula.
-2. Migrar perfiles/temas de aula sin datos identificativos del alumnado.
-3. Limitar el lanzamiento de una actividad habitual a dos toques desde inicio.
-4. Añadir modo pantalla completa y acceso rápido de salida seguro.
-5. Configurar reconocimiento y aprendizaje local desde una pantalla docente.
-6. Recoger feedback de uso con datos no personales durante el piloto.
-
-## Terminado cuando
-
-- El docente puede lanzar, repetir, configurar y cerrar actividades con una interacción clara de aula.
+- ✅ Pantalla de inicio, perfiles/temas de clase (sin datos de alumnos), selector
+  de actividades, generador local, cabecera de actividad y resumen con repetir.
 
 ---
 

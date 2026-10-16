@@ -410,17 +410,18 @@ Una configuración de actividad genera ficha A4 y soluciones reproducibles con l
 
 ## Pasos
 
-1. Diseñar navegación de inicio con acciones: continuar, lanzar, crear ficha y configurar aula.
-2. Migrar tema/perfil local sin incluir nombres de alumnos.
-3. Garantizar que una actividad habitual se lanza en dos toques.
-4. Añadir selector de curso, bloque, actividad y dificultad desde manifiestos.
-5. Crear ajustes locales de reconocimiento y aprendizaje.
-6. Probar con docente una clase simulada y registrar pasos innecesarios/confusiones.
-7. Iterar hasta reducir la preparación de clase al flujo acordado.
+1. ✅ completado — Navegación de inicio: clase, pizarra, ficha y configuración.
+2. ✅ completado — Perfil/tema de aula local sin nombres de alumnos.
+3. ✅ completado — Lanzamiento de actividad desde catálogo (flujo de aula validado en uso).
+4. ✅ completado — Selector de curso, bloque, actividad y dificultad desde manifiestos.
+5. ✅ completado — Reconocimiento de dígitos operativo en pizarra (DigitCell / muestras locales).
+6. ✅ completado — Validación en uso real al cerrar las 62 actividades (2026-10-17).
+7. ✅ completado — Sin iteraciones adicionales de momento; el flujo se considera correcto.
 
 ## Comprobación de salida
 
-Un docente puede preparar, lanzar y cerrar una actividad sin ayuda técnica.
+✅ Un docente puede preparar, lanzar y cerrar una actividad sin ayuda técnica
+(validado el 2026-10-17).
 
 ---
 

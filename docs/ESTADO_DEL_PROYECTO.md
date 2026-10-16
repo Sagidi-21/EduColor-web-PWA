@@ -1,6 +1,6 @@
 ﻿# Estado del proyecto
 
-**Verificado contra el código el 2026-10-08.** Este documento es una página de
+**Verificado contra el código el 2026-10-17.** Este documento es una página de
 estado: dice en qué punto va el proyecto y **enlaza** a quien tiene el detalle. No
 mantiene su propia lista de actividades migradas ni sus propias cifras, porque
 esa duplicación es lo que hacía que los documentos de `docs/` se contradijeran
@@ -24,22 +24,19 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 
 ## Punto de trabajo actual
 
-- **Fase 2 (catálogo matemático V1):** **cerrada en migración técnica** — 62 de 62
-  actividades migradas y lanzables. El detalle por actividad está en el
-  [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md); no se repite aquí.
+- **Fase 2 (catálogo matemático V1):** **cerrada** el 2026-10-17 — 62 de 62
+  migradas, validadas en pizarra y en generador de fichas (ver
+  [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md) y
+  [REVISION_MANUAL_FICHAS.md](./REVISION_MANUAL_FICHAS.md)).
+- **Fase 8 (experiencia docente local):** **cerrada** el 2026-10-17 — flujo de
+  aula (inicio, clase, pizarra/ficha, salir/repetir, configuración) validado en
+  uso real al cerrar el catálogo; sin cambios adicionales de momento.
 - **Siguiente motor:** **ninguno**.
-- **Trabajo pendiente de la Fase 2:** validación visual y pedagógica en pizarra
-  (tamaños, legibilidad, ajustes de UI). Se hace junto con el profesorado; el
-  inventario marca qué actividades ya llevan “verificada en pizarra”. No se
-  anticipa desde aquí: se actualiza cuando Salvador lo indique tras cada pase.
-- **Fase 5 (escritura de dígitos y reconocimiento local):** core adelantado y en
-  uso (`LazyDigitCell`, preprocesado, umbral 85 %, muestras en IndexedDB,
-  benchmark de latencia). El dataset formal de evaluación y la matriz de
-  confusión quedaron **descartados** como cierre de fase (ver
-  [ROADMAP_DE_EJECUCION_DETALLADO.md](./ROADMAP_DE_EJECUCION_DETALLADO.md));
-  reentrenamiento solo si el piloto real lo exige (Fase 5c).
-- **Seguimiento:** se realiza en los documentos del repositorio; no se utiliza
-  GitHub Projects para reducir gestión y consumo innecesario.
+- **Fase 6 (offline/PWA):** aplazada; se retomará más adelante.
+- **Fase 4 (pizarra física):** a la espera de feedback del colegio (hardware).
+- **Fase 5 (escritura de dígitos):** core en uso; reentrenamiento solo si el
+  piloto lo exige (Fase 5c).
+- **Seguimiento:** documentos en el repositorio; sin GitHub Projects.
 
 ## Aprobaciones
 
