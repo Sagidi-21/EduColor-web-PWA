@@ -25,13 +25,19 @@ export interface ExerciseSessionContextValue {
   launchSession: (data: Omit<ExerciseSession, "seed">) => void;
   setLevelIndex: (index: LevelIndex) => void;
   currentLevelIndex: LevelIndex | null;
+  /** Curso del catálogo pizarra; sobrevive al remount al salir del ejercicio. */
+  catalogGradeId: GradeId | null;
+  setCatalogGradeId: (gradeId: GradeId) => void;
 }
 
 export function ExerciseSessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<ExerciseSession | null>(null);
+  const [catalogGradeId, setCatalogGradeId] = useState<GradeId | null>(null);
 
   const launchSession = (data: Omit<ExerciseSession, "seed">) => {
     setSession({ ...data, seed: Date.now() });
+    // Al lanzar desde 1.º/2.º, al salir el catálogo debe reabrir ese mismo curso.
+    if (data.gradeId) setCatalogGradeId(data.gradeId);
   };
 
   const setLevelIndex = (index: LevelIndex) => {
@@ -53,7 +59,14 @@ export function ExerciseSessionProvider({ children }: { children: ReactNode }) {
 
   return (
     <ExerciseSessionContext.Provider
-      value={{ session, launchSession, setLevelIndex, currentLevelIndex }}
+      value={{
+        session,
+        launchSession,
+        setLevelIndex,
+        currentLevelIndex,
+        catalogGradeId,
+        setCatalogGradeId,
+      }}
     >
       {children}
     </ExerciseSessionContext.Provider>

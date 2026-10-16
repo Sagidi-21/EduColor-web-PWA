@@ -28,11 +28,13 @@ interface Props {
 
 export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
   const { profile } = useClassProfile();
-  const { launchSession } = useExerciseSession();
+  const { launchSession, catalogGradeId, setCatalogGradeId } = useExerciseSession();
   const { navigate } = useViewTransition();
   const subjects = getSubjects();
   const [subjectId, setSubjectId] = useState(subjects[0].id);
-  const [gradeId, setGradeId] = useState(initialGradeId);
+  // ViewTransition remonta el catálogo al salir del ejercicio: preferir el curso
+  // que se estaba usando (p. ej. 1.º) frente al del aula por defecto.
+  const [gradeId, setGradeId] = useState(() => catalogGradeId ?? initialGradeId);
   const [blockId, setBlockId] = useState<string>("");
   const [selected, setSelected] = useState<ActivityManifest | null>(null);
   const [difficulty, setDifficulty] = useState<ActivityDifficulty>("easy");
@@ -97,6 +99,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
           onSubjectChange={(id) => setSubjectId(id)}
           onGradeChange={(id) => {
             setGradeId(id);
+            setCatalogGradeId(id);
             setBlockId("");
           }}
           onBlockChange={setBlockId}
