@@ -31,6 +31,20 @@ const AUTOAVANCE_MS = 900;
 /** Bolitas que caben como máximo en una columna de un ábaco decimal. */
 const BOLITAS_POR_COLUMNA = 9;
 
+/** Enunciado find-abaco: solo el número en primary; el resto queda en negro. */
+function enunciadoConNumeroPrimary(question: string, number: number): JSX.Element {
+  const n = String(number);
+  const i = question.lastIndexOf(n);
+  if (i < 0) return <>{question}</>;
+  return (
+    <>
+      {question.slice(0, i)}
+      <span className="aba__question-num">{n}</span>
+      {question.slice(i + n.length)}
+    </>
+  );
+}
+
 /**
  * Un ábaco de tres columnas.
  *
@@ -54,19 +68,19 @@ function AbacoVisual({
   size: "full" | "mini";
 }): JSX.Element {
   const mini = size === "mini";
-  const beadR = mini ? 7 : 14;
-  const gap = mini ? 2 : 4;
-  const baseH = mini ? 10 : 20;
-  const rodW = mini ? 5 : 10;
-  const margenSuperior = mini ? 6 : 12;
+  const beadR = mini ? 13 : 14;
+  const gap = mini ? 4 : 4;
+  const baseH = mini ? 18 : 20;
+  const rodW = mini ? 9 : 10;
+  const margenSuperior = mini ? 11 : 12;
 
-  const W = mini ? 84 : 168;
+  const W = mini ? 156 : 168;
   // Alto de la barra: el hueco que ocupa la columna llena del todo.
   const rodH = BOLITAS_POR_COLUMNA * (beadR * 2 + gap);
   const H = margenSuperior + rodH + baseH;
   const rodY = margenSuperior;
 
-  const xs = mini ? [18, 42, 66] : [36, 84, 132];
+  const xs = mini ? [32, 78, 124] : [36, 84, 132];
   const columnas = [c, d, u];
   const colores = ["#06b6d4", "#fbbf24", "#f472b6"];
   const etiquetas = ["C", "D", "U"];
@@ -116,7 +130,7 @@ function AbacoVisual({
           x={x}
           y={H - baseH / 2 + (mini ? 3 : 6)}
           textAnchor="middle"
-          fontSize={mini ? 8 : 11}
+          fontSize={mini ? 10 : 11}
           fontWeight="700"
           fill="#fef3c7"
           letterSpacing=".05em"
@@ -257,69 +271,73 @@ export function Abaco3CifrasScreen({
   };
 
   return (
-    <div className="aba">
+    <div className={`aba ${className ?? ""}`}>
       <ActivityHeader
         onExit={onExit}
-        exitLabel="← Salir"
         gradeTitle={gradeTitle}
         className={className}
         unitTitle={activity.title}
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
       />
 
       <div className={`aba__stage aba__stage--${session.answerState}`}>
         {session.answerState === "correct" && <div className="aba__cheer">¡Correcto! ⭐</div>}
 
-        <p className="aba__question">{current.question}</p>
+        <p className={`aba__question${esFindAbaco ? " aba__question--find" : ""}`}>
+          {esFindAbaco
+            ? enunciadoConNumeroPrimary(current.question, current.number)
+            : current.question}
+        </p>
 
-        {/* En `read-abaco` y `valor-posicional` se enseña el ábaco; en
-            `find-abaco` se enseña el número y los ábacos son las opciones. */}
-        {!esFindAbaco && (
-          <div className="aba__abacus">
-            <AbacoVisual
-              c={current.centenas}
-              d={current.decenas}
-              u={current.unidades}
-              size="full"
-            />
-          </div>
-        )}
+        {/* Números: 2/3 ábaco + 1/3 opciones verticales. Ábacos: opciones en fila centrada. */}
+        <div className={`aba__body${esFindAbaco ? " aba__body--find" : ""}`}>
+          {!esFindAbaco && (
+            <div className="aba__board">
+              <div className="aba__abacus">
+                <AbacoVisual
+                  c={current.centenas}
+                  d={current.decenas}
+                  u={current.unidades}
+                  size="full"
+                />
+              </div>
+            </div>
+          )}
 
-        {esFindAbaco && <div className="aba__number-badge">{current.number}</div>}
-
-        <div className="aba__options">
-          {current.options.map((opcion) => {
-            const clase = `aba__opt aba__opt--${estado(opcion)}`;
-            if (!esFindAbaco) {
+          <div className="aba__options">
+            {current.options.map((opcion) => {
+              const clase = `aba__opt aba__opt--${estado(opcion)}`;
+              if (!esFindAbaco) {
+                return (
+                  <button
+                    key={opcion}
+                    type="button"
+                    id={`aba-opt-${opcion}`}
+                    data-value={opcion}
+                    className={clase}
+                    onClick={() => handleAnswer(opcion)}
+                    disabled={session.answerState !== "idle"}
+                  >
+                    {opcion}
+                  </button>
+                );
+              }
+              const { c, d, u } = decodeOption(opcion);
               return (
                 <button
                   key={opcion}
                   type="button"
-                  id={`aba-opt-${opcion}`}
-                  data-value={opcion}
-                  className={clase}
+                  className={`${clase} aba__opt--abaco`}
                   onClick={() => handleAnswer(opcion)}
                   disabled={session.answerState !== "idle"}
                 >
-                  {opcion}
+                  <AbacoVisual c={c} d={d} u={u} size="mini" />
                 </button>
               );
-            }
-            const { c, d, u } = decodeOption(opcion);
-            return (
-              <button
-                key={opcion}
-                type="button"
-                className={`${clase} aba__opt--abaco`}
-                onClick={() => handleAnswer(opcion)}
-                disabled={session.answerState !== "idle"}
-              >
-                <AbacoVisual c={c} d={d} u={u} size="mini" />
-              </button>
-            );
-          })}
+            })}
+          </div>
         </div>
 
         {session.answerState === "wrong" && (

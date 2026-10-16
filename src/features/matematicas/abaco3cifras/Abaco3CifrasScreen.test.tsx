@@ -101,7 +101,7 @@ function cajasDe(container: Element): Caja[] {
 }
 
 /**
- * El progreso que muestra la cabecera, "3 / 10".
+ * El progreso que muestra la cabecera, "3/10".
  *
  * Es la única señal fiable de que se ha avanzado: la pregunta de `read-abaco` es
  * literalmente la misma en los diez ejercicios, así que comparar su texto no
@@ -163,7 +163,7 @@ describe("abaco3cifras — lectura del ábaco", () => {
     expect(container.querySelector(".aba__stage")?.className).toContain("aba__stage--correct");
 
     runTimers(AUTOAVANCE_MS);
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
   });
 
   it("fallo: marca la elegida, ofrece reintentar y no avanza solo", () => {
@@ -178,7 +178,7 @@ describe("abaco3cifras — lectura del ábaco", () => {
     expect(container.querySelector(".activity-action--retry")).not.toBeNull();
 
     runTimers(AUTOAVANCE_MS * 3);
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("tras reintentar se puede acertar y desaparece el reintento", () => {
@@ -201,7 +201,7 @@ describe("abaco3cifras — lectura del ábaco", () => {
     acertar(container, otra(ex));
     fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--next")!);
 
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
     expect(container.querySelector(".aba__opt--wrong")).toBeNull();
   });
 });
@@ -260,15 +260,18 @@ describe("abaco3cifras — ningún ábaco se recorta", () => {
 });
 
 describe("abaco3cifras — elegir el ábaco del número", () => {
-  it("muestra el número en grande y cuatro ábacos, sin ábaco grande", () => {
+  it("muestra el número en primary y cuatro ábacos en fila, sin número suelto", () => {
     const lista = sesion("hard", 4242);
     const indice = lista.findIndex((e) => e.type === "find-abaco");
     const { container } = render(<Abaco3CifrasScreen {...props("hard")} />);
     const ex = avanzarHasta(container, indice);
 
     expect(ex.type).toBe("find-abaco");
-    expect(container.querySelector(".aba__number-badge")?.textContent).toBe(String(ex.number));
+    expect(container.querySelector(".aba__number-badge")).toBeNull();
     expect(container.querySelector(".aba__abacus")).toBeNull();
+    expect(container.querySelector(".aba__question--find")).not.toBeNull();
+    expect(container.querySelector(".aba__question-num")?.textContent).toBe(String(ex.number));
+    expect(container.querySelector(".aba__body--find")).not.toBeNull();
     expect(opciones(container)).toHaveLength(4);
     expect(container.querySelectorAll(".aba__opt--abaco")).toHaveLength(4);
   });
