@@ -44,23 +44,22 @@ describe("redondeo engine", () => {
     expect(validateAnswer(ex, "99999")).toBe(false);
   });
 
-  it("which-closer tiene 2 opciones", () => {
-    // Forzamos buscar uno que sea which-closer iterando seeds o mirando uno en medium
-    let ex = null;
+  it("which-closer tiene siempre 4 opciones", () => {
+    let closer = null;
     for (let i = 0; i < 50; i++) {
       const session = generateSession("medium", i);
-      const closer = session.find((s) => s.type === "which-closer");
-      if (closer) {
-        ex = closer;
+      const found = session.find((s) => s.type === "which-closer");
+      if (found) {
+        closer = found;
         break;
       }
     }
 
-    expect(ex).not.toBeNull();
-    if (ex) {
-      expect(ex.options.length).toBe(2);
-      expect(ex.options).toContain(ex.correctAnswer);
-      expect(validateAnswer(ex, ex.correctAnswer)).toBe(true);
+    expect(closer).not.toBeNull();
+    if (closer) {
+      expect(closer.options.length).toBe(4);
+      expect(closer.options).toContain(closer.correctAnswer);
+      expect(validateAnswer(closer, closer.correctAnswer)).toBe(true);
     }
   });
 
@@ -75,5 +74,12 @@ describe("redondeo engine", () => {
       expect(ex.number % 10).not.toBe(0);
       expect(ex.number % 10).not.toBe(5);
     });
+  });
+
+  it("expert: el enunciado no repite el número (va en el badge)", () => {
+    const session = generateSession("expert", 222);
+    for (const ex of session) {
+      expect(ex.question).not.toContain(String(ex.number));
+    }
   });
 });

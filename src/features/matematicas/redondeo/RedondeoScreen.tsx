@@ -117,7 +117,8 @@ export function RedondeoScreen({
         ? "redondeo__stage--wrong"
         : "";
 
-  // Number line: position of n between lower and upper decades
+  // Number line: position of n between lower and upper decades (no en expert).
+  const esExpert = difficulty === "expert";
   const { number: n, lowerDecade: lo, upperDecade: hi } = current;
   const nPct = ((n - lo) / (hi - lo)) * 100;
 
@@ -136,56 +137,60 @@ export function RedondeoScreen({
       <div className={`redondeo__stage ${stageClass}`}>
         {session.answerState === "correct" && <div className="redondeo__cheer">¡Correcto! ⭐</div>}
 
-        <div className="redondeo__card">
-          <div className="redondeo__number-badge">{n}</div>
+        <p className="redondeo__question">{current.question}</p>
 
-          <div className="redondeo__number-line">
-            <span className="redondeo__decade-label">{lo}</span>
-            <div className="redondeo__line-track">
-              <div
-                className="redondeo__line-mark redondeo__line-mark--decade"
-                style={{ left: "0%" }}
-              />
-              <div
-                className="redondeo__line-mark redondeo__line-mark--number"
-                style={{ left: `${nPct}%` }}
-              >
-                <span className="redondeo__line-label">{n}</span>
-              </div>
-              <div
-                className="redondeo__line-mark redondeo__line-mark--decade"
-                style={{ left: "100%" }}
-              />
-            </div>
-            <span className="redondeo__decade-label">{hi}</span>
-          </div>
+        <div className="redondeo__mid">
+          {esExpert && <div className="redondeo__number-badge">{n}</div>}
 
-          <p className="redondeo__question">{current.question}</p>
-
-          <div className="redondeo__opts">
-            {current.options.map((opt) => {
-              let cls = "redondeo__opt";
-              if (session.answerState !== "idle" && opt === current.correctAnswer)
-                cls += " redondeo__opt--correct";
-              else if (session.answerState === "wrong" && opt === session.selected)
-                cls += " redondeo__opt--wrong";
-              return (
-                <button
-                  key={opt}
-                  className={cls}
-                  onClick={() => handleAnswer(opt)}
-                  disabled={session.answerState !== "idle"}
+          {!esExpert && (
+            <div className="redondeo__number-line">
+              <span className="redondeo__decade-label">{lo}</span>
+              <div className="redondeo__line-track">
+                <div
+                  className="redondeo__line-mark redondeo__line-mark--decade"
+                  style={{ left: "0%" }}
+                />
+                <div
+                  className="redondeo__line-mark redondeo__line-mark--number"
+                  style={{ left: `${nPct}%` }}
                 >
-                  {opt}
-                </button>
-              );
-            })}
-          </div>
+                  <span className="redondeo__line-label">{n}</span>
+                </div>
+                <div
+                  className="redondeo__line-mark redondeo__line-mark--decade"
+                  style={{ left: "100%" }}
+                />
+              </div>
+              <span className="redondeo__decade-label">{hi}</span>
+            </div>
+          )}
         </div>
 
         {session.answerState === "wrong" && (
-          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+          <div className="redondeo__actions">
+            <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+          </div>
         )}
+
+        <div className="redondeo__opts">
+          {current.options.map((opt) => {
+            let cls = "redondeo__opt";
+            if (session.answerState !== "idle" && opt === current.correctAnswer)
+              cls += " redondeo__opt--correct";
+            else if (session.answerState === "wrong" && opt === session.selected)
+              cls += " redondeo__opt--wrong";
+            return (
+              <button
+                key={opt}
+                className={cls}
+                onClick={() => handleAnswer(opt)}
+                disabled={session.answerState !== "idle"}
+              >
+                {opt}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

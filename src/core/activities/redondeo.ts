@@ -55,20 +55,28 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Redo
     const upper = lower + 10;
     const correct = n % 10 < 5 ? lower : upper;
 
-    if (type === "round-to-ten") {
+    /** Cuatro decenas candidatas alrededor de la correcta (pizarra / expert). */
+    const fourDecadeOptions = (): string[] => {
       const wrongSet = new Set<string>([String(correct)]);
       for (const c of [lower - 10, lower, upper, upper + 10, lower - 20, upper + 20]) {
         if (wrongSet.size >= 4) break;
         if (c >= 0 && String(c) !== String(correct)) wrongSet.add(String(c));
       }
-      const options = [...wrongSet].slice(0, 4).sort(() => rng() - 0.5);
+      return [...wrongSet].slice(0, 4).sort(() => rng() - 0.5);
+    };
+
+    if (type === "round-to-ten") {
       out.push({
         type,
         number: n,
         lowerDecade: lower,
         upperDecade: upper,
-        question: `Redondea ${n} a la decena más próxima`,
-        options,
+        // Expert: el número va en el badge grande, no en el enunciado.
+        question:
+          difficulty === "expert"
+            ? "Redondea a la decena más próxima"
+            : `Redondea ${n} a la decena más próxima`,
+        options: fourDecadeOptions(),
         correctAnswer: String(correct),
       });
     } else {
@@ -77,8 +85,11 @@ export function generateSession(difficulty: ActivityDifficulty, seed = 42): Redo
         number: n,
         lowerDecade: lower,
         upperDecade: upper,
-        question: `¿${n} está más cerca de ${lower} o de ${upper}?`,
-        options: [String(lower), String(upper)],
+        question:
+          difficulty === "expert"
+            ? `¿Está más cerca de ${lower} o de ${upper}?`
+            : `¿${n} está más cerca de ${lower} o de ${upper}?`,
+        options: fourDecadeOptions(),
         correctAnswer: String(correct),
       });
     }
