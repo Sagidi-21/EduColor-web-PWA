@@ -33,7 +33,7 @@
 
 .cmt__cheer {
   position: absolute;
-  top: 30px;
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
@@ -43,32 +43,17 @@
   pointer-events: none;
 }
 
-.cmt__header {
-  grid-row: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.35rem;
-  width: 100%;
-  padding: 0 0.25rem;
-}
-
-.cmt__instruction {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 600;
-  color: #475569;
-  text-align: center;
-}
-
 .cmt__question {
+  grid-row: 1;
   margin: 0;
+  padding: 0 0.25rem;
   font-size: 36px;
   font-weight: 700;
   font-family: inherit;
   text-align: center;
   color: #1e293b;
   line-height: 1.25;
+  width: 100%;
 }
 
 .cmt__mid {
@@ -94,14 +79,6 @@
   line-height: 1;
 }
 
-.cmt__hint {
-  margin: 0;
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #1e293b;
-  text-align: center;
-}
-
 .cmt__actions {
   grid-row: 3;
 }
@@ -116,14 +93,14 @@
 }
 
 .cmt__opt {
-  min-width: 96px;
-  min-height: 64px;
-  padding: 0.75rem 1.5rem;
+  min-width: 130px;
+  min-height: 84px;
+  padding: 1rem 2rem;
   border: 3px solid #000;
   border-radius: 16px;
   background: transparent;
   font-family: inherit;
-  font-size: 1.75rem;
+  font-size: 2.25rem;
   font-weight: 800;
   color: var(--color-primary, #2563eb);
   cursor: pointer;

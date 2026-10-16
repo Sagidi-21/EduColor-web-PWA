@@ -25,10 +25,18 @@ describe("CintaMetricaScreen smoke tests", () => {
 
     // easy difficulty -> type is choose-unit, options are 'cm' and 'm'
     const cmButton = screen.getByText("cm");
+    const mButton = screen.getByText("m");
     fireEvent.click(cmButton);
 
-    // Some hint should appear since answer state is no longer 'idle'
-    expect(screen.getByText(/mide \d+ (cm|m)/i)).toBeInTheDocument();
+    const isCorrect = screen.queryByText("¡Correcto! ⭐") !== null;
+    const isWrong = screen.queryByText(/Reintentar/i) !== null;
+    expect(isCorrect || isWrong).toBe(true);
+    // Al fallar no se revela la medida ni se marca la correcta.
+    if (isWrong) {
+      expect(screen.queryByText(/mide \d+ (cm|m)/i)).toBeNull();
+      expect(mButton.className).not.toContain("cmt__opt--correct");
+      expect(cmButton.className).not.toContain("cmt__opt--correct");
+    }
   });
 
   it("TR-CM.3: Autoavanza si la respuesta es correcta", () => {

@@ -141,23 +141,12 @@ export function CintaMetricaScreen({
       <div className={`cmt__stage ${stageClass}`}>
         {session.answerState === "correct" && <div className="cmt__cheer">¡Correcto! ⭐</div>}
 
-        <div className="cmt__header">
-          {current.type === "choose-unit" ? (
-            <p className="cmt__instruction">Elige entre cm y m</p>
-          ) : null}
-          <p className="cmt__question">{current.question}</p>
-        </div>
+        <p className="cmt__question">{current.question}</p>
 
         <div className="cmt__mid">
           <div className="cmt__object-display">
             <span className="cmt__emoji">{current.item.emoji}</span>
           </div>
-
-          {session.answerState !== "idle" && (
-            <p className="cmt__hint">
-              {current.item.name} mide {current.item.size} {current.item.unit}
-            </p>
-          )}
         </div>
 
         {session.answerState === "wrong" && (
@@ -172,7 +161,7 @@ export function CintaMetricaScreen({
             let cls = "cmt__opt";
 
             if (
-              session.answerState !== "idle" &&
+              session.answerState === "correct" &&
               opt.toLowerCase() === current.correctAnswer.toLowerCase()
             ) {
               cls += " cmt__opt--correct";
