@@ -313,8 +313,8 @@ function ChoiceMode(props: ModoProps & { pantallas: MultiplicacionExercise[][] }
   }, [phase, status, failedOnce, exercises, digits, acertadas, indice]);
 
   const handleCanvasConfirm = useCallback(
-    (digit: number) => {
-      writeDigit(String(digit));
+    (digit: string) => {
+      writeDigit(digit);
       setCanvasKey((k) => k + 1);
     },
     [writeDigit],
