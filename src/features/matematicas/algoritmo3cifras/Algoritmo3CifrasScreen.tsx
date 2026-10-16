@@ -1,21 +1,32 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-  CARRY_SLOTS,
-  generateSession,
-  validateDigits,
-} from "../../../core/activities/algoritmo3cifras";
+import { generateSession, validateDigits } from "../../../core/activities/algoritmo3cifras";
 import type { Algoritmo3Exercise } from "../../../core/activities/algoritmo3cifras";
 import type { EngineScreenProps } from "../engine-screens";
 import { playFeedback } from "../../shared/audioFeedback";
 import { ActivityHeader } from "../components/ActivityHeader";
 import { SummaryScreen, type SessionResult } from "../components/SummaryScreen";
 import { ActionButtons } from "../components/ActivityActionButtons";
-import { ColumnCarryOperation } from "../components/ColumnCarryOperation";
+import { NoExerciseNotice } from "../components/NoExerciseNotice";
 import InputModeToggle from "../../shared/components/InputModeToggle";
 import { useInputMode } from "../../shared/hooks/useInputMode";
+import { Numpad } from "../../shared/components/Numpad";
+import { LazyDigitCell } from "../../shared/DigitCell";
 import "./Algoritmo3CifrasScreen.css";
 
 type AnswerState = "idle" | "correct" | "wrong";
+
+/**
+ * Orden del algoritmo (como sumaLlevando en 1.º, ampliado a 3 cifras):
+ *   0 → Unidades del resultado
+ *   1 → Llevar/prestar a decenas
+ *   2 → Decenas del resultado
+ *   3 → Llevar/prestar a centenas
+ *   4 → Centenas del resultado
+ */
+type Step = 0 | 1 | 2 | 3 | 4;
+
+/** [U, carryD, D, carryC, C] — mismo orden que el flujo de casillas. */
+type Inputs = [string, string, string, string, string];
 
 interface SessionState {
   exercises: Algoritmo3Exercise[];
@@ -23,36 +34,122 @@ interface SessionState {
   correctCount: number;
   startTime: number;
   answerState: AnswerState;
-  /** Ya se falló este ejercicio: acertar después ya no suma a la cuenta. */
   alreadyFailed: boolean;
-  /**
-   * Número de intento dentro del ejercicio actual.
-   *
-   * Es lo único que limpia la operación, junto al índice del ejercicio. El
-   * veredicto no puede formar parte de la limpieza: si se borrara la operación
-   * al comprobar, el niño vería desaparecer lo que acaba de escribir.
-   */
-  attempt: number;
+  step: Step | null;
+  inputs: Inputs;
 }
 
-/** Espera antes de pasar al siguiente ejercicio cuando el alumno acierta. */
 const AUTOAVANCE_MS = 900;
 
+const BOX_HINT: Record<Step, string> = {
+  0: "Unidades",
+  1: "¿cuántas me llevo?",
+  2: "Decenas",
+  3: "¿cuántas me llevo?",
+  4: "Centenas",
+};
+
+function emptyInputs(): Inputs {
+  return ["", "", "", "", ""];
+}
+
+function nextEmptyStep(inputs: Inputs, from: Step): Step | null {
+  for (let i = 1; i <= 5; i++) {
+    const s = ((from + i) % 5) as Step;
+    if (inputs[s] === "") return s;
+  }
+  return null;
+}
+
+/** Cifras del resultado [C, D, U] a partir del vector de entrada. */
+function resultFromInputs(inputs: Inputs): string[] {
+  return [inputs[4], inputs[2], inputs[0]];
+}
+
+function AlgoritmoGrid({
+  ex,
+  answerState,
+  inputs,
+  step,
+  onBoxClick,
+}: {
+  ex: Algoritmo3Exercise;
+  answerState: AnswerState;
+  inputs: Inputs;
+  step: Step | null;
+  onBoxClick: (s: Step) => void;
+}) {
+  const carryLabel = ex.op === "+" ? "llevar" : "prestar";
+  const ansU = inputs[0];
+  const ansCarryD = inputs[1];
+  const ansD = inputs[2];
+  const ansCarryC = inputs[3];
+  const ansC = inputs[4];
+
+  const boxClass = (s: Step, carry = false) => {
+    const base = carry ? "a3c__box a3c__box--carry" : "a3c__box";
+    const active = answerState === "idle" && step === s ? " a3c__box--active" : "";
+    const correct = answerState === "correct" ? " a3c__box--correct" : "";
+    const wrong = answerState === "wrong" ? " a3c__box--wrong" : "";
+    return `${base}${active}${correct}${wrong}`;
+  };
+
+  const renderBox = (s: Step, val: string, label: string, carry = false) => {
+    const isActive = answerState === "idle" && step === s;
+    return (
+      <button
+        key={s}
+        type="button"
+        className={boxClass(s, carry)}
+        onClick={() => onBoxClick(s)}
+        title={label}
+        disabled={answerState !== "idle"}
+        data-step={s}
+      >
+        {val || (isActive ? <span className="a3c__cursor">_</span> : "")}
+      </button>
+    );
+  };
+
+  return (
+    <div className="a3c__grid" data-testid="a3c-grid">
+      <span className="a3c__carry-label">{carryLabel}</span>
+      {renderBox(3, ansCarryC, "Llevar a centenas", true)}
+      {renderBox(1, ansCarryD, "Llevar a decenas", true)}
+      <span />
+
+      <span />
+      <span className="a3c__col-label">C</span>
+      <span className="a3c__col-label">D</span>
+      <span className="a3c__col-label">U</span>
+
+      <span />
+      {/* Nunca usar `n || ""`: un 0 en D/C (p. ej. 101) dejaba un hueco en columna. */}
+      <span className="a3c__digit a3c__digit--under-labels">{ex.aC}</span>
+      <span className="a3c__digit a3c__digit--under-labels">{ex.aD}</span>
+      <span className="a3c__digit a3c__digit--under-labels">{ex.aU}</span>
+
+      <span className="a3c__op">{ex.op === "+" ? "+" : "−"}</span>
+      <span className="a3c__digit">{ex.bC}</span>
+      <span className="a3c__digit">{ex.bD}</span>
+      <span className="a3c__digit">{ex.bU}</span>
+
+      <span className="a3c__separator" />
+
+      <span />
+      {renderBox(4, ansC, "Centenas")}
+      {renderBox(2, ansD, "Decenas")}
+      {renderBox(0, ansU, "Unidades")}
+    </div>
+  );
+}
+
 /**
- * "Algoritmo de tres cifras".
+ * "Algoritmo de tres cifras" (2.º).
  *
- * La aritmética es la de `electron-reference/Colegio/src/renderer/src/core/engines/algoritmo3cifras/`,
- * pero la respuesta ya no se elige entre cuatro opciones: se escribe, casilla a
- * casilla, y se comprueba **una sola vez** contra el resultado entero, sin decir
- * en qué cifra se ha equivocado. Es una decisión del profesorado (2026-10-02),
- * y la mecánica entera vive en el componente compartido `ColumnCarryOperation`,
- * para que cualquier ejercicio de cálculo encolumnado de cursos posteriores la
- * reutilice sin volver a escribirla.
- *
- * Esta pantalla solo compone: cabecera, la operación compartida, el resumen y
- * los botones de reintentar o pasar. Lo único que decide es si el ejercicio se
- * acierta o se falla, y eso lo hace el núcleo con `validateDigits`, sobre las
- * tres cifras enteras.
+ * Misma mecánica de pizarra que `sumaLlevando` en 1.º: split 2/3–1/3, flujo
+ * unidades → llevar → decenas → llevar → centenas, y comprobación automática
+ * al rellenar la última casilla (sin botón Comprobar).
  */
 export function Algoritmo3CifrasScreen({
   activity,
@@ -64,41 +161,110 @@ export function Algoritmo3CifrasScreen({
   mascotUrl,
   difficultyStars,
 }: EngineScreenProps) {
-  const { mode, toggle } = useInputMode();
+  const { mode, toggle: toggleMode } = useInputMode();
+  const [canvasKey, setCanvasKey] = useState(0);
   const [sessionSeed] = useState(() => seed);
-  const [session, setSession] = useState<SessionState>(() => ({
-    exercises: generateSession(difficulty, sessionSeed),
-    currentIndex: 0,
-    correctCount: 0,
-    startTime: Date.now(),
-    answerState: "idle",
-    alreadyFailed: false,
-    attempt: 0,
-  }));
+
+  const makeSession = useCallback(
+    (): SessionState => ({
+      exercises: generateSession(difficulty, sessionSeed),
+      currentIndex: 0,
+      correctCount: 0,
+      startTime: Date.now(),
+      answerState: "idle",
+      alreadyFailed: false,
+      step: 0,
+      inputs: emptyInputs(),
+    }),
+    [difficulty, sessionSeed],
+  );
+
+  const [session, setSession] = useState<SessionState>(() => makeSession());
   const [finished, setFinished] = useState<SessionResult | null>(null);
+
+  const toggle = useCallback(() => {
+    toggleMode();
+    setSession((s) => (s.answerState === "idle" ? { ...s, step: 0 } : s));
+    setCanvasKey((k) => k + 1);
+  }, [toggleMode]);
 
   const current = session.exercises[session.currentIndex];
   const total = session.exercises.length;
 
-  /**
-   * El momento único de comprobación.
-   *
-   * No recibe las casillas de llevar: no se corrigen. Solo las tres cifras del
-   * resultado, y enteras: si una falla, el ejercicio falla, y no se sabe cuál.
-   */
-  const comprobar = useCallback(
-    (digits: string[]) => {
-      if (session.answerState !== "idle" || !current) return;
-      const isCorrect = validateDigits(current, digits);
+  const submitInputs = useCallback(
+    (newInputs: Inputs) => {
+      if (!current) return;
+      const isCorrect = validateDigits(current, resultFromInputs(newInputs));
       playFeedback(isCorrect);
       setSession((s) => ({
         ...s,
+        inputs: newInputs,
+        step: null,
         answerState: isCorrect ? "correct" : "wrong",
         correctCount: isCorrect && !s.alreadyFailed ? s.correctCount + 1 : s.correctCount,
+        alreadyFailed: !isCorrect || s.alreadyFailed,
       }));
     },
-    [session.answerState, current],
+    [current],
   );
+
+  const fillActiveBox = useCallback(
+    (d: string) => {
+      if (session.answerState !== "idle" || session.step === null) return;
+      const filled = session.step;
+      const newInputs = [...session.inputs] as Inputs;
+      newInputs[filled] = d;
+      if (newInputs.every((v) => v !== "")) {
+        submitInputs(newInputs);
+      } else {
+        const next = nextEmptyStep(newInputs, filled) ?? 0;
+        setSession((st) => ({ ...st, inputs: newInputs, step: next }));
+        setCanvasKey((k) => k + 1);
+      }
+    },
+    [session.answerState, session.inputs, session.step, submitInputs],
+  );
+
+  const handleDigit = useCallback(
+    (d: string) => {
+      fillActiveBox(d);
+    },
+    [fillActiveBox],
+  );
+
+  const handleCanvasConfirm = useCallback(
+    (s: Step, d: string) => {
+      if (session.answerState !== "idle") return;
+      const newInputs = [...session.inputs] as Inputs;
+      newInputs[s] = d;
+      if (newInputs.every((v) => v !== "")) {
+        submitInputs(newInputs);
+      } else {
+        const next = nextEmptyStep(newInputs, s) ?? 0;
+        setSession((st) => ({ ...st, inputs: newInputs, step: next }));
+        setCanvasKey((k) => k + 1);
+      }
+    },
+    [session.answerState, session.inputs, submitInputs],
+  );
+
+  const handleDelete = useCallback(() => {
+    if (session.answerState !== "idle" || session.step === null) return;
+    const nd = [...session.inputs] as Inputs;
+    nd[session.step] = "";
+    setSession((s) => ({ ...s, inputs: nd }));
+  }, [session]);
+
+  const handleRetry = useCallback(() => {
+    setSession((s) => ({
+      ...s,
+      answerState: "idle",
+      step: 0,
+      inputs: emptyInputs(),
+      alreadyFailed: true,
+    }));
+    setCanvasKey((k) => k + 1);
+  }, []);
 
   const handleNext = useCallback(() => {
     const next = session.currentIndex + 1;
@@ -113,22 +279,13 @@ export function Algoritmo3CifrasScreen({
         ...s,
         currentIndex: next,
         answerState: "idle",
+        step: 0,
+        inputs: emptyInputs(),
         alreadyFailed: false,
-        attempt: 0,
       }));
+      setCanvasKey((k) => k + 1);
     }
   }, [session, total]);
-
-  const handleRetry = useCallback(() => {
-    // Subir el intento es lo que deja la operación limpia: la caja del número
-    // anterior no puede quedarse ahí al volver a contestar.
-    setSession((s) => ({
-      ...s,
-      answerState: "idle",
-      alreadyFailed: true,
-      attempt: s.attempt + 1,
-    }));
-  }, []);
 
   useEffect(() => {
     if (session.answerState !== "correct") return;
@@ -138,16 +295,9 @@ export function Algoritmo3CifrasScreen({
 
   const handleRestart = useCallback(() => {
     setFinished(null);
-    setSession({
-      exercises: generateSession(difficulty, sessionSeed),
-      currentIndex: 0,
-      correctCount: 0,
-      startTime: Date.now(),
-      answerState: "idle",
-      alreadyFailed: false,
-      attempt: 0,
-    });
-  }, [difficulty, sessionSeed]);
+    setSession(makeSession());
+    setCanvasKey((k) => k + 1);
+  }, [makeSession]);
 
   if (finished) {
     return (
@@ -160,24 +310,29 @@ export function Algoritmo3CifrasScreen({
     );
   }
 
-  // La sesión siempre trae ejercicios, pero un `render` sin ellos dejaría la
-  // pantalla en blanco sin explicación. Se muestra el motivo y la salida.
   if (!current) {
-    return (
-      <div className="a3c a3c--vacio" role="alert">
-        <p className="a3c__vacio-texto">No hay ningún ejercicio que mostrar en esta sesión.</p>
-        <button type="button" className="a3c__btn" onClick={handleRestart}>
-          🔄 Generar otra
-        </button>
-      </div>
-    );
+    return <NoExerciseNotice activityTitle={activity.title} onExit={onExit} />;
   }
 
+  const feedbackClass =
+    session.answerState === "correct"
+      ? " a3c__body--correct"
+      : session.answerState === "wrong"
+        ? " a3c__body--wrong"
+        : "";
+
+  const showInputPanel = session.answerState === "idle" && session.step !== null;
+  const carryHint =
+    current.op === "-" && (session.step === 1 || session.step === 3)
+      ? "¿cuántas presto?"
+      : session.step !== null
+        ? BOX_HINT[session.step]
+        : "";
+
   return (
-    <div className="a3c">
+    <div className={`a3c ${className ?? ""}`}>
       <ActivityHeader
         onExit={onExit}
-        exitLabel="← Salir"
         gradeTitle={gradeTitle}
         className={className}
         unitTitle={activity.title}
@@ -188,31 +343,59 @@ export function Algoritmo3CifrasScreen({
         <InputModeToggle mode={mode} onToggle={toggle} />
       </ActivityHeader>
 
-      <div className={`a3c__stage a3c__stage--${session.answerState}`}>
-        {session.answerState === "correct" && <div className="a3c__cheer">¡Correcto! ⭐</div>}
+      <div className={`a3c__body a3c__body--split${feedbackClass}`}>
+        <div className="a3c__stage">
+          <AlgoritmoGrid
+            ex={current}
+            answerState={session.answerState}
+            inputs={session.inputs}
+            step={session.step}
+            onBoxClick={(s) => {
+              if (session.answerState !== "idle") return;
+              setSession((st) => ({ ...st, step: s }));
+              if (mode === "canvas") setCanvasKey((k) => k + 1);
+            }}
+          />
+        </div>
 
-        <p className="a3c__question">{current.question}</p>
+        <aside className="a3c__panel" aria-live="polite">
+          {session.answerState === "correct" && (
+            <div className="a3c__cheer" role="status">
+              ¡Correcto! ⭐
+            </div>
+          )}
 
-        <ColumnCarryOperation
-          op={current.op}
-          aDigits={[String(current.aC), String(current.aD), String(current.aU)]}
-          bDigits={[String(current.bC), String(current.bD), String(current.bU)]}
-          carrySlots={CARRY_SLOTS}
-          carryLabel={current.op === "+" ? "llevar" : "prestar"}
-          mode={mode}
-          verdict={session.answerState}
-          // Identifica el intento, y con él lo que hay que limpiar de la
-          // operación: cambia al pasar de ejercicio y al reintentar, pero **no**
-          // al dar el veredicto. Si el veredicto fuera parte del token, la
-          // operación se borraría en cuanto se pulsara comprobar y el niño
-          // perdería lo que acaba de escribir justo cuando más le sirve verlo.
-          resetToken={`${session.currentIndex}-${session.attempt}`}
-          onCheck={comprobar}
-        />
+          {showInputPanel && mode === "canvas" && (
+            <>
+              <p className="a3c__panel-hint">{carryHint}</p>
+              <LazyDigitCell
+                key={`a3c-canvas-${session.step}-${canvasKey}`}
+                isActive
+                onActivate={() => {}}
+                onConfirm={(d) => handleCanvasConfirm(session.step as Step, String(d))}
+                onClear={() => {}}
+                state="idle"
+                value=""
+              />
+            </>
+          )}
 
-        {session.answerState === "wrong" && (
-          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-        )}
+          {showInputPanel && mode === "numpad" && (
+            <>
+              <p className="a3c__panel-hint">{carryHint}</p>
+              <Numpad
+                onDigit={handleDigit}
+                onDelete={handleDelete}
+                onConfirm={() => {}}
+                disabled={false}
+              />
+            </>
+          )}
+
+          {session.answerState === "wrong" && (
+            <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+          )}
+        </aside>
       </div>
     </div>
   );

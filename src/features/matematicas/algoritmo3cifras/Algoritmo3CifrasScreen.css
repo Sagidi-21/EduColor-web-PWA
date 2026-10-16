@@ -1,113 +1,237 @@
 /*
- * "Algoritmo de tres cifras".
- *
- * Esta hoja solo pinta la pantalla: el fondo, el enunciado y el hueco de
- * celebration. La operación en columnas, las casillas de llevar, la bandeja y
- * el numpad están en el componente compartido `ColumnCarryOperation`, con su
- * propia hoja, para que otra actividad pueda montarlo sin duplicar nada.
+ * Algoritmo de tres cifras — pizarra 2.º.
+ * Misma familia visual que sumaLlevando (1.º): split operación · entrada.
  */
 
 .a3c {
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 100%;
-  overflow-y: auto;
-  background: var(--color-bg, #f4f7fb);
+  overflow: hidden;
+  background: #f8faff;
   font-family: "Segoe UI", system-ui, sans-serif;
   color: #1e293b;
 }
 
-.a3c__stage {
-  position: relative;
-  display: flex;
+.a3c__body {
   flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.25rem;
-  padding: 1.25rem 1rem 2rem;
-  transition: background 0.3s;
+  display: flex;
+  min-height: 0;
+  min-width: 0;
+  transition: background 0.2s;
 }
 
-.a3c__stage--correct {
+.a3c__body--split {
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: stretch;
+  gap: 0;
+  padding: 20px 1.25rem 1.25rem;
+}
+
+.a3c__body--correct {
   background: #f0fdf4;
 }
 
-.a3c__stage--wrong {
-  background: #fff7f7;
+.a3c__body--wrong {
+  background: #fff1f2;
 }
 
-.a3c__cheer {
-  position: absolute;
-  top: 0.75rem;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.8rem;
-  font-weight: 900;
-  color: var(--color-success, #22c55e);
-  pointer-events: none;
-  animation: a3cPop 0.4s ease;
+.a3c__stage {
+  flex: 2 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.5rem 1rem;
 }
 
-@keyframes a3cPop {
-  0% {
-    opacity: 0;
-    transform: translateX(-50%) scale(0);
-  }
-  80% {
-    opacity: 1;
-    transform: translateX(-50%) scale(1.2);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(-50%) scale(1);
-  }
-}
-
-.a3c__question {
-  margin: 0;
-  font-size: clamp(1.15rem, 2.6vw, 1.6rem);
-  font-weight: 800;
-  color: #1e293b;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Sesión vacía */
-
-.a3c--vacio {
+.a3c__panel {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  padding: 3rem 1.5rem;
+  padding: 0 1rem 1rem;
+  border-left: 2px solid #e2e8f0;
+}
+
+/* Cheer encima del numpad/canvas sin empujar el panel. */
+.a3c__cheer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, calc(-50% - 11rem));
+  z-index: 2;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #16a34a;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.a3c__panel-hint {
+  margin: 0;
+  font-size: calc(1.35rem + 6px);
+  font-weight: 800;
+  color: var(--color-primary, #2563eb);
   text-align: center;
 }
 
-.a3c__vacio-texto {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #1e293b;
+/* Cuadrícula: [label/op] [C] [D] [U] */
+.a3c__grid {
+  display: grid;
+  grid-template-columns: 5.5rem 6rem 6rem 6rem;
+  column-gap: 2px;
+  row-gap: 0.9rem;
+  align-items: center;
+  justify-items: center;
 }
 
-.a3c__btn {
-  padding: 0.7rem 1.5rem;
-  background: var(--color-primary, #2563eb);
-  border: none;
-  border-radius: 14px;
-  color: #fff;
-  font-family: inherit;
-  font-size: 1rem;
+.a3c__col-label {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  align-self: end;
+}
+
+.a3c__carry-label {
+  font-size: 1.15rem;
   font-weight: 700;
+  color: var(--color-primary, #2563eb);
+  text-align: center;
+  line-height: 1.1;
+}
+
+.a3c__digit {
+  font-size: 5.25rem;
+  font-weight: 800;
+  color: var(--color-primary, #2563eb);
+  line-height: 0.85;
+  min-width: 4.5rem;
+  text-align: center;
+}
+
+.a3c__digit--under-labels {
+  align-self: start;
+  margin-top: -0.2em;
+}
+
+.a3c__op {
+  font-size: 4.75rem;
+  font-weight: 800;
+  color: var(--color-primary, #2563eb);
+  justify-self: end;
+  padding-right: 0.4rem;
+  line-height: 0.85;
+}
+
+.a3c__separator {
+  grid-column: 1 / -1;
+  height: 6px;
+  background: #000;
+  border-radius: 2px;
+  margin: 0.55rem 0 0.55rem calc(5.5rem + 2px);
+  width: calc(6rem * 3 + 4px);
+  justify-self: start;
+}
+
+.a3c__box {
+  width: 6rem;
+  height: 6rem;
+  border: 3px solid #000;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--color-primary, #2563eb);
   cursor: pointer;
+  background: #fff;
+  padding: 0;
+  font-family: inherit;
+  line-height: 1;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  user-select: none;
 }
 
-.a3c__btn:hover {
-  background: var(--color-primary-dark, #1d4ed8);
+.a3c__box--carry {
+  width: 4.25rem;
+  height: 4.25rem;
+  font-size: 2.4rem;
+}
+
+.a3c__box--active {
+  border-color: var(--color-primary, #2563eb) !important;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+}
+
+.a3c__box--correct {
+  border-color: #16a34a !important;
+  background: #f0fdf4 !important;
+  color: #15803d !important;
+}
+
+.a3c__box--wrong {
+  border-color: #dc2626 !important;
+  background: #fff1f2 !important;
+  color: #dc2626 !important;
+}
+
+.a3c__box:disabled {
+  cursor: default;
+}
+
+.a3c__cursor {
+  color: var(--color-primary, #2563eb);
+  animation: a3c-blink 1s step-end infinite;
+}
+
+@keyframes a3c-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.a3c__panel .shared-numpad {
+  width: 100%;
+  max-width: 320px;
+}
+
+.a3c__panel .shared-numpad__key {
+  width: clamp(60px, 7.5vw, 84px);
+  height: clamp(56px, 7vw, 76px);
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+}
+
+.a3c__panel .dab {
+  min-width: 160px;
+  gap: 8px;
+  border-width: 3px;
+  border-radius: 16px;
+}
+
+.a3c__panel .dab__canvas {
+  width: clamp(140px, 20vw, 220px);
+  height: clamp(140px, 20vw, 220px);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .a3c__cheer {
+  .a3c__cheer,
+  .a3c__cursor,
+  .a3c__box {
     animation: none;
+    transition: none;
   }
 }

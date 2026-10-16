@@ -330,12 +330,20 @@ describe("LaberintoMatematicoScreen smoke", () => {
       .filter((s): s is string => Boolean(s));
     const paired = bgSlugs.filter((s) => celebSlugs.has(s));
 
-    expect(paired.length).toBeGreaterThanOrEqual(11);
-    for (const slug of ["carreras", "granja", "otoño", "pirata", "verano", "bosque"] as const) {
+    expect(paired.length).toBeGreaterThanOrEqual(12);
+    for (const slug of [
+      "carreras",
+      "granja",
+      "otoño",
+      "pirata",
+      "verano",
+      "bosque",
+      "primavera",
+    ] as const) {
       expect(celebSlugs.has(slug), `falta celeb_${slug}.mp4`).toBe(true);
       expect(bgSlugs.includes(slug), `falta bg_${slug}`).toBe(true);
     }
-    // Lo que rota en pantalla es solo lo emparejado (p. ej. primavera sin vídeo queda fuera).
+    // Solo rotan fondos con vídeo emparejado.
     for (const slug of paired) {
       expect(celebSlugs.has(slug)).toBe(true);
     }

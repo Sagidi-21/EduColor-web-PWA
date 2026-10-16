@@ -96,6 +96,25 @@ describe("algoritmo3cifras — generateSession", () => {
     }
   });
 
+  it("100 semillas: cada cifra (incluido 0) queda en su columna C·D·U", () => {
+    // Evita regresiones tipo 101 → C=1, D vacío, U=1 al pintar con `n || ""`.
+    for (let seed = 1; seed <= 100; seed++) {
+      for (const dificultad of DIFFICULTIES) {
+        for (const ex of generateSession(dificultad, seed)) {
+          const aStr = String(ex.a).padStart(3, "0");
+          const bStr = String(ex.b).padStart(3, "0");
+          expect(`${ex.aC}${ex.aD}${ex.aU}`, `${dificultad}/${seed} a=${ex.a}`).toBe(aStr);
+          expect(`${ex.bC}${ex.bD}${ex.bU}`, `${dificultad}/${seed} b=${ex.b}`).toBe(bStr);
+          for (const n of [ex.aC, ex.aD, ex.aU, ex.bC, ex.bD, ex.bU]) {
+            expect(n).toBeGreaterThanOrEqual(0);
+            expect(n).toBeLessThanOrEqual(9);
+            expect(Number.isInteger(n)).toBe(true);
+          }
+        }
+      }
+    }
+  });
+
   it("las llamadas del ejercicio son las que dicen sus cifras", () => {
     for (const dificultad of DIFFICULTIES) {
       for (const sesion of sesiones(dificultad)) {
