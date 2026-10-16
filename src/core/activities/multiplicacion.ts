@@ -17,8 +17,11 @@ import type { ActivityDifficulty } from "../content/contracts";
  *   de una vez, en vez de diez ejercicios sueltos que la esconden. En `easy` es
  *   la tabla del 2 completa; en `medium`, cinco filas de la del 2 y cinco de la
  *   del 5.
- * - **`hard` y `expert` se quedan como el original**: diez ejercicios de opción
- *   múltiple, aquí con `a` de 3 a 10 y los tres tipos que cada nivel declara.
+ * - **`hard` y `expert` son seis pantallas**, cada una con tres operaciones a
+ *   rellenar (numpad/canvas en pizarra). Cada pantalla completa cuenta como un
+ *   ejercicio. Misma ficha de tipos/tablas; `hard` lleva apoyo visual de grupos
+ *   y `expert` no. Las `options` se siguen generando por si la ficha impresa las
+ *   usa.
  *
  * ## Divergencias respecto a Electron
  *
@@ -85,17 +88,22 @@ export interface MultiplicacionExercise {
 
 export interface ChoiceSession {
   mode: "choice";
-  exercises: MultiplicacionExercise[];
+  /** Seis pantallas; cada una es un ejercicio con tres operaciones. */
+  screens: MultiplicacionExercise[][];
 }
 
 /** Lo que devuelve `generateSession`: una unión o una tanda de ejercicios. */
 export type MultiplicacionSession = MatchSession | ChoiceSession;
 
-/** Ejercicios por sesión en los niveles altos, el mismo número que en Electron. */
-export const SESSION_SIZE = 10;
+/** Pantallas (ejercicios) por sesión en hard/expert. */
+export const CHOICE_SESSION_SCREENS = 6;
+/** Operaciones por pantalla en pizarra. */
+export const CHOICE_OPS_PER_SCREEN = 3;
+/** Alias: tamaño de sesión = número de pantallas. */
+export const SESSION_SIZE = CHOICE_SESSION_SCREENS;
 
 /** Intentos antes de darse por vencido: la deduplicación puede rechazar muchos. */
-const MAX_TRIES = 300;
+const MAX_TRIES = 800;
 
 /** Cuántas opciones se ofrecen siempre. */
 const OPCIONES = 4;
@@ -288,7 +296,8 @@ function opcionesCerca(rng: () => number, correcta: number, paso: number): numbe
 }
 
 /**
- * Genera una sesión de 10 ejercicios sin repetir tipo, tabla y factor.
+ * Genera las pantallas de hard/expert: 6×3 operaciones sin repetir tipo, tabla
+ * y factor en toda la sesión.
  *
  * La clave de deduplicación incluye los tres, igual que en el original, porque
  * son los tres que determinan el enunciado.
@@ -296,21 +305,21 @@ function opcionesCerca(rng: () => number, correcta: number, paso: number): numbe
 export function generateChoiceSession(
   difficulty: ActivityDifficulty,
   seed = 42,
-): MultiplicacionExercise[] {
+): MultiplicacionExercise[][] {
   const rng = lcg(seed);
   const tablas = TABLAS[difficulty];
   const tipos = TIPOS[difficulty];
   const usadas = new Set<string>();
-  const out: MultiplicacionExercise[] = [];
+  const totalOps = CHOICE_SESSION_SCREENS * CHOICE_OPS_PER_SCREEN;
+  const flat: MultiplicacionExercise[] = [];
   let intentos = 0;
 
-  while (out.length < SESSION_SIZE && intentos < MAX_TRIES) {
+  while (flat.length < totalOps && intentos < MAX_TRIES) {
     intentos++;
 
-    // Se alternan tablas y tipos, y ambos giran con el mismo índice: así cada
-    // tipo aparece con su parte de la tabla y nunca se repite la combinación.
-    const tabla = tablas[out.length % tablas.length];
-    const type = tipos[out.length % tipos.length];
+    // Tipo y tabla al azar entre los del nivel, para repartir variedad en 18 ops.
+    const tabla = tablas[randInt(rng, 0, tablas.length - 1)]!;
+    const type = tipos[randInt(rng, 0, tipos.length - 1)]!;
     const b = randInt(rng, MIN_FACTOR, 10);
     const a = tabla;
     const result = a * b;
@@ -341,7 +350,7 @@ export function generateChoiceSession(
       opciones = opcionesCerca(rng, correcta, 1);
     }
 
-    out.push({
+    flat.push({
       type,
       a,
       b,
@@ -353,7 +362,11 @@ export function generateChoiceSession(
     });
   }
 
-  return out;
+  const screens: MultiplicacionExercise[][] = [];
+  for (let i = 0; i < CHOICE_SESSION_SCREENS; i++) {
+    screens.push(flat.slice(i * CHOICE_OPS_PER_SCREEN, (i + 1) * CHOICE_OPS_PER_SCREEN));
+  }
+  return screens;
 }
 
 /**
@@ -366,7 +379,7 @@ export function generateChoiceSession(
 export function generateSession(difficulty: ActivityDifficulty, seed = 42): MultiplicacionSession {
   return MODOS[difficulty] === "match"
     ? generateMatchSession(difficulty, seed)
-    : { mode: "choice", exercises: generateChoiceSession(difficulty, seed) };
+    : { mode: "choice", screens: generateChoiceSession(difficulty, seed) };
 }
 
 /**

@@ -79,6 +79,15 @@ interface MatchColumnsProps<T extends MatchItem> {
   celebrateMs?: number;
   /** Cuánto parpadea el error antes de soltar la selección. */
   wrongFlashMs?: number;
+  /**
+   * Si true, el error no se limpia solo: el padre muestra Reintentar/Siguiente
+   * y limpia con `clearWrongKey`.
+   */
+  holdWrong?: boolean;
+  /** Al cambiar, limpia el par fallido y la selección. */
+  clearWrongKey?: number;
+  /** Aviso al fallar (con el informe actual), útil si `holdWrong`. */
+  onWrong?: (report: MatchReport) => void;
   /** Texto de la celebración. Cada actividad lo pone como le suena a ella. */
   celebrateText?: string;
   /**
@@ -103,6 +112,9 @@ export function MatchColumns<T extends MatchItem>({
   resetKey,
   celebrateMs = 1500,
   wrongFlashMs = 700,
+  holdWrong = false,
+  clearWrongKey = 0,
+  onWrong,
   celebrateText = "¡Muy bien! 🎉",
   layout = "columns",
 }: MatchColumnsProps<T>) {
@@ -129,6 +141,15 @@ export function MatchColumns<T extends MatchItem>({
    */
   const completedRef = useRef(false);
   const resetRef = useRef(resetKey);
+  const [prevClearWrongKey, setPrevClearWrongKey] = useState(clearWrongKey);
+
+  // El padre (p. ej. multiplicación easy/medium) limpia el fallo al pulsar Reintentar.
+  // Ajuste de estado al cambiar la prop (patrón React: no usar effect + setState).
+  if (holdWrong && clearWrongKey !== prevClearWrongKey) {
+    setPrevClearWrongKey(clearWrongKey);
+    setWrongPair(null);
+    setSelectedLeft(null);
+  }
 
   // Solo para quien no remonta con `key`.
   useEffect(() => {
@@ -262,13 +283,22 @@ export function MatchColumns<T extends MatchItem>({
     onPair?.(correct);
 
     if (!correct) {
-      setFailed((prev) => new Set(prev).add(selectedLeft));
+      const nextFailed = new Set(failed).add(selectedLeft);
+      setFailed(nextFailed);
       setWrongPair([selectedLeft, item.id]);
       playFeedback(false);
-      setTimeout(() => {
-        setWrongPair(null);
-        setSelectedLeft(null);
-      }, wrongFlashMs);
+      onWrong?.({
+        aciertos: Array.from(connections.keys()).filter((id) => !nextFailed.has(id)).length,
+        total: left.length,
+        fallos: nextFailed.size,
+        completa: false,
+      });
+      if (!holdWrong) {
+        setTimeout(() => {
+          setWrongPair(null);
+          setSelectedLeft(null);
+        }, wrongFlashMs);
+      }
       return;
     }
 

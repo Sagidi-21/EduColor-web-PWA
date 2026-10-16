@@ -1,42 +1,43 @@
-/* Motor "Multiplicamos" — solo lo propio del motor.
- *
- * Tiene dos formatos según el nivel: `easy` y `medium` unen columnas, y `hard` y
- * `expert` son ejercicios de opción múltiple.
- */
-
-/* ══ Modo unir (easy, medium) ═══════════════════════════════════════════════
- *
- * El emparejamiento (seleccionar, línea, error y celebración) lo pinta
- * `MatchColumns` con el prefijo `mul__`; aquí se da forma a las tarjetas y al
- * tablero, alineado con `relacionar` / OperationsScreen. */
+/* Multiplicación — pizarra (match easy/medium + choice hard/expert) */
 
 .mul {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100%;
   background: #f8faff;
+  color: #1e293b;
   font-family: "Segoe UI", system-ui, sans-serif;
   overflow: hidden;
 }
 
+/* ══ Modo unir (easy, medium) ═══════════════════════════════════════════════ */
+
 .mul__main {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 30px 1.5rem 50px;
   gap: 0.75rem;
   min-height: 0;
 }
 
 .mul__instruction {
-  color: #475569;
-  font-size: 1rem;
-  font-weight: 600;
-  text-align: center;
+  position: absolute;
+  top: 30px;
+  left: 1.5rem;
+  right: 1.5rem;
+  z-index: 1;
   margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+  font-family: inherit;
+  color: #1e293b;
+  text-align: center;
+  line-height: 1.25;
+  pointer-events: none;
 }
 
 .mul__columns {
@@ -46,7 +47,39 @@
   align-items: flex-start;
   gap: 3.5rem;
   width: 100%;
-  max-width: 520px;
+  max-width: 560px;
+}
+
+/* Easy/medium: operaciones arriba, productos abajo.
+ * Ambas filas comparten el ancho de la más ancha; space-between alinea
+ * el borde izquierdo/derecho de la primera y última chip de cada fila. */
+.mul__columns.mul__columns--rows {
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 4.5rem;
+  width: max-content;
+  max-width: 100%;
+  height: auto;
+}
+
+.mul__columns--rows .mul__col {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mul__columns--rows .mul__col--left,
+.mul__columns--rows .mul__col--right {
+  align-items: stretch;
+}
+
+.mul__columns--rows .mul__item {
+  flex: 0 0 auto;
 }
 
 .mul__svg {
@@ -59,7 +92,7 @@
 }
 
 .mul__line {
-  stroke: #22c55e;
+  stroke: #16a34a;
   stroke-width: 4;
   stroke-linecap: round;
 }
@@ -68,7 +101,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.65rem;
 }
 
 .mul__col--left {
@@ -83,69 +116,77 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 0.5rem 1.1rem;
-  border-radius: 12px;
-  border: 3px solid #e2e8f0;
-  background: #fff;
+  min-height: 56px;
+  padding: 0.55rem 1.2rem;
+  border-radius: 16px;
+  border: 3px solid #000;
+  background: transparent;
   cursor: pointer;
   user-select: none;
   font-variant-numeric: tabular-nums;
   transition:
     transform 0.15s ease,
     border-color 0.15s ease,
-    background 0.15s ease,
-    box-shadow 0.15s ease;
+    background 0.15s ease;
 }
 
-/* La operación necesita algo más de ancho que el producto: `2 × 10` que un `20`. */
+.mul__item:hover:not(.mul__item--connected):not(.mul__item--wrong) {
+  border-color: var(--color-primary, #2563eb);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  transform: scale(1.03);
+}
+
 .mul__item--op {
-  min-width: 96px;
+  min-width: 110px;
 }
 
 .mul__item--res {
-  min-width: 72px;
+  min-width: 80px;
 }
 
-.mul__op {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--color-primary, #2563eb);
-}
-
+.mul__op,
 .mul__res {
-  font-size: 1.35rem;
-  font-weight: 900;
+  font-size: 1.45rem;
+  font-weight: 800;
   color: var(--color-primary, #2563eb);
 }
 
 .mul__item--selected {
   border-color: var(--color-primary, #2563eb);
-  background: #eff6ff;
-  box-shadow: 0 0 0 4px #bfdbfe;
-  transform: scale(1.04);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  transform: scale(1.03);
+}
+
+.mul__match-actions {
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 2;
 }
 
 .mul__item--hintable {
-  border-color: #94a3b8;
+  border-color: #64748b;
 }
 
 .mul__item--connected {
-  border-color: #22c55e;
+  border-color: #16a34a;
   background: #f0fdf4;
   cursor: default;
 }
 
 .mul__item--wrong {
-  border-color: #ef4444;
-  background: #fef2f2;
+  border-color: #dc2626;
+  background: #fff1f2;
 }
 
 .mul__celebrate {
   margin-top: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #22c55e;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #16a34a;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -158,118 +199,258 @@
   }
 }
 
-/* ══ Modo opción múltiple (hard, expert) ═════════════════════════════════════
- *
- * Lo común con la familia de operaciones viene de OperationsScreen.css.
- * Aquí: ecuación, grupos de puntos, pista y opciones al estilo ops. */
+/* ══ Modo escritura (hard, expert) — 2/3 tablero · 1/3 numpad/canvas ═══════ */
 
-.mul__equation {
-  font-size: clamp(1.8rem, 5vw, 2.8rem);
-  font-weight: 900;
-  color: var(--color-primary, #2563eb);
+.mul--write {
+  height: 100%;
+}
+
+.mul__write {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+  transition: background 0.3s;
+}
+
+.mul__write--correct {
+  background: #f0fdf4;
+}
+
+.mul__write--wrong {
+  background: #fff1f2;
+}
+
+.mul__write-board {
+  position: relative;
+  flex: 2 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: 1rem 1.25rem;
+}
+
+.mul__write-hint {
+  position: absolute;
+  top: 25px;
+  left: 1.25rem;
+  right: 1.25rem;
+  z-index: 1;
+  margin: 0;
+  padding: 0 0.5rem;
+  font-size: 36px;
+  font-weight: 700;
+  color: #1e293b;
   text-align: center;
-  letter-spacing: 0.05em;
+  line-height: 1.25;
+  pointer-events: none;
+}
+
+.mul__cheer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* Encima del numpad/canvas sin empujarlos: sale del flujo y sube desde el centro. */
+  transform: translate(-50%, calc(-50% - 11rem));
+  z-index: 2;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #16a34a;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.mul__cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.25rem;
+  width: 100%;
+  max-width: 920px;
+}
+
+.mul__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  border: 3px solid var(--color-primary, #2563eb);
+  border-radius: 16px;
+  background: #fff;
+  min-height: 7.5rem;
+}
+
+/* count-groups: fila inferior a todo el ancho de las dos de arriba. */
+.mul__card--wide {
+  grid-column: 1 / -1;
+}
+
+.mul__card--wide .mul__card-q {
+  font-size: clamp(1.45rem, 2.4vw, 1.85rem);
+}
+
+/* 3 fórmulas: la de abajo centrada, del ancho de una columna. */
+.mul__card--lone-bottom {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc((100% - 1.25rem) / 2);
+}
+
+.mul__card--correct {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.mul__card--wrong {
+  border-color: #dc2626;
+  background: #fff1f2;
+}
+
+.mul__card-expr {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.45rem;
+}
+
+.mul__token {
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+  font-weight: 800;
+  color: #1e293b;
   font-variant-numeric: tabular-nums;
-  margin: 0 0 0.5rem;
+}
+
+.mul__card-q {
+  width: 100%;
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+  font-weight: 700;
+  color: #475569;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.mul__answer-slots {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.mul__digit {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.85rem;
+  padding: 0;
+  border: 3px solid #000;
+  border-radius: 12px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 2.15rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--color-primary, #2563eb);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.mul__digit--active {
+  border-color: var(--color-primary, #2563eb);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+}
+
+.mul__digit--correct {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  color: #15803d;
+  cursor: default;
+}
+
+.mul__digit--wrong {
+  border-color: #dc2626;
+  background: #fff1f2;
+  color: #dc2626;
+  cursor: default;
 }
 
 .mul__groups {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.8rem;
+  gap: 0.45rem;
   justify-content: center;
-  max-width: 480px;
-  margin: 0 auto 0.75rem;
+  max-width: 100%;
+}
+
+.mul__groups--card {
+  gap: 0.35rem;
 }
 
 .mul__group {
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
-  gap: 4px;
-  max-width: 90px;
-  padding: 0.6rem;
-  border: 2px solid color-mix(in srgb, var(--color-primary, #2563eb) 35%, #fff);
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--color-primary, #2563eb) 8%, #fff);
+  gap: 3px;
+  max-width: 72px;
+  padding: 0.35rem;
+  border: 2px solid color-mix(in srgb, var(--color-primary, #2563eb) 40%, #fff);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 6%, #fff);
 }
 
 .mul__dot {
-  width: 14px;
-  height: 14px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--color-primary, #2563eb);
 }
 
-.mul__pista {
-  color: #334155;
-  font-size: 0.95rem;
-  text-align: center;
-  max-width: 400px;
-  margin: 0 auto 0.75rem;
-}
-
-.mul__options {
+.mul__write-panel {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  gap: 1.25rem;
+  padding: 1rem;
+  border-left: 2px solid #e2e8f0;
 }
 
-.mul__opt {
-  min-width: 100px;
-  min-height: 54px;
-  padding: 14px 24px;
-  font-size: clamp(18px, 2.8vw, 28px);
-  font-weight: 800;
-  color: var(--color-primary-dark, #1d4ed8);
-  background: #f8faff;
-  border: 3px solid #cbd5e1;
-  border-radius: 14px;
-  cursor: pointer;
-  font-variant-numeric: tabular-nums;
-  text-align: center;
-  user-select: none;
-  transition:
-    background 0.12s,
-    border-color 0.12s,
-    transform 0.12s;
+.mul__write-panel .shared-numpad {
+  width: 100%;
+  max-width: 360px;
 }
 
-.mul__opt:hover:not(:disabled) {
-  background: #dbeafe;
-  border-color: var(--color-primary, #2563eb);
-  transform: scale(1.04);
+.mul__write-panel .shared-numpad__key {
+  width: clamp(68px, 8.5vw, 92px);
+  height: clamp(62px, 8vw, 84px);
+  font-size: clamp(1.75rem, 2.8vw, 2.4rem);
 }
 
-.mul__opt:disabled {
-  opacity: 0.45;
-  cursor: default;
+.mul__write-panel .dab {
+  min-width: 160px;
+  border-width: 3px;
+  border-radius: 16px;
 }
 
-.mul__opt--correct {
-  border-color: #22c55e;
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.mul__opt--wrong {
-  border-color: #ef4444;
-  background: #fee2e2;
-  color: #b91c1c;
-  animation: wrongShake 0.4s ease-out;
+.mul__write-panel .dab__canvas {
+  width: clamp(140px, 20vw, 220px);
+  height: clamp(140px, 20vw, 220px);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mul__opt {
+  .mul__digit {
     transition: none;
-  }
-
-  .mul__opt:hover:not(:disabled) {
-    transform: none;
-  }
-
-  .mul__opt--wrong {
-    animation: none;
   }
 }

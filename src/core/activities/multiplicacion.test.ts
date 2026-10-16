@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  CHOICE_OPS_PER_SCREEN,
+  CHOICE_SESSION_SCREENS,
   FACTORES,
   generateChoiceSession,
   generateMatchSession,
@@ -11,6 +13,7 @@ import {
   validateAnswer,
 } from "./multiplicacion";
 import type { ActivityDifficulty } from "../content/contracts";
+import type { MultiplicacionExercise } from "./multiplicacion";
 
 const DIFICULTADES: ActivityDifficulty[] = ["easy", "medium", "hard", "expert"];
 const SEMILLAS = [1, 42, 777, 4242, 999983];
@@ -18,6 +21,7 @@ const DE_UNIR: ActivityDifficulty[] = ["easy", "medium"];
 const DE_OPCION: ActivityDifficulty[] = ["hard", "expert"];
 
 const clave = (ex: { type: string; a: number; b: number }) => `${ex.type}-${ex.a}-${ex.b}`;
+const flatOps = (screens: MultiplicacionExercise[][]) => screens.flat();
 
 describe("multiplicacion — el nivel decide el formato", () => {
   it("los niveles bajos unen columnas y los altos dan ejercicios", () => {
@@ -37,7 +41,10 @@ describe("multiplicacion — el nivel decide el formato", () => {
         if (sesion.mode === "match") {
           expect(sesion.pairs.length, `${dificultad}/${semilla}`).toBeGreaterThan(0);
         } else {
-          expect(sesion.exercises, `${dificultad}/${semilla}`).toHaveLength(SESSION_SIZE);
+          expect(sesion.screens, `${dificultad}/${semilla}`).toHaveLength(SESSION_SIZE);
+          for (const pantalla of sesion.screens) {
+            expect(pantalla, `${dificultad}/${semilla}`).toHaveLength(CHOICE_OPS_PER_SCREEN);
+          }
         }
       }
     }
@@ -136,15 +143,17 @@ describe("multiplicacion — modo unir", () => {
 });
 
 describe("multiplicacion — modo opción múltiple", () => {
-  it("completa la sesión sin repetir tipo, tabla y factor", () => {
+  it("son seis pantallas de tres operaciones sin repetir tipo, tabla y factor", () => {
+    const totalOps = CHOICE_SESSION_SCREENS * CHOICE_OPS_PER_SCREEN;
     for (const dificultad of DE_OPCION) {
       for (const semilla of SEMILLAS) {
-        const sesion = generateChoiceSession(dificultad, semilla);
-        expect(sesion, `${dificultad}/${semilla}`).toHaveLength(SESSION_SIZE);
-        const claves = sesion.map(clave);
-        expect(new Set(claves).size, `${dificultad}/${semilla} repite ejercicio`).toBe(
-          SESSION_SIZE,
-        );
+        const pantallas = generateChoiceSession(dificultad, semilla);
+        expect(pantallas, `${dificultad}/${semilla}`).toHaveLength(CHOICE_SESSION_SCREENS);
+        for (const pantalla of pantallas) {
+          expect(pantalla, `${dificultad}/${semilla}`).toHaveLength(CHOICE_OPS_PER_SCREEN);
+        }
+        const claves = flatOps(pantallas).map(clave);
+        expect(new Set(claves).size, `${dificultad}/${semilla} repite ejercicio`).toBe(totalOps);
       }
     }
   });
@@ -152,7 +161,7 @@ describe("multiplicacion — modo opción múltiple", () => {
   it("el segundo factor nunca vale 1, porque no hay nada que calcular", () => {
     for (const dificultad of DE_OPCION) {
       for (const semilla of SEMILLAS) {
-        for (const ex of generateChoiceSession(dificultad, semilla)) {
+        for (const ex of flatOps(generateChoiceSession(dificultad, semilla))) {
           expect(ex.b, ex.question).toBeGreaterThanOrEqual(MIN_FACTOR);
         }
       }
@@ -168,7 +177,7 @@ describe("multiplicacion — modo opción múltiple", () => {
     };
     for (const dificultad of DE_OPCION) {
       for (const semilla of SEMILLAS) {
-        for (const ex of generateChoiceSession(dificultad, semilla)) {
+        for (const ex of flatOps(generateChoiceSession(dificultad, semilla))) {
           expect(esperadas[dificultad], `${dificultad}/${semilla}: ${ex.question}`).toContain(ex.a);
         }
       }
@@ -184,7 +193,9 @@ describe("multiplicacion — modo opción múltiple", () => {
     };
     for (const dificultad of DE_OPCION) {
       for (const semilla of SEMILLAS) {
-        const tipos = new Set(generateChoiceSession(dificultad, semilla).map((ex) => ex.type));
+        const tipos = new Set(
+          flatOps(generateChoiceSession(dificultad, semilla)).map((ex) => ex.type),
+        );
         for (const tipo of tipos) {
           expect(permitidos[dificultad], `${dificultad}/${semilla}: ${tipo}`).toContain(tipo);
         }
@@ -197,7 +208,7 @@ describe("multiplicacion — modo opción múltiple", () => {
 
   it("el producto es siempre a por b", () => {
     for (const dificultad of DE_OPCION) {
-      for (const ex of generateChoiceSession(dificultad, 42)) {
+      for (const ex of flatOps(generateChoiceSession(dificultad, 42))) {
         if (ex.type !== "product") continue;
         expect(ex.result).toBe(ex.a * ex.b);
         expect(ex.question).toBe(`${ex.a} × ${ex.b} = ___`);
@@ -208,7 +219,7 @@ describe("multiplicacion — modo opción múltiple", () => {
 
   it("al faltar un factor, lo que falta es el factor y el resultado es el producto", () => {
     for (const dificultad of DE_OPCION) {
-      for (const ex of generateChoiceSession(dificultad, 42)) {
+      for (const ex of flatOps(generateChoiceSession(dificultad, 42))) {
         if (ex.type === "missing-factor-b") {
           expect(ex.correctAnswer, ex.question).toBe(ex.b);
           expect(ex.question).toBe(`${ex.a} × ___ = ${ex.result}`);
@@ -221,7 +232,7 @@ describe("multiplicacion — modo opción múltiple", () => {
   });
 
   it("en cuenta-grupos la respuesta es el número de grupos", () => {
-    for (const ex of generateChoiceSession("expert", 42)) {
+    for (const ex of flatOps(generateChoiceSession("expert", 42))) {
       if (ex.type !== "count-groups") continue;
       expect(ex.correctAnswer, ex.question).toBe(ex.b);
       expect(ex.question).toContain(`grupos de ${ex.a}`);
@@ -232,7 +243,7 @@ describe("multiplicacion — modo opción múltiple", () => {
   it("son cuatro opciones distintas, con la correcta entre ellas y sin ceros", () => {
     for (const dificultad of DE_OPCION) {
       for (const semilla of SEMILLAS) {
-        for (const ex of generateChoiceSession(dificultad, semilla)) {
+        for (const ex of flatOps(generateChoiceSession(dificultad, semilla))) {
           expect(ex.options, ex.question).toHaveLength(4);
           expect(new Set(ex.options).size, ex.question).toBe(4);
           expect(ex.options, ex.question).toContain(ex.correctAnswer);
@@ -247,7 +258,7 @@ describe("multiplicacion — modo opción múltiple", () => {
     // correlacionada con su magnitud: `7 × 3 = 21` daba `{7, 14, 21, 28}`.
     let desordenadas = 0;
     for (const semilla of SEMILLAS) {
-      for (const ex of generateChoiceSession("expert", semilla)) {
+      for (const ex of flatOps(generateChoiceSession("expert", semilla))) {
         if ([...ex.options].sort((a, b) => a - b).join() !== ex.options.join()) desordenadas++;
       }
     }
@@ -257,7 +268,7 @@ describe("multiplicacion — modo opción múltiple", () => {
   it("la opción correcta no cae siempre en la misma posición", () => {
     const posiciones = new Set<number>();
     for (const semilla of SEMILLAS) {
-      for (const ex of generateChoiceSession("expert", semilla)) {
+      for (const ex of flatOps(generateChoiceSession("expert", semilla))) {
         posiciones.add(ex.options.indexOf(ex.correctAnswer));
       }
     }
@@ -266,7 +277,7 @@ describe("multiplicacion — modo opción múltiple", () => {
 
   it("validateAnswer acepta la correcta y rechaza cualquier otra", () => {
     for (const dificultad of DE_OPCION) {
-      for (const ex of generateChoiceSession(dificultad, 42)) {
+      for (const ex of flatOps(generateChoiceSession(dificultad, 42))) {
         expect(validateAnswer(ex, ex.correctAnswer), ex.question).toBe(true);
         for (const otra of ex.options) {
           if (otra === ex.correctAnswer) continue;
