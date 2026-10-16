@@ -160,9 +160,9 @@ es la fuente de verdad y se verifica contra `src/core/content/engine-registry.ts
 - Correcciones heredadas de Electron: ver
   [MIGRACION_CHANGELOG.md](MIGRACION_CHANGELOG.md).
 
-**Fase 8** cerrada el mismo día (flujo docente validado en uso real).
-**Aplazadas a propósito:** Fase 6 (offline/PWA) más adelante; Fase 4 (pizarra
-física) a la espera de feedback del colegio.
+**Fases 3, 7 y 8** también cerradas el 2026-10-17 (sesión/resumen, fichas y
+flujo docente). **Aplazadas a propósito:** Fase 6 (offline/PWA) más adelante;
+Fase 4 (pizarra física) a la espera de feedback del colegio.
 
 ---
 
@@ -172,25 +172,16 @@ física) a la espera de feedback del colegio.
 
 Convertir una actividad aislada en una sesión de aula configurable y recuperable.
 
+## Estado: CERRADA ✅ (2026-10-17)
+
+Decisión del profesorado: el flujo actual (lanzar, corregir, resumen, repetir)
+es suficiente. Relanzar una actividad es rápido; no se prioriza persistir ni
+recuperar una sesión a mitad si se cierra por error.
+
 ## Ya disponible
 
-- 🟡 Feedback de acierto/error, repetición y `SummaryScreen` en Electron.
-- 🟡 Generadores y validadores de actividades.
-
-## Qué hacer
-
-1. Definir `ActivitySession`, `ExerciseAttempt`, `SessionConfiguration` y `SessionSummary`.
-2. Permitir elegir dificultad, cantidad de ejercicios, corrección inmediata, solución visible y repetición.
-3. Implementar intentos máximos y repetición solo de ejercicios fallados.
-4. Mostrar resumen inicial y resumen tras cada repetición.
-5. Guardar una sesión en local y restaurarla tras cerrar o recargar la PWA.
-6. Mantener semillas para reproducir exactamente ficha y sesión.
-7. Probar validadores, repetición, restauración y resúmenes.
-
-## Terminado cuando
-
-- Un profesor puede lanzar y recuperar una sesión sin perder el progreso local.
-- La corrección se comporta según la configuración de la actividad.
+- ✅ Feedback de acierto/error, repetición y `SummaryScreen` en la PWA.
+- ✅ Corrección por actividad según cada motor.
 
 ---
 
@@ -321,24 +312,15 @@ Hacer que el modo offline sea una capacidad explícita de la web, no una consecu
 
 Reutilizar el valor del generador actual y entregar fichas imprimibles reproducibles.
 
+## Estado: CERRADA ✅ (2026-10-17)
+
+Las 62 actividades tienen ficha de alumno/soluciones validada (preview, print A4
+y Word=preview) en [REVISION_MANUAL_FICHAS.md](REVISION_MANUAL_FICHAS.md).
+
 ## Ya disponible
 
-- ✅ Exportador DOCX, cabecera, logo/mascota, renderizadores de numerosas fichas y pruebas.
-- 🟡 Diseño actual ligado al renderer de Electron.
-
-## Qué hacer
-
-1. Extraer el modelo común de ficha desde los mismos manifiestos/generadores de actividad.
-2. Crear plantilla A4 con márgenes, tipografía, cabecera, pie y accesibilidad de impresión.
-3. Generar ficha de alumno y hoja de soluciones desde la misma semilla.
-4. Mantener semilla, versión de actividad y parámetros en metadatos.
-5. Añadir exportación PDF; conservar DOCX si el colegio lo necesita.
-6. Renderizar y revisar visualmente cada familia de ficha importante.
-7. Crear tests de contenido, reproducibilidad y regresión de PDF/impresión.
-
-## Terminado cuando
-
-- Un profesor configura una actividad y obtiene ficha A4 y soluciones reproducibles.
+- ✅ Generador PWA (`src/core/ficha/`), plantilla A4, PDF/DOCX, misma semilla
+  alumno/soluciones, entrada desde Home y catálogo.
 
 ---
 
@@ -368,22 +350,22 @@ adicionales de momento.
 
 No almacenar datos de menores ni elegir infraestructura por inercia técnica.
 
+## Estado: ALCANCE APROBADO ✅ (D-028, 2026-10-17)
+
+Decisión de producto (Salvador):
+
+- **No** se guardan datos de alumnos.
+- En la nube solo: **colegios** inscritos en EduColor y **accesos de profesorado** por colegio.
+- BD: **Supabase** (plan gratuito).
+- Publicación de la app: **Netlify** (plan gratuito).
+- Uso de aula en el dispositivo sigue local (pizarra/fichas) sin depender de la nube.
+
+Queda pendiente de implementación técnica en **Fase 10** (tablas, login profesor, despliegue). Formalizar con el colegio (dirección/TIC/DPD) si el piloto lo exige.
+
 ## Ya disponible
 
-- 🟡 Auditoría del proyecto original con minimización, roles, retención y recomendaciones RGPD.
-
-## Qué hacer
-
-1. Reunión con dirección, responsable TIC y Delegado de Protección de Datos.
-2. Definir responsable, finalidad, categorías de datos, conservación, soporte, presupuesto y accesos.
-3. Completar registro de actividad y EIPD cuando corresponda.
-4. Diseñar IDs aleatorios de alumno y tabla de equivalencias separada, si llega a ser necesaria.
-5. Decidir despliegue: Cloudflare, infraestructura propia o híbrido, incluyendo contrato, copias y plan de salida.
-6. Definir modelo conceptual `School`, `Teacher`, `Class`, `Activity`, `Session`, `Attempt` y `Assignment`, sin implementar aún lo no aprobado.
-
-## Terminado cuando
-
-- Dirección y DPD han aprobado un alcance de datos e infraestructura para el piloto.
+- ✅ Alcance de datos e infraestructura acordado (D-028).
+- 🟡 Auditoría RGPD del proyecto original (revisar al firmar el piloto).
 
 ---
 

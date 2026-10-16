@@ -29,8 +29,13 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
   [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md) y
   [REVISION_MANUAL_FICHAS.md](./REVISION_MANUAL_FICHAS.md)).
 - **Fase 8 (experiencia docente local):** **cerrada** el 2026-10-17 — flujo de
-  aula (inicio, clase, pizarra/ficha, salir/repetir, configuración) validado en
-  uso real al cerrar el catálogo; sin cambios adicionales de momento.
+  aula validado en uso real; sin cambios adicionales de momento.
+- **Fase 3 (sesiones):** **cerrada** el 2026-10-17 — corrección/resumen/repetir
+  bastan; no se prioriza recuperar sesión a mitad tras cerrar por error.
+- **Fase 7 (generador de fichas):** **cerrada** el 2026-10-17 — 62/62 validadas.
+- **Fase 9 (privacidad / infra):** alcance **aprobado** (D-028) — sin datos de
+  alumnos; BD Supabase (colegios + profesorado); app en Netlify. Implementación
+  = Fase 10.
 - **Siguiente motor:** **ninguno**.
 - **Fase 6 (offline/PWA):** aplazada; se retomará más adelante.
 - **Fase 4 (pizarra física):** a la espera de feedback del colegio (hardware).

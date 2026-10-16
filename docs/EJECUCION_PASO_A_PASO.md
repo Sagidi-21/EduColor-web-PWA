@@ -311,19 +311,14 @@ La cobertura V1 acordada funciona desde manifiestos y cada actividad migrada tie
 
 ## Pasos
 
-1. Definir tipos inmutables `SessionConfiguration`, `ExerciseAttempt`, `ActivitySession` y `SessionSummary`.
-2. Implementar creación de sesión desde manifiesto, parámetros, semilla y configuración docente.
-3. Añadir controles de dificultad, número de ejercicios, corrección inmediata, soluciones y máximo de intentos.
-4. Implementar validador de respuesta común y adaptadores para cada motor.
-5. Guardar cada intento con timestamp, sin identidad de alumno en V1.
-6. Construir resumen inicial, resumen final y repetición solo de fallados.
-7. Persistir sesión en IndexedDB y restaurarla al recargar.
-8. Añadir tests de reanudación, semilla, intentos, resumen y repetición.
-9. Añadir un aviso claro antes de descartar una sesión activa.
+1. ✅ completado — Sesión de aula con dificultad, corrección y resumen (`SummaryScreen`).
+2. ✅ completado — Repetición desde el resumen; cada motor valida su respuesta.
+3. ✅ completado — Decisión 2026-10-17: no persistir/recuperar sesión a mitad; relanzar es suficiente.
 
 ## Comprobación de salida
 
-Cerrar, recargar y continuar una sesión conserva configuración, ejercicios y resultados locales.
+✅ El profesor lanza, corrige, ve resumen y puede repetir. Recuperar sesión tras
+cerrar el navegador queda fuera de alcance por decisión pedagógica.
 
 ---
 
@@ -392,17 +387,14 @@ La PWA se instala, abre sin Internet y completa el flujo V1 definido sin perder 
 
 ## Pasos
 
-1. Definir contrato de ficha compartido con la actividad: semilla, parámetros, curso, título y versión.
-2. Extraer renderizado de ejercicios del exportador DOCX Electron sin APIs de Electron.
-3. Diseñar plantilla A4 y probar márgenes en impresión/PDF real.
-4. Crear ficha de alumno y hoja de soluciones desde la misma semilla.
-5. Mantener DOCX como compatibilidad y añadir ruta de PDF.
-6. Crear snapshots o validación visual de cada tipo de ficha prioritario.
-7. Verificar logo, recursos, tipografía, saltos de página y contenido accesible.
+1. ✅ completado — Contrato de ficha + generador PWA (`src/core/ficha/`).
+2. ✅ completado — Plantilla A4, alumno y soluciones con la misma semilla.
+3. ✅ completado — PDF/DOCX y preview.
+4. ✅ completado — Las 62 actividades validadas en [REVISION_MANUAL_FICHAS.md](REVISION_MANUAL_FICHAS.md) (2026-10-17).
 
 ## Comprobación de salida
 
-Una configuración de actividad genera ficha A4 y soluciones reproducibles con la misma semilla.
+✅ Una configuración genera ficha A4 y soluciones reproducibles (validado).
 
 ---
 
