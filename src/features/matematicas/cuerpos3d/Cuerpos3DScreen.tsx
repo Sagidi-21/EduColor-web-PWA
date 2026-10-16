@@ -331,7 +331,7 @@ export default function Cuerpos3DScreen({
         {session.answerState === "correct" && <div className="c3d__cheer">¡Correcto! ⭐</div>}
 
         <div className="c3d__shape-wrap">
-          <ShapeSVG shape={current.shape} />
+          <ShapeSVG shape={current.shape} size={240} />
         </div>
 
         <p className="c3d__question">{current.question}</p>
