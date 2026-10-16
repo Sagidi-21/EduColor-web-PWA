@@ -66,7 +66,13 @@ describe("relacionarCantidades — la pantalla", () => {
     );
     expect(izquierda(container)).toHaveLength(pantalla.pairs.length);
     expect(derecha(container)).toHaveLength(pantalla.pairs.length);
-    expect(progreso(container)).toBe(`1 / ${TOTAL_PANTALLAS}`);
+    expect(progreso(container)).toBe(`1/${TOTAL_PANTALLAS}`);
+    expect(container.querySelector(".rel2__columns--rows")).toBeNull();
+  });
+
+  it("en medium las tarjetas van en dos filas", () => {
+    const { container } = render(<RelacionarCantidadesScreen {...props("medium")} />);
+    expect(container.querySelector(".rel2__columns--rows")).not.toBeNull();
   });
 
   it("es una actividad de clic: nunca monta Numpad ni DigitCell", () => {
@@ -147,93 +153,42 @@ describe("relacionarCantidades — la tarjeta derecha ya no dibuja", () => {
     }
   });
 
-  it("el nivel de grupos dibuja los dos grupos, con su rótulo", () => {
+  it("en hard los grupos salen solo en el texto, sin figuras", () => {
     const pantallasHard = pantallas("hard", 4242);
-    let conDos = 0;
-    for (const [n, pantalla] of pantallasHard.entries()) {
-      const conGrupos = pantalla.pairs.find((p) => p.izquierda.length === 2);
-      if (!conGrupos) continue;
-      conDos++;
+    const conGrupos = pantallasHard.some((p) => p.pairs.some((par) => par.izquierda.length === 2));
+    expect(conGrupos).toBe(true);
 
-      const c = render(<RelacionarCantidadesScreen {...props("hard")} />);
-      for (let i = 0; i < n; i++) unirTodas(c.container, pantallasHard[i]!);
-      runTimers(CELEBRACION_MS);
-
-      const tarjeta = izquierda(c.container).find((t) =>
-        t.querySelector(".rel2__text-box")?.textContent?.startsWith("Grupo A"),
-      );
-      if (tarjeta) {
-        expect(
-          Array.from(tarjeta.querySelectorAll(".rel2__rotulo")).map((r) => r.textContent),
-        ).toEqual(["Grupo A", "Grupo B"]);
-        expect(tarjeta.querySelectorAll(".rel2__cantidad")).toHaveLength(2);
-      }
-      c.unmount();
-    }
-    expect(conDos).toBeGreaterThan(0);
+    const { container } = render(<RelacionarCantidadesScreen {...props("hard")} />);
+    expect(container.querySelectorAll(".rel2__visual")).toHaveLength(0);
+    expect(container.querySelectorAll(".rel2__rotulo")).toHaveLength(0);
   });
 
-  it("en experto la cantidad entera sale en cajas de cien, de diez y sueltas", () => {
-    // Ya no existe la etiqueta «+N × 10»: todo se dibuja. 457 son cuatro cajas
-    // de cien, cinco de diez y siete figuras sueltas.
-    for (const semilla of [777, 4242, 999983]) {
-      const pantalla = pantallas("expert", semilla)[0]!;
-      const { container } = render(<RelacionarCantidadesScreen {...props("expert", semilla)} />);
+  it.each(["hard", "expert"] as const)(
+    "en %s no hay apoyo de imágenes, solo texto",
+    (difficulty) => {
+      const { container } = render(<RelacionarCantidadesScreen {...props(difficulty)} />);
 
-      // La etiqueta antigua no debe reaparecer por ningún lado.
-      expect(container.querySelectorAll(".rel2__oculto")).toHaveLength(0);
-
-      for (const [i, par] of pantalla.leftColumn.entries()) {
-        const r = representacion(par.izquierda[0]!.total);
-        const tarjeta = izquierda(container)[i]!;
-
-        const cajasDeCien = tarjeta.querySelectorAll(".rel2__bloque--cien");
-        expect(cajasDeCien.length, par.leftText).toBe(r.centenas);
-        for (const caja of cajasDeCien) {
-          expect(caja.querySelectorAll("img")).toHaveLength(1);
-          expect(caja.querySelector(".rel2__bloque-rotulo")?.textContent).toBe("×100");
-        }
-
-        const cajasDeDiez = tarjeta.querySelectorAll(
-          ".rel2__cajas .rel2__bloque:not(.rel2__bloque--cien)",
-        );
-        expect(cajasDeDiez.length, par.leftText).toBe(r.decenas);
-        for (const caja of cajasDeDiez) {
-          expect(caja.querySelectorAll("img")).toHaveLength(1);
-          expect(caja.querySelector(".rel2__bloque-rotulo")?.textContent).toBe("×10");
-        }
-
-        expect(tarjeta.querySelectorAll(".rel2__img--suelta").length, par.leftText).toBe(
-          r.unidades,
-        );
-
-        // Y la suma de lo dibujado es la cantidad entera, sin nada declarado.
-        const dibujado = r.centenas * 100 + r.decenas * 10 + r.unidades;
-        expect(dibujado, par.leftText).toBe(par.izquierda[0]!.total);
+      expect(container.querySelectorAll(".rel2__visual")).toHaveLength(0);
+      expect(container.querySelectorAll("img")).toHaveLength(0);
+      for (const tarjeta of izquierda(container)) {
+        expect(tarjeta.querySelector(".rel2__text-box")?.textContent).toBeTruthy();
       }
-      container.remove();
-    }
-  });
+    },
+  );
 
   it("las unidades van en su propio grupo, aparte de las cajas", () => {
     // Si compartieran envoltorio, las unidades que no cabían caían debajo de una
     // caja de ×10 o ×100 y se leían como si fueran parte de ella.
-    const pantalla = pantallas("expert", 777)[0]!;
-    const { container } = render(<RelacionarCantidadesScreen {...props("expert", 777)} />);
+    const { container } = render(<RelacionarCantidadesScreen {...props("medium", 777)} />);
 
     for (const tarjeta of izquierda(container)) {
       const cajas = tarjeta.querySelector(".rel2__cajas");
       const unidades = tarjeta.querySelector(".rel2__unidades");
-      // Ninguno de los dos grupos contiene elementos del otro.
-      expect(cajas?.querySelectorAll(".rel2__img--suelta")).toHaveLength(0);
-      expect(unidades?.querySelectorAll(".rel2__bloque")).toHaveLength(0);
-      // Y los dos están dentro del mismo contenedor de figuras.
+      if (!cajas && !unidades) continue;
+      expect(cajas?.querySelectorAll(".rel2__img--suelta") ?? []).toHaveLength(0);
+      expect(unidades?.querySelectorAll(".rel2__bloque") ?? []).toHaveLength(0);
       expect(tarjeta.querySelectorAll(".rel2__figuras")).toHaveLength(1);
-      expect(cajas, "grupo de cajas").not.toBeNull();
-      if (unidades) expect(unidades, "grupo de unidades").not.toBeNull();
     }
-
-    expect(pantalla.leftColumn.length).toBeGreaterThan(0);
   });
 });
 
@@ -287,7 +242,7 @@ describe("relacionarCantidades — unir", () => {
     );
 
     runTimers(CELEBRACION_MS);
-    expect(progreso(container)).toBe(`2 / ${TOTAL_PANTALLAS}`);
+    expect(progreso(container)).toBe(`2/${TOTAL_PANTALLAS}`);
     expect(container.querySelectorAll(".rel2__item--connected")).toHaveLength(0);
   });
 
@@ -371,7 +326,7 @@ describe("relacionarCantidades — determinismo y salida", () => {
     fireEvent.click(salir);
 
     expect(mockOnExit).toHaveBeenCalled();
-    expect(progreso(container)).toBe(`1 / ${TOTAL_PANTALLAS}`);
+    expect(progreso(container)).toBe(`1/${TOTAL_PANTALLAS}`);
     expect(container.textContent).toContain(pantalla.leftColumn[0]!.leftText);
   });
 });

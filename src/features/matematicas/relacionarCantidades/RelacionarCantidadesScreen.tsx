@@ -96,11 +96,13 @@ export function RelacionarCantidadesScreen({
   }
 
   return (
-    <div className={`rel2 ${className ?? ""}`}>
+    <div
+      className={`rel2${difficulty === "hard" || difficulty === "expert" ? " rel2--text-only" : ""} ${className ?? ""}`}
+    >
       <ActivityHeader
         unitTitle={activity.title}
         gradeTitle={gradeTitle}
-        progress={`${indice + 1} / ${TOTAL_PANTALLAS}`}
+        progress={`${indice + 1}/${TOTAL_PANTALLAS}`}
         onExit={onExit}
         className={className}
         mascotUrl={mascotUrl}
@@ -115,13 +117,20 @@ export function RelacionarCantidadesScreen({
         <MatchColumns<RelacionarCantidadesPair>
           key={indice}
           prefix="rel2"
+          layout={difficulty === "medium" ? "rows" : "columns"}
           leftClass="rel2__item--left"
           rightClass="rel2__item--right"
           left={actual.leftColumn}
           right={actual.rightColumn}
           celebrateText="¡Excelente relación! 🎉"
           renderLeft={(par) => (
-            <Tarjeta par={par} texto={par.leftText} cantidades={par.izquierda} resultado={false} />
+            <Tarjeta
+              par={par}
+              texto={par.leftText}
+              /* En hard/expert solo texto: sin apoyo visual de figuras. */
+              cantidades={difficulty === "hard" || difficulty === "expert" ? [] : par.izquierda}
+              resultado={false}
+            />
           )}
           renderRight={(par) => (
             <Tarjeta par={par} texto={par.rightText} cantidades={[]} resultado />
@@ -133,14 +142,23 @@ export function RelacionarCantidadesScreen({
   );
 }
 
+/** Números del enunciado de la tarjeta en primary (como Reloj / pizarra). */
+function resaltarNumeros(texto: string) {
+  return texto.split(/(\d+)/).map((parte, i) =>
+    /^\d+$/.test(parte) ? (
+      <span key={i} className="rel2__num">
+        {parte}
+      </span>
+    ) : (
+      parte
+    ),
+  );
+}
+
 /**
- * Una tarjeta: el texto arriba y debajo lo que dice, dibujado.
+ * Una tarjeta: el texto arriba y, si hay cantidades, el dibujo debajo.
  *
- * La de la derecha se pinta solo con el texto: por decisión del profesor de
- * Matemáticas tras el pase en pizarra, el dibujo va únicamente en la columna
- * izquierda, que es la que sitúa la cantidad. Así el emparejamiento se lee
- * entre una tarjeta dibujada y su enunciado, sin dos bloques de figuras
- * compitiendo por el espacio.
+ * Derecha: solo texto. Izquierda: dibujo en easy/medium; hard/expert solo enunciado.
  */
 function Tarjeta({
   par,
@@ -156,7 +174,9 @@ function Tarjeta({
 }) {
   return (
     <>
-      <div className={`rel2__text-box${resultado ? " rel2__text-box--result" : ""}`}>{texto}</div>
+      <div className={`rel2__text-box${resultado ? " rel2__text-box--result" : ""}`}>
+        {resaltarNumeros(texto)}
+      </div>
       {cantidades.length > 0 && (
         <div className="rel2__visual">
           {cantidades.map((cantidad, i) => (

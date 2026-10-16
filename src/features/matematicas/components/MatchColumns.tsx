@@ -81,6 +81,11 @@ interface MatchColumnsProps<T extends MatchItem> {
   wrongFlashMs?: number;
   /** Texto de la celebración. Cada actividad lo pone como le suena a ella. */
   celebrateText?: string;
+  /**
+   * `columns` = izquierda | derecha (líneas horizontales).
+   * `rows` = arriba / abajo (líneas verticales).
+   */
+  layout?: "columns" | "rows";
 }
 
 type Line = { id: number; x1: number; y1: number; x2: number; y2: number };
@@ -99,6 +104,7 @@ export function MatchColumns<T extends MatchItem>({
   celebrateMs = 1500,
   wrongFlashMs = 700,
   celebrateText = "¡Muy bien! 🎉",
+  layout = "columns",
 }: MatchColumnsProps<T>) {
   const [selectedLeft, setSelectedLeft] = useState<number | null>(null);
   /** De la izquierda emparejada a la derecha emparejada. */
@@ -154,16 +160,26 @@ export function MatchColumns<T extends MatchItem>({
       if (!lEl || !rEl) return;
       const lr = lEl.getBoundingClientRect();
       const rr = rEl.getBoundingClientRect();
-      next.push({
-        id: leftId,
-        x1: lr.right - cr.left,
-        y1: lr.top + lr.height / 2 - cr.top,
-        x2: rr.left - cr.left,
-        y2: rr.top + rr.height / 2 - cr.top,
-      });
+      if (layout === "rows") {
+        next.push({
+          id: leftId,
+          x1: lr.left + lr.width / 2 - cr.left,
+          y1: lr.bottom - cr.top,
+          x2: rr.left + rr.width / 2 - cr.left,
+          y2: rr.top - cr.top,
+        });
+      } else {
+        next.push({
+          id: leftId,
+          x1: lr.right - cr.left,
+          y1: lr.top + lr.height / 2 - cr.top,
+          x2: rr.left - cr.left,
+          y2: rr.top + rr.height / 2 - cr.top,
+        });
+      }
     });
     setLines(next);
-  }, [connections]);
+  }, [connections, layout]);
 
   useEffect(() => {
     computeLines();
@@ -267,7 +283,10 @@ export function MatchColumns<T extends MatchItem>({
 
   return (
     <>
-      <div className={`${prefix}__columns`} ref={containerRef}>
+      <div
+        className={`${prefix}__columns${layout === "rows" ? ` ${prefix}__columns--rows` : ""}`}
+        ref={containerRef}
+      >
         <svg
           className={`${prefix}__svg`}
           aria-hidden="true"

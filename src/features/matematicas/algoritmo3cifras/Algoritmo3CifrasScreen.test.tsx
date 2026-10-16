@@ -47,7 +47,7 @@ function avanzarHasta(container: HTMLElement, indice: number): Algoritmo3Exercis
   return lista[indice]!;
 }
 
-/** El progreso de la cabecera, "3 / 10". */
+/** El progreso de la cabecera, "3/10". */
 function progreso(container: HTMLElement): string {
   return (container.textContent ?? "").match(/\d+\s*\/\s*\d+/)?.[0] ?? "";
 }
@@ -202,7 +202,7 @@ describe("algoritmo3cifras — una sola comprobación", () => {
     expect(container.querySelector(".a3c__cheer")).not.toBeNull();
 
     runTimers(AUTOAVANCE_MS);
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
   });
 
   it("fallo: no celebra, no dice en qué cifra falló y no avanza solo", () => {
@@ -222,7 +222,7 @@ describe("algoritmo3cifras — una sola comprobación", () => {
     expect(container.querySelector(".cco__explain, .cco__error, .cco__fallo")).toBeNull();
 
     runTimers(AUTOAVANCE_MS * 3);
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("fallar solo en las decenas falla el ejercicio entero", () => {
@@ -245,7 +245,7 @@ describe("algoritmo3cifras — una sola comprobación", () => {
     expect(comprobar(container).disabled).toBe(true);
     tecla(container, "✓");
     expect(container.querySelector(".a3c__cheer")).toBeNull();
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("la casilla de llevar no cuenta para poder comprobar", () => {
@@ -306,7 +306,7 @@ describe("algoritmo3cifras — reintentar", () => {
     fallar(container, ex.result + 1);
     fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--next")!);
 
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
     expect(container.querySelector(".a3c__stage")?.className).not.toContain("a3c__stage--wrong");
     expect(container.querySelector("#cco-cifra-2")?.className).toContain(
       "cco__result-cell--active",

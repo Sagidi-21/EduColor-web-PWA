@@ -5,32 +5,45 @@
  * sobre todo, a la representación de las cantidades: un bloque por decena
  * rotulado `×10` y las unidades sueltas.
  *
- * En Electron esta hoja se llamaba `rel2__*` y no chocaba con nada; aquí el
- * prefijo se conserva para que las dos actividades se distinguan al leer el
- * DOM. */
+ * Estilos de layout/estado alineados con RelacionarScreen.css (pizarra). */
 
 .rel2 {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100%;
+  background: #f8faff;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
 }
 
 .rel2__main {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding: 1rem;
-  gap: 0.75rem;
+  padding-bottom: calc(1rem - 15px);
+  overflow: hidden;
 }
 
+/* Fuera del flujo: 20px del borde superior del tablero; no desplaza las chips. */
 .rel2__instruction {
-  /* Gris oscuro, no el gris pálido que se perdía sobre el fondo claro. */
-  color: #334155;
-  font-size: 1rem;
-  text-align: center;
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
   margin: 0;
+  padding: 0 1rem;
+  font-size: 36px;
+  font-weight: 700;
+  font-family: inherit;
+  color: #1e293b;
+  text-align: center;
+  line-height: 1.25;
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* ── Las dos columnas ───────────────────────────────────────────────────────── */
@@ -40,12 +53,38 @@
   display: flex;
   justify-content: center;
   align-items: stretch;
-  gap: 3rem;
+  gap: 14rem;
+  width: auto;
+  max-width: 100%;
+}
+
+/* Medium: dos filas (situaciones arriba, resultados abajo).
+ * Especificidad alta para no heredar el gap: 14rem de .rel2__columns. */
+.rel2__columns.rel2__columns--rows {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6.5rem;
   width: 100%;
-  /* Antes 560 px, que era el ancho quelassen. Medida en pizarra, sobraba hueco
-     a los lados y el enunciado se partía en dos líneas, así que el ancho útil
-     se ha subido hasta donde entra el texto entero de `expert`. */
-  max-width: 1180px;
+  height: auto;
+}
+
+.rel2__columns--rows .rel2__col {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: stretch;
+  align-content: stretch;
+  gap: 1rem;
+  max-width: 100%;
+  width: auto;
+}
+
+.rel2__columns--rows .rel2__item {
+  flex: 0 1 auto;
+  width: auto;
+  max-width: min(22vw, 16rem);
 }
 
 .rel2__svg {
@@ -58,33 +97,26 @@
 }
 
 .rel2__line {
-  stroke: #16a34a;
+  stroke: #22c55e;
   stroke-width: 4;
   stroke-linecap: round;
 }
 
 .rel2__col {
-  /* Posicionadas para que las pinten por encima del SVG: un elemento con
-     `position: absolute` se dibuja sobre los static, y el trazo de la línea se
-     metía encima de las tarjetas en vez de pasar por detrás. */
+  /* inline-grid: el ancho de la columna = chip más ancha; el resto se estira. */
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
+  display: inline-grid;
+  grid-auto-flow: row;
+  align-content: space-evenly;
+  justify-items: stretch;
   gap: 0.6rem;
-  /* A partes iguales el ancho disponible. Antes cada columna medía lo que
-     ocupaba su contenido, de modo que una con enunciado corto se quedaba
-     estrecha y no aprovechaba el hueco que sobra en pizarra. */
-  flex: 1 1 0;
-  min-width: 0;
+  flex: 0 0 auto;
+  max-width: min(42vw, 34rem);
 }
 
-.rel2__col--left {
-  align-items: flex-end;
-}
-
-.rel2__col--right {
-  align-items: flex-start;
+/* hard / expert: mismo hueco entre chips (sin figuras). */
+.rel2--text-only .rel2__col {
+  gap: 25px;
 }
 
 .rel2__item {
@@ -92,59 +124,102 @@
   flex-direction: column;
   gap: 0.4rem;
   padding: 0.6rem 0.85rem;
-  border-radius: 12px;
-  border: 2px solid rgba(37, 99, 235, 0.28);
+  border-radius: 16px;
+  border: 3px solid #e2e8f0;
   background: #fff;
   cursor: pointer;
   user-select: none;
-  /* La tarjeta ocupa el ancho de su columna, para que las dos mitades de la
-     pantalla se vean iguales aunque una solo lleve texto. */
-  width: 100%;
+  box-sizing: border-box;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  font-family: inherit;
   transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
+    border-color 0.15s,
+    background 0.15s,
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+.rel2__item:hover:not(.rel2__item--connected):not(.rel2__item--wrong) {
+  border-color: var(--color-primary, #2563eb);
+  transform: scale(1.05);
 }
 
 .rel2__item--selected {
-  border-color: #2563eb;
-  background: rgba(37, 99, 235, 0.08);
-}
-
-.rel2__item--hintable {
-  border-color: rgba(37, 99, 235, 0.55);
+  border-color: var(--color-primary, #2563eb);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  box-shadow: none;
 }
 
 .rel2__item--connected {
-  border-color: #16a34a;
-  background: rgba(22, 163, 74, 0.07);
+  border-color: #22c55e;
+  background: #f0fdf4;
   cursor: default;
 }
 
 .rel2__item--wrong {
-  border-color: #dc2626;
-  background: rgba(220, 38, 38, 0.12);
+  border-color: #ef4444 !important;
+  background: #fef2f2 !important;
+  animation: rel2-shake 0.45s ease;
+}
+
+@keyframes rel2-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(8px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(5px);
+  }
 }
 
 .rel2__celebrate {
   margin-top: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #15803d;
+  font-family: inherit;
+  font-size: 40px;
+  font-weight: 900;
+  color: #22c55e;
+  animation: rel2-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes rel2-pop {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* ── El texto de la tarjeta ─────────────────────────────────────────────────── */
 
 .rel2__text-box {
-  font-size: 0.95rem;
+  font-family: inherit;
+  font-size: clamp(18px, 2.1vw, 24px);
   font-weight: 700;
-  color: #1e3a8a;
-  /* Sin tope fijo: antes se paraba en 210 px y partía el enunciado de `expert`
-     en dos líneas. Ahora usa el ancho de la tarjeta, que es más ancha. */
+  color: #1e293b;
+  line-height: 1.3;
   max-width: 100%;
 }
 
 .rel2__text-box--result {
-  color: #166534;
+  color: #1e293b;
+}
+
+.rel2__num {
+  color: var(--color-primary, #2563eb);
 }
 
 /* ── Las cantidades ─────────────────────────────────────────────────────────── */
@@ -163,16 +238,12 @@
 }
 
 .rel2__rotulo {
-  font-size: 0.72rem;
+  font-family: inherit;
+  font-size: 0.85rem;
   font-weight: 700;
-  color: #475569;
+  color: #1e293b;
 }
 
-/* Cajas y unidades van en la misma fila, pero en dos grupos independientes: cada
- * uno se envuelve por dentro, de modo que las unidades que no caben siguen a la
- * derecha y caen debajo de las otras unidades, nunca debajo de una caja de ×10 o
- * ×100. `flex-start` los alinea arriba, así que un grupo con dos alturas no
- * empuja al otro de sitio. */
 .rel2__figuras {
   display: flex;
   flex-direction: row;
@@ -195,17 +266,11 @@
   object-fit: contain;
 }
 
-/* Las unidades sueltas van en fila, sin marco: la caja ya lo lleva. Mismo tamaño
- * que la figura de dentro de una caja, para que todas las figuras se lean igual
- * de lejos; lo que las distingue es el marco y el rótulo, no un tamaño menor. */
 .rel2__img--suelta {
   width: 28px;
   height: 28px;
 }
 
-/* Cada caja lleva una sola figura y su rótulo debajo: la caja es el objeto de
- * las bases diez y el rótulo dice cuánto vale. Se distinguen por el marco y por
- * el tamaño de la figura, no por tener cien o diez figuras dibujadas. */
 .rel2__bloque {
   display: flex;
   flex-direction: column;
@@ -223,21 +288,26 @@
 }
 
 .rel2__bloque-rotulo {
-  font-size: 0.7rem;
+  font-family: inherit;
+  font-size: 0.75rem;
   font-weight: 800;
-  color: #1d4ed8;
+  color: var(--color-primary, #2563eb);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .rel2__item {
     transition: none;
   }
+  .rel2__item--wrong,
+  .rel2__celebrate {
+    animation: none;
+  }
 }
 
 /* ── Pantallas estrechas ────────────────────────────────────────────────────── */
 
 @media (max-width: 460px) {
-  .rel2__columns {
+  .rel2__columns:not(.rel2__columns--rows) {
     gap: 1rem;
   }
 

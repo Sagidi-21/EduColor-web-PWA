@@ -1,21 +1,24 @@
+/* Cinta métrica — contenido propio; layout/fondo Segoe+#f8faff vienen de `.ops`. */
+
 .cmt__card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: var(--color-white);
-  border-radius: var(--radius-xl);
+  background-color: #fff;
+  border-radius: 16px;
   padding: 2rem;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
   margin-top: 1rem;
   max-width: 600px;
   width: 100%;
+  font-family: "Segoe UI", system-ui, sans-serif;
 }
 
 .cmt__instruction {
   margin: 0 0 0.75rem;
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-gray-600);
+  color: #475569;
   text-align: center;
 }
 
@@ -35,7 +38,7 @@
 .cmt__question {
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--color-gray-800);
+  color: #1e293b;
   margin-bottom: 2rem;
   text-align: center;
 }
@@ -48,49 +51,59 @@
   width: 100%;
 }
 
+/* Mismo lenguaje que ops__option-btn */
 .cmt__opt {
-  font-size: 1.75rem;
-  font-weight: 700;
-  padding: 1rem 2rem;
-  border-radius: var(--radius-lg);
-  border: 3px solid var(--color-primary);
-  background-color: var(--color-white);
-  color: var(--color-primary);
+  font-size: clamp(18px, 2.8vw, 28px);
+  font-weight: 800;
+  padding: 14px 24px;
+  border-radius: 14px;
+  border: 3px solid #cbd5e1;
+  background: #f8faff;
+  color: var(--color-primary-dark, #1d4ed8);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    transform 0.12s;
   min-width: 120px;
+  text-align: center;
+  user-select: none;
 }
 
 .cmt__opt:hover:not(:disabled) {
-  background-color: var(--color-primary-50);
-  transform: translateY(-2px);
+  background: #dbeafe;
+  border-color: var(--color-primary, #2563eb);
+  transform: scale(1.04);
 }
 
 .cmt__opt:disabled {
   cursor: default;
-  opacity: 0.8;
+  opacity: 0.45;
 }
 
 .cmt__opt--correct {
-  background-color: var(--color-success);
-  border-color: var(--color-success);
-  color: var(--color-white);
+  border-color: #22c55e;
+  background: #dcfce7;
+  color: #15803d;
+  opacity: 1;
 }
 
 .cmt__opt--wrong {
-  background-color: var(--color-danger);
-  border-color: var(--color-danger);
-  color: var(--color-white);
+  border-color: #ef4444;
+  background: #fee2e2;
+  color: #b91c1c;
+  opacity: 1;
+  animation: wrongShake 0.4s ease-out;
 }
 
 .cmt__hint {
   margin-top: 2rem;
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-gray-600);
-  background-color: var(--color-gray-100);
+  color: #475569;
+  background-color: #f1f5f9;
   padding: 1rem 2rem;
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   text-align: center;
   animation: fadeIn 0.3s ease-out forwards;
 }
@@ -103,5 +116,23 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cmt__opt {
+    transition: none;
+  }
+
+  .cmt__opt:hover:not(:disabled) {
+    transform: none;
+  }
+
+  .cmt__opt--wrong {
+    animation: none;
+  }
+
+  .cmt__hint {
+    animation: none;
   }
 }

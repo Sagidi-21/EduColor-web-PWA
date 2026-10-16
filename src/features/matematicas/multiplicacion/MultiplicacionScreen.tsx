@@ -100,12 +100,13 @@ function MatchMode(props: ModoProps & { sesion: MatchSession }) {
   }
 
   return (
-    <div className={`mul ${className ?? ""}`}>
+    <div className="mul">
       <ActivityHeader
         unitTitle={activity.title}
         gradeTitle={gradeTitle}
-        onExit={onExit}
         className={className}
+        progress="1/1"
+        onExit={onExit}
         mascotUrl={mascotUrl}
         difficultyStars={difficultyStars}
       />
@@ -242,11 +243,12 @@ function ChoiceMode(props: ModoProps & { sesion: MultiplicacionExercise[] }) {
   const showPista = current.type === "product";
 
   return (
-    <div className={`ops ${className ?? ""}`}>
+    <div className="ops">
       <ActivityHeader
         unitTitle={activity.title}
         gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        className={className}
+        progress={`${session.currentIndex + 1}/${total}`}
         onExit={onExit}
         mascotUrl={mascotUrl}
         difficultyStars={difficultyStars}

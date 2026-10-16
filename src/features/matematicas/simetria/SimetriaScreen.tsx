@@ -24,8 +24,8 @@ interface SessionState {
   alreadyFailed: boolean;
 }
 
-const FILL = "rgba(139,92,246,.25)";
-const STROKE = "#a78bfa";
+const FILL = "rgba(37, 99, 235, 0.2)";
+const STROKE = "#2563eb";
 
 function pts(arr: [number, number][]): string {
   return arr.map(([x, y]) => `${x},${y}`).join(" ");
@@ -230,6 +230,9 @@ export default function SimetriaScreen({
   seed,
   onExit,
   gradeTitle,
+  className,
+  mascotUrl,
+  difficultyStars,
 }: EngineScreenProps) {
   const [session, setSession] = useState(() => freshSession(seed, difficulty));
   const [finished, setFinished] = useState<SessionResult | null>(null);
@@ -315,10 +318,13 @@ export default function SimetriaScreen({
   return (
     <div className="sim">
       <ActivityHeader
-        title={activity.title}
-        gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
         onExit={onExit}
+        gradeTitle={gradeTitle}
+        className={className}
+        unitTitle={activity.title}
+        difficultyStars={difficultyStars}
+        mascotUrl={mascotUrl}
+        progress={`${session.currentIndex + 1} / ${total}`}
       />
 
       <div className={`sim__stage ${stageClass}`}>

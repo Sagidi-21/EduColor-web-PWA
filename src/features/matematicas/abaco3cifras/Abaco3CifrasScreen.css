@@ -1,4 +1,4 @@
-/* Motor "Ábaco de tres cifras" */
+/* Motor "Ábaco de tres cifras" — pizarra (shapes/poligonos) */
 
 .aba {
   display: flex;
@@ -6,8 +6,9 @@
   height: 100%;
   min-height: 100%;
   overflow-y: auto;
-  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-  color: #1c1917;
+  background: #f8faff;
+  color: #1e293b;
+  font-family: "Segoe UI", system-ui, sans-serif;
 }
 
 .aba__stage {
@@ -23,11 +24,11 @@
 }
 
 .aba__stage--correct {
-  background: rgba(16, 185, 129, 0.08);
+  background: #f0fdf4;
 }
 
 .aba__stage--wrong {
-  background: rgba(239, 68, 68, 0.07);
+  background: #fff1f2;
 }
 
 .aba__cheer {
@@ -35,7 +36,7 @@
   top: 1rem;
   font-size: 1.8rem;
   font-weight: 900;
-  color: #10b981;
+  color: #16a34a;
   pointer-events: none;
   animation: abaPop 0.4s ease;
 }
@@ -57,7 +58,7 @@
   margin: 0;
   font-size: clamp(1.1rem, 2.2vw, 1.4rem);
   font-weight: 700;
-  color: #1c1917;
+  color: #1e293b;
   text-align: center;
   text-wrap: balance;
 }
@@ -65,18 +66,17 @@
 .aba__number-badge {
   font-size: clamp(3rem, 9vw, 4.5rem);
   font-weight: 900;
-  color: #b45309;
+  color: var(--color-primary, #2563eb);
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 24px rgba(245, 158, 11, 0.25);
 }
 
 /* El ábaco grande nunca debe empujar el resto fuera de la pantalla: se limita
    por altura y el ancho sale de su proporción. */
 .aba__abacus {
-  padding: 0.5rem;
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  border-radius: 16px;
-  background: rgba(245, 158, 11, 0.08);
+  padding: 0.75rem;
+  border: 3px solid #000;
+  border-radius: 24px;
+  background: #fff;
 }
 
 .aba__svg {
@@ -101,10 +101,11 @@
   align-items: center;
   justify-content: center;
   padding: 0.6rem 0.8rem;
-  border: 2px solid rgba(245, 158, 11, 0.35);
-  border-radius: 14px;
-  background: rgba(245, 158, 11, 0.1);
-  color: #1c1917;
+  min-height: 56px;
+  border: 3px solid #000;
+  border-radius: 16px;
+  background: transparent;
+  color: var(--color-primary, #2563eb);
   font-family: inherit;
   font-size: clamp(1.2rem, 3vw, 1.6rem);
   font-weight: 900;
@@ -113,6 +114,7 @@
   transition:
     border-color 0.16s,
     background 0.16s,
+    color 0.16s,
     transform 0.16s;
 }
 
@@ -127,26 +129,26 @@
 }
 
 .aba__opt:hover:not(:disabled) {
-  border-color: #d97706;
-  background: rgba(245, 158, 11, 0.22);
-  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+  transform: scale(1.03);
 }
 
 .aba__opt:disabled {
   cursor: default;
-  opacity: 0.7;
 }
 
 .aba__opt--correct {
-  border-color: #10b981 !important;
-  background: rgba(16, 185, 129, 0.15) !important;
-  color: #065f46 !important;
+  border-color: #16a34a !important;
+  background: #f0fdf4 !important;
+  color: #15803d !important;
 }
 
 .aba__opt--wrong {
-  border-color: #ef4444 !important;
-  background: rgba(239, 68, 68, 0.12) !important;
-  color: #991b1b !important;
+  border-color: #dc2626 !important;
+  background: #fff1f2 !important;
+  color: #dc2626 !important;
 }
 
 /* Sesión vacía */
@@ -162,19 +164,24 @@
 .aba__vacio-texto {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #1c1917;
+  color: #1e293b;
 }
 
 .aba__btn {
   padding: 0.7rem 1.5rem;
-  background: linear-gradient(135deg, #fbbf24, #d97706);
-  border: none;
-  border-radius: 14px;
-  color: #1a1000;
+  background: transparent;
+  border: 3px solid #000;
+  border-radius: 16px;
+  color: var(--color-primary, #2563eb);
   font-family: inherit;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
+}
+
+.aba__btn:hover {
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -183,5 +190,6 @@
   .aba__opt:hover:not(:disabled) {
     animation: none;
     transition: none;
+    transform: none;
   }
 }

@@ -1,11 +1,12 @@
-/* ── CirculoCircunferenciaScreen ──────────────────────────────────── */
+/* ── CirculoCircunferenciaScreen — pizarra (shapes/poligonos) ─────────── */
 
 .cc__wrap {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--bg, #f8fafc);
+  background: #f8faff;
   overflow: hidden;
+  font-family: "Segoe UI", system-ui, sans-serif;
 }
 
 .cc__stage {
@@ -21,16 +22,16 @@
   overflow-y: auto;
 }
 .cc__stage--correct {
-  background: rgba(34, 197, 94, 0.08);
+  background: #f0fdf4;
 }
 .cc__stage--wrong {
-  background: rgba(239, 68, 68, 0.08);
+  background: #fff1f2;
 }
 
 .cc__cheer {
   font-size: 1.8rem;
   font-weight: 900;
-  color: #22c55e;
+  color: #16a34a;
   animation: cc-pop 0.4s ease;
 }
 @keyframes cc-pop {
@@ -60,7 +61,7 @@
   justify-content: center;
 }
 .cc__svg {
-  filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.2));
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.12));
 }
 
 .cc__real-object {
@@ -92,8 +93,8 @@
   min-width: clamp(120px, 20vw, 160px);
   padding: clamp(0.6rem, 1.4vw, 0.9rem) clamp(1rem, 1.6vw, 1.6rem);
   min-height: clamp(44px, 6vw, 56px);
-  border: 2px solid #cbd5e1;
-  border-radius: 0.75rem;
+  border: 3px solid #000;
+  border-radius: 16px;
   background: transparent;
   font-size: clamp(1rem, 1.6vw, 1.25rem);
   font-weight: 700;
@@ -101,16 +102,20 @@
   transition:
     border-color 0.15s,
     background 0.15s,
-    color 0.15s;
+    color 0.15s,
+    transform 0.15s;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  color: #1e293b;
+  color: var(--color-primary, #2563eb);
+  user-select: none;
 }
 .cc__opt:hover:not(:disabled) {
-  border-color: var(--color-primary, #3b82f6);
-  color: var(--color-primary, #3b82f6);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+  transform: scale(1.03);
 }
 .cc__opt:disabled {
   cursor: default;
@@ -119,14 +124,14 @@
   font-size: clamp(1.2rem, 2vw, 1.6rem);
 }
 .cc__opt--correct {
-  border-color: #22c55e !important;
-  background: #22c55e !important;
-  color: #fff !important;
+  background: #f0fdf4 !important;
+  border-color: #16a34a !important;
+  color: #15803d !important;
 }
 .cc__opt--wrong {
-  border-color: #ef4444 !important;
-  background: #ef4444 !important;
-  color: #fff !important;
+  background: #fff1f2 !important;
+  border-color: #dc2626 !important;
+  color: #dc2626 !important;
 }
 
 .cc__explainer {
@@ -136,6 +141,17 @@
   max-width: 400px;
   padding: 0.6rem 1rem;
   border-radius: 0.5rem;
-  background: rgba(59, 130, 246, 0.06);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 6%, #fff);
+  border: 1px solid color-mix(in srgb, var(--color-primary, #2563eb) 20%, #fff);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cc__cheer,
+  .cc__opt {
+    animation: none;
+    transition: none;
+  }
+  .cc__opt:hover:not(:disabled) {
+    transform: none;
+  }
 }

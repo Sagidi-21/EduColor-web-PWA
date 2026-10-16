@@ -144,9 +144,8 @@ describe("relacionarCantidades — cada tarjeta dibuja lo que dice", () => {
 });
 
 describe("relacionarCantidades — pantallas", () => {
-  it("trae tres parejas por pantalla en expert y cuatro en los demás niveles", () => {
-    // En `expert` el enunciado entero no cabía con cuatro tarjetas, así que se
-    // Bajaron a tres. Los otros niveles conservan las cuatro del original.
+  it("trae cinco parejas por pantalla en expert y cuatro en los demás niveles", () => {
+    // En `expert` (solo texto) hay 5 chips; los otros niveles conservan 4.
     for (const dificultad of DIFICULTADES) {
       const esperado = dificultad === "expert" ? PAREJAS_POR_PANTALLA_EXPERT : PAREJAS_POR_PANTALLA;
       for (const semilla of SEMILLAS) {
@@ -159,8 +158,8 @@ describe("relacionarCantidades — pantallas", () => {
     }
   });
 
-  it("el número de parejas por pantalla es 3 solo en expert", () => {
-    expect(parejasPorPantalla("expert")).toBe(3);
+  it("el número de parejas por pantalla es 5 solo en expert", () => {
+    expect(parejasPorPantalla("expert")).toBe(5);
     expect(parejasPorPantalla("easy")).toBe(4);
     expect(parejasPorPantalla("medium")).toBe(4);
     expect(parejasPorPantalla("hard")).toBe(4);

@@ -47,12 +47,9 @@ export const PAREJAS_POR_PANTALLA = 4;
 /**
  * Parejas por pantalla en `expert`.
  *
- * Bajado de 4 a 3 a petición del profesor de Matemáticas tras verlo en pizarra:
- * los enunciados de la descomposición C-D-U («Descomponer 457» / «4 C + 5 D + 7
- * U») no caben en la tarjeta cuando hay cuatro por pantalla. Los otros tres
- * niveles conservan 4, donde sí caben.
+ * En pizarra (sin figuras) caben 5 chips por columna; easy/medium/hard siguen en 4.
  */
-export const PAREJAS_POR_PANTALLA_EXPERT = 3;
+export const PAREJAS_POR_PANTALLA_EXPERT = 5;
 
 /** Cuántas parejas pinta una pantalla según la dificultad. */
 export function parejasPorPantalla(difficulty: ActivityDifficulty): number {

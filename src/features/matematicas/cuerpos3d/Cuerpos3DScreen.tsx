@@ -234,6 +234,9 @@ export default function Cuerpos3DScreen({
   seed,
   onExit,
   gradeTitle,
+  className,
+  mascotUrl,
+  difficultyStars,
 }: EngineScreenProps) {
   const [session, setSession] = useState(() => freshSession(seed, difficulty));
   const [finished, setFinished] = useState<SessionResult | null>(null);
@@ -315,10 +318,13 @@ export default function Cuerpos3DScreen({
   return (
     <div className="c3d">
       <ActivityHeader
-        title={activity.title}
-        gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
         onExit={onExit}
+        gradeTitle={gradeTitle}
+        className={className}
+        unitTitle={activity.title}
+        difficultyStars={difficultyStars}
+        mascotUrl={mascotUrl}
+        progress={`${session.currentIndex + 1} / ${total}`}
       />
 
       <div className={`c3d__stage ${stageClass}`}>

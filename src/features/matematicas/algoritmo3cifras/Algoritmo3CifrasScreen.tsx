@@ -174,15 +174,16 @@ export function Algoritmo3CifrasScreen({
   }
 
   return (
-    <div className={`a3c ${className || ""}`}>
+    <div className="a3c">
       <ActivityHeader
         onExit={onExit}
         exitLabel="← Salir"
         gradeTitle={gradeTitle}
+        className={className}
         unitTitle={activity.title}
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        progress={`${session.currentIndex + 1}/${total}`}
       >
         <InputModeToggle mode={mode} onToggle={toggle} />
       </ActivityHeader>

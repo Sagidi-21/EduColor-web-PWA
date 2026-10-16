@@ -43,6 +43,9 @@ export default function Problemas2PasosScreen({
   seed,
   onExit,
   gradeTitle,
+  className,
+  mascotUrl,
+  difficultyStars,
 }: EngineScreenProps) {
   const [session, setSession] = useState(() => freshSession(seed, difficulty));
   const [finished, setFinished] = useState<SessionResult | null>(null);
@@ -133,11 +136,14 @@ export default function Problemas2PasosScreen({
       : `${revealed ? current.mid : "?"} − ${current.c} = ${revealed ? current.result : "?"}`;
 
   return (
-    <div className="p2p">
+    <div className={`p2p ${className ?? ""}`}>
       <ActivityHeader
-        title={activity.title}
+        unitTitle={activity.title}
         gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        className={className}
+        mascotUrl={mascotUrl}
+        difficultyStars={difficultyStars}
+        progress={`${session.currentIndex + 1}/${total}`}
         onExit={onExit}
       />
 

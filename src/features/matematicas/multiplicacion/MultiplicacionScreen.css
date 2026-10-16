@@ -7,14 +7,17 @@
 /* ══ Modo unir (easy, medium) ═══════════════════════════════════════════════
  *
  * El emparejamiento (seleccionar, línea, error y celebración) lo pinta
- * `MatchColumns` con el prefijo `mul__`; aquí solo se da forma a las tarjetas de
- * operación y de producto, y al texto gris que las acompaña. */
+ * `MatchColumns` con el prefijo `mul__`; aquí se da forma a las tarjetas y al
+ * tablero, alineado con `relacionar` / OperationsScreen. */
 
 .mul {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
+  background: #f8faff;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
 }
 
 .mul__main {
@@ -22,24 +25,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding: 1rem;
   gap: 0.75rem;
+  min-height: 0;
 }
 
 .mul__instruction {
-  /* Gris oscuro, no el gris pálido que se perdía sobre el fondo blanco. */
-  color: #334155;
+  color: #475569;
   font-size: 1rem;
+  font-weight: 600;
   text-align: center;
   margin: 0;
 }
 
 .mul__columns {
   position: relative;
-  /* Las dos columnas van juntas y centradas, no una pegada al borde izquierdo y
-     otra al derecho. Con una rejilla de `auto 1fr auto` la columna central se
-     comía el hueco y las separaba de más, que es lo que las dejaba torcidas
-     hacia el borde en pantallas anchas. */
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -58,15 +59,12 @@
 }
 
 .mul__line {
-  stroke: #16a34a;
+  stroke: #22c55e;
   stroke-width: 4;
   stroke-linecap: round;
 }
 
 .mul__col {
-  /* Posicionadas para que las pinten por encima del SVG: un elemento con
-     `position: absolute` se dibuja sobre losstatic, y el trazo de la línea se
-     metía sobre las tarjetas en vez de pasar por detrás. */
   position: relative;
   display: flex;
   flex-direction: column;
@@ -88,7 +86,7 @@
   min-height: 48px;
   padding: 0.5rem 1.1rem;
   border-radius: 12px;
-  border: 2px solid rgba(234, 88, 12, 0.3);
+  border: 3px solid #e2e8f0;
   background: #fff;
   cursor: pointer;
   user-select: none;
@@ -96,7 +94,8 @@
   transition:
     transform 0.15s ease,
     border-color 0.15s ease,
-    background 0.15s ease;
+    background 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 /* La operación necesita algo más de ancho que el producto: `2 × 10` que un `20`. */
@@ -111,42 +110,42 @@
 .mul__op {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #7c2d12;
+  color: var(--color-primary, #2563eb);
 }
 
 .mul__res {
   font-size: 1.35rem;
   font-weight: 900;
-  color: #166534;
+  color: var(--color-primary, #2563eb);
 }
 
 .mul__item--selected {
-  border-color: #ea580c;
-  background: rgba(249, 115, 22, 0.12);
+  border-color: var(--color-primary, #2563eb);
+  background: #eff6ff;
+  box-shadow: 0 0 0 4px #bfdbfe;
   transform: scale(1.04);
 }
 
-/* Con una operación esperando, lo que queda libre se insinúa. */
 .mul__item--hintable {
-  border-color: rgba(234, 88, 12, 0.55);
+  border-color: #94a3b8;
 }
 
 .mul__item--connected {
-  border-color: #16a34a;
-  background: rgba(22, 163, 74, 0.08);
+  border-color: #22c55e;
+  background: #f0fdf4;
   cursor: default;
 }
 
 .mul__item--wrong {
-  border-color: #dc2626;
-  background: rgba(220, 38, 38, 0.14);
+  border-color: #ef4444;
+  background: #fef2f2;
 }
 
 .mul__celebrate {
   margin-top: 0.5rem;
   font-size: 1.5rem;
   font-weight: 800;
-  color: #15803d;
+  color: #22c55e;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -161,28 +160,19 @@
 
 /* ══ Modo opción múltiple (hard, expert) ═════════════════════════════════════
  *
- * Lo común con la familia de operaciones (`.ops`, `.ops__stage`, `.ops__footer`,
- * `.ops__celebration`) viene de `../operations/OperationsScreen.css`, que es el
- * equivalente PWA del `OperationsRenderer.css` que importaba el renderer de
- * Electron. Aquí solo lo específico: la ecuación, los grupos de puntos, la pista
- * y las opciones.
- *
- * Los enunciados y las opciones van en marrón oscuro, como en Electron.
- *
- * Los textos de apoyo (pista, rótulo de tabla) sí usaban un gris pálido
- * (`#94a3b8`) que se perdía sobre el blanco. Aquí van en `#334155`, que tiene
- * contraste AA sobre blanco sin parecer un titular. */
+ * Lo común con la familia de operaciones viene de OperationsScreen.css.
+ * Aquí: ecuación, grupos de puntos, pista y opciones al estilo ops. */
+
 .mul__equation {
   font-size: clamp(1.8rem, 5vw, 2.8rem);
   font-weight: 900;
-  color: #7c2d12;
+  color: var(--color-primary, #2563eb);
   text-align: center;
   letter-spacing: 0.05em;
   font-variant-numeric: tabular-nums;
   margin: 0 0 0.5rem;
 }
 
-/* Grupos de puntos: un cuadrado por grupo, con los puntos dentro. */
 .mul__groups {
   display: flex;
   flex-wrap: wrap;
@@ -199,16 +189,16 @@
   gap: 4px;
   max-width: 90px;
   padding: 0.6rem;
-  border: 2px solid rgba(234, 88, 12, 0.35);
+  border: 2px solid color-mix(in srgb, var(--color-primary, #2563eb) 35%, #fff);
   border-radius: 10px;
-  background: rgba(234, 88, 12, 0.06);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 8%, #fff);
 }
 
 .mul__dot {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #ea580c;
+  background: var(--color-primary, #2563eb);
 }
 
 .mul__pista {
@@ -227,44 +217,47 @@
 }
 
 .mul__opt {
-  min-width: 80px;
+  min-width: 100px;
   min-height: 54px;
-  padding: 0.75rem 1.8rem;
-  font-size: 1.5rem;
+  padding: 14px 24px;
+  font-size: clamp(18px, 2.8vw, 28px);
   font-weight: 800;
-  color: #7c2d12;
-  background: rgba(249, 115, 22, 0.1);
-  border: 2px solid rgba(249, 115, 22, 0.3);
+  color: var(--color-primary-dark, #1d4ed8);
+  background: #f8faff;
+  border: 3px solid #cbd5e1;
   border-radius: 14px;
   cursor: pointer;
   font-variant-numeric: tabular-nums;
+  text-align: center;
+  user-select: none;
   transition:
-    transform 0.15s ease,
-    background 0.15s ease;
+    background 0.12s,
+    border-color 0.12s,
+    transform 0.12s;
 }
 
 .mul__opt:hover:not(:disabled) {
-  border-color: #ea580c;
-  background: rgba(249, 115, 22, 0.2);
-  transform: translateY(-2px);
+  background: #dbeafe;
+  border-color: var(--color-primary, #2563eb);
+  transform: scale(1.04);
 }
 
 .mul__opt:disabled {
-  opacity: 0.7;
+  opacity: 0.45;
   cursor: default;
 }
 
-/* El acierto se ve en la opción y en el texto, no solo en el borde. */
 .mul__opt--correct {
-  border-color: #10b981;
-  background: rgba(16, 185, 129, 0.15);
-  color: #065f46;
+  border-color: #22c55e;
+  background: #dcfce7;
+  color: #15803d;
 }
 
 .mul__opt--wrong {
   border-color: #ef4444;
-  background: rgba(239, 68, 68, 0.12);
-  color: #991b1b;
+  background: #fee2e2;
+  color: #b91c1c;
+  animation: wrongShake 0.4s ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -274,5 +267,9 @@
 
   .mul__opt:hover:not(:disabled) {
     transform: none;
+  }
+
+  .mul__opt--wrong {
+    animation: none;
   }
 }

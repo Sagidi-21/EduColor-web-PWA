@@ -257,11 +257,12 @@ export function Abaco3CifrasScreen({
   };
 
   return (
-    <div className={`aba ${className || ""}`}>
+    <div className="aba">
       <ActivityHeader
         onExit={onExit}
         exitLabel="← Salir"
         gradeTitle={gradeTitle}
+        className={className}
         unitTitle={activity.title}
         difficultyStars={difficultyStars}
         mascotUrl={mascotUrl}

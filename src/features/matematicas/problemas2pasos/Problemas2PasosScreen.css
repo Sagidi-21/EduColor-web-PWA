@@ -1,10 +1,12 @@
+/* Problemas de 2 pasos — estilos pizarra alineados con ProblemaScreen.css */
+
 .p2p {
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 100%;
-  background: var(--color-bg);
-  font-family: var(--font-family-base);
+  background: #f8faff;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
 }
 
 .p2p__stage {
@@ -13,30 +15,32 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xl);
-  padding: var(--spacing-lg);
+  gap: 1.5rem;
+  padding: 1.5rem;
   transition: background-color 0.2s ease;
   position: relative;
+  overflow-y: auto;
 }
 
 .p2p__stage--correct {
-  background: rgba(16, 185, 129, 0.12);
+  background: #f0fdf4;
 }
 
 .p2p__stage--wrong {
-  background: rgba(239, 68, 68, 0.1);
+  background: #fef2f2;
 }
 
 .p2p__cheer {
   position: absolute;
-  top: var(--spacing-md);
+  top: 1rem;
   left: 50%;
   transform: translateX(-50%);
-  font-size: var(--font-size-2xl);
-  font-weight: 700;
-  color: var(--color-success);
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #22c55e;
   animation: p2p__pop 0.3s ease-out;
   z-index: 10;
+  pointer-events: none;
 }
 
 @keyframes p2p__pop {
@@ -52,33 +56,35 @@
 
 /* Story card */
 .p2p__story-card {
-  max-width: 520px;
+  max-width: 560px;
   width: 100%;
-  background: rgba(239, 68, 68, 0.07);
-  border: 2px solid rgba(239, 68, 68, 0.18);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-lg) var(--spacing-xl);
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  padding: 20px 28px;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: 0.5rem;
+  box-sizing: border-box;
 }
 
 .p2p__story-line {
-  font-size: var(--font-size-lg);
-  color: var(--color-text);
+  font-size: 1.15rem;
+  color: #1e293b;
   line-height: 1.5;
   margin: 0;
+  font-weight: 600;
 }
 
 .p2p__story-line:first-child {
   font-weight: 700;
-  font-size: var(--font-size-xl);
+  font-size: 1.25rem;
 }
 
 /* Step tracker */
 .p2p__steps {
   display: flex;
-  gap: var(--spacing-lg);
+  gap: 1rem;
   align-items: center;
   flex-wrap: wrap;
   justify-content: center;
@@ -88,64 +94,67 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-lg);
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+  gap: 0.25rem;
+  padding: 0.6rem 1rem;
+  border-radius: 14px;
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  font-size: 0.875rem;
+  color: #64748b;
   font-weight: 600;
 }
 
 .p2p__step-label {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-weight: 800;
 }
 
 .p2p__step-num {
-  font-size: var(--font-size-lg);
+  font-size: 1.1rem;
   font-weight: 900;
-  color: var(--color-text);
+  color: #1e293b;
   font-variant-numeric: tabular-nums;
 }
 
 .p2p__arrow {
-  color: var(--color-error);
-  font-size: var(--font-size-xl);
+  color: #94a3b8;
+  font-size: 1.35rem;
+  font-weight: 700;
 }
 
 /* Question */
 .p2p__question {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
+  font-size: 1.75rem;
+  font-weight: 800;
   text-align: center;
-  color: var(--color-text);
-  max-width: 480px;
+  color: var(--color-primary, #2563eb);
+  max-width: 520px;
   margin: 0;
+  line-height: 1.35;
 }
 
 /* Options */
 .p2p__options {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-md);
+  gap: 0.75rem;
   justify-content: center;
-  max-width: 440px;
-  margin-top: var(--spacing-sm);
+  max-width: 480px;
+  margin-top: 0.25rem;
 }
 
 .p2p__opt {
-  padding: var(--spacing-md) var(--spacing-xl);
-  min-height: 52px;
+  padding: 0.75rem 1.6rem;
+  min-height: 56px;
   min-width: 80px;
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text);
-  font-size: var(--font-size-xl);
+  border-radius: 16px;
+  border: 3px solid #e2e8f0;
+  background: #fff;
+  color: #1e293b;
+  font-size: 1.5rem;
   font-weight: 900;
   cursor: pointer;
   transition:
@@ -153,15 +162,14 @@
     border-color 0.15s ease,
     transform 0.1s ease,
     box-shadow 0.15s ease;
-  font-family: var(--font-family-base);
+  font-family: inherit;
   font-variant-numeric: tabular-nums;
 }
 
 .p2p__opt:hover:not(:disabled) {
-  background: var(--color-bg-hover);
-  border-color: var(--color-primary);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+  transform: translateY(-2px);
 }
 
 .p2p__opt:active:not(:disabled) {
@@ -169,7 +177,7 @@
 }
 
 .p2p__opt:focus-visible {
-  outline: 3px solid var(--color-focus);
+  outline: 3px solid #bfdbfe;
   outline-offset: 2px;
 }
 
@@ -180,16 +188,16 @@
 
 .p2p__opt--correct {
   animation: p2p__pulse 0.5s ease-out;
-  border-color: var(--color-success);
-  background: var(--color-success-bg);
-  color: var(--color-success-text);
+  border-color: #22c55e !important;
+  background: #f0fdf4 !important;
+  color: #16a34a !important;
 }
 
 .p2p__opt--wrong {
   animation: p2p__shake 0.4s ease-out;
-  border-color: var(--color-error);
-  background: var(--color-error-bg);
-  color: var(--color-error-text);
+  border-color: #ef4444 !important;
+  background: #fef2f2 !important;
+  color: #ef4444 !important;
 }
 
 @keyframes p2p__pulse {
@@ -220,18 +228,18 @@
 }
 
 .p2p__wrong-feedback {
-  margin-top: var(--spacing-lg);
+  margin-top: 0.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-md);
-  color: var(--color-error);
+  gap: 0.75rem;
+  color: #ef4444;
   font-weight: 600;
 }
 
 .p2p__wrong-feedback .actions {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 0.5rem;
 }
 
 @media (max-width: 480px) {
@@ -240,7 +248,10 @@
     max-width: none;
   }
   .p2p__steps {
-    gap: var(--spacing-md);
+    gap: 0.75rem;
+  }
+  .p2p__question {
+    font-size: 1.35rem;
   }
 }
 

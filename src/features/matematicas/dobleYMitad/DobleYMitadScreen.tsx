@@ -151,11 +151,12 @@ export function DobleYMitadScreen({
   const etiquetaResultado = current.operacion === "x2" ? "Doble" : "Mitad";
 
   return (
-    <div className={`ops ${className ?? ""}`}>
+    <div className="ops">
       <ActivityHeader
         unitTitle={activity.title}
         gradeTitle={gradeTitle}
-        progress={`${session.currentIndex + 1} / ${total}`}
+        className={className}
+        progress={`${session.currentIndex + 1}/${total}`}
         onExit={onExit}
         mascotUrl={mascotUrl}
         difficultyStars={difficultyStars}

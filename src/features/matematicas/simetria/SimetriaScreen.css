@@ -3,8 +3,9 @@
   flex-direction: column;
   height: 100%;
   min-height: 100%;
-  background: var(--color-bg);
-  font-family: var(--font-family-base);
+  background: #f8faff;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
 }
 
 .sim__stage {
@@ -13,30 +14,32 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xl);
-  padding: var(--spacing-lg);
+  gap: 24px;
+  padding: 16px;
   transition: background-color 0.2s ease;
   position: relative;
+  min-height: 0;
 }
 
 .sim__stage--correct {
-  background: rgba(16, 185, 129, 0.12);
+  background: #f0fdf4;
 }
 
 .sim__stage--wrong {
-  background: rgba(239, 68, 68, 0.1);
+  background: #fff1f2;
 }
 
 .sim__cheer {
   position: absolute;
-  top: var(--spacing-md);
+  top: 14px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: var(--font-size-2xl);
-  font-weight: 700;
-  color: var(--color-success);
+  font-size: clamp(22px, 3.5vw, 36px);
+  font-weight: 800;
+  color: #16a34a;
   animation: sim__pop 0.3s ease-out;
   z-index: 10;
+  white-space: nowrap;
 }
 
 @keyframes sim__pop {
@@ -54,130 +57,102 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-lg);
-  background: rgba(139, 92, 246, 0.07);
-  border: 1px solid rgba(139, 92, 246, 0.18);
-  border-radius: var(--radius-xl);
+  justify-content: center;
+  width: min(46vh, 46vw);
+  height: min(46vh, 46vw);
+  padding: 16px;
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 24px;
 }
 
 .sim__question {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  text-align: center;
-  color: var(--color-text);
-  max-width: 520px;
   margin: 0;
+  max-width: 520px;
+  font-size: 38px;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
 }
 
 .sim__options {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-md);
+  gap: 16px;
   justify-content: center;
   max-width: 480px;
-  margin-top: var(--spacing-sm);
 }
 
 .sim__opt {
-  padding: var(--spacing-md) var(--spacing-xl);
-  min-height: 52px;
-  min-width: 70px;
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text);
-  font-size: var(--font-size-lg);
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
+  min-height: 68px;
+  padding: 12px 20px;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  border: 3px solid #000;
+  border-radius: 16px;
+  background: transparent;
+  color: var(--color-primary, #2563eb);
   cursor: pointer;
   transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.1s ease,
-    box-shadow 0.15s ease;
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.15s;
   text-align: center;
+  user-select: none;
 }
 
 .sim__opt:hover:not(:disabled) {
-  background: var(--color-bg-hover);
-  border-color: var(--color-primary);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-}
-
-.sim__opt:active:not(:disabled) {
-  transform: translateY(0);
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 10%, #fff);
+  border-color: var(--color-primary, #2563eb);
+  color: var(--color-primary, #2563eb);
+  transform: scale(1.03);
 }
 
 .sim__opt:focus-visible {
-  outline: 3px solid var(--color-focus);
+  outline: 3px solid var(--color-primary, #2563eb);
   outline-offset: 2px;
 }
 
 .sim__opt:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+  cursor: default;
 }
 
 .sim__opt--correct {
-  animation: sim__pulse 0.5s ease-out;
-  border-color: var(--color-success);
-  background: var(--color-success-bg);
-  color: var(--color-success-text);
+  background: #f0fdf4 !important;
+  border-color: #16a34a !important;
+  color: #15803d !important;
 }
 
 .sim__opt--wrong {
-  animation: sim__shake 0.4s ease-out;
-  border-color: var(--color-error);
-  background: var(--color-error-bg);
-  color: var(--color-error-text);
-}
-
-@keyframes sim__pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.08);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes sim__shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  20%,
-  60% {
-    transform: translateX(-8px);
-  }
-  40%,
-  80% {
-    transform: translateX(8px);
-  }
+  background: #fff1f2 !important;
+  border-color: #dc2626 !important;
+  color: #dc2626 !important;
 }
 
 .sim__opt--yesno {
-  font-size: var(--font-size-xl);
-  min-width: 100px;
+  font-size: 32px;
+  min-width: 120px;
 }
 
 .sim__wrong-feedback {
-  margin-top: var(--spacing-lg);
+  margin-top: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-md);
-  color: var(--color-error);
+  gap: 12px;
+  color: #dc2626;
   font-weight: 600;
 }
 
 .sim__wrong-feedback .actions {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 8px;
 }
 
 @media (max-width: 480px) {
@@ -185,12 +160,18 @@
     flex: 1 1 100%;
     max-width: none;
   }
+  .sim__question {
+    font-size: clamp(22px, 6vw, 32px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .sim__cheer,
-  .sim__opt--correct,
-  .sim__opt--wrong {
+  .sim__opt {
     animation: none;
+    transition: none;
+  }
+  .sim__opt:hover:not(:disabled) {
+    transform: none;
   }
 }

@@ -74,8 +74,8 @@ describe("multiplicacion modo unir", () => {
     );
     expect(izquierda(container)).toHaveLength(sesion.pairs.length);
     expect(derecha(container)).toHaveLength(sesion.pairs.length);
-    // Es un único ejercicio: no hay "1 / 10" como en los niveles altos.
-    expect(container.querySelector(".activity-header__counter")).toBeNull();
+    // Un único tablero de emparejar: progreso 1/1 (los niveles altos usan n/total).
+    expect(progreso(container)).toBe("1/1");
   });
 
   it("la izquierda muestra las operaciones y la derecha los productos del motor", () => {
@@ -244,7 +244,7 @@ describe("multiplicacion modo opción múltiple", () => {
 
     expect(container.querySelector(".mul__equation")?.textContent).toBe(lista[0]!.question);
     expect(opciones(container).map((b) => Number(b.dataset.value))).toEqual(lista[0]!.options);
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("acierto: marca la opción, celebra y avanza solo", () => {
@@ -259,7 +259,7 @@ describe("multiplicacion modo opción múltiple", () => {
     expect(container.querySelector(".ops__stage")?.className).toContain("ops__stage--correct");
 
     runTimers(AUTOAVANCE_MS);
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
   });
 
   it("fallo: marca la elegida, no celebra y no avanza solo", () => {
@@ -273,7 +273,7 @@ describe("multiplicacion modo opción múltiple", () => {
     expect(container.querySelector(".activity-action--retry")).not.toBeNull();
 
     runTimers(AUTOAVANCE_MS * 3);
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("no deja contestar dos veces el mismo ejercicio", () => {
@@ -285,7 +285,7 @@ describe("multiplicacion modo opción múltiple", () => {
 
     acertar(container, lista[0]!.correctAnswer);
     expect(container.querySelector(".ops__stage")?.className).not.toContain("ops__stage--correct");
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("tras reintentar se puede acertar y desaparece el reintento", () => {
@@ -308,7 +308,7 @@ describe("multiplicacion modo opción múltiple", () => {
     acertar(container, otraOpcion(lista[0]!));
     fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--next")!);
 
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
     expect(container.querySelector(".mul__opt--wrong")).toBeNull();
   });
 

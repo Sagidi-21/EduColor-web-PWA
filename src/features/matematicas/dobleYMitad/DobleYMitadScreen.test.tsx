@@ -62,7 +62,7 @@ describe("dobleYMitad — el enunciado", () => {
 
     expect(container.querySelector(".dob__question")?.textContent).toBe(ex.question);
     expect(opciones(container).map((b) => Number(b.dataset.value))).toEqual(ex.options);
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("es una actividad de clic: nunca monta Numpad ni DigitCell", () => {
@@ -142,7 +142,7 @@ describe("dobleYMitad — responder", () => {
     expect(container.querySelector(".ops__stage")?.className).toContain("ops__stage--correct");
 
     runTimers(AUTOAVANCE_MS);
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
   });
 
   it("fallo: marca la elegida, no celebra y no avanza solo", () => {
@@ -157,7 +157,7 @@ describe("dobleYMitad — responder", () => {
     expect(container.querySelector(".activity-action--retry")).not.toBeNull();
 
     runTimers(AUTOAVANCE_MS * 3);
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("no deja contestar dos veces el mismo ejercicio", () => {
@@ -169,7 +169,7 @@ describe("dobleYMitad — responder", () => {
 
     acertar(container, ex.correctAnswer);
     expect(container.querySelector(".ops__stage")?.className).not.toContain("ops__stage--correct");
-    expect(progreso(container)).toBe("1 / 10");
+    expect(progreso(container)).toBe("1/10");
   });
 
   it("tras reintentar se puede acertar y desaparece el reintento", () => {
@@ -192,7 +192,7 @@ describe("dobleYMitad — responder", () => {
     acertar(container, otra(ex));
     fireEvent.click(container.querySelector<HTMLButtonElement>(".activity-action--next")!);
 
-    expect(progreso(container)).toBe("2 / 10");
+    expect(progreso(container)).toBe("2/10");
     expect(container.querySelector(".dob__opt--wrong")).toBeNull();
   });
 
