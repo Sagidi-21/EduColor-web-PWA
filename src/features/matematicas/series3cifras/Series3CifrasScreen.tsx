@@ -147,16 +147,24 @@ export function Series3CifrasScreen({
           )}
         </p>
 
-        <div className="ser3c__sequence">
-          {current.sequence.map((n, i) => (
-            <div key={i} className={`ser3c__box ${n === -1 ? "ser3c__box--blank" : ""}`}>
-              {n === -1 ? "?" : n}
-              {i < current.sequence.length - 1 && (
-                <span className="ser3c__arrow">{current.ascending ? "→" : "←"}</span>
-              )}
-            </div>
-          ))}
+        <div className="ser3c__mid">
+          <div className="ser3c__sequence">
+            {current.sequence.map((n, i) => (
+              <div key={i} className={`ser3c__box ${n === -1 ? "ser3c__box--blank" : ""}`}>
+                {n === -1 ? "?" : n}
+                {i < current.sequence.length - 1 && (
+                  <span className="ser3c__arrow">{current.ascending ? "→" : "←"}</span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
+
+        {session.answerState === "wrong" && (
+          <div className="ser3c__actions">
+            <ActionButtons onRetry={handleRetry} onNext={handleNext} />
+          </div>
+        )}
 
         <div className="ser3c__options">
           {current.options.map((opt) => {
@@ -177,10 +185,6 @@ export function Series3CifrasScreen({
             );
           })}
         </div>
-
-        {session.answerState === "wrong" && (
-          <ActionButtons onRetry={handleRetry} onNext={handleNext} />
-        )}
       </div>
     </div>
   );
