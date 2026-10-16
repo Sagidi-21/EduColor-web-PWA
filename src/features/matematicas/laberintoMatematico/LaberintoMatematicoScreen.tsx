@@ -18,6 +18,7 @@ import "./LaberintoMatematicoScreen.css";
 
 /**
  * Fondos + celebraciones. `bg_<slug>` ↔ `celeb_<slug>.mp4`.
+ * Solo entran en rotación los fondos que tienen vídeo; el resto se ignora.
  * Secuencia por ejercicio determinista; vecinos no repiten fondo (si hay ≥2).
  */
 const BG_MODS = import.meta.glob<string>("../../../assets/laberinto/bg_*.{jpg,jpeg,png,webp}", {
@@ -31,19 +32,19 @@ const CELEB_MODS = import.meta.glob<string>("../../../assets/laberinto/celebraci
 
 type BgEntry = { url: string; slug: string };
 
-const bgEntries: BgEntry[] = Object.entries(BG_MODS)
-  .map(([path, url]) => {
-    const m = path.match(/bg_([^/\\]+)\.(?:jpg|jpeg|png|webp)$/i);
-    return m && url ? { url, slug: m[1] } : null;
-  })
-  .filter((e): e is BgEntry => e !== null)
-  .sort((a, b) => a.slug.localeCompare(b.slug));
-
 const celebBySlug: Record<string, string> = {};
 for (const [path, url] of Object.entries(CELEB_MODS)) {
   const m = path.match(/celeb_([^/\\]+)\.mp4$/i);
   if (m && url) celebBySlug[m[1]] = url;
 }
+
+const bgEntries: BgEntry[] = Object.entries(BG_MODS)
+  .map(([path, url]) => {
+    const m = path.match(/bg_([^/\\]+)\.(?:jpg|jpeg|png|webp)$/i);
+    return m && url ? { url, slug: m[1] } : null;
+  })
+  .filter((e): e is BgEntry => e !== null && Boolean(celebBySlug[e.slug]))
+  .sort((a, b) => a.slug.localeCompare(b.slug));
 
 /** Índices de fondo por ejercicio: distintos entre vecinos. */
 function bgIndexForExercise(seed: number, exIdx: number, n: number): number {

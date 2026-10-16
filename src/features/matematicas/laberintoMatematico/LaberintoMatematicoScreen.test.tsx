@@ -311,6 +311,36 @@ describe("LaberintoMatematicoScreen smoke", () => {
     expect(container.querySelector(".activity-header__counter")?.textContent).toBe("2/4");
   });
 
+  it("cada fondo en rotación tiene su celeb_<slug>.mp4 emparejado", () => {
+    const bgMods = import.meta.glob<string>("../../../assets/laberinto/bg_*.{jpg,jpeg,png,webp}", {
+      eager: true,
+      import: "default",
+    });
+    const celebMods = import.meta.glob<string>(
+      "../../../assets/laberinto/celebraciones/celeb_*.mp4",
+      { eager: true, import: "default" },
+    );
+    const celebSlugs = new Set(
+      Object.keys(celebMods)
+        .map((p) => p.match(/celeb_([^/\\]+)\.mp4$/i)?.[1])
+        .filter((s): s is string => Boolean(s)),
+    );
+    const bgSlugs = Object.keys(bgMods)
+      .map((p) => p.match(/bg_([^/\\]+)\.(?:jpg|jpeg|png|webp)$/i)?.[1])
+      .filter((s): s is string => Boolean(s));
+    const paired = bgSlugs.filter((s) => celebSlugs.has(s));
+
+    expect(paired.length).toBeGreaterThanOrEqual(11);
+    for (const slug of ["carreras", "granja", "otoño", "pirata", "verano", "bosque"] as const) {
+      expect(celebSlugs.has(slug), `falta celeb_${slug}.mp4`).toBe(true);
+      expect(bgSlugs.includes(slug), `falta bg_${slug}`).toBe(true);
+    }
+    // Lo que rota en pantalla es solo lo emparejado (p. ej. primavera sin vídeo queda fuera).
+    for (const slug of paired) {
+      expect(celebSlugs.has(slug)).toBe(true);
+    }
+  });
+
   it("con vídeo de celebración oculta el tablero y lo muestra tras el ended", async () => {
     // Semilla cuyo 1.er fondo es bosque (tiene celeb_bosque.mp4).
     const seedBosque = (() => {
@@ -353,9 +383,21 @@ describe("LaberintoMatematicoScreen smoke", () => {
     const fondoA = una.container.querySelector<HTMLImageElement>(".lm-bg")?.getAttribute("src");
     cleanup();
 
-    const otra = render(<LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium", 777)} />);
-    const fondoB = otra.container.querySelector<HTMLImageElement>(".lm-bg")?.getAttribute("src");
-    cleanup();
+    // Busca una semilla cuyo fondo inicial difiera del de la semilla por defecto.
+    let seedDistinta: number | null = null;
+    let fondoB: string | null | undefined;
+    for (let s = 1; s < 200; s++) {
+      if (s === 4242) continue;
+      const otra = render(<LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium", s)} />);
+      const src = otra.container.querySelector<HTMLImageElement>(".lm-bg")?.getAttribute("src");
+      cleanup();
+      if (src && src !== fondoA) {
+        seedDistinta = s;
+        fondoB = src;
+        break;
+      }
+    }
+    expect(seedDistinta).not.toBeNull();
 
     const tercera = render(<LaberintoMatematicoScreen {...buildProps(NOMBRES[0], "medium")} />);
     const fondoC = tercera.container.querySelector<HTMLImageElement>(".lm-bg")?.getAttribute("src");
