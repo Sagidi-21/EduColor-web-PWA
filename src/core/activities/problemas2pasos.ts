@@ -226,3 +226,8 @@ export function generateSession(
 export function validateAnswer(ex: Problemas2Exercise, answer: string): boolean {
   return ex.correctAnswer === answer;
 }
+
+/** Paso intermedio y resultado final (escritura en pizarra, layout B). */
+export function validateSteps(ex: Problemas2Exercise, mid: string, result: string): boolean {
+  return String(ex.mid) === mid && String(ex.result) === result;
+}

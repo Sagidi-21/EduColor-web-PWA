@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { generateSession, validateAnswer } from "./problemas2pasos";
+import { generateSession, validateAnswer, validateSteps } from "./problemas2pasos";
 
 describe("problemas2pasos core", () => {
   it("generateSession devuelve 10 ejercicios en easy", () => {
@@ -126,6 +126,13 @@ describe("problemas2pasos core", () => {
     const wrong = ex.options.find((o) => o !== ex.correctAnswer);
     expect(wrong).toBeDefined();
     expect(validateAnswer(ex, wrong!)).toBe(false);
+  });
+
+  it("validateSteps exige mid y resultado correctos", () => {
+    const ex = generateSession("easy", 1)[0]!;
+    expect(validateSteps(ex, String(ex.mid), String(ex.result))).toBe(true);
+    expect(validateSteps(ex, String(ex.mid + 1), String(ex.result))).toBe(false);
+    expect(validateSteps(ex, String(ex.mid), String(ex.result + 1))).toBe(false);
   });
 
   it("todas las respuestas correctas son números positivos", () => {
