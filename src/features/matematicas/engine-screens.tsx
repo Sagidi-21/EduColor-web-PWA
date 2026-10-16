@@ -274,6 +274,11 @@ const SimetriaScreen = lazy(() =>
     default: module.default,
   })),
 );
+const Problemas2PasosScreen = lazy(() =>
+  import("./problemas2pasos/Problemas2PasosScreen").then((module) => ({
+    default: module.default,
+  })),
+);
 
 export interface EngineScreenProps {
   activity: ActivityManifest;
@@ -732,6 +737,13 @@ function EngineScreenForEngine(props: EngineScreenProps) {
     return (
       <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
         <SimetriaScreen {...props} />
+      </Suspense>
+    );
+  }
+  if (props.activity.engineId === "problemas2pasos") {
+    return (
+      <Suspense fallback={<div className="mat__loading">Cargando actividad…</div>}>
+        <Problemas2PasosScreen {...props} />
       </Suspense>
     );
   }
