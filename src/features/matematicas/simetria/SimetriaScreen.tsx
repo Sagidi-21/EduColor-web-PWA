@@ -24,8 +24,9 @@ interface SessionState {
   alreadyFailed: boolean;
 }
 
-const FILL = "rgba(37, 99, 235, 0.2)";
-const STROKE = "#2563eb";
+/** Mismo verde que `cuerpos3d` (pizarra). */
+const FILL = "rgba(16,185,129,.15)";
+const STROKE = "#10b981";
 
 function pts(arr: [number, number][]): string {
   return arr.map(([x, y]) => `${x},${y}`).join(" ");
@@ -327,7 +328,7 @@ export default function SimetriaScreen({
         progress={`${session.currentIndex + 1} / ${total}`}
       />
 
-      <div className={`sim__stage ${stageClass}`}>
+      <div className={`sim__stage ${stageClass}${showShape ? "" : " sim__stage--text-only"}`}>
         {session.answerState === "correct" && <div className="sim__cheer">¡Correcto! ⭐</div>}
 
         {showShape && (
@@ -338,7 +339,7 @@ export default function SimetriaScreen({
 
         <p className="sim__question">{current.question}</p>
 
-        <div className="sim__options">
+        <div className={`sim__options${showShape ? "" : " sim__options--row"}`}>
           {current.options.map((opt) => {
             let cls = "sim__opt";
             if (isYesNo) cls += " sim__opt--yesno";
