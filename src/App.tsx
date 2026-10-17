@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { ClassProfileProvider } from "./core/context/ClassProfileContext";
 import { useClassProfile } from "./core/context/ClassProfileContext";
+import { SchoolAuthProvider, useSchoolAuth } from "./core/context/SchoolAuthContext";
 import { ViewTransition } from "./core/transition/ViewTransition";
+import { SchoolAccessScreen } from "./features/auth/SchoolAccessScreen";
 import { ConfiguracionScreen } from "./features/configuracion/ConfiguracionScreen";
 import { ExerciseSessionProvider } from "./features/matematicas/ExerciseSessionContext";
 import { ExerciseView } from "./features/matematicas/ExerciseView";
@@ -12,6 +14,8 @@ import { WelcomeScreen } from "./features/splash/WelcomeScreen";
 import { FichaPreviewScreen } from "./features/ficha/FichaPreviewScreen";
 import { FichaGeneratorScreen } from "./features/ficha/FichaGeneratorScreen";
 
+const AUTH_SKIP_KEY = "educolor_auth_skip_local";
+
 function isFichaPreviewRoute(): boolean {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
   return path === "/ficha-preview" || path.endsWith("/ficha-preview");
@@ -19,11 +23,15 @@ function isFichaPreviewRoute(): boolean {
 
 function AppShell() {
   const { activeAulaId, aulas } = useClassProfile();
+  const { loading: authLoading, session } = useSchoolAuth();
   const [welcomeDone, setWelcomeDone] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [splashDone, setSplashDone] = useState(false);
+  const [authSkipped, setAuthSkipped] = useState(
+    () => sessionStorage.getItem(AUTH_SKIP_KEY) === "1",
+  );
+  const [forceAuth, setForceAuth] = useState(false);
 
-  // Aplicar zoom por defecto al inicio
   React.useEffect(() => {
     const zoomKey = "educolor_zoom";
     const zoom = Number.parseFloat(localStorage.getItem(zoomKey) ?? "1.5") || 1.5;
@@ -31,7 +39,6 @@ function AppShell() {
     document.body.style.setProperty("--zoom", String(zoom));
   }, []);
 
-  // Fase 1: pantalla de bienvenida
   if (!welcomeDone) {
     return (
       <WelcomeScreen
@@ -47,12 +54,32 @@ function AppShell() {
     );
   }
 
-  // Fase 2: video de intro (solo si eligió "con video")
   if (showVideo && !splashDone) {
     return <SplashScreen onDone={() => setSplashDone(true)} />;
   }
 
-  // Fase 3: app con transiciones globales
+  const wantsAuthGate = !session && (!authSkipped || forceAuth);
+
+  if (wantsAuthGate) {
+    if (authLoading) {
+      return <div className="school-access" style={{ background: "#0a1a4a" }} aria-busy="true" />;
+    }
+    return (
+      <SchoolAccessScreen
+        onAuthenticated={() => {
+          sessionStorage.removeItem(AUTH_SKIP_KEY);
+          setAuthSkipped(false);
+          setForceAuth(false);
+        }}
+        onContinueLocal={() => {
+          sessionStorage.setItem(AUTH_SKIP_KEY, "1");
+          setAuthSkipped(true);
+          setForceAuth(false);
+        }}
+      />
+    );
+  }
+
   const activeAula = aulas.find((aula) => aula.id === activeAulaId) ?? aulas[0];
   const initialGradeId = activeAula.grade === 1 ? "grade-1" : "grade-2";
 
@@ -61,13 +88,15 @@ function AppShell() {
       <ViewTransition
         initialView="home"
         views={{
-          home: ({ navigate }) => <HomeScreen onNavigate={navigate} />,
-          configuration: ({ navigate }) => (
-            <ConfiguracionScreen onBack={() => navigate("home", "left")} />
+          home: ({ navigate }) => (
+            <HomeScreen onNavigate={navigate} onOpenSchoolAccess={() => setForceAuth(true)} />
           ),
-          // mascota: ({ navigate }) => (
-          //   <MascotaScreen onBack={() => navigate("configuration", "left")} />
-          // ),
+          configuration: ({ navigate }) => (
+            <ConfiguracionScreen
+              onBack={() => navigate("home", "left")}
+              onOpenSchoolAccess={() => setForceAuth(true)}
+            />
+          ),
           mathematics: ({ navigate }) => (
             <MatematicasCatalogScreen
               initialGradeId={initialGradeId}
@@ -90,7 +119,6 @@ function AppShell() {
 }
 
 export default function App() {
-  // Vista de impresión / preview sin splash ni navegación de aula
   if (isFichaPreviewRoute()) {
     return (
       <div className="app">
@@ -101,9 +129,11 @@ export default function App() {
 
   return (
     <ClassProfileProvider>
-      <div className="app">
-        <AppShell />
-      </div>
+      <SchoolAuthProvider>
+        <div className="app">
+          <AppShell />
+        </div>
+      </SchoolAuthProvider>
     </ClassProfileProvider>
   );
 }

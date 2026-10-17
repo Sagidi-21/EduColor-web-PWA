@@ -89,6 +89,20 @@
   margin: 0 0 24px;
 }
 
+.cfg__school-auth {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.cfg__school-auth-line {
+  margin: 0;
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.45;
+}
+
 .cfg__zoom-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

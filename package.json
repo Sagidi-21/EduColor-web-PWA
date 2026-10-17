@@ -21,6 +21,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
     "@tensorflow/tfjs": "^4.22.0",
     "axios": "^1.7.2",
     "cors": "^2.8.5",

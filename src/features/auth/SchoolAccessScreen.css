@@ -1,0 +1,680 @@
+.sa {
+  --sa-blue: #1e60e6;
+  --sa-blue-hover: #1850c2;
+  --sa-navy: #0a1f44;
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--sa-navy);
+  font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  padding: 1rem 1.5rem;
+  box-sizing: border-box;
+}
+
+.sa__ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.sa__ambient-photo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+  transform: scale(1.05);
+  opacity: 0.4;
+  mix-blend-mode: luminosity;
+}
+
+.sa__ambient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top right,
+    rgba(6, 19, 45, 0.95),
+    rgba(12, 42, 99, 0.9),
+    rgba(16, 58, 135, 0.85)
+  );
+}
+
+.sa__blob {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(120px);
+}
+
+.sa__blob--tl {
+  top: -10rem;
+  left: -10rem;
+  width: 24rem;
+  height: 24rem;
+  background: rgba(59, 130, 246, 0.25);
+}
+
+.sa__blob--br {
+  bottom: -10rem;
+  right: -10rem;
+  width: 30rem;
+  height: 30rem;
+  background: rgba(96, 165, 250, 0.2);
+  filter: blur(140px);
+}
+
+.sa__layout {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  box-sizing: border-box;
+}
+
+.sa__quote {
+  width: 100%;
+  max-width: none;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-left: 0;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.sa__quote-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sa__script {
+  margin: 0;
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: clamp(2.75rem, 5vw, 4.25rem);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  color: #fff;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.sa__swoop {
+  width: 9rem;
+  height: 1.25rem;
+  margin-top: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.sa__quote-sub {
+  margin: 1.25rem 0 0;
+  max-width: 22rem;
+  color: rgba(191, 219, 254, 0.9);
+  font-size: clamp(0.68rem, 0.9vw, 0.78rem);
+  line-height: 1.4;
+  font-weight: 400;
+  text-align: center;
+}
+
+.sa__card-wrap {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sa__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 540px;
+  background-color: #f4f6f8;
+  background-image: url("../../assets/catalogo-fondo.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow:
+    0 25px 60px -15px rgba(2, 20, 60, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+}
+
+.sa__pane {
+  width: 100%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  transition: opacity 0.5s ease;
+}
+
+.sa__pane--login {
+  display: none;
+}
+
+.sa__card--login .sa__pane--register {
+  display: none;
+}
+
+.sa__card--login .sa__pane--login {
+  display: flex;
+}
+
+.sa__pane-head {
+  margin-bottom: 1.25rem;
+}
+
+.sa__pane-title,
+.sa__login-heading {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #1e293b;
+  letter-spacing: -0.02em;
+}
+
+.sa__pane-sub {
+  margin: 0.25rem 0 0;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.sa__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.sa__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.sa__field input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #1e293b;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  outline: none;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.sa__field input::placeholder {
+  color: #94a3b8;
+}
+
+.sa__field input:focus {
+  background: #fff;
+  border-color: var(--sa-blue);
+  box-shadow: 0 0 0 3px rgba(30, 96, 230, 0.15);
+}
+
+.sa__row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.625rem;
+}
+
+.sa__input-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sa__field-icon {
+  position: absolute;
+  left: 0.75rem;
+  color: #94a3b8;
+  pointer-events: none;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+
+.sa__input-icon input {
+  padding-left: 2.25rem;
+  padding-right: 2.5rem;
+}
+
+.sa__eye {
+  position: absolute;
+  right: 0.65rem;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  z-index: 1;
+}
+
+.sa__eye:hover {
+  color: #475569;
+}
+
+.sa__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  width: 100%;
+  border: none;
+  border-radius: 0.75rem;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.15s,
+    box-shadow 0.2s;
+}
+
+.sa__btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.sa__btn--primary {
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--sa-blue);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
+}
+
+.sa__btn--primary:hover:not(:disabled) {
+  background: var(--sa-blue-hover);
+}
+
+.sa__btn--primary:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.sa__btn--white {
+  padding: 0.75rem 1rem;
+  background: #fff;
+  color: var(--sa-blue);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.sa__btn--white:hover {
+  background: #eff6ff;
+}
+
+.sa__btn--white:active {
+  transform: scale(0.95);
+}
+
+.sa__mobile-switch {
+  display: block;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+}
+
+.sa__text-link {
+  border: none;
+  background: none;
+  color: var(--sa-blue);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.sa__text-link:hover {
+  text-decoration: underline;
+}
+
+.sa__logo-mark {
+  display: block;
+  object-fit: contain;
+}
+
+.sa__logo-mark--sm {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.sa__logo-plate {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  box-sizing: border-box;
+}
+
+.sa__logo-mark--lg {
+  width: 100%;
+  height: 100%;
+}
+
+.sa__login-brand {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.sa__login-rule {
+  width: 2.5rem;
+  height: 2px;
+  margin-top: 0.375rem;
+  border-radius: 999px;
+  background: var(--sa-blue);
+}
+
+.sa__login-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.sa__slider {
+  display: none;
+}
+
+.sa__status {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.4;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1e3a8a;
+  text-align: center;
+}
+
+.sa__status[role="alert"] {
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+.sa__local {
+  border: none;
+  background: none;
+  color: rgba(191, 219, 254, 0.75);
+  font-family: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  align-self: center;
+}
+
+.sa__local:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+@media (min-width: 768px) {
+  .sa {
+    padding: 1.5rem 2rem;
+  }
+
+  .sa__card {
+    flex-direction: row;
+  }
+
+  .sa__pane {
+    width: 50%;
+    padding: 2rem 2.25rem;
+  }
+
+  /*
+   * Solo desplaza visualmente título + subtítulo. No cambia el flujo:
+   * campos, botones y panel azul quedan exactamente donde estaban.
+   * Más negativo = más arriba (líneas del título alinear con Acceso del Colegio).
+   */
+  .sa__pane--register .sa__pane-title,
+  .sa__pane--register .sa__pane-sub {
+    transform: translateY(-3rem);
+  }
+
+  .sa__pane--login {
+    display: flex;
+  }
+
+  .sa__card--login .sa__pane--register {
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .sa__card:not(.sa__card--login) .sa__pane--login {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .sa__card--login .sa__pane--login {
+    opacity: 1;
+    pointer-events: auto;
+    justify-content: flex-start;
+  }
+
+  .sa__card--login .sa__pane--login .sa__form--login {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* Correo + contraseña centrados entre el título y Entrar */
+  .sa__card--login .sa__login-fields {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.875rem;
+    min-height: 0;
+  }
+
+  /* Baja Entrar hasta la misma banda que Registrar Colegio del panel azul */
+  .sa__card--login .sa__pane--login .sa__btn--primary {
+    margin-top: 0;
+    margin-bottom: 4.375rem;
+  }
+
+  .sa__row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sa__mobile-switch {
+    display: none;
+  }
+
+  .sa__slider {
+    display: flex;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 20;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 2.25rem;
+    box-sizing: border-box;
+    color: #fff;
+    background: linear-gradient(to bottom right, #1e60e6, #154ec4, #0d348a);
+    box-shadow: -8px 0 24px rgba(2, 20, 60, 0.15);
+    transform: translateX(0);
+    transition: transform 0.65s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  .sa__card--login .sa__slider {
+    transform: translateX(-100%);
+  }
+
+  .sa__slider-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background-image: radial-gradient(#fff 1px, transparent 1px);
+    background-size: 16px 16px;
+    pointer-events: none;
+  }
+
+  .sa__slider-mid,
+  .sa__slider-bottom {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 20rem;
+  }
+
+  .sa__slider-mid {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+
+  /* Vista registro: Acceder aquí ↔ Registrar Colegio */
+  .sa__slider-bottom {
+    flex: 0 0 auto;
+    margin-bottom: 4.375rem;
+  }
+
+  /* Vista acceso: Registrar Colegio ↔ Entrar (ajusta solo este valor) */
+  .sa__card--login .sa__slider-bottom {
+    margin-bottom: 4.375rem;
+  }
+
+  .sa__slider-title {
+    margin: 0;
+    font-size: 1.875rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .sa__slider-sub {
+    margin: 0.5rem 0 0;
+    color: #dbeafe;
+    font-size: 0.875rem;
+    font-weight: 300;
+    line-height: 1.55;
+    max-width: 18rem;
+  }
+
+  .sa__slider-prompt {
+    margin: 0 0 0.5rem;
+    color: rgba(219, 234, 254, 0.9);
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sa {
+    padding: 1.5rem 2.5rem;
+  }
+
+  .sa__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(560px, 720px);
+    align-items: center;
+    gap: 1.5rem 2rem;
+    width: 100%;
+    min-height: calc(100vh - 3rem);
+  }
+
+  .sa__quote {
+    width: 100%;
+    max-width: none;
+    padding: 0 0.5rem;
+    min-width: 0;
+    min-height: 100%;
+    justify-self: stretch;
+    align-self: stretch;
+  }
+
+  .sa__quote-sub {
+    max-width: 24rem;
+  }
+
+  .sa__card-wrap {
+    width: 100%;
+    max-width: 720px;
+    justify-self: end;
+    align-self: center;
+    min-width: 0;
+  }
+}
+
+@media (min-width: 1280px) {
+  .sa {
+    padding: 1.75rem 3rem;
+  }
+
+  .sa__layout {
+    gap: 1.75rem 2.5rem;
+  }
+
+  .sa__quote-sub {
+    max-width: 26rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sa__slider,
+  .sa__pane {
+    transition: none;
+  }
+}

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getAulaLabel, useClassProfile } from "../../core/context/ClassProfileContext";
+import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import { THEMES, useTransitionTheme } from "../../core/transition";
 import type { AppView } from "../home/HomeScreen";
 import "./ConfiguracionScreen.css";
@@ -23,18 +24,22 @@ const storedZoom = () => Number.parseFloat(localStorage.getItem(zoomKey) ?? "1.5
 export function ConfiguracionScreen({
   onBack,
   onNavigate,
+  onOpenSchoolAccess,
 }: {
   onBack: () => void;
   onNavigate?: (view: AppView) => void;
+  onOpenSchoolAccess?: () => void;
 }) {
   const { aulas, activeAulaId, profile, setActiveAula, save, getProfile, addAula, removeAula } =
     useClassProfile();
+  const { configured, session, user, primarySchool, signOut } = useSchoolAuth();
   const { theme, setTheme } = useTransitionTheme();
   const [name, setName] = useState(profile.className);
   const [color, setColor] = useState(profile.accentColor);
   const [zoom, setZoom] = useState(storedZoom);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [authBusy, setAuthBusy] = useState(false);
   const input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -88,6 +93,49 @@ export function ConfiguracionScreen({
         <h1 className="cfg__title">Configuración</h1>
       </header>
       <div className="cfg__body">
+        <section className="cfg__section">
+          <h2 className="cfg__section-title">Acceso colegio</h2>
+          <p className="cfg__section-desc">
+            Cuenta del profesorado en la nube (sin datos de alumnos). La pizarra y las fichas siguen
+            funcionando en local.
+          </p>
+          {session ? (
+            <div className="cfg__school-auth">
+              <p className="cfg__school-auth-line">
+                <strong>{primarySchool?.name ?? "Colegio"}</strong>
+                {user?.email ? ` · ${user.email}` : ""}
+              </p>
+              <button
+                type="button"
+                className="cfg__aula-add-btn"
+                disabled={authBusy}
+                onClick={async () => {
+                  setAuthBusy(true);
+                  try {
+                    await signOut();
+                  } finally {
+                    setAuthBusy(false);
+                  }
+                }}
+              >
+                Cerrar sesión
+              </button>
+            </div>
+          ) : (
+            <div className="cfg__school-auth">
+              <p className="cfg__school-auth-line">
+                {configured
+                  ? "No has iniciado sesión. Puedes registrar el colegio o entrar."
+                  : "Supabase no está configurado en este entorno."}
+              </p>
+              {onOpenSchoolAccess && configured && (
+                <button type="button" className="cfg__save-btn" onClick={onOpenSchoolAccess}>
+                  Ir a acceso colegio
+                </button>
+              )}
+            </div>
+          )}
+        </section>
         <section className="cfg__section">
           <h2 className="cfg__section-title">Perfil de clase</h2>
           <p className="cfg__section-desc">

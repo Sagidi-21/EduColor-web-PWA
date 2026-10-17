@@ -1,6 +1,7 @@
 import { useState } from "react";
 import logoUrl from "../../assets/splash-logo.png";
 import { getAulaLabel, useClassProfile } from "../../core/context/ClassProfileContext";
+import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import "./HomeScreen.css";
 
 export type AppView = "home" | "configuration" | "mathematics" | "generator" | "mascota";
@@ -31,10 +32,18 @@ const gradeMetadata = {
   2: { color: "#7c3aed", light: "#ede9fe", emoji: "🌟", age: "7-8 años" },
 };
 
-export function HomeScreen({ onNavigate }: { onNavigate: (view: AppView) => void }) {
+export function HomeScreen({
+  onNavigate,
+  onOpenSchoolAccess,
+}: {
+  onNavigate: (view: AppView) => void;
+  onOpenSchoolAccess?: () => void;
+}) {
   const { aulas, setActiveAula } = useClassProfile();
+  const { primarySchool, session } = useSchoolAuth();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = aulas.find((aula) => aula.id === selectedId);
+  const schoolLabel = primarySchool?.name ?? "Colegio Color de Montecolorado";
   const selectAula = (id: string) => {
     setSelectedId(id);
     setActiveAula(id);
@@ -46,7 +55,21 @@ export function HomeScreen({ onNavigate }: { onNavigate: (view: AppView) => void
           <img className="home__logo-img" src={logoUrl} alt="Logo del colegio" />
           <div className="home__title-area">
             <h1 className="home__app-name">EduColor</h1>
-            <p className="home__school-name">Colegio Color de Montecolorado</p>
+            <p className="home__school-name">
+              {schoolLabel}
+              {!session && onOpenSchoolAccess ? (
+                <>
+                  {" · "}
+                  <button
+                    type="button"
+                    className="home__school-access-link"
+                    onClick={onOpenSchoolAccess}
+                  >
+                    Acceso colegio
+                  </button>
+                </>
+              ) : null}
+            </p>
           </div>
         </div>
         <div className="home__header-right">
@@ -125,7 +148,7 @@ export function HomeScreen({ onNavigate }: { onNavigate: (view: AppView) => void
         </section>
       </main>
       <footer className="home__footer">
-        <span>Software educativo - Colegio Color de Montecolorado</span>
+        <span>Software educativo · {schoolLabel}</span>
       </footer>
     </div>
   );
