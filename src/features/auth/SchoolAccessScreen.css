@@ -535,7 +535,11 @@
     padding: 2rem 2.25rem;
     box-sizing: border-box;
     color: #fff;
-    background: linear-gradient(to bottom right, #1e60e6, #154ec4, #0d348a);
+    background-color: #0d348a;
+    background-image: url("../../assets/school-classroom-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     box-shadow: -8px 0 24px rgba(2, 20, 60, 0.15);
     transform: translateX(0);
     transition: transform 0.65s cubic-bezier(0.65, 0, 0.35, 1);
@@ -548,10 +552,13 @@
   .sa__slider-pattern {
     position: absolute;
     inset: 0;
-    opacity: 0.1;
-    background-image: radial-gradient(#fff 1px, transparent 1px);
-    background-size: 16px 16px;
     pointer-events: none;
+    background: linear-gradient(
+      to bottom right,
+      rgba(12, 35, 85, 0.6),
+      rgba(18, 50, 110, 0.66),
+      rgba(8, 28, 70, 0.72)
+    );
   }
 
   .sa__slider-mid,
@@ -567,8 +574,17 @@
     flex: 1;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     margin: 0;
+    position: relative;
+  }
+
+  /* Logo + título: independientes del subtítulo */
+  .sa__slider-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateY(0.5rem);
   }
 
   /* Vista registro: Acceder aquí ↔ Registrar Colegio */
@@ -589,20 +605,28 @@
     letter-spacing: -0.02em;
   }
 
+  /* Subtítulo centrado en su zona, sin seguir al logo */
   .sa__slider-sub {
-    margin: 0.5rem 0 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, calc(-50% + 30px));
+    margin: 0;
+    width: 100%;
+    max-width: 18rem;
     color: #dbeafe;
-    font-size: 0.875rem;
+    font-size: calc(0.875rem + 4px);
     font-weight: 300;
     line-height: 1.55;
-    max-width: 18rem;
+    text-align: center;
   }
 
   .sa__slider-prompt {
     margin: 0 0 0.5rem;
     color: rgba(219, 234, 254, 0.9);
-    font-size: 0.75rem;
+    font-size: calc(0.75rem + 3px);
     font-weight: 500;
+    transform: translateY(-10px);
   }
 }
 

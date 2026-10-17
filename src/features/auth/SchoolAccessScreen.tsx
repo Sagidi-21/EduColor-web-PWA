@@ -322,16 +322,18 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
             <div className="sa__slider">
               <div className="sa__slider-pattern" aria-hidden="true" />
               <div className="sa__slider-mid">
-                <div className="sa__logo-plate">
-                  <img
-                    className="sa__logo-mark sa__logo-mark--lg"
-                    src={logoMarkUrl}
-                    alt="EduColor"
-                    width={72}
-                    height={72}
-                  />
+                <div className="sa__slider-brand">
+                  <div className="sa__logo-plate">
+                    <img
+                      className="sa__logo-mark sa__logo-mark--lg"
+                      src={logoMarkUrl}
+                      alt="EduColor"
+                      width={72}
+                      height={72}
+                    />
+                  </div>
+                  <h3 className="sa__slider-title">EduColor</h3>
                 </div>
-                <h3 className="sa__slider-title">EduColor</h3>
                 <p className="sa__slider-sub">{sliderSubtext}</p>
               </div>
               <div className="sa__slider-bottom">
