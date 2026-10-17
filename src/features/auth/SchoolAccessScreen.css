@@ -1,6 +1,8 @@
 .sa {
   --sa-blue: #1e60e6;
   --sa-blue-hover: #1850c2;
+  --sa-green: #16a34a;
+  --sa-green-shadow: rgba(22, 163, 74, 0.35);
   --sa-navy: #0a1f44;
   position: fixed;
   inset: 0;
@@ -29,44 +31,7 @@
   inset: 0;
   background-size: cover;
   background-position: center;
-  filter: blur(8px);
-  transform: scale(1.05);
-  opacity: 0.4;
-  mix-blend-mode: luminosity;
-}
-
-.sa__ambient-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top right,
-    rgba(6, 19, 45, 0.95),
-    rgba(12, 42, 99, 0.9),
-    rgba(16, 58, 135, 0.85)
-  );
-}
-
-.sa__blob {
-  position: absolute;
-  border-radius: 999px;
-  filter: blur(120px);
-}
-
-.sa__blob--tl {
-  top: -10rem;
-  left: -10rem;
-  width: 24rem;
-  height: 24rem;
-  background: rgba(59, 130, 246, 0.25);
-}
-
-.sa__blob--br {
-  bottom: -10rem;
-  right: -10rem;
-  width: 30rem;
-  height: 30rem;
-  background: rgba(96, 165, 250, 0.2);
-  filter: blur(140px);
+  background-repeat: no-repeat;
 }
 
 .sa__layout {
@@ -310,6 +275,16 @@
   cursor: wait;
 }
 
+.sa__submit-block {
+  position: relative;
+  margin-top: 0.5rem;
+  /* Solo ocupa la altura del botón: la frase no empuja el layout */
+}
+
+.sa__submit-block .sa__btn--primary {
+  margin-top: 0;
+}
+
 .sa__btn--primary {
   margin-top: 0.5rem;
   padding: 0.75rem 1rem;
@@ -318,12 +293,12 @@
   box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
 }
 
-.sa__btn--primary:hover:not(:disabled) {
-  background: var(--sa-blue-hover);
-}
-
+.sa__btn--primary:hover:not(:disabled),
 .sa__btn--primary:active:not(:disabled) {
-  transform: scale(0.99);
+  background: var(--sa-green);
+  box-shadow: 0 6px 16px var(--sa-green-shadow);
+  transform: scale(1.04);
+  color: #fff;
 }
 
 .sa__btn--white {
@@ -336,12 +311,12 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
-.sa__btn--white:hover {
-  background: #eff6ff;
-}
-
+.sa__btn--white:hover,
 .sa__btn--white:active {
-  transform: scale(0.95);
+  background: var(--sa-green);
+  color: #fff;
+  box-shadow: 0 6px 16px var(--sa-green-shadow);
+  transform: scale(1.04);
 }
 
 .sa__mobile-switch {
@@ -444,19 +419,29 @@
 }
 
 .sa__local {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 25px;
   border: none;
   background: none;
-  color: rgba(191, 219, 254, 0.75);
+  color: #111;
   font-family: inherit;
   font-size: 0.8rem;
+  font-weight: 500;
   cursor: pointer;
-  padding: 0.25rem;
-  align-self: center;
+  padding: 0.15rem 0;
+  text-decoration: underline;
+  text-decoration-color: #111;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  white-space: nowrap;
 }
 
 .sa__local:hover {
-  color: #fff;
-  text-decoration: underline;
+  color: #000;
+  text-decoration-color: #000;
 }
 
 @media (min-width: 768px) {

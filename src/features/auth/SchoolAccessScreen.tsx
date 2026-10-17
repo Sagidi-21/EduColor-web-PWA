@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import schoolBgUrl from "../../assets/school-bg.jpg";
+import welcomeBgUrl from "../../assets/welcome-bg.png";
 import logoMarkUrl from "../../assets/logo_sin texto.png";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import { signInWithPassword, signUpOwner } from "../../platform/supabase/auth";
@@ -7,7 +7,8 @@ import "./SchoolAccessScreen.css";
 
 interface SchoolAccessScreenProps {
   onAuthenticated: () => void;
-  onContinueLocal: () => void;
+  /** Reservado para Probar DEMO (aún sin navegación). */
+  onContinueLocal?: () => void;
 }
 
 function IconMail() {
@@ -61,7 +62,15 @@ function IconArrowRight() {
   );
 }
 
-export function SchoolAccessScreen({ onAuthenticated, onContinueLocal }: SchoolAccessScreenProps) {
+function IconArrowLeft() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+      <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+    </svg>
+  );
+}
+
+export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps) {
   const { configured, refreshSchools } = useSchoolAuth();
   const [isLoginMode, setIsLoginMode] = useState(false);
   const [email, setEmail] = useState("");
@@ -146,10 +155,7 @@ export function SchoolAccessScreen({ onAuthenticated, onContinueLocal }: SchoolA
   return (
     <div className="sa">
       <div className="sa__ambient" aria-hidden="true">
-        <div className="sa__ambient-photo" style={{ backgroundImage: `url(${schoolBgUrl})` }} />
-        <div className="sa__ambient-overlay" />
-        <div className="sa__blob sa__blob--tl" />
-        <div className="sa__blob sa__blob--br" />
+        <div className="sa__ambient-photo" style={{ backgroundImage: `url(${welcomeBgUrl})` }} />
       </div>
 
       <div className="sa__layout">
@@ -240,9 +246,14 @@ export function SchoolAccessScreen({ onAuthenticated, onContinueLocal }: SchoolA
                     />
                   </label>
                 </div>
-                <button type="submit" className="sa__btn sa__btn--primary" disabled={busy}>
-                  {busy && !isLoginMode ? "Espera…" : "Registrar Colegio"}
-                </button>
+                <div className="sa__submit-block">
+                  <button type="submit" className="sa__btn sa__btn--primary" disabled={busy}>
+                    {busy && !isLoginMode ? "Espera…" : "Registrar Colegio"}
+                  </button>
+                  <button type="button" className="sa__local">
+                    Continuar sin cuenta (Probar DEMO)
+                  </button>
+                </div>
               </form>
 
               <div className="sa__mobile-switch">
@@ -326,8 +337,17 @@ export function SchoolAccessScreen({ onAuthenticated, onContinueLocal }: SchoolA
               <div className="sa__slider-bottom">
                 <p className="sa__slider-prompt">{sliderPrompt}</p>
                 <button type="button" className="sa__btn sa__btn--white" onClick={toggleAuthMode}>
-                  <span>{sliderBtnLabel}</span>
-                  <IconArrowRight />
+                  {isLoginMode ? (
+                    <>
+                      <IconArrowLeft />
+                      <span>{sliderBtnLabel}</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>{sliderBtnLabel}</span>
+                      <IconArrowRight />
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -338,14 +358,10 @@ export function SchoolAccessScreen({ onAuthenticated, onContinueLocal }: SchoolA
               {error ||
                 info ||
                 (!configured
-                  ? "Supabase no está configurado. Puedes continuar en modo local."
+                  ? "Supabase no está configurado. Puedes probar la DEMO más adelante."
                   : null)}
             </div>
           )}
-
-          <button type="button" className="sa__local" onClick={onContinueLocal}>
-            Continuar sin cuenta (modo local)
-          </button>
         </div>
       </div>
     </div>

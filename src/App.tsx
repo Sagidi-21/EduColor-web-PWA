@@ -21,16 +21,20 @@ function isFichaPreviewRoute(): boolean {
   return path === "/ficha-preview" || path.endsWith("/ficha-preview");
 }
 
+function AuthBusyPlaceholder() {
+  return <div className="school-access" style={{ background: "#0a1a4a" }} aria-busy="true" />;
+}
+
 function AppShell() {
   const { activeAulaId, aulas } = useClassProfile();
   const { loading: authLoading, session } = useSchoolAuth();
-  const [welcomeDone, setWelcomeDone] = useState(false);
-  const [showVideo, setShowVideo] = useState(false);
-  const [splashDone, setSplashDone] = useState(false);
+  const [bootDone, setBootDone] = useState(false);
   const [authSkipped, setAuthSkipped] = useState(
     () => sessionStorage.getItem(AUTH_SKIP_KEY) === "1",
   );
   const [forceAuth, setForceAuth] = useState(false);
+  /** Tras splash→auth: si la sesión llega tarde, saltar el gate. */
+  const [awaitingAuthGate, setAwaitingAuthGate] = useState(false);
 
   React.useEffect(() => {
     const zoomKey = "educolor_zoom";
@@ -39,45 +43,63 @@ function AppShell() {
     document.body.style.setProperty("--zoom", String(zoom));
   }, []);
 
-  if (!welcomeDone) {
+  const canSkipAuth = !authLoading && (!!session || authSkipped);
+  const showApp = bootDone || (awaitingAuthGate && canSkipAuth);
+
+  const finishAuthGate = (skipped: boolean) => {
+    if (skipped) {
+      sessionStorage.setItem(AUTH_SKIP_KEY, "1");
+      setAuthSkipped(true);
+    } else {
+      sessionStorage.removeItem(AUTH_SKIP_KEY);
+      setAuthSkipped(false);
+    }
+    setForceAuth(false);
+    setBootDone(true);
+  };
+
+  const renderSchoolAccess = () => {
+    if (authLoading) return <AuthBusyPlaceholder />;
+    if (session || authSkipped) return <AuthBusyPlaceholder />;
     return (
-      <WelcomeScreen
-        onEnterWithVideo={() => {
-          setShowVideo(true);
-          setWelcomeDone(true);
-        }}
-        onEnterWithoutVideo={() => {
-          setSplashDone(true);
-          setWelcomeDone(true);
+      <SchoolAccessScreen
+        onAuthenticated={() => finishAuthGate(false)}
+        onContinueLocal={() => finishAuthGate(true)}
+      />
+    );
+  };
+
+  const goToAuthOrApp = (navigate: (view: string, dir?: "left" | "right") => void) => {
+    setAwaitingAuthGate(true);
+    if (!authLoading && (session || authSkipped)) {
+      setBootDone(true);
+      return;
+    }
+    navigate("school-access", "right");
+  };
+
+  if (!showApp) {
+    return (
+      <ViewTransition
+        initialView="welcome"
+        views={{
+          welcome: ({ navigate }) => (
+            <WelcomeScreen
+              onEnterWithVideo={() => navigate("splash", "right")}
+              onEnterWithoutVideo={() => goToAuthOrApp(navigate)}
+            />
+          ),
+          splash: ({ navigate }) => <SplashScreen onDone={() => goToAuthOrApp(navigate)} />,
+          "school-access": () => renderSchoolAccess(),
         }}
       />
     );
-  }
-
-  if (showVideo && !splashDone) {
-    return <SplashScreen onDone={() => setSplashDone(true)} />;
   }
 
   const wantsAuthGate = !session && (!authSkipped || forceAuth);
 
   if (wantsAuthGate) {
-    if (authLoading) {
-      return <div className="school-access" style={{ background: "#0a1a4a" }} aria-busy="true" />;
-    }
-    return (
-      <SchoolAccessScreen
-        onAuthenticated={() => {
-          sessionStorage.removeItem(AUTH_SKIP_KEY);
-          setAuthSkipped(false);
-          setForceAuth(false);
-        }}
-        onContinueLocal={() => {
-          sessionStorage.setItem(AUTH_SKIP_KEY, "1");
-          setAuthSkipped(true);
-          setForceAuth(false);
-        }}
-      />
-    );
+    return renderSchoolAccess();
   }
 
   const activeAula = aulas.find((aula) => aula.id === activeAulaId) ?? aulas[0];
