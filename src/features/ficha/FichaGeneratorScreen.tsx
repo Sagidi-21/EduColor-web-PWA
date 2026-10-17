@@ -8,6 +8,7 @@ import {
 import type { ActivityDifficulty, ActivityManifest, GradeId } from "../../core/content/contracts";
 import { canLaunchActivity } from "../../core/content/engine-registry";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
+import { isDemoUnitAllowed } from "../../core/demo/demoMode";
 import { CatalogFilterBar } from "../matematicas/CatalogFilterBar";
 import { FichaModal } from "./FichaModal";
 import "../matematicas/MatematicasCatalogScreen.css";
@@ -16,13 +17,18 @@ import fondoImg from "../../assets/catalogo-fondo.png";
 interface Props {
   initialGradeId: GradeId;
   onBack: () => void;
+  demoMode?: boolean;
 }
 
 /**
  * Catálogo dedicado al Generador de Fichas (entrada desde Home).
  * Al elegir una actividad abre el modal de ficha directamente.
  */
-export function FichaGeneratorScreen({ initialGradeId, onBack }: Props): JSX.Element {
+export function FichaGeneratorScreen({
+  initialGradeId,
+  onBack,
+  demoMode = false,
+}: Props): JSX.Element {
   const { profile } = useClassProfile();
   const subjects = getSubjects();
   const [subjectId, setSubjectId] = useState(subjects[0].id);
@@ -87,7 +93,9 @@ export function FichaGeneratorScreen({ initialGradeId, onBack }: Props): JSX.Ele
             </h2>
             <div className="mat__activities">
               {activities.map((activity) => {
-                const launchable = canLaunchActivity(activity);
+                const unit = activity.boardCard?.unit ?? block.order;
+                const demoLocked = demoMode && !isDemoUnitAllowed(gradeId, unit);
+                const launchable = canLaunchActivity(activity) && !demoLocked;
                 return (
                   <button
                     key={activity.id}
@@ -103,7 +111,11 @@ export function FichaGeneratorScreen({ initialGradeId, onBack }: Props): JSX.Ele
                     <span className="activity-card__icon">{activity.boardCard?.icon ?? "🔢"}</span>
                     <span className="activity-card__title">{activity.title}</span>
                     <span className="activity-card__desc">{activity.description}</span>
-                    {!launchable && <span className="activity-card__soon">En migración PWA</span>}
+                    {demoLocked ? (
+                      <span className="activity-card__soon">No disponible en DEMO</span>
+                    ) : (
+                      !launchable && <span className="activity-card__soon">En migración PWA</span>
+                    )}
                   </button>
                 );
               })}
@@ -123,6 +135,7 @@ export function FichaGeneratorScreen({ initialGradeId, onBack }: Props): JSX.Ele
           mascotUrl={profile.mascotUrl || undefined}
           accentColor={profile.accentColor}
           onClose={() => setSelected(null)}
+          demoMode={demoMode}
         />
       )}
     </div>

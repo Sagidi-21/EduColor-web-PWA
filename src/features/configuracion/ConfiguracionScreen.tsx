@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { getAulaLabel, useClassProfile } from "../../core/context/ClassProfileContext";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
+import { readDemoMode } from "../../core/demo/demoMode";
 import { THEMES, useTransitionTheme } from "../../core/transition";
 import type { AppView } from "../home/HomeScreen";
 import "./ConfiguracionScreen.css";
+
+/** D-030: bloque oculto temporalmente (código conservado). */
+const SHOW_TRANSITION_THEME = false;
 
 const colors = [
   { value: "#6366f1", label: "Índigo" },
@@ -24,29 +28,35 @@ const storedZoom = () => Number.parseFloat(localStorage.getItem(zoomKey) ?? "1.5
 export function ConfiguracionScreen({
   onBack,
   onNavigate,
-  onOpenSchoolAccess,
 }: {
   onBack: () => void;
   onNavigate?: (view: AppView) => void;
-  onOpenSchoolAccess?: () => void;
 }) {
   const { aulas, activeAulaId, profile, setActiveAula, save, getProfile, addAula, removeAula } =
     useClassProfile();
-  const { configured, session, user, primarySchool, signOut } = useSchoolAuth();
+  const { isOwner, session } = useSchoolAuth();
   const { theme, setTheme } = useTransitionTheme();
   const [name, setName] = useState(profile.className);
   const [color, setColor] = useState(profile.accentColor);
   const [zoom, setZoom] = useState(storedZoom);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
-  const [authBusy, setAuthBusy] = useState(false);
   const input = useRef<HTMLInputElement>(null);
+
+  // Cinturón: si DEMO se fuerza por consola, no servir configuración.
+  useEffect(() => {
+    if (readDemoMode()) onBack();
+  }, [onBack]);
 
   useEffect(() => {
     document.body.style.setProperty("zoom", String(zoom));
     document.body.style.setProperty("--zoom", String(zoom));
     localStorage.setItem(zoomKey, String(zoom));
   }, [zoom]);
+
+  if (readDemoMode()) {
+    return null;
+  }
   const changeAula = (id: string) => {
     const next = getProfile(id);
     setActiveAula(id);
@@ -93,49 +103,21 @@ export function ConfiguracionScreen({
         <h1 className="cfg__title">Configuración</h1>
       </header>
       <div className="cfg__body">
-        <section className="cfg__section">
-          <h2 className="cfg__section-title">Acceso colegio</h2>
-          <p className="cfg__section-desc">
-            Cuenta del profesorado en la nube (sin datos de alumnos). La pizarra y las fichas siguen
-            funcionando en local.
-          </p>
-          {session ? (
-            <div className="cfg__school-auth">
-              <p className="cfg__school-auth-line">
-                <strong>{primarySchool?.name ?? "Colegio"}</strong>
-                {user?.email ? ` · ${user.email}` : ""}
-              </p>
-              <button
-                type="button"
-                className="cfg__aula-add-btn"
-                disabled={authBusy}
-                onClick={async () => {
-                  setAuthBusy(true);
-                  try {
-                    await signOut();
-                  } finally {
-                    setAuthBusy(false);
-                  }
-                }}
-              >
-                Cerrar sesión
-              </button>
-            </div>
-          ) : (
-            <div className="cfg__school-auth">
-              <p className="cfg__school-auth-line">
-                {configured
-                  ? "No has iniciado sesión. Puedes registrar el colegio o entrar."
-                  : "Supabase no está configurado en este entorno."}
-              </p>
-              {onOpenSchoolAccess && configured && (
-                <button type="button" className="cfg__save-btn" onClick={onOpenSchoolAccess}>
-                  Ir a acceso colegio
-                </button>
-              )}
-            </div>
-          )}
-        </section>
+        {session && isOwner ? (
+          <section className="cfg__section">
+            <h2 className="cfg__section-title">Profesores</h2>
+            <p className="cfg__section-desc">
+              Invita docentes, consulta pendientes y gestiona el equipo del colegio.
+            </p>
+            <button
+              type="button"
+              className="cfg__mascota-btn"
+              onClick={() => onNavigate?.("profesorado")}
+            >
+              Acceder
+            </button>
+          </section>
+        ) : null}
         <section className="cfg__section">
           <h2 className="cfg__section-title">Perfil de clase</h2>
           <p className="cfg__section-desc">
@@ -296,24 +278,26 @@ export function ConfiguracionScreen({
             ))}
           </div>
         </section>
-        <section className="cfg__section">
-          <h2 className="cfg__section-title">Tema de transición</h2>
-          <p className="cfg__section-desc">
-            Elige el efecto de animación al navegar entre pantallas.
-          </p>
-          <div className="cfg__theme-grid">
-            {THEMES.map((item) => (
-              <button
-                key={item.value}
-                className={`cfg__theme-card ${theme === item.value ? "cfg__theme-card--active" : ""}`}
-                onClick={() => setTheme(item.value)}
-              >
-                <span className="cfg__theme-label">{item.label}</span>
-                {theme === item.value && <span className="cfg__theme-check">✓ Activo</span>}
-              </button>
-            ))}
-          </div>
-        </section>
+        {SHOW_TRANSITION_THEME ? (
+          <section className="cfg__section">
+            <h2 className="cfg__section-title">Tema de transición</h2>
+            <p className="cfg__section-desc">
+              Elige el efecto de animación al navegar entre pantallas.
+            </p>
+            <div className="cfg__theme-grid">
+              {THEMES.map((item) => (
+                <button
+                  key={item.value}
+                  className={`cfg__theme-card ${theme === item.value ? "cfg__theme-card--active" : ""}`}
+                  onClick={() => setTheme(item.value)}
+                >
+                  <span className="cfg__theme-label">{item.label}</span>
+                  {theme === item.value && <span className="cfg__theme-check">✓ Activo</span>}
+                </button>
+              ))}
+            </div>
+          </section>
+        ) : null}
       </div>
     </div>
   );

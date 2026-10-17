@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { useSchoolAuth } from "./SchoolAuthContext";
 
 export interface Aula {
   id: string;
@@ -28,11 +29,19 @@ const defaultAulas: Aula[] = [
   { id: "1A", grade: 1, letter: "A" },
   { id: "2A", grade: 2, letter: "A" },
 ];
-const aulasKey = "educolor-aulas";
-const activeKey = "educolor-active-aula";
-const profileKey = (id: string) => `educolor-profile-${id}`;
 
-function loadAulas(): Aula[] {
+/** Sin colegio: claves históricas. Con colegio: aisladas por school id. */
+function storageKeys(schoolId: string | null) {
+  const prefix = schoolId ? `educolor:school:${schoolId}` : "educolor";
+  return {
+    aulas: schoolId ? `${prefix}:aulas` : "educolor-aulas",
+    active: schoolId ? `${prefix}:active-aula` : "educolor-active-aula",
+    profile: (id: string) => (schoolId ? `${prefix}:profile-${id}` : `educolor-profile-${id}`),
+  };
+}
+
+function loadAulas(schoolId: string | null): Aula[] {
+  const { aulas: aulasKey } = storageKeys(schoolId);
   try {
     const stored = localStorage.getItem(aulasKey);
     if (stored) return JSON.parse(stored) as Aula[];
@@ -43,13 +52,25 @@ function loadAulas(): Aula[] {
   return defaultAulas;
 }
 
-function loadProfile(id: string): ClassProfile {
+function loadProfile(schoolId: string | null, id: string): ClassProfile {
+  const { profile: profileKey } = storageKeys(schoolId);
   try {
     const stored = localStorage.getItem(profileKey(id));
     return stored ? { ...CLASS_PROFILE_DEFAULTS, ...JSON.parse(stored) } : CLASS_PROFILE_DEFAULTS;
   } catch {
     return CLASS_PROFILE_DEFAULTS;
   }
+}
+
+function resolveActiveAulaId(schoolId: string | null, aulas: Aula[]): string {
+  const { active: activeKey } = storageKeys(schoolId);
+  try {
+    const stored = localStorage.getItem(activeKey);
+    if (stored && aulas.some((aula) => aula.id === stored)) return stored;
+  } catch {
+    // ignore
+  }
+  return aulas[0]?.id ?? defaultAulas[0].id;
 }
 
 export function getAulaLabel(aula: Aula, allAulas: Aula[]): string {
@@ -72,24 +93,43 @@ interface ClassProfileContextValue {
 const ClassProfileContext = createContext<ClassProfileContextValue | null>(null);
 
 export function ClassProfileProvider({ children }: { children: ReactNode }) {
-  const [aulas, setAulas] = useState(loadAulas);
-  const [activeAulaId, setActiveAulaId] = useState(() => {
-    const initialAulas = loadAulas();
-    const stored = localStorage.getItem(activeKey);
-    return stored && initialAulas.some((aula) => aula.id === stored) ? stored : initialAulas[0].id;
-  });
-  const [profile, setProfile] = useState(() => loadProfile(activeAulaId));
+  const { primarySchool } = useSchoolAuth();
+  const schoolId = primarySchool?.id ?? null;
 
-  const setActiveAula = useCallback((id: string) => {
-    localStorage.setItem(activeKey, id);
-    setActiveAulaId(id);
-    setProfile(loadProfile(id));
-  }, []);
+  const [aulas, setAulas] = useState(() => loadAulas(null));
+  const [activeAulaId, setActiveAulaId] = useState(() =>
+    resolveActiveAulaId(null, loadAulas(null)),
+  );
+  const [profile, setProfile] = useState(() =>
+    loadProfile(null, resolveActiveAulaId(null, loadAulas(null))),
+  );
+  const [loadedSchoolId, setLoadedSchoolId] = useState<string | null>(null);
+
+  // Al entrar/cambiar de colegio: perfiles propios (colegio nuevo = sin mascota).
+  if (schoolId !== loadedSchoolId) {
+    const nextAulas = loadAulas(schoolId);
+    const nextActive = resolveActiveAulaId(schoolId, nextAulas);
+    setLoadedSchoolId(schoolId);
+    setAulas(nextAulas);
+    setActiveAulaId(nextActive);
+    setProfile(loadProfile(schoolId, nextActive));
+  }
+
+  const setActiveAula = useCallback(
+    (id: string) => {
+      const { active: activeKey } = storageKeys(schoolId);
+      localStorage.setItem(activeKey, id);
+      setActiveAulaId(id);
+      setProfile(loadProfile(schoolId, id));
+    },
+    [schoolId],
+  );
 
   const save = useCallback(
     (updates: Partial<ClassProfile>) => {
       const next = { ...profile, ...updates };
       try {
+        const { profile: profileKey } = storageKeys(schoolId);
         localStorage.setItem(profileKey(activeAulaId), JSON.stringify(next));
         setProfile(next);
         return true;
@@ -97,7 +137,7 @@ export function ClassProfileProvider({ children }: { children: ReactNode }) {
         return false;
       }
     },
-    [activeAulaId, profile],
+    [activeAulaId, profile, schoolId],
   );
 
   const addAula = useCallback(
@@ -105,23 +145,27 @@ export function ClassProfileProvider({ children }: { children: ReactNode }) {
       const id = `${grade}${letter}`;
       if (aulas.some((aula) => aula.id === id)) return;
       const next = [...aulas, { id, grade, letter }];
+      const { aulas: aulasKey } = storageKeys(schoolId);
       localStorage.setItem(aulasKey, JSON.stringify(next));
       setAulas(next);
     },
-    [aulas],
+    [aulas, schoolId],
   );
 
   const removeAula = useCallback(
     (id: string) => {
       if (aulas.length === 1) return;
       const next = aulas.filter((aula) => aula.id !== id);
-      localStorage.setItem(aulasKey, JSON.stringify(next));
-      localStorage.removeItem(profileKey(id));
+      const keys = storageKeys(schoolId);
+      localStorage.setItem(keys.aulas, JSON.stringify(next));
+      localStorage.removeItem(keys.profile(id));
       setAulas(next);
       if (activeAulaId === id) setActiveAula(next[0].id);
     },
-    [activeAulaId, aulas, setActiveAula],
+    [activeAulaId, aulas, schoolId, setActiveAula],
   );
+
+  const getProfile = useCallback((id: string) => loadProfile(schoolId, id), [schoolId]);
 
   useEffect(() => {
     const hex = profile.accentColor;
@@ -134,22 +178,21 @@ export function ClassProfileProvider({ children }: { children: ReactNode }) {
     document.documentElement.style.setProperty("--color-primary-dark", dark);
   }, [profile.accentColor]);
 
-  return (
-    <ClassProfileContext.Provider
-      value={{
-        aulas,
-        activeAulaId,
-        profile,
-        setActiveAula,
-        save,
-        getProfile: loadProfile,
-        addAula,
-        removeAula,
-      }}
-    >
-      {children}
-    </ClassProfileContext.Provider>
+  const value = useMemo<ClassProfileContextValue>(
+    () => ({
+      aulas,
+      activeAulaId,
+      profile,
+      setActiveAula,
+      save,
+      getProfile,
+      addAula,
+      removeAula,
+    }),
+    [aulas, activeAulaId, profile, setActiveAula, save, getProfile, addAula, removeAula],
   );
+
+  return <ClassProfileContext.Provider value={value}>{children}</ClassProfileContext.Provider>;
 }
 
 export function useClassProfile(): ClassProfileContextValue {

@@ -11,12 +11,13 @@ import type { Session, User } from "@supabase/supabase-js";
 import {
   ensureOwnerSchool,
   fetchMySchools,
-  peekPendingSchoolName,
+  resolveSchoolNameForBootstrap,
   takePendingSchoolName,
   signOut as supabaseSignOut,
 } from "../../platform/supabase/auth";
 import { getSupabase, isSupabaseConfigured } from "../../platform/supabase/client";
-import type { School } from "../../platform/supabase/types";
+import { fetchMyRole } from "../../platform/supabase/teachers";
+import type { School, SchoolRole } from "../../platform/supabase/types";
 
 interface SchoolAuthValue {
   configured: boolean;
@@ -25,17 +26,45 @@ interface SchoolAuthValue {
   user: User | null;
   schools: School[];
   primarySchool: School | null;
+  /** Rol en el colegio principal (owner / teacher). */
+  schoolRole: SchoolRole | null;
+  isOwner: boolean;
+  /** Error al completar el alta del colegio (A10: no fallar en silencio). */
+  schoolBootstrapError: string | null;
   refreshSchools: () => Promise<void>;
+  retrySchoolBootstrap: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
 const SchoolAuthContext = createContext<SchoolAuthValue | null>(null);
 
-async function syncPendingSchool(): Promise<void> {
-  const pending = peekPendingSchoolName();
-  if (!pending) return;
+const BOOTSTRAP_MISSING_NAME =
+  "No se pudo completar el alta del colegio. Cierra sesión e inténtalo de nuevo desde el registro.";
+
+async function syncPendingSchool(): Promise<{ schools: School[]; error: string | null }> {
+  let schools = await fetchMySchools();
+  if (schools.length > 0) {
+    return { schools, error: null };
+  }
+
+  const pending = await resolveSchoolNameForBootstrap();
+  if (!pending) {
+    return { schools, error: BOOTSTRAP_MISSING_NAME };
+  }
+
   const result = await ensureOwnerSchool(pending);
-  if (result.ok) takePendingSchoolName();
+  if (!result.ok) {
+    return { schools, error: result.message };
+  }
+  takePendingSchoolName();
+  schools = await fetchMySchools();
+  if (schools.length === 0) {
+    return {
+      schools,
+      error: "El colegio no aparece tras crearlo. Recarga la página o vuelve a iniciar sesión.",
+    };
+  }
+  return { schools, error: null };
 }
 
 export function SchoolAuthProvider({ children }: { children: ReactNode }) {
@@ -43,15 +72,35 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(configured);
   const [session, setSession] = useState<Session | null>(null);
   const [schools, setSchools] = useState<School[]>([]);
+  const [schoolRole, setSchoolRole] = useState<SchoolRole | null>(null);
+  const [schoolBootstrapError, setSchoolBootstrapError] = useState<string | null>(null);
+
+  const applySchools = useCallback(async (list: School[]) => {
+    setSchools(list);
+    const primary = list[0];
+    if (!primary) {
+      setSchoolRole(null);
+      return;
+    }
+    const role = await fetchMyRole(primary.id);
+    setSchoolRole(role);
+  }, []);
 
   const refreshSchools = useCallback(async () => {
     if (!configured || !session) {
       setSchools([]);
+      setSchoolRole(null);
       return;
     }
     const list = await fetchMySchools();
-    setSchools(list);
-  }, [configured, session]);
+    await applySchools(list);
+  }, [configured, session, applySchools]);
+
+  const runBootstrap = useCallback(async () => {
+    const { schools: next, error } = await syncPendingSchool();
+    await applySchools(next);
+    setSchoolBootstrapError(error);
+  }, [applySchools]);
 
   useEffect(() => {
     if (!configured) return;
@@ -63,9 +112,15 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
       if (cancelled) return;
       setSession(data.session);
       if (data.session) {
-        await syncPendingSchool();
-        const list = await fetchMySchools();
-        if (!cancelled) setSchools(list);
+        const { schools: next, error } = await syncPendingSchool();
+        if (!cancelled) {
+          await applySchools(next);
+          setSchoolBootstrapError(error);
+        }
+      } else {
+        setSchools([]);
+        setSchoolRole(null);
+        setSchoolBootstrapError(null);
       }
       if (!cancelled) setLoading(false);
     });
@@ -74,11 +129,13 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
       void (async () => {
         setSession(next);
         if (next) {
-          await syncPendingSchool();
-          const list = await fetchMySchools();
-          setSchools(list);
+          const { schools: list, error } = await syncPendingSchool();
+          await applySchools(list);
+          setSchoolBootstrapError(error);
         } else {
           setSchools([]);
+          setSchoolRole(null);
+          setSchoolBootstrapError(null);
         }
         setLoading(false);
       })();
@@ -88,11 +145,13 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
       cancelled = true;
       sub.subscription.unsubscribe();
     };
-  }, [configured]);
+  }, [configured, applySchools]);
 
   const signOut = useCallback(async () => {
     await supabaseSignOut();
     setSchools([]);
+    setSchoolRole(null);
+    setSchoolBootstrapError(null);
   }, []);
 
   const value = useMemo<SchoolAuthValue>(
@@ -103,10 +162,24 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
       user: session?.user ?? null,
       schools,
       primarySchool: schools[0] ?? null,
+      schoolRole,
+      isOwner: schoolRole === "owner",
+      schoolBootstrapError,
       refreshSchools,
+      retrySchoolBootstrap: runBootstrap,
       signOut,
     }),
-    [configured, loading, session, schools, refreshSchools, signOut],
+    [
+      configured,
+      loading,
+      session,
+      schools,
+      schoolRole,
+      schoolBootstrapError,
+      refreshSchools,
+      runBootstrap,
+      signOut,
+    ],
   );
 
   return <SchoolAuthContext.Provider value={value}>{children}</SchoolAuthContext.Provider>;

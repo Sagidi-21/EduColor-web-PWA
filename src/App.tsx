@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { ClassProfileProvider } from "./core/context/ClassProfileContext";
 import { useClassProfile } from "./core/context/ClassProfileContext";
 import { SchoolAuthProvider, useSchoolAuth } from "./core/context/SchoolAuthContext";
+import { DEMO_ACCENT_COLOR, readDemoMode, writeDemoMode } from "./core/demo/demoMode";
 import { ViewTransition } from "./core/transition/ViewTransition";
 import { SchoolAccessScreen } from "./features/auth/SchoolAccessScreen";
 import { ConfiguracionScreen } from "./features/configuracion/ConfiguracionScreen";
+import { ProfesoradoScreen } from "./features/profesorado/ProfesoradoScreen";
 import { ExerciseSessionProvider } from "./features/matematicas/ExerciseSessionContext";
 import { ExerciseView } from "./features/matematicas/ExerciseView";
 import { HomeScreen } from "./features/home/HomeScreen";
@@ -26,12 +28,13 @@ function AuthBusyPlaceholder() {
 }
 
 function AppShell() {
-  const { activeAulaId, aulas } = useClassProfile();
+  const { activeAulaId, aulas, save } = useClassProfile();
   const { loading: authLoading, session } = useSchoolAuth();
   const [bootDone, setBootDone] = useState(false);
   const [authSkipped, setAuthSkipped] = useState(
     () => sessionStorage.getItem(AUTH_SKIP_KEY) === "1",
   );
+  const [demoMode, setDemoMode] = useState(readDemoMode);
   const [forceAuth, setForceAuth] = useState(false);
   /** Tras splash→auth: si la sesión llega tarde, saltar el gate. */
   const [awaitingAuthGate, setAwaitingAuthGate] = useState(false);
@@ -53,28 +56,55 @@ function AppShell() {
     } else {
       sessionStorage.removeItem(AUTH_SKIP_KEY);
       setAuthSkipped(false);
+      writeDemoMode(false);
+      setDemoMode(false);
     }
     setForceAuth(false);
     setBootDone(true);
   };
 
+  const enterDemo = () => {
+    writeDemoMode(true);
+    setDemoMode(true);
+    save({ accentColor: DEMO_ACCENT_COLOR });
+    finishAuthGate(true);
+  };
+
+  const exitDemoToRegister = () => {
+    writeDemoMode(false);
+    setDemoMode(false);
+    sessionStorage.removeItem(AUTH_SKIP_KEY);
+    setAuthSkipped(false);
+    setForceAuth(true);
+  };
+
+  const clearDemoSkip = () => {
+    writeDemoMode(false);
+    setDemoMode(false);
+    sessionStorage.removeItem(AUTH_SKIP_KEY);
+    setAuthSkipped(false);
+  };
+
   const renderSchoolAccess = () => {
     if (authLoading) return <AuthBusyPlaceholder />;
-    if (session || authSkipped) return <AuthBusyPlaceholder />;
+    if (session) return <AuthBusyPlaceholder />;
     return (
       <SchoolAccessScreen
         onAuthenticated={() => finishAuthGate(false)}
-        onContinueLocal={() => finishAuthGate(true)}
+        onContinueLocal={enterDemo}
       />
     );
   };
 
   const goToAuthOrApp = (navigate: (view: string, dir?: "left" | "right") => void) => {
     setAwaitingAuthGate(true);
-    if (!authLoading && (session || authSkipped)) {
+    // Solo sesión real salta el acceso; DEMO no se reabre sola tras Welcome.
+    if (!authLoading && session) {
+      clearDemoSkip();
       setBootDone(true);
       return;
     }
+    clearDemoSkip();
     navigate("school-access", "right");
   };
 
@@ -111,24 +141,38 @@ function AppShell() {
         initialView="home"
         views={{
           home: ({ navigate }) => (
-            <HomeScreen onNavigate={navigate} onOpenSchoolAccess={() => setForceAuth(true)} />
-          ),
-          configuration: ({ navigate }) => (
-            <ConfiguracionScreen
-              onBack={() => navigate("home", "left")}
+            <HomeScreen
+              onNavigate={navigate}
               onOpenSchoolAccess={() => setForceAuth(true)}
+              demoMode={demoMode}
+              onExitDemo={exitDemoToRegister}
             />
           ),
+          configuration: ({ navigate }) =>
+            demoMode ? (
+              // DEMO: no configuración (tampoco vía consola / navigate manual).
+              <HomeScreen onNavigate={navigate} demoMode onExitDemo={exitDemoToRegister} />
+            ) : (
+              <ConfiguracionScreen onBack={() => navigate("home", "left")} onNavigate={navigate} />
+            ),
+          profesorado: ({ navigate }) =>
+            demoMode ? (
+              <HomeScreen onNavigate={navigate} demoMode onExitDemo={exitDemoToRegister} />
+            ) : (
+              <ProfesoradoScreen onBack={() => navigate("configuration", "left")} />
+            ),
           mathematics: ({ navigate }) => (
             <MatematicasCatalogScreen
               initialGradeId={initialGradeId}
               onBack={() => navigate("home", "left")}
+              demoMode={demoMode}
             />
           ),
           generator: ({ navigate }) => (
             <FichaGeneratorScreen
               initialGradeId={initialGradeId}
               onBack={() => navigate("home", "left")}
+              demoMode={demoMode}
             />
           ),
           exercise: ({ navigate }) => (
@@ -150,12 +194,12 @@ export default function App() {
   }
 
   return (
-    <ClassProfileProvider>
-      <SchoolAuthProvider>
+    <SchoolAuthProvider>
+      <ClassProfileProvider>
         <div className="app">
           <AppShell />
         </div>
-      </SchoolAuthProvider>
-    </ClassProfileProvider>
+      </ClassProfileProvider>
+    </SchoolAuthProvider>
   );
 }

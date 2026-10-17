@@ -3,11 +3,51 @@ import welcomeBgUrl from "../../assets/welcome-bg.png";
 import logoMarkUrl from "../../assets/logo_sin texto.png";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import { signInWithPassword, signUpOwner } from "../../platform/supabase/auth";
+import {
+  EMAIL_MAX_LEN,
+  isAuthEmailValid,
+  isAuthPasswordValid,
+  PASSWORD_MAX_LEN,
+  PASSWORD_MIN_LEN,
+  sanitizeEmailInput,
+  sanitizePlainText,
+  SCHOOL_NAME_MAX_LEN,
+} from "../../platform/supabase/formLimits";
 import "./SchoolAccessScreen.css";
+
+/** Errores del enlace de confirmación (caducado / ya usado / inválido). */
+function consumeAuthCallbackError(): string | null {
+  try {
+    const rawHash = window.location.hash.replace(/^#/, "");
+    const rawSearch = window.location.search.replace(/^\?/, "");
+    const params = new URLSearchParams(rawHash || rawSearch);
+    const error = params.get("error");
+    const code = (params.get("error_code") ?? "").toLowerCase();
+    const desc = (params.get("error_description") ?? "").replace(/\+/g, " ").toLowerCase();
+    if (!error && !code && !desc) return null;
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    if (desc.includes("expired") || code.includes("otp_expired") || code.includes("expired")) {
+      return "El enlace de confirmación ha caducado (válido 1 hora). Vuelve a registrar el colegio con el mismo email o contacta soporte.";
+    }
+    if (
+      desc.includes("invalid") ||
+      desc.includes("already") ||
+      code.includes("otp") ||
+      error === "access_denied"
+    ) {
+      return "Este enlace ya no es válido. Si ya confirmaste la cuenta, inicia sesión. Si no, registra de nuevo el colegio.";
+    }
+    return "No se pudo completar la confirmación del email. Inténtalo de nuevo.";
+  } catch {
+    return null;
+  }
+}
 
 interface SchoolAccessScreenProps {
   onAuthenticated: () => void;
-  /** Reservado para Probar DEMO (aún sin navegación). */
+  /** Entra en modo DEMO (catálogo limitado, sin configuración). */
   onContinueLocal?: () => void;
 }
 
@@ -70,21 +110,41 @@ function IconArrowLeft() {
   );
 }
 
-export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps) {
+export function SchoolAccessScreen({ onAuthenticated, onContinueLocal }: SchoolAccessScreenProps) {
   const { configured, refreshSchools } = useSchoolAuth();
-  const [isLoginMode, setIsLoginMode] = useState(false);
+  const [authBoot] = useState(() => {
+    const callbackError = consumeAuthCallbackError();
+    return { login: Boolean(callbackError), error: callbackError ?? "" };
+  });
+  const [isLoginMode, setIsLoginMode] = useState(authBoot.login);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [schoolName, setSchoolName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(authBoot.error);
   const [info, setInfo] = useState("");
+
+  const registerFormValid =
+    schoolName.trim().length >= 2 && isAuthEmailValid(email) && isAuthPasswordValid(password);
+
+  const passwordFailsRestrictions =
+    !isLoginMode && password.length > 0 && !isAuthPasswordValid(password);
+
+  const clearRegisterSecrets = () => {
+    setEmail("");
+    setPassword("");
+  };
 
   const setAuthMode = (login: boolean) => {
     setIsLoginMode(login);
     setError("");
     setInfo("");
+    // Evita autofill del alta anterior al volver a registro.
+    if (!login) {
+      clearRegisterSecrets();
+      setSchoolName("");
+    }
   };
 
   const toggleAuthMode = () => setAuthMode(!isLoginMode);
@@ -97,6 +157,7 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
       setError("Falta configurar VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en .env");
       return;
     }
+    if (!registerFormValid) return;
     setBusy(true);
     try {
       const result = await signUpOwner({
@@ -110,8 +171,12 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
         return;
       }
       if (result.needsEmailConfirm) {
-        setInfo(result.message ?? "Revisa tu email para confirmar la cuenta.");
+        setPassword("");
         setAuthMode(true);
+        setInfo(
+          result.message ??
+            "Para completar el registro, abre el enlace enviado a tu correo. Después inicia sesión para terminar de dar de alta el colegio.",
+        );
         return;
       }
       await refreshSchools();
@@ -149,7 +214,7 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
   const sliderPrompt = isLoginMode
     ? "¿Aún no has registrado tu centro escolar?"
     : "¿Tu colegio ya forma parte de EduColor?";
-  const sliderBtnLabel = isLoginMode ? "Registrar Colegio" : "Acceder aquí";
+  const sliderBtnLabel = isLoginMode ? "Acceder al Registro" : "Acceder aquí";
 
   return (
     <div className="sa">
@@ -197,28 +262,34 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
                 <p className="sa__pane-sub">Inscribe tu centro para activar las aulas virtuales.</p>
               </div>
 
-              <form className="sa__form" onSubmit={submitRegister} noValidate>
+              <form className="sa__form" onSubmit={submitRegister} noValidate autoComplete="off">
                 <label className="sa__field">
                   Nombre del Colegio / Institución
                   <input
                     type="text"
+                    name="educolor-school-name"
                     placeholder="Ej. Colegio San Agustín"
                     value={schoolName}
-                    onChange={(e) => setSchoolName(e.target.value)}
+                    onChange={(e) =>
+                      setSchoolName(sanitizePlainText(e.target.value, SCHOOL_NAME_MAX_LEN))
+                    }
                     required
                     minLength={2}
-                    maxLength={120}
+                    maxLength={SCHOOL_NAME_MAX_LEN}
+                    autoComplete="organization"
                   />
                 </label>
                 <label className="sa__field">
                   Correo Institucional del Centro
                   <input
                     type="email"
+                    name="educolor-register-email"
                     placeholder="direccion@colegio.edu"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(sanitizeEmailInput(e.target.value))}
                     required
-                    autoComplete="email"
+                    maxLength={EMAIL_MAX_LEN}
+                    autoComplete="off"
                   />
                 </label>
                 <label className="sa__field sa__field--pwd-tip">
@@ -226,14 +297,17 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
                   <span className="sa__input-icon sa__input-icon--eye-only">
                     <input
                       type={showPassword ? "text" : "password"}
+                      name="educolor-register-password"
+                      className={passwordFailsRestrictions ? "sa__input--pwd-invalid" : undefined}
                       placeholder="••••••••"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => setPassword(e.target.value.slice(0, PASSWORD_MAX_LEN))}
                       required
-                      minLength={8}
-                      maxLength={64}
+                      minLength={PASSWORD_MIN_LEN}
+                      maxLength={PASSWORD_MAX_LEN}
                       autoComplete="new-password"
                       aria-describedby="sa-pwd-requirements"
+                      aria-invalid={passwordFailsRestrictions}
                     />
                     <button
                       type="button"
@@ -241,25 +315,30 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
                       aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                       onClick={() => setShowPassword((v) => !v)}
                     >
-                      <IconEye off={showPassword} />
+                      <IconEye off={!showPassword} />
                     </button>
                   </span>
                   <span className="sa__pwd-tip" id="sa-pwd-requirements" role="tooltip">
-                    <strong>Requisitos OWASP (contraseña segura)</strong>
+                    <strong>Contraseña Segura</strong>
                     <ul>
-                      <li>Mínimo 8 caracteres (mejor 12 o más).</li>
-                      <li>Máximo 64 caracteres.</li>
-                      <li>Mezcla letras, números y símbolos si puedes.</li>
+                      <li>
+                        Contraseña entre {PASSWORD_MIN_LEN}-{PASSWORD_MAX_LEN} caracteres.
+                      </li>
+                      <li>Debe contener letras minúsculas y mayúsculas, números y símbolos.</li>
                       <li>No uses contraseñas comunes ni filtradas (p. ej. 123456, password).</li>
                       <li>No reutilices la misma de otro servicio.</li>
                     </ul>
                   </span>
                 </label>
                 <div className="sa__submit-block">
-                  <button type="submit" className="sa__btn sa__btn--primary" disabled={busy}>
+                  <button
+                    type="submit"
+                    className="sa__btn sa__btn--primary"
+                    disabled={busy || !registerFormValid}
+                  >
                     {busy && !isLoginMode ? "Espera…" : "Registrar Colegio"}
                   </button>
-                  <button type="button" className="sa__local">
+                  <button type="button" className="sa__local" onClick={() => onContinueLocal?.()}>
                     Continuar sin cuenta (Probar DEMO)
                   </button>
                 </div>
@@ -274,7 +353,7 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
 
             <div className="sa__pane sa__pane--login">
               <div className="sa__login-brand">
-                <h3 className="sa__login-heading">Acceso del Colegio</h3>
+                <h3 className="sa__login-heading">Entrar al Colegio</h3>
                 <div className="sa__login-rule" aria-hidden="true" />
               </div>
 
@@ -289,8 +368,9 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
                       <input
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => setEmail(sanitizeEmailInput(e.target.value))}
                         required
+                        maxLength={EMAIL_MAX_LEN}
                         autoComplete="username"
                         placeholder="tu@email.com"
                       />
@@ -305,9 +385,10 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
                       <input
                         type={showPassword ? "text" : "password"}
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => setPassword(e.target.value.slice(0, PASSWORD_MAX_LEN))}
                         required
-                        minLength={6}
+                        minLength={PASSWORD_MIN_LEN}
+                        maxLength={PASSWORD_MAX_LEN}
                         autoComplete="current-password"
                         placeholder="••••••••"
                       />
@@ -317,7 +398,7 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
                         aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                         onClick={() => setShowPassword((v) => !v)}
                       >
-                        <IconEye off={showPassword} />
+                        <IconEye off={!showPassword} />
                       </button>
                     </span>
                   </label>

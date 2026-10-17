@@ -14,6 +14,7 @@ import {
   type FichaMode,
 } from "../../core/ficha";
 import { ModalCloseButton } from "../shared/components/ModalCloseButton";
+import appLogoUrl from "../../assets/welcome-logo-bg.png";
 import "./FichaModal.css";
 
 function activitySupportsImages(activityId: string): boolean {
@@ -39,6 +40,8 @@ export interface FichaModalProps {
   /** Color de acento de la clase (configuración). */
   accentColor?: string;
   onClose: () => void;
+  /** En DEMO se puede previsualizar pero no guardar PDF. */
+  demoMode?: boolean;
 }
 
 const DIFFICULTIES: ActivityDifficulty[] = ["easy", "medium", "hard", "expert"];
@@ -47,6 +50,7 @@ export function FichaModal({
   activity,
   difficulty,
   onDifficultyChange,
+  demoMode = false,
   gradeTitle = "Primaria",
   subjectTitle = "Matemáticas",
   className,
@@ -107,6 +111,7 @@ export function FichaModal({
           className,
           mascotUrl,
         },
+        logoUrl: demoMode ? appLogoUrl : undefined,
         accentColor,
       });
       return { doc };
@@ -121,6 +126,7 @@ export function FichaModal({
     activity.title,
     className,
     count,
+    demoMode,
     difficulty,
     effectiveWithImages,
     gradeTitle,
@@ -304,10 +310,14 @@ export function FichaModal({
               type="button"
               className="ficha-modal__primary"
               onClick={handleGenerate}
-              disabled={busy || !fichaDoc || !("doc" in fichaDoc)}
+              disabled={demoMode || busy || !fichaDoc || !("doc" in fichaDoc)}
+              title={demoMode ? "Guardar PDF no disponible en modo DEMO" : undefined}
             >
               {busy ? "Generando…" : "Guardar PDF"}
             </button>
+            {demoMode ? (
+              <p className="ficha-modal__hint">En DEMO puedes ver la ficha, pero no guardarla.</p>
+            ) : null}
           </div>
         </aside>
 

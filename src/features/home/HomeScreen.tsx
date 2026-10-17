@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import logoUrl from "../../assets/splash-logo.png";
+import schoolBgUrl from "../../assets/school-bg.jpg";
+import demoSchoolBgUrl from "../../assets/demo-school-exterior.jpg";
 import { getAulaLabel, useClassProfile } from "../../core/context/ClassProfileContext";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import "./HomeScreen.css";
 
-export type AppView = "home" | "configuration" | "mathematics" | "generator" | "mascota";
+export type AppView =
+  "home" | "configuration" | "profesorado" | "mathematics" | "generator" | "mascota";
 const modes: readonly {
   id: AppView;
   label: string;
@@ -35,21 +38,44 @@ const gradeMetadata = {
 export function HomeScreen({
   onNavigate,
   onOpenSchoolAccess,
+  demoMode = false,
+  onExitDemo,
 }: {
   onNavigate: (view: AppView) => void;
   onOpenSchoolAccess?: () => void;
+  demoMode?: boolean;
+  onExitDemo?: () => void;
 }) {
   const { aulas, setActiveAula } = useClassProfile();
-  const { primarySchool, session } = useSchoolAuth();
+  const { primarySchool, session, schoolBootstrapError, retrySchoolBootstrap, signOut } =
+    useSchoolAuth();
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [bootstrapBusy, setBootstrapBusy] = useState(false);
   const selected = aulas.find((aula) => aula.id === selectedId);
-  const schoolLabel = primarySchool?.name ?? "Colegio Color de Montecolorado";
+  const schoolLabel = demoMode
+    ? "Modo DEMO"
+    : (primarySchool?.name ?? (session ? "Completando alta del colegio…" : "EduColor"));
   const selectAula = (id: string) => {
     setSelectedId(id);
     setActiveAula(id);
   };
+  const retryBootstrap = async () => {
+    setBootstrapBusy(true);
+    try {
+      await retrySchoolBootstrap();
+    } finally {
+      setBootstrapBusy(false);
+    }
+  };
   return (
-    <div className="home">
+    <div
+      className={`home${demoMode ? " home--demo" : ""}`}
+      style={
+        {
+          "--home-bg-image": `url(${demoMode ? demoSchoolBgUrl : schoolBgUrl})`,
+        } as CSSProperties
+      }
+    >
       <header className="home__header">
         <div className="home__logo-area">
           <img className="home__logo-img" src={logoUrl} alt="Logo del colegio" />
@@ -57,7 +83,7 @@ export function HomeScreen({
             <h1 className="home__app-name">EduColor</h1>
             <p className="home__school-name">
               {schoolLabel}
-              {!session && onOpenSchoolAccess ? (
+              {!demoMode && !session && onOpenSchoolAccess ? (
                 <>
                   {" · "}
                   <button
@@ -73,20 +99,51 @@ export function HomeScreen({
           </div>
         </div>
         <div className="home__header-right">
-          <span className="home__badge">PWA · Desarrollo</span>
-          <div className="home__settings">
-            <button
-              type="button"
-              className="home__settings-gear"
-              aria-label="Configuración"
-              onClick={() => onNavigate("configuration")}
-            >
-              ⚙️
+          {demoMode && onExitDemo ? (
+            <button type="button" className="home__exit-demo" onClick={onExitDemo}>
+              Salir al registro
             </button>
-            <div className="home__settings-tooltip">Temas, clases y ajustes</div>
-          </div>
+          ) : (
+            <>
+              <span className="home__badge">PWA · Desarrollo</span>
+              <div className="home__settings">
+                <button
+                  type="button"
+                  className="home__settings-gear"
+                  aria-label="Configuración"
+                  onClick={() => onNavigate("configuration")}
+                >
+                  ⚙️
+                </button>
+                <div className="home__settings-tooltip">Temas, clases y ajustes</div>
+              </div>
+            </>
+          )}
         </div>
       </header>
+      {!demoMode && session && schoolBootstrapError ? (
+        <div className="home__auth-alert" role="alert">
+          <p className="home__auth-alert-text">{schoolBootstrapError}</p>
+          <div className="home__auth-alert-actions">
+            <button
+              type="button"
+              className="home__auth-alert-btn"
+              disabled={bootstrapBusy}
+              onClick={() => void retryBootstrap()}
+            >
+              {bootstrapBusy ? "Reintentando…" : "Reintentar"}
+            </button>
+            <button
+              type="button"
+              className="home__auth-alert-btn home__auth-alert-btn--ghost"
+              disabled={bootstrapBusy}
+              onClick={() => void signOut()}
+            >
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+      ) : null}
       <main className="home__main">
         <section className="home__section">
           <h2 className="home__section-title">¿Con qué clase trabajamos hoy?</h2>

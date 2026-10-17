@@ -22,7 +22,24 @@ export interface SchoolMembership {
   school_id: string;
   user_id: string;
   role: SchoolRole;
+  is_active: boolean;
+  first_name: string | null;
+  last_name_1: string | null;
+  last_name_2: string | null;
   created_at: string;
+}
+
+export interface SchoolInvite {
+  id: string;
+  school_id: string;
+  email: string;
+  first_name: string;
+  last_name_1: string;
+  last_name_2: string;
+  status: "pending" | "accepted" | "expired" | "cancelled";
+  created_at: string;
+  expires_at: string;
+  accepted_at: string | null;
 }
 
 export interface Database {
@@ -46,8 +63,27 @@ export interface Database {
           school_id: string;
           user_id: string;
           role: SchoolRole;
+          is_active?: boolean;
+          first_name?: string | null;
+          last_name_1?: string | null;
+          last_name_2?: string | null;
         };
-        Update: Partial<Pick<SchoolMembership, "role">>;
+        Update: Partial<
+          Pick<
+            SchoolMembership,
+            "role" | "is_active" | "first_name" | "last_name_1" | "last_name_2"
+          >
+        >;
+        Relationships: [];
+      };
+      school_invites: {
+        Row: SchoolInvite;
+        Insert: Omit<SchoolInvite, "id" | "created_at" | "accepted_at" | "status"> & {
+          status?: SchoolInvite["status"];
+          token_hash: string;
+          invited_by: string;
+        };
+        Update: Partial<SchoolInvite>;
         Relationships: [];
       };
     };
@@ -55,6 +91,33 @@ export interface Database {
     Functions: {
       is_school_member: { Args: { p_school_id: string }; Returns: boolean };
       is_school_owner: { Args: { p_school_id: string }; Returns: boolean };
+      create_school_as_owner: { Args: { p_name: string }; Returns: School };
+      log_auth_security_event: {
+        Args: { p_event_type: string; p_context?: string | null };
+        Returns: undefined;
+      };
+      registration_inputs_unavailable: {
+        Args: { p_email: string; p_name: string };
+        Returns: boolean;
+      };
+      get_my_school_role: { Args: { p_school_id: string }; Returns: string };
+      owner_create_teacher_invite: {
+        Args: {
+          p_school_id: string;
+          p_email: string;
+          p_first_name: string;
+          p_last_name_1: string;
+          p_last_name_2?: string;
+        };
+        Returns: Record<string, unknown>;
+      };
+      owner_list_staff: { Args: { p_school_id: string }; Returns: Record<string, unknown> };
+      owner_cancel_invite: { Args: { p_invite_id: string }; Returns: undefined };
+      owner_set_teacher_active: {
+        Args: { p_membership_id: string; p_active: boolean };
+        Returns: undefined;
+      };
+      owner_remove_teacher: { Args: { p_membership_id: string }; Returns: undefined };
     };
     Enums: {
       school_role: SchoolRole;

@@ -13,6 +13,7 @@ import type {
 } from "../../core/content/contracts";
 import { canLaunchActivity } from "../../core/content/engine-registry";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
+import { isDemoUnitAllowed } from "../../core/demo/demoMode";
 import { useViewTransition } from "../../core/transition/ViewTransitionContext";
 import { useExerciseSession } from "./ExerciseSessionContext";
 import { CatalogFilterBar } from "./CatalogFilterBar";
@@ -24,9 +25,10 @@ import fondoImg from "../../assets/catalogo-fondo.png";
 interface Props {
   initialGradeId: GradeId;
   onBack: () => void;
+  demoMode?: boolean;
 }
 
-export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
+export function MatematicasCatalogScreen({ initialGradeId, onBack, demoMode = false }: Props) {
   const { profile } = useClassProfile();
   const { launchSession, catalogGradeId, setCatalogGradeId } = useExerciseSession();
   const { navigate } = useViewTransition();
@@ -112,7 +114,9 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
             </h2>
             <div className="mat__activities">
               {activities.map((activity) => {
-                const launchable = canLaunchActivity(activity);
+                const unit = activity.boardCard?.unit ?? block.order;
+                const demoLocked = demoMode && !isDemoUnitAllowed(gradeId, unit);
+                const launchable = canLaunchActivity(activity) && !demoLocked;
                 return (
                   <button
                     key={activity.id}
@@ -135,7 +139,11 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack }: Props) {
                     <span className="activity-card__icon">{activity.boardCard?.icon ?? "🔢"}</span>
                     <span className="activity-card__title">{activity.title}</span>
                     <span className="activity-card__desc">{activity.description}</span>
-                    {!launchable && <span className="activity-card__soon">En migración PWA</span>}
+                    {demoLocked ? (
+                      <span className="activity-card__soon">No disponible en DEMO</span>
+                    ) : (
+                      !launchable && <span className="activity-card__soon">En migración PWA</span>
+                    )}
                   </button>
                 );
               })}

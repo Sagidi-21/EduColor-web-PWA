@@ -267,6 +267,14 @@
   box-shadow: 0 0 0 3px rgba(30, 96, 230, 0.15);
 }
 
+/* Contraseña registro: rojo 20% mientras no cumpla restricciones */
+.sa__field input.sa__input--pwd-invalid,
+.sa__field input.sa__input--pwd-invalid:focus {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
 .sa__row {
   display: grid;
   grid-template-columns: 1fr;
@@ -334,8 +342,15 @@
 }
 
 .sa__btn:disabled {
-  opacity: 0.7;
-  cursor: wait;
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sa__btn--primary:disabled {
+  background: #94a3b8;
+  box-shadow: none;
+  transform: none;
+  color: #fff;
 }
 
 .sa__submit-block {
