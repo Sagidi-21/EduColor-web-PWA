@@ -180,6 +180,65 @@
   color: #334155;
 }
 
+/* Solo títulos de campos del registro (+1px) */
+.sa__pane--register .sa__field {
+  font-size: calc(0.75rem + 1px);
+}
+
+/* Tooltip requisitos contraseña (hover / focus) */
+.sa__field--pwd-tip {
+  position: relative;
+}
+
+.sa__pwd-tip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 0.5rem);
+  z-index: 30;
+  padding: 0.75rem 0.875rem;
+  border-radius: 0.75rem;
+  background: #0f172a;
+  color: #f8fafc;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: left;
+  box-shadow: 0 12px 28px rgba(2, 20, 60, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition:
+    opacity 0.15s ease,
+    visibility 0.15s ease,
+    transform 0.15s ease;
+  pointer-events: none;
+}
+
+.sa__pwd-tip strong {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.sa__pwd-tip ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.sa__pwd-tip li + li {
+  margin-top: 0.2rem;
+}
+
+.sa__field--pwd-tip:hover .sa__pwd-tip,
+.sa__field--pwd-tip:focus-within .sa__pwd-tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
 .sa__field input {
   width: 100%;
   box-sizing: border-box;
@@ -233,6 +292,10 @@
 .sa__input-icon input {
   padding-left: 2.25rem;
   padding-right: 2.5rem;
+}
+
+.sa__input-icon--eye-only input {
+  padding-left: 0.875rem;
 }
 
 .sa__eye {
@@ -536,10 +599,7 @@
     box-sizing: border-box;
     color: #fff;
     background-color: #0d348a;
-    background-image: url("../../assets/school-classroom-bg.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    overflow: hidden;
     box-shadow: -8px 0 24px rgba(2, 20, 60, 0.15);
     transform: translateX(0);
     transition: transform 0.65s cubic-bezier(0.65, 0, 0.35, 1);
@@ -549,16 +609,28 @@
     transform: translateX(-100%);
   }
 
+  /* Foto del aula */
+  .sa__slider-photo {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("../../assets/school-classroom-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* ↓ CAMBIA EL BLUR AQUÍ (ej. 0px, 4px, 8px). No afecta al texto. */
+    filter: blur(0px);
+    transform: scale(1.08);
+  }
+
+  /* Velo azul encima de la foto del aula */
   .sa__slider-pattern {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(
-      to bottom right,
-      rgba(12, 35, 85, 0.6),
-      rgba(18, 50, 110, 0.66),
-      rgba(8, 28, 70, 0.72)
-    );
+    background: linear-gradient(to bottom right, #0c2355, #12326e, #081c46);
+    /* ↓ TRANSPARENCIA DEL VELO: 0 = se ve toda la foto, 1 = azul opaco */
+    opacity: 0.75;
   }
 
   .sa__slider-mid,

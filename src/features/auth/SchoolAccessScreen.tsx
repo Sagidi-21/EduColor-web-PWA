@@ -76,7 +76,6 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [schoolName, setSchoolName] = useState("");
-  const [schoolCode, setSchoolCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -222,30 +221,40 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
                     autoComplete="email"
                   />
                 </label>
-                <div className="sa__row">
-                  <label className="sa__field">
-                    Código Escolar / CIF
-                    <input
-                      type="text"
-                      placeholder="CÓD-8823"
-                      value={schoolCode}
-                      onChange={(e) => setSchoolCode(e.target.value)}
-                      maxLength={40}
-                    />
-                  </label>
-                  <label className="sa__field">
-                    Contraseña Admin
+                <label className="sa__field sa__field--pwd-tip">
+                  Contraseña Admin
+                  <span className="sa__input-icon sa__input-icon--eye-only">
                     <input
                       type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      minLength={6}
+                      minLength={8}
+                      maxLength={64}
                       autoComplete="new-password"
+                      aria-describedby="sa-pwd-requirements"
                     />
-                  </label>
-                </div>
+                    <button
+                      type="button"
+                      className="sa__eye"
+                      aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                      onClick={() => setShowPassword((v) => !v)}
+                    >
+                      <IconEye off={showPassword} />
+                    </button>
+                  </span>
+                  <span className="sa__pwd-tip" id="sa-pwd-requirements" role="tooltip">
+                    <strong>Requisitos OWASP (contraseña segura)</strong>
+                    <ul>
+                      <li>Mínimo 8 caracteres (mejor 12 o más).</li>
+                      <li>Máximo 64 caracteres.</li>
+                      <li>Mezcla letras, números y símbolos si puedes.</li>
+                      <li>No uses contraseñas comunes ni filtradas (p. ej. 123456, password).</li>
+                      <li>No reutilices la misma de otro servicio.</li>
+                    </ul>
+                  </span>
+                </label>
                 <div className="sa__submit-block">
                   <button type="submit" className="sa__btn sa__btn--primary" disabled={busy}>
                     {busy && !isLoginMode ? "Espera…" : "Registrar Colegio"}
@@ -320,6 +329,7 @@ export function SchoolAccessScreen({ onAuthenticated }: SchoolAccessScreenProps)
             </div>
 
             <div className="sa__slider">
+              <div className="sa__slider-photo" aria-hidden="true" />
               <div className="sa__slider-pattern" aria-hidden="true" />
               <div className="sa__slider-mid">
                 <div className="sa__slider-brand">

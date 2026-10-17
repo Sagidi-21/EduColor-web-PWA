@@ -74,8 +74,11 @@ export async function signUpOwner(input: {
   if (schoolName.length < 2) {
     return { ok: false, message: "Escribe el nombre del colegio (mín. 2 caracteres)." };
   }
-  if (input.password.length < 6) {
-    return { ok: false, message: "La contraseña debe tener al menos 6 caracteres." };
+  if (input.password.length < 8) {
+    return { ok: false, message: "La contraseña debe tener al menos 8 caracteres (OWASP)." };
+  }
+  if (input.password.length > 64) {
+    return { ok: false, message: "La contraseña no puede superar 64 caracteres." };
   }
 
   const supabase = getSupabase();
