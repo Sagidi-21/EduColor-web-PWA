@@ -54,6 +54,31 @@ En **Authentication → Providers (Iniciar sesión / Proveedores) → Email**:
 - Tras “Registrar colegio”, la app pide abrir el enlace del correo; el colegio
   se crea al primer acceso con sesión confirmada (`create_school_as_owner`).
 
+### Plantilla del correo (marca EduColor)
+
+Supabase no lee plantillas del repo: hay que pegarlas en el panel.
+
+1. **Authentication → Emails → Confirm signup** (o Email Templates).
+2. **Subject / Asunto:**
+
+   ```text
+   Confirma tu colegio en EduColor
+   ```
+
+3. **Body / Cuerpo:** copia el HTML de
+   [`docs/email/confirm-signup.html`](../docs/email/confirm-signup.html)
+   (incluye logo, nombre **EduColor** y fondo de Welcome).
+4. Guarda.
+
+Las imágenes usan `{{ .SiteURL }}`:
+
+- `{{ .SiteURL }}/brand/educolor-mark.png` — logo (Welcome)
+- `{{ .SiteURL }}/brand/welcome-bg.png` — fondo Welcome
+
+En **Authentication → URL Configuration**, **Site URL** debe ser el dominio
+real de la app (Netlify o `http://localhost:5173` en local). Tras desplegar,
+esas rutas viven en `public/brand/`.
+
 ### Caducidad del enlace de confirmación (registro colegio) — 1 hora
 
 En **Authentication → Settings** (o Email), busca **OTP / Mailer OTP expiration**
