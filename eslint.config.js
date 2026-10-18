@@ -86,7 +86,7 @@ export default tseslint.config(
   },
   prettier,
   {
-    files: ["*.mjs", "vite.config.js"],
+    files: ["*.mjs", "scripts/**/*.mjs", "vite.config.js"],
     languageOptions: {
       globals: {
         process: "readonly",
