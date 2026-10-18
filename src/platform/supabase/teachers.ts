@@ -81,14 +81,27 @@ function asArray<T>(value: unknown): T[] {
   return [];
 }
 
-export async function listSchoolStaff(schoolId: string): Promise<StaffLists> {
-  if (!isSupabaseConfigured()) return { pending: [], accepted: [] };
+export type StaffListsResult =
+  | { ok: true; pending: PendingInviteRow[]; accepted: AcceptedTeacherRow[] }
+  | { ok: false; message: string; pending: []; accepted: [] };
+
+export async function listSchoolStaff(schoolId: string): Promise<StaffListsResult> {
+  if (!isSupabaseConfigured()) {
+    return { ok: false, message: "Supabase no está configurado.", pending: [], accepted: [] };
+  }
   const { data, error } = await getSupabase().rpc("owner_list_staff", {
     p_school_id: schoolId,
   });
   if (error || !data) {
     console.error("[teachers] owner_list_staff", error);
-    return { pending: [], accepted: [] };
+    return {
+      ok: false,
+      message: error?.message
+        ? `No se pudo cargar el profesorado: ${error.message}`
+        : "No se pudo cargar el profesorado.",
+      pending: [],
+      accepted: [],
+    };
   }
   const raw =
     typeof data === "string"
@@ -96,6 +109,7 @@ export async function listSchoolStaff(schoolId: string): Promise<StaffLists> {
       : (data as { pending?: unknown; accepted?: unknown });
   const accepted = asArray<Record<string, unknown>>(raw.accepted).map((row) => {
     const membershipId = String(row.membership_id ?? row.id ?? "").trim();
+    const activeRaw = row.is_active;
     return {
       membership_id: membershipId,
       user_id: String(row.user_id ?? ""),
@@ -103,12 +117,14 @@ export async function listSchoolStaff(schoolId: string): Promise<StaffLists> {
       first_name: (row.first_name as string | null) ?? null,
       last_name_1: (row.last_name_1 as string | null) ?? null,
       last_name_2: (row.last_name_2 as string | null) ?? null,
-      is_active: Boolean(row.is_active),
+      // null/undefined → activo (filas antiguas); solo false es desactivado.
+      is_active: activeRaw === false || activeRaw === "false" ? false : true,
       accepted_at: (row.accepted_at as string | null) ?? null,
       sent_at: (row.sent_at as string | null) ?? null,
     } satisfies AcceptedTeacherRow;
   });
   return {
+    ok: true,
     pending: asArray<PendingInviteRow>(raw.pending),
     accepted,
   };

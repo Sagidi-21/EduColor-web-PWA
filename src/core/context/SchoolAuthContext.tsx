@@ -132,10 +132,12 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
         setSchoolBootstrapError(null);
         return;
       }
-      setSession(next);
+      // Colegios antes que session: el header no debe mostrar el placeholder de alta de owner.
       const { schools: list, error } = await syncPendingSchool();
+      if (cancelled) return;
       await applySchools(list);
       setSchoolBootstrapError(error);
+      setSession(next);
     };
 
     void supabase.auth.getSession().then(async ({ data }) => {
@@ -144,11 +146,16 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
       if (!cancelled) setLoading(false);
     });
 
+    // Diferir queries: dentro de onAuthStateChange el cliente Auth puede bloquearse
+    // (lock) y dejar schools vacío → header «Completando alta del colegio…».
     const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
-      void (async () => {
-        await adoptSession(next);
-        setLoading(false);
-      })();
+      window.setTimeout(() => {
+        void (async () => {
+          if (cancelled) return;
+          await adoptSession(next);
+          if (!cancelled) setLoading(false);
+        })();
+      }, 0);
     });
 
     return () => {

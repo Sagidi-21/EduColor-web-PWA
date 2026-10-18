@@ -76,9 +76,9 @@ export function AcceptInviteScreen({ token, onGoToLogin }: AcceptInviteScreenPro
   const formValid =
     Boolean(preview) && isAuthPasswordValid(password) && password === password2 && !busy;
 
-  const finishToLogin = async () => {
+  const finishToLogin = async (fromSuccess: boolean) => {
     clearInviteFromUrl();
-    setInviteSuccessFlash();
+    if (fromSuccess) setInviteSuccessFlash();
     try {
       await getSupabase().auth.signOut();
     } catch {
@@ -113,7 +113,11 @@ export function AcceptInviteScreen({ token, onGoToLogin }: AcceptInviteScreenPro
   };
 
   const goToLogin = () => {
-    void finishToLogin();
+    void finishToLogin(false);
+  };
+
+  const goToLoginAfterSuccess = () => {
+    void finishToLogin(true);
   };
 
   return (
@@ -174,7 +178,7 @@ export function AcceptInviteScreen({ token, onGoToLogin }: AcceptInviteScreenPro
                   <p className="sa__pane-sub" role="alert">
                     {loadError}
                   </p>
-                  <button type="button" className="sa__btn sa__btn--primary" onClick={onGoToLogin}>
+                  <button type="button" className="sa__btn sa__btn--primary" onClick={goToLogin}>
                     Ir a Entrar al Colegio
                   </button>
                 </div>
@@ -274,7 +278,7 @@ export function AcceptInviteScreen({ token, onGoToLogin }: AcceptInviteScreenPro
               ) : null}
 
               <div className="sa__mobile-switch">
-                <button type="button" className="sa__text-link" onClick={onGoToLogin}>
+                <button type="button" className="sa__text-link" onClick={goToLogin}>
                   ¿Ya tienes cuenta? Entrar al Colegio
                 </button>
               </div>
@@ -338,7 +342,11 @@ export function AcceptInviteScreen({ token, onGoToLogin }: AcceptInviteScreenPro
               Tu cuenta de docente está lista. Entra al colegio con tu email y la contraseña que
               acabas de crear.
             </p>
-            <button type="button" className="sa__btn sa__btn--primary" onClick={goToLogin}>
+            <button
+              type="button"
+              className="sa__btn sa__btn--primary"
+              onClick={goToLoginAfterSuccess}
+            >
               Entrar al Colegio
             </button>
           </div>

@@ -39,6 +39,8 @@ function AppShell() {
   );
   const [demoMode, setDemoMode] = useState(readDemoMode);
   const [forceAuth, setForceAuth] = useState(false);
+  /** Tras Registrar Docente → abrir SchoolAccess en modo login (no registro). */
+  const [preferLoginAccess, setPreferLoginAccess] = useState(false);
   /** Tras splash→auth: si la sesión llega tarde, saltar el gate. */
   const [awaitingAuthGate, setAwaitingAuthGate] = useState(false);
 
@@ -63,6 +65,7 @@ function AppShell() {
       setDemoMode(false);
     }
     setForceAuth(false);
+    setPreferLoginAccess(false);
     setBootDone(true);
   };
 
@@ -97,6 +100,7 @@ function AppShell() {
       <SchoolAccessScreen
         onAuthenticated={() => finishAuthGate(false)}
         onContinueLocal={enterDemo}
+        initialLoginMode={preferLoginAccess}
       />
     );
   };
@@ -114,6 +118,7 @@ function AppShell() {
           setAuthSkipped(false);
           writeDemoMode(false);
           setDemoMode(false);
+          setPreferLoginAccess(true);
           setForceAuth(true);
           setBootDone(true);
         }}

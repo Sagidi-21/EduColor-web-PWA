@@ -108,6 +108,12 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
     const lists = await listSchoolStaff(schoolId);
     setPending(lists.pending);
     setAccepted(lists.accepted);
+    if (!lists.ok) {
+      setAlertDialog({
+        title: "Listado de profesorado",
+        message: lists.message.trim() || "Error desconocido.",
+      });
+    }
   }, [schoolId]);
 
   useEffect(() => {
@@ -122,6 +128,12 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
         if (cancelled) return;
         setPending(lists.pending);
         setAccepted(lists.accepted);
+        if (!lists.ok) {
+          setAlertDialog({
+            title: "Listado de profesorado",
+            message: lists.message.trim() || "Error desconocido.",
+          });
+        }
       });
     };
     load();

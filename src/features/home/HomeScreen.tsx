@@ -47,14 +47,21 @@ export function HomeScreen({
   onExitDemo?: () => void;
 }) {
   const { aulas, setActiveAula } = useClassProfile();
-  const { primarySchool, session, schoolBootstrapError, retrySchoolBootstrap, signOut } =
-    useSchoolAuth();
+  const {
+    primarySchool,
+    session,
+    loading: authLoading,
+    schoolBootstrapError,
+    retrySchoolBootstrap,
+    signOut,
+  } = useSchoolAuth();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [bootstrapBusy, setBootstrapBusy] = useState(false);
   const selected = aulas.find((aula) => aula.id === selectedId);
+  // Nombre del colegio; nunca el copy de alta de owner en la cabecera del docente.
   const schoolLabel = demoMode
     ? "Modo DEMO"
-    : (primarySchool?.name ?? (session ? "Completando alta del colegio…" : "EduColor"));
+    : (primarySchool?.name ?? (session && authLoading ? "Cargando colegio…" : "EduColor"));
   const selectAula = (id: string) => {
     setSelectedId(id);
     setActiveAula(id);

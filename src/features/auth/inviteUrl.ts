@@ -32,12 +32,26 @@ export function setInviteSuccessFlash(): void {
   }
 }
 
-export function takeInviteSuccessFlash(): boolean {
+/** Solo lectura: no borrar (Strict Mode remonta y un take() prematuro dejaba el registro). */
+export function peekInviteSuccessFlash(): boolean {
   try {
-    const ok = sessionStorage.getItem(INVITE_SUCCESS_FLASH_KEY) === "1";
-    if (ok) sessionStorage.removeItem(INVITE_SUCCESS_FLASH_KEY);
-    return ok;
+    return sessionStorage.getItem(INVITE_SUCCESS_FLASH_KEY) === "1";
   } catch {
     return false;
   }
+}
+
+export function clearInviteSuccessFlash(): void {
+  try {
+    sessionStorage.removeItem(INVITE_SUCCESS_FLASH_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+/** @deprecated Preferir peek + clear; se mantiene por compat. */
+export function takeInviteSuccessFlash(): boolean {
+  const ok = peekInviteSuccessFlash();
+  if (ok) clearInviteSuccessFlash();
+  return ok;
 }

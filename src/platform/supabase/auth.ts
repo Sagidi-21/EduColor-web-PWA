@@ -302,7 +302,39 @@ export async function resolveSchoolNameForBootstrap(): Promise<string | null> {
 export async function fetchMySchools(): Promise<School[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = getSupabase();
-  const { data, error } = await supabase.from("schools").select("*").order("name");
-  if (error || !data) return [];
-  return data;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  // Preferir colegios donde soy owner (evita mirar un colegio «fantasma» como primary).
+  const { data: memberships, error: memError } = await supabase
+    .from("school_memberships")
+    .select("school_id, role, created_at")
+    .eq("user_id", user.id);
+  if (memError || !memberships?.length) {
+    const { data, error } = await supabase.from("schools").select("*").order("name");
+    if (error || !data) return [];
+    return data;
+  }
+
+  const ids = [...new Set(memberships.map((row) => row.school_id).filter(Boolean))];
+  const { data: schools, error: schoolsError } = await supabase
+    .from("schools")
+    .select("*")
+    .in("id", ids);
+  if (schoolsError || !schools?.length) return [];
+
+  const roleBySchool = new Map(
+    memberships.map((row) => [row.school_id, { role: row.role, created_at: row.created_at }]),
+  );
+  return [...schools].sort((a, b) => {
+    const aOwner = roleBySchool.get(a.id)?.role === "owner" ? 0 : 1;
+    const bOwner = roleBySchool.get(b.id)?.role === "owner" ? 0 : 1;
+    if (aOwner !== bOwner) return aOwner - bOwner;
+    const aCreated = roleBySchool.get(a.id)?.created_at ?? "";
+    const bCreated = roleBySchool.get(b.id)?.created_at ?? "";
+    if (aCreated !== bCreated) return aCreated.localeCompare(bCreated);
+    return a.name.localeCompare(b.name, "es");
+  });
 }

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import welcomeBgUrl from "../../assets/welcome-bg.png";
 import logoMarkUrl from "../../assets/logo_sin texto.png";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
@@ -13,7 +13,7 @@ import {
   sanitizePlainText,
   SCHOOL_NAME_MAX_LEN,
 } from "../../platform/supabase/formLimits";
-import { takeInviteSuccessFlash } from "./inviteUrl";
+import { clearInviteSuccessFlash, peekInviteSuccessFlash } from "./inviteUrl";
 import "./SchoolAccessScreen.css";
 
 /** Errores del enlace de confirmación (caducado / ya usado / inválido). */
@@ -50,6 +50,8 @@ interface SchoolAccessScreenProps {
   onAuthenticated: () => void;
   /** Entra en modo DEMO (catálogo limitado, sin configuración). */
   onContinueLocal?: () => void;
+  /** Abrir en «Entrar al Colegio» (p. ej. tras Registrar Docente). */
+  initialLoginMode?: boolean;
 }
 
 function IconMail() {
@@ -111,21 +113,30 @@ function IconArrowLeft() {
   );
 }
 
-export function SchoolAccessScreen({ onAuthenticated, onContinueLocal }: SchoolAccessScreenProps) {
+export function SchoolAccessScreen({
+  onAuthenticated,
+  onContinueLocal,
+  initialLoginMode = false,
+}: SchoolAccessScreenProps) {
   const { configured, refreshSchools } = useSchoolAuth();
   const [authBoot] = useState(() => {
-    const inviteOk = takeInviteSuccessFlash();
-    if (inviteOk) {
+    // peek (no take): Strict Mode remonta y un consume prematuro abría registro.
+    const fromInviteSuccess = peekInviteSuccessFlash();
+    if (fromInviteSuccess || initialLoginMode) {
       return {
         login: true,
         error: "",
-        info: "Cuenta creada. Entra al colegio con tu email y contraseña.",
+        info: fromInviteSuccess ? "Cuenta creada. Entra al colegio con tu email y contraseña." : "",
       };
     }
     const callbackError = consumeAuthCallbackError();
     return { login: Boolean(callbackError), error: callbackError ?? "", info: "" };
   });
   const [isLoginMode, setIsLoginMode] = useState(authBoot.login);
+
+  useEffect(() => {
+    if (authBoot.login) clearInviteSuccessFlash();
+  }, [authBoot.login]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [schoolName, setSchoolName] = useState("");
