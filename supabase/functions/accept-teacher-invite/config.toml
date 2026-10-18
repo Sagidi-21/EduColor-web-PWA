@@ -1,0 +1,2 @@
+# Alta pública vía token de invitación (sin sesión Auth previa).
+verify_jwt = false

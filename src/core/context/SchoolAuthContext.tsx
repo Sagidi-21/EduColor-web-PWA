@@ -12,6 +12,7 @@ import {
   ensureOwnerSchool,
   fetchMySchools,
   resolveSchoolNameForBootstrap,
+  sessionHasAppAccess,
   takePendingSchoolName,
   signOut as supabaseSignOut,
 } from "../../platform/supabase/auth";
@@ -49,12 +50,13 @@ async function syncPendingSchool(): Promise<{ schools: School[]; error: string |
 
   const pending = await resolveSchoolNameForBootstrap();
   if (!pending) {
-    return { schools, error: BOOTSTRAP_MISSING_NAME };
+    // Sin marca de alta de colegio: no es un owner a medias (p. ej. docente sin membresía).
+    return { schools, error: null };
   }
 
   const result = await ensureOwnerSchool(pending);
   if (!result.ok) {
-    return { schools, error: result.message };
+    return { schools, error: result.message || BOOTSTRAP_MISSING_NAME };
   }
   takePendingSchoolName();
   schools = await fetchMySchools();
@@ -108,35 +110,43 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
     const supabase = getSupabase();
     let cancelled = false;
 
-    void supabase.auth.getSession().then(async ({ data }) => {
-      if (cancelled) return;
-      setSession(data.session);
-      if (data.session) {
-        const { schools: next, error } = await syncPendingSchool();
-        if (!cancelled) {
-          await applySchools(next);
-          setSchoolBootstrapError(error);
-        }
-      } else {
+    const adoptSession = async (next: Session | null) => {
+      if (!next) {
+        setSession(null);
         setSchools([]);
         setSchoolRole(null);
         setSchoolBootstrapError(null);
+        return;
       }
+      // No publicar sesión si el docente está desactivado / sin colegio (evita salto a Welcome).
+      const allowed = await sessionHasAppAccess(next.user.id);
+      if (!allowed) {
+        try {
+          await supabase.auth.signOut({ scope: "local" });
+        } catch {
+          // ignore
+        }
+        setSession(null);
+        setSchools([]);
+        setSchoolRole(null);
+        setSchoolBootstrapError(null);
+        return;
+      }
+      setSession(next);
+      const { schools: list, error } = await syncPendingSchool();
+      await applySchools(list);
+      setSchoolBootstrapError(error);
+    };
+
+    void supabase.auth.getSession().then(async ({ data }) => {
+      if (cancelled) return;
+      await adoptSession(data.session);
       if (!cancelled) setLoading(false);
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
       void (async () => {
-        setSession(next);
-        if (next) {
-          const { schools: list, error } = await syncPendingSchool();
-          await applySchools(list);
-          setSchoolBootstrapError(error);
-        } else {
-          setSchools([]);
-          setSchoolRole(null);
-          setSchoolBootstrapError(null);
-        }
+        await adoptSession(next);
         setLoading(false);
       })();
     });

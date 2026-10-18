@@ -233,7 +233,6 @@ export function ViewTransition({ views, initialView, defaultTheme = "cube" }: Vi
     if (!nextView) return null;
     if (portalActive && isTransitioning && portalOrigin) {
       return {
-        key: nextView,
         custom: portalOrigin,
         variants: activeVariants,
         initial: "portalInStart",
@@ -242,7 +241,6 @@ export function ViewTransition({ views, initialView, defaultTheme = "cube" }: Vi
       };
     }
     return {
-      key: nextView,
       custom: direction,
       variants: activeVariants,
       initial: direction === "right" ? "rightInStart" : "leftInStart",

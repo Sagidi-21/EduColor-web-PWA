@@ -90,6 +90,24 @@ En **Authentication → Settings** (o Email), busca **OTP / Mailer OTP expiratio
   registrar el colegio o contactar soporte; no hay “reenviar enlace” self-serve
   en V1 para el alta de centro.
 
+## Invitaciones de profesorado (D-029)
+
+1. El owner crea la invitación en **Profesorado** → se genera
+   `https://tu-app/?invite=<token>` (caduca 72 h).
+2. **Hoy el correo de invitación no se envía solo**: se muestra el enlace para
+   copiar (pruebas). Cuando se active el envío, irá por **SMTP propio**
+   (Resend, etc.), no por el mailer de “Confirm signup” del alta de colegio.
+3. El docente abre el enlace → pantalla **Registrar Docente** (crear contraseña).
+4. Migración: `20261018120000_peek_teacher_invite.sql` (`peek_teacher_invite`,
+   `complete_teacher_invite`).
+5. Edge Function (alta con email ya verificado):
+
+   ```bash
+   npx supabase functions deploy accept-teacher-invite
+   ```
+
+   Código en `supabase/functions/accept-teacher-invite/`.
+
 ## Checklist producción (OWASP Top 10:2025 — A02)
 
 1. **URL Configuration:** Site URL = dominio Netlify (`https://….netlify.app`).

@@ -51,6 +51,13 @@ function avatarTone(seed: string): number {
   return hash;
 }
 
+function teacherDisplayName(row: AcceptedTeacherRow): string {
+  const name = [row.first_name, row.last_name_1, row.last_name_2].filter(Boolean).join(" ").trim();
+  return name || row.email || "este profesor";
+}
+
+type StaffConfirm = { kind: "activate" | "deactivate" | "remove"; row: AcceptedTeacherRow } | null;
+
 export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
   const { primarySchool, isOwner, loading: authLoading } = useSchoolAuth();
   const schoolId = primarySchool?.id ?? null;
@@ -59,23 +66,30 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
   const [pending, setPending] = useState<PendingInviteRow[]>([]);
   const [accepted, setAccepted] = useState<AcceptedTeacherRow[]>([]);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
   const [info, setInfo] = useState("");
   const [lastInviteUrl, setLastInviteUrl] = useState("");
   const [filter, setFilter] = useState("");
 
   const [firstName, setFirstName] = useState("");
-  const [lastName1, setLastName1] = useState("");
-  const [lastName2, setLastName2] = useState("");
+  const [lastNames, setLastNames] = useState("");
   const [email, setEmail] = useState("");
+  const [staffConfirm, setStaffConfirm] = useState<StaffConfirm>(null);
+  const [confirmBusy, setConfirmBusy] = useState(false);
+  const [alertDialog, setAlertDialog] = useState<{ title: string; message: string } | null>(null);
+
+  const showError = (message: string, title = "No se pudo completar") => {
+    setAlertDialog({ title, message: message.trim() || "Error desconocido." });
+  };
 
   const inviteValid =
     firstName.trim().length >= 1 &&
-    lastName1.trim().length >= 1 &&
+    lastNames.trim().length >= 1 &&
     email.includes("@") &&
     email.trim().length >= 5;
 
+  const acceptedCount = accepted.length;
   const activeCount = useMemo(() => accepted.filter((row) => row.is_active).length, [accepted]);
+  const inactiveCount = useMemo(() => accepted.filter((row) => !row.is_active).length, [accepted]);
 
   const filteredAccepted = useMemo(() => {
     const q = filter.trim().toLowerCase();
@@ -103,33 +117,44 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
     }
     if (!schoolId) return;
     let cancelled = false;
-    void listSchoolStaff(schoolId).then((lists) => {
-      if (cancelled) return;
-      setPending(lists.pending);
-      setAccepted(lists.accepted);
-    });
+    const load = () => {
+      void listSchoolStaff(schoolId).then((lists) => {
+        if (cancelled) return;
+        setPending(lists.pending);
+        setAccepted(lists.accepted);
+      });
+    };
+    load();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") load();
+    };
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
       cancelled = true;
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [authLoading, isOwner, schoolId, onBack]);
 
   const onInvite = async (event: FormEvent) => {
     event.preventDefault();
     if (!schoolId || !inviteValid) return;
-    setError("");
     setInfo("");
     setLastInviteUrl("");
     setBusy(true);
     try {
+      if (!schoolId) {
+        showError("No hay colegio activo. Cierra sesión y vuelve a entrar.");
+        return;
+      }
       const result = await createTeacherInvite({
         schoolId,
         email,
         firstName,
-        lastName1,
-        lastName2,
+        lastName1: lastNames,
+        lastName2: "",
       });
       if (!result.ok) {
-        setError(result.message);
+        showError(result.message);
         return;
       }
       setLastInviteUrl(result.inviteUrl);
@@ -137,8 +162,7 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
         "Invitación enviada con éxito. El docente recibirá un correo con su enlace provisional (mientras el servidor de correo no esté activo, copia el enlace abajo).",
       );
       setFirstName("");
-      setLastName1("");
-      setLastName2("");
+      setLastNames("");
       setEmail("");
       await refresh();
     } finally {
@@ -301,32 +325,21 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
                 </label>
                 <label className="prof__field">
                   <span className="prof__label">
-                    1.er apellido <span className="prof__req">*</span>
+                    Apellidos <span className="prof__req">*</span>
                   </span>
                   <input
-                    value={lastName1}
+                    value={lastNames}
                     maxLength={PERSON_NAME_MAX_LEN}
-                    placeholder="Ej. Gómez"
+                    placeholder="Ej. Gómez Serrano"
                     onChange={(e) =>
-                      setLastName1(sanitizePlainText(e.target.value, PERSON_NAME_MAX_LEN))
+                      setLastNames(sanitizePlainText(e.target.value, PERSON_NAME_MAX_LEN))
                     }
                     required
                   />
                 </label>
-                <label className="prof__field">
-                  <span className="prof__label">2.º apellido</span>
-                  <input
-                    value={lastName2}
-                    maxLength={PERSON_NAME_MAX_LEN}
-                    placeholder="Ej. Serrano"
-                    onChange={(e) =>
-                      setLastName2(sanitizePlainText(e.target.value, PERSON_NAME_MAX_LEN))
-                    }
-                  />
-                </label>
                 <label className="prof__field prof__field--email">
                   <span className="prof__label">
-                    Email institucional <span className="prof__req">*</span>
+                    Email <span className="prof__req">*</span>
                   </span>
                   <span className="prof__input-wrap">
                     <input
@@ -374,11 +387,6 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
                 </div>
               </div>
 
-              {error ? (
-                <div className="prof__feedback prof__feedback--error" role="alert">
-                  {error}
-                </div>
-              ) : null}
               {info ? (
                 <div className="prof__feedback prof__feedback--ok">
                   <div className="prof__feedback-main">
@@ -422,123 +430,21 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
           <section className="prof__block">
             <div className="prof__block-head">
               <div className="prof__block-title-row">
-                <h2 className="prof__section-title">Invitaciones pendientes</h2>
-                <span className="prof__chip prof__chip--warn">
-                  {pending.length} pendiente{pending.length === 1 ? "" : "s"}
-                </span>
-              </div>
-              <span className="prof__block-note">
-                Los enlaces caducan automáticamente tras 72 horas
-              </span>
-            </div>
-
-            <div className="prof__table-card">
-              <div className="prof__table-scroll">
-                <table className="prof__table">
-                  <thead>
-                    <tr>
-                      <th>Nombre</th>
-                      <th>1.er apellido</th>
-                      <th>2.º apellido</th>
-                      <th>Email</th>
-                      <th>Fecha envío</th>
-                      <th>Vigencia</th>
-                      <th className="prof__th-actions">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {pending.length === 0 ? (
-                      <tr>
-                        <td colSpan={7} className="prof__empty">
-                          No hay invitaciones pendientes.
-                        </td>
-                      </tr>
-                    ) : (
-                      pending.map((row) => {
-                        const vig = hoursUntil(row.expires_at);
-                        return (
-                          <tr key={row.id}>
-                            <td>
-                              <div className="prof__name-cell">
-                                <span
-                                  className={`prof__avatar prof__avatar--t${avatarTone(row.email)}`}
-                                >
-                                  {initials(row.first_name, row.last_name_1)}
-                                </span>
-                                <span className="prof__name">{row.first_name}</span>
-                              </div>
-                            </td>
-                            <td className="prof__strong">{row.last_name_1}</td>
-                            <td className="prof__muted-cell">{row.last_name_2 || "—"}</td>
-                            <td className="prof__email">{row.email}</td>
-                            <td className="prof__muted-cell">{formatDate(row.sent_at)}</td>
-                            <td>
-                              <span
-                                className={`prof__vigencia ${vig.urgent ? "prof__vigencia--urgent" : ""}`}
-                              >
-                                <svg
-                                  className="prof__icon-xs"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  aria-hidden
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                                  />
-                                </svg>
-                                Expira en {vig.hours}h
-                              </span>
-                            </td>
-                            <td className="prof__td-actions">
-                              <button
-                                type="button"
-                                className="prof__icon-btn prof__icon-btn--danger"
-                                title="Revocar invitación"
-                                onClick={() =>
-                                  void cancelTeacherInvite(row.id).then(async (r) => {
-                                    if (!r.ok) setError(r.message ?? "Error");
-                                    else await refresh();
-                                  })
-                                }
-                              >
-                                <svg
-                                  className="prof__icon"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  aria-hidden
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                  />
-                                </svg>
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
-
-          <section className="prof__block">
-            <div className="prof__block-head">
-              <div className="prof__block-title-row">
                 <h2 className="prof__section-title">Profesores activos</h2>
-                <span className="prof__chip prof__chip--ok">
-                  <span className="prof__dot prof__dot--ok" />
-                  {activeCount} aceptada{activeCount === 1 ? "" : "s"}
-                </span>
+                <div className="prof__chip-row">
+                  <span className="prof__chip prof__chip--ok">
+                    <span className="prof__dot prof__dot--ok" />
+                    {acceptedCount} aceptada{acceptedCount === 1 ? "" : "s"}
+                  </span>
+                  <span className="prof__chip prof__chip--ok">
+                    <span className="prof__dot prof__dot--ok" />
+                    {activeCount} activo{activeCount === 1 ? "" : "s"}
+                  </span>
+                  <span className="prof__chip prof__chip--warn">
+                    <span className="prof__dot prof__dot--warn" />
+                    {inactiveCount} desactivado{inactiveCount === 1 ? "" : "s"}
+                  </span>
+                </div>
               </div>
               <div className="prof__search">
                 <svg
@@ -571,8 +477,7 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
                   <thead>
                     <tr>
                       <th>Nombre</th>
-                      <th>1.er apellido</th>
-                      <th>2.º apellido</th>
+                      <th>Apellidos</th>
                       <th>Email</th>
                       <th>Fecha aceptación</th>
                       <th>Estado</th>
@@ -582,95 +487,85 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
                   <tbody>
                     {filteredAccepted.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="prof__empty">
+                        <td colSpan={6} className="prof__empty">
                           {accepted.length === 0
                             ? "Aún no hay profesores activos."
                             : "Ningún resultado con ese filtro."}
                         </td>
                       </tr>
                     ) : (
-                      filteredAccepted.map((row) => (
-                        <tr
-                          key={row.membership_id}
-                          className={row.is_active ? undefined : "prof__row--off"}
-                        >
-                          <td>
-                            <div className="prof__name-cell">
-                              <span
-                                className={`prof__avatar prof__avatar--t${avatarTone(row.email ?? row.membership_id)}`}
-                              >
-                                {initials(row.first_name, row.last_name_1)}
-                              </span>
-                              <span className="prof__name">{row.first_name ?? "—"}</span>
-                            </div>
-                          </td>
-                          <td className="prof__strong">{row.last_name_1 ?? "—"}</td>
-                          <td className="prof__muted-cell">{row.last_name_2 || "—"}</td>
-                          <td className="prof__muted-cell">{row.email ?? "—"}</td>
-                          <td className="prof__muted-cell">{formatDate(row.accepted_at)}</td>
-                          <td>
-                            {row.is_active ? (
-                              <span className="prof__status prof__status--on">
-                                <span className="prof__dot prof__dot--ok" />
-                                Activo
-                              </span>
-                            ) : (
-                              <span className="prof__status prof__status--off">Desactivado</span>
-                            )}
-                          </td>
-                          <td className="prof__td-actions">
-                            <div className="prof__row-actions">
-                              <button
-                                type="button"
-                                className="prof__text-action"
-                                onClick={() =>
-                                  void setTeacherActive(row.membership_id, !row.is_active).then(
-                                    async (r) => {
-                                      if (!r.ok) setError(r.message ?? "Error");
-                                      else await refresh();
-                                    },
-                                  )
-                                }
-                              >
-                                {row.is_active ? "Desactivar" : "Activar"}
-                              </button>
-                              <button
-                                type="button"
-                                className="prof__icon-btn prof__icon-btn--danger"
-                                title="Eliminar del colegio"
-                                onClick={() => {
-                                  if (
-                                    !window.confirm(
-                                      "¿Eliminar a este profesor del colegio? Esta acción no se puede deshacer.",
-                                    )
-                                  ) {
-                                    return;
-                                  }
-                                  void removeTeacher(row.membership_id).then(async (r) => {
-                                    if (!r.ok) setError(r.message ?? "Error");
-                                    else await refresh();
-                                  });
-                                }}
-                              >
-                                <svg
-                                  className="prof__icon"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  aria-hidden
+                      filteredAccepted.map((row) => {
+                        const apellidos =
+                          [row.last_name_1, row.last_name_2].filter(Boolean).join(" ") || "—";
+                        return (
+                          <tr
+                            key={row.membership_id}
+                            className={row.is_active ? undefined : "prof__row--off"}
+                          >
+                            <td>
+                              <div className="prof__name-cell">
+                                <span
+                                  className={`prof__avatar prof__avatar--t${avatarTone(row.email ?? row.membership_id)}`}
                                 >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                                  />
-                                </svg>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
+                                  {initials(row.first_name, row.last_name_1)}
+                                </span>
+                                <span className="prof__name">{row.first_name ?? "—"}</span>
+                              </div>
+                            </td>
+                            <td className="prof__strong">{apellidos}</td>
+                            <td className="prof__muted-cell">{row.email ?? "—"}</td>
+                            <td className="prof__muted-cell">{formatDate(row.accepted_at)}</td>
+                            <td>
+                              {row.is_active ? (
+                                <span className="prof__status prof__status--on">
+                                  <span className="prof__dot prof__dot--ok" />
+                                  Activo
+                                </span>
+                              ) : (
+                                <span className="prof__status prof__status--off">Desactivado</span>
+                              )}
+                            </td>
+                            <td className="prof__td-actions">
+                              <div className="prof__row-actions">
+                                <button
+                                  type="button"
+                                  className="prof__text-action"
+                                  onClick={() =>
+                                    setStaffConfirm({
+                                      kind: row.is_active ? "deactivate" : "activate",
+                                      row,
+                                    })
+                                  }
+                                >
+                                  {row.is_active ? "Desactivar" : "Activar"}
+                                </button>
+                                <button
+                                  type="button"
+                                  className="prof__icon-btn prof__icon-btn--danger"
+                                  title="Eliminar del colegio"
+                                  aria-label="Eliminar del colegio"
+                                  onClick={() => setStaffConfirm({ kind: "remove", row })}
+                                >
+                                  <svg
+                                    className="prof__icon"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    aria-hidden
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>
@@ -683,8 +578,270 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
               ) : null}
             </div>
           </section>
+
+          <section className="prof__block">
+            <div className="prof__block-head">
+              <div className="prof__block-title-row">
+                <h2 className="prof__section-title">Invitaciones pendientes</h2>
+                <span className="prof__chip prof__chip--warn">
+                  <span className="prof__dot prof__dot--warn" />
+                  {pending.length} pendiente{pending.length === 1 ? "" : "s"}
+                </span>
+              </div>
+              <span className="prof__block-note">
+                Los enlaces caducan automáticamente tras 72 horas
+              </span>
+            </div>
+
+            <div className="prof__table-card">
+              <div className="prof__table-scroll">
+                <table className="prof__table">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Apellidos</th>
+                      <th>Email</th>
+                      <th>Fecha envío</th>
+                      <th>Vigencia</th>
+                      <th className="prof__th-actions">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pending.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="prof__empty">
+                          No hay invitaciones pendientes.
+                        </td>
+                      </tr>
+                    ) : (
+                      pending.map((row) => {
+                        const vig = hoursUntil(row.expires_at);
+                        const apellidos =
+                          [row.last_name_1, row.last_name_2].filter(Boolean).join(" ") || "—";
+                        return (
+                          <tr key={row.id}>
+                            <td>
+                              <div className="prof__name-cell">
+                                <span
+                                  className={`prof__avatar prof__avatar--t${avatarTone(row.email)}`}
+                                >
+                                  {initials(row.first_name, row.last_name_1)}
+                                </span>
+                                <span className="prof__name">{row.first_name}</span>
+                              </div>
+                            </td>
+                            <td className="prof__strong">{apellidos}</td>
+                            <td className="prof__email">{row.email}</td>
+                            <td className="prof__muted-cell">{formatDate(row.sent_at)}</td>
+                            <td>
+                              <span
+                                className={`prof__vigencia ${vig.urgent ? "prof__vigencia--urgent" : ""}`}
+                              >
+                                <svg
+                                  className="prof__icon-xs"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  aria-hidden
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                  />
+                                </svg>
+                                Expira en {vig.hours}h
+                              </span>
+                            </td>
+                            <td className="prof__td-actions">
+                              <button
+                                type="button"
+                                className="prof__icon-btn prof__icon-btn--danger"
+                                title="Revocar invitación"
+                                onClick={() =>
+                                  void cancelTeacherInvite(row.id).then(async (r) => {
+                                    if (!r.ok)
+                                      showError(r.message ?? "Error", "No se pudo revocar");
+                                    else await refresh();
+                                  })
+                                }
+                              >
+                                <svg
+                                  className="prof__icon"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  aria-hidden
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                  />
+                                </svg>
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
         </div>
       </main>
+
+      {alertDialog ? (
+        <div
+          className="prof__modal"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="prof-alert-title"
+          aria-describedby="prof-alert-text"
+        >
+          <button
+            type="button"
+            className="prof__modal-backdrop"
+            aria-label="Cerrar"
+            onClick={() => setAlertDialog(null)}
+          />
+          <div className="prof__modal-card">
+            <h2 id="prof-alert-title" className="prof__modal-title">
+              {alertDialog.title}
+            </h2>
+            <p id="prof-alert-text" className="prof__modal-text prof__modal-text--error">
+              {alertDialog.message}
+            </p>
+            <div className="prof__modal-actions">
+              <button
+                type="button"
+                className="prof__modal-btn prof__modal-btn--primary"
+                onClick={() => {
+                  void navigator.clipboard?.writeText(alertDialog.message).catch(() => undefined);
+                  setAlertDialog(null);
+                }}
+              >
+                Copiar y cerrar
+              </button>
+              <button
+                type="button"
+                className="prof__modal-btn prof__modal-btn--ghost"
+                onClick={() => setAlertDialog(null)}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {staffConfirm ? (
+        <div
+          className="prof__modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="prof-confirm-title"
+        >
+          <button
+            type="button"
+            className="prof__modal-backdrop"
+            aria-label="Cerrar"
+            disabled={confirmBusy}
+            onClick={() => {
+              if (!confirmBusy) setStaffConfirm(null);
+            }}
+          />
+          <div className="prof__modal-card">
+            <h2 id="prof-confirm-title" className="prof__modal-title">
+              {staffConfirm.kind === "remove"
+                ? "Eliminar del colegio"
+                : staffConfirm.kind === "deactivate"
+                  ? "Desactivar acceso"
+                  : "Activar acceso"}
+            </h2>
+            <p className="prof__modal-text">
+              {staffConfirm.kind === "remove" ? (
+                <>
+                  ¿Eliminar a <strong>{teacherDisplayName(staffConfirm.row)}</strong> del colegio?
+                  No podrá entrar y esta acción no se puede deshacer desde aquí.
+                </>
+              ) : staffConfirm.kind === "deactivate" ? (
+                <>
+                  ¿Desactivar a <strong>{teacherDisplayName(staffConfirm.row)}</strong>? No podrá
+                  entrar a la app hasta que lo actives de nuevo.
+                </>
+              ) : (
+                <>
+                  ¿Activar a <strong>{teacherDisplayName(staffConfirm.row)}</strong>? Recuperará el
+                  acceso al colegio con su email y contraseña.
+                </>
+              )}
+            </p>
+            <div className="prof__modal-actions">
+              <button
+                type="button"
+                className="prof__modal-btn prof__modal-btn--ghost"
+                disabled={confirmBusy}
+                onClick={() => setStaffConfirm(null)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className={`prof__modal-btn ${
+                  staffConfirm.kind === "remove"
+                    ? "prof__modal-btn--danger"
+                    : "prof__modal-btn--primary"
+                }`}
+                disabled={confirmBusy}
+                onClick={() => {
+                  const action = staffConfirm;
+                  setConfirmBusy(true);
+                  void (async () => {
+                    try {
+                      const result =
+                        action.kind === "remove"
+                          ? await removeTeacher(action.row.membership_id)
+                          : await setTeacherActive(
+                              action.row.membership_id,
+                              action.kind === "activate",
+                            );
+                      if (!result.ok) {
+                        setStaffConfirm(null);
+                        showError(
+                          result.message ?? "Error",
+                          action.kind === "remove"
+                            ? "No se pudo eliminar"
+                            : action.kind === "deactivate"
+                              ? "No se pudo desactivar"
+                              : "No se pudo activar",
+                        );
+                        return;
+                      }
+                      setStaffConfirm(null);
+                      await refresh();
+                    } finally {
+                      setConfirmBusy(false);
+                    }
+                  })();
+                }}
+              >
+                {confirmBusy
+                  ? "Espera…"
+                  : staffConfirm.kind === "remove"
+                    ? "Eliminar"
+                    : staffConfirm.kind === "deactivate"
+                      ? "Desactivar"
+                      : "Activar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

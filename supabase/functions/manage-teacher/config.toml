@@ -1,0 +1,3 @@
+# JWT se valida dentro (getUser + RPC is_school_owner).
+# verify_jwt en gateway con publishable keys devolvía 404 opaco.
+verify_jwt = false

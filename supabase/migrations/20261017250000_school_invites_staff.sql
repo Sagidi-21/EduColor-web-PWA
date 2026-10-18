@@ -180,7 +180,7 @@ begin
     and status = 'pending'
     and expires_at <= now();
 
-  select coalesce(jsonb_agg(row_to_json(x)::jsonb order by x.created_at desc), '[]'::jsonb)
+  select coalesce(jsonb_agg(row_to_json(x)::jsonb order by x.sent_at desc), '[]'::jsonb)
     into v_pending
   from (
     select id, email, first_name, last_name_1, last_name_2,

@@ -4,6 +4,8 @@ import type { School } from "./types";
 
 const PENDING_SCHOOL_KEY = "educolor_pending_school";
 
+type PendingSchoolPayload = { name: string; email: string };
+
 export function slugifySchoolName(name: string): string {
   const base = name
     .normalize("NFD")
@@ -15,10 +17,30 @@ export function slugifySchoolName(name: string): string {
   return base || "colegio";
 }
 
-/** localStorage: sobrevive al enlace del correo (otra pestaña). */
-export function storePendingSchoolName(name: string): void {
+function readPendingSchoolPayload(): PendingSchoolPayload | null {
   try {
-    localStorage.setItem(PENDING_SCHOOL_KEY, name.trim());
+    const raw = localStorage.getItem(PENDING_SCHOOL_KEY)?.trim() || null;
+    if (!raw) return null;
+    // Legado: solo el nombre (inseguro entre usuarios del mismo navegador) → ignorar.
+    if (!raw.startsWith("{")) return null;
+    const parsed = JSON.parse(raw) as Partial<PendingSchoolPayload>;
+    const name = typeof parsed.name === "string" ? parsed.name.trim() : "";
+    const email = typeof parsed.email === "string" ? parsed.email.trim().toLowerCase() : "";
+    if (name.length < 2 || !email.includes("@")) return null;
+    return { name, email };
+  } catch {
+    return null;
+  }
+}
+
+/** localStorage ligado al email del alta (sobrevive al enlace del correo). */
+export function storePendingSchoolName(name: string, email: string): void {
+  try {
+    const payload: PendingSchoolPayload = {
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+    };
+    localStorage.setItem(PENDING_SCHOOL_KEY, JSON.stringify(payload));
   } catch {
     // storage no disponible
   }
@@ -26,37 +48,36 @@ export function storePendingSchoolName(name: string): void {
 
 export function takePendingSchoolName(): string | null {
   try {
-    const value = localStorage.getItem(PENDING_SCHOOL_KEY)?.trim() || null;
-    if (value) localStorage.removeItem(PENDING_SCHOOL_KEY);
-    return value;
+    const payload = readPendingSchoolPayload();
+    localStorage.removeItem(PENDING_SCHOOL_KEY);
+    return payload?.name ?? null;
   } catch {
     return null;
   }
 }
 
-export function peekPendingSchoolName(): string | null {
-  try {
-    return localStorage.getItem(PENDING_SCHOOL_KEY)?.trim() || null;
-  } catch {
-    return null;
-  }
+/** Solo válido si el email coincide con el usuario de la sesión actual. */
+export function peekPendingSchoolNameForEmail(email: string | null | undefined): string | null {
+  const payload = readPendingSchoolPayload();
+  if (!payload || !email) return null;
+  return payload.email === email.trim().toLowerCase() ? payload.name : null;
 }
 
 export type AuthResult =
   { ok: true; needsEmailConfirm?: boolean; message?: string } | { ok: false; message: string };
 
 /** Mensajes genéricos (OWASP A07): no revelar si email/nombre existen ni el estado de confirmación. */
-const MSG_CREDS_INVALID = "Las credenciales no son correctas.";
+const MSG_CREDS_INVALID = "Credenciales inválidas.";
 const MSG_PASSWORD_INVALID = "La contraseña no cumple con las restricciones.";
 const MSG_RATE_LIMIT = "Demasiados intentos. Espera un momento e inténtalo de nuevo.";
 
 function mapAuthError(message: string): string {
   const lower = message.toLowerCase();
   if (lower.includes("rate limit") || lower.includes("too many")) return MSG_RATE_LIMIT;
-  if (lower.includes("password") && !lower.includes("invalid login")) {
+  if (lower.includes("password") && !lower.includes("invalid login") && !lower.includes("banned")) {
     return MSG_PASSWORD_INVALID;
   }
-  // Incluye: invalid login, email not confirmed, already registered, duplicate…
+  // Incluye: invalid login, banned, email not confirmed, already registered, duplicate…
   return MSG_CREDS_INVALID;
 }
 
@@ -75,6 +96,37 @@ async function logAuthSecurityEvent(
   }
 }
 
+/**
+ * Acceso a la app: membresía owner o teacher activo.
+ * Alta de colegio pendiente solo si ESTE usuario tiene `pending_school_name` en metadata
+ * o un pending en localStorage ligado a SU email (nunca un pending ajeno del mismo PC).
+ */
+export async function sessionHasAppAccess(userId: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from("school_memberships")
+    .select("role, is_active")
+    .eq("user_id", userId);
+
+  if (!error && data && data.length > 0) {
+    return data.some(
+      (row) => row.role === "owner" || row.is_active === true || row.is_active === null,
+    );
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user || user.id !== userId) return false;
+
+  const meta = user.user_metadata ?? {};
+  const pendingMeta =
+    typeof meta.pending_school_name === "string" ? meta.pending_school_name.trim() : "";
+  if (pendingMeta.length >= 2) return true;
+
+  return Boolean(peekPendingSchoolNameForEmail(user.email));
+}
+
 export async function signInWithPassword(email: string, password: string): Promise<AuthResult> {
   if (!isSupabaseConfigured()) {
     return { ok: false, message: "Supabase no está configurado en este entorno." };
@@ -89,6 +141,21 @@ export async function signInWithPassword(email: string, password: string): Promi
     void logAuthSecurityEvent("login_fail", message);
     return { ok: false, message };
   }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  // Desactivado / sin membresía: misma respuesta que login fallido (sin dejar sesión).
+  if (!user || !(await sessionHasAppAccess(user.id))) {
+    try {
+      await supabase.auth.signOut({ scope: "local" });
+    } catch {
+      // ignore
+    }
+    void logAuthSecurityEvent("login_fail", "inactive_or_removed");
+    return { ok: false, message: MSG_CREDS_INVALID };
+  }
+
   return { ok: true };
 }
 
@@ -122,7 +189,7 @@ export async function signUpOwner(input: {
     return { ok: false, message: MSG_CREDS_INVALID };
   }
 
-  storePendingSchoolName(schoolName);
+  storePendingSchoolName(schoolName, email);
 
   const redirectTo = typeof window !== "undefined" ? `${window.location.origin}/` : undefined;
 
@@ -213,12 +280,10 @@ export async function ensureOwnerSchool(
 
 /**
  * Nombre para crear el colegio si la sesión aún no tiene escuela.
- * Prioriza pending_school_name (signup) frente a display_name genérico.
+ * Solo metadata de alta (`pending_school_name`) o localStorage del mismo email.
+ * Nunca display_name / perfil: un docente no debe convertirse en owner por su nombre.
  */
 export async function resolveSchoolNameForBootstrap(): Promise<string | null> {
-  const fromStorage = peekPendingSchoolName();
-  if (fromStorage) return fromStorage;
-
   if (!isSupabaseConfigured()) return null;
   const supabase = getSupabase();
   const {
@@ -231,16 +296,7 @@ export async function resolveSchoolNameForBootstrap(): Promise<string | null> {
     typeof meta.pending_school_name === "string" ? meta.pending_school_name.trim() : "";
   if (pendingMeta.length >= 2) return pendingMeta;
 
-  const displayMeta = typeof meta.display_name === "string" ? meta.display_name.trim() : "";
-  if (displayMeta.length >= 2) return displayMeta;
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("display_name")
-    .eq("id", user.id)
-    .maybeSingle();
-  const fromProfile = profile?.display_name?.trim() ?? "";
-  return fromProfile.length >= 2 ? fromProfile : null;
+  return peekPendingSchoolNameForEmail(user.email);
 }
 
 export async function fetchMySchools(): Promise<School[]> {

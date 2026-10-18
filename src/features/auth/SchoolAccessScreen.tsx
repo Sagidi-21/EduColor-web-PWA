@@ -13,6 +13,7 @@ import {
   sanitizePlainText,
   SCHOOL_NAME_MAX_LEN,
 } from "../../platform/supabase/formLimits";
+import { takeInviteSuccessFlash } from "./inviteUrl";
 import "./SchoolAccessScreen.css";
 
 /** Errores del enlace de confirmación (caducado / ya usado / inválido). */
@@ -113,8 +114,16 @@ function IconArrowLeft() {
 export function SchoolAccessScreen({ onAuthenticated, onContinueLocal }: SchoolAccessScreenProps) {
   const { configured, refreshSchools } = useSchoolAuth();
   const [authBoot] = useState(() => {
+    const inviteOk = takeInviteSuccessFlash();
+    if (inviteOk) {
+      return {
+        login: true,
+        error: "",
+        info: "Cuenta creada. Entra al colegio con tu email y contraseña.",
+      };
+    }
     const callbackError = consumeAuthCallbackError();
-    return { login: Boolean(callbackError), error: callbackError ?? "" };
+    return { login: Boolean(callbackError), error: callbackError ?? "", info: "" };
   });
   const [isLoginMode, setIsLoginMode] = useState(authBoot.login);
   const [email, setEmail] = useState("");
@@ -123,7 +132,7 @@ export function SchoolAccessScreen({ onAuthenticated, onContinueLocal }: SchoolA
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(authBoot.error);
-  const [info, setInfo] = useState("");
+  const [info, setInfo] = useState(authBoot.info);
 
   const registerFormValid =
     schoolName.trim().length >= 2 && isAuthEmailValid(email) && isAuthPasswordValid(password);

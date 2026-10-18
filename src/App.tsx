@@ -4,6 +4,8 @@ import { useClassProfile } from "./core/context/ClassProfileContext";
 import { SchoolAuthProvider, useSchoolAuth } from "./core/context/SchoolAuthContext";
 import { DEMO_ACCENT_COLOR, readDemoMode, writeDemoMode } from "./core/demo/demoMode";
 import { ViewTransition } from "./core/transition/ViewTransition";
+import { AcceptInviteScreen } from "./features/auth/AcceptInviteScreen";
+import { clearInviteFromUrl, readInviteTokenFromUrl } from "./features/auth/inviteUrl";
 import { SchoolAccessScreen } from "./features/auth/SchoolAccessScreen";
 import { ConfiguracionScreen } from "./features/configuracion/ConfiguracionScreen";
 import { ProfesoradoScreen } from "./features/profesorado/ProfesoradoScreen";
@@ -30,6 +32,7 @@ function AuthBusyPlaceholder() {
 function AppShell() {
   const { activeAulaId, aulas, save } = useClassProfile();
   const { loading: authLoading, session } = useSchoolAuth();
+  const [inviteToken, setInviteToken] = useState(() => readInviteTokenFromUrl());
   const [bootDone, setBootDone] = useState(false);
   const [authSkipped, setAuthSkipped] = useState(
     () => sessionStorage.getItem(AUTH_SKIP_KEY) === "1",
@@ -86,7 +89,9 @@ function AppShell() {
   };
 
   const renderSchoolAccess = () => {
-    if (authLoading) return <AuthBusyPlaceholder />;
+    // No desmontar el login si hay un flash de sesión (p. ej. docente rechazado):
+    // si no, se pierde el error y ViewTransition vuelve a Welcome.
+    if (authLoading && !session) return <AuthBusyPlaceholder />;
     if (session) return <AuthBusyPlaceholder />;
     return (
       <SchoolAccessScreen
@@ -95,6 +100,26 @@ function AppShell() {
       />
     );
   };
+
+  // Mientras haya ?invite=, mantener Registrar Docente (también tras el alta,
+  // cuando Auth ya tiene sesión: si no, se desmonta y no se ve el popup de éxito).
+  if (inviteToken) {
+    return (
+      <AcceptInviteScreen
+        token={inviteToken}
+        onGoToLogin={() => {
+          setInviteToken(null);
+          clearInviteFromUrl();
+          sessionStorage.removeItem(AUTH_SKIP_KEY);
+          setAuthSkipped(false);
+          writeDemoMode(false);
+          setDemoMode(false);
+          setForceAuth(true);
+          setBootDone(true);
+        }}
+      />
+    );
+  }
 
   const goToAuthOrApp = (navigate: (view: string, dir?: "left" | "right") => void) => {
     setAwaitingAuthGate(true);

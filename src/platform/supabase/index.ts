@@ -2,6 +2,7 @@ export { getSupabase, isSupabaseConfigured, pingSupabase } from "./client";
 export {
   ensureOwnerSchool,
   fetchMySchools,
+  sessionHasAppAccess,
   signInWithPassword,
   signOut,
   signUpOwner,
