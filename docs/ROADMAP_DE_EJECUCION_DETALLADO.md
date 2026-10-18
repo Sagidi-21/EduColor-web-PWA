@@ -360,7 +360,7 @@ Decisión de producto (Salvador):
 - Publicación de la app: **Netlify** (plan gratuito).
 - Uso de aula en el dispositivo sigue local (pizarra/fichas) sin depender de la nube.
 
-Queda pendiente de implementación técnica en **Fase 10** (tablas, login profesor, despliegue). Formalizar con el colegio (dirección/TIC/DPD) si el piloto lo exige.
+Implementación técnica = **Fase 10** (en curso). Formalizar con el colegio (dirección/TIC/DPD) si el piloto lo exige.
 
 ## Ya disponible
 
@@ -375,11 +375,32 @@ Queda pendiente de implementación técnica en **Fase 10** (tablas, login profes
 
 Añadir servicios remotos sin romper el uso offline ni abrir datos a otros usuarios.
 
-## Qué hacer
+## Estado: EN CURSO (2026-10-18)
+
+### Ya hecho (código + pruebas locales)
+
+- Esquema Supabase: colegios, perfiles, membresías, invitaciones, RLS, RPCs staff.
+- Login owner / docente; gate de acceso (sin sesión no se entra al catálogo salvo DEMO).
+- Invitación → Registrar Docente → contraseña → Entrar al Colegio.
+- Activar / desactivar / eliminar docente (Edge `manage-teacher` + ban Auth).
+- Tests Vitest con mocks de esos flujos (`staffFlows.test.ts`). Decisiones D-028–D-036.
+
+### Pendiente para cerrar el núcleo de Fase 10
+
+1. **Despliegue Netlify** de la PWA **con** Auth (env `VITE_SUPABASE_*`, Site URL / redirects Supabase). Deja de publicarse la app “abierta” sin login.
+2. **Cambiar contraseña** (D-036): enlace por email → el usuario **elige una contraseña nueva** (no se recupera la antigua).
+3. E2E staff (Playwright + Supabase de prueba) **después** de 1 y 2.
+4. Formalizar RGPD institucional si el piloto lo exige (cruzado con Fase 9).
+
+### Fuera de este cierre (siguen en roadmap amplio)
+
+- API REST versionada genérica, sync offline→nube de progreso, dashboard pedagógico remoto, MFA.
+
+## Qué hacer (lista histórica del roadmap; priorizar lo de “Pendiente” arriba)
 
 1. Crear API versionada con validación de entrada y contratos explícitos.
-2. Implementar login solo de profesorado, gestión de sesión, recuperación y cierre de sesión.
-3. Centralizar roles y autorización por recurso en el servidor.
+2. Implementar login solo de profesorado, gestión de sesión, **cambio de contraseña (nueva)** y cierre de sesión.
+3. Centralizar roles y autorización por recurso en el servidor (RLS + Edge ya cubren el piloto staff).
 4. Crear dashboard autenticado, gestión de actividades, clases y configuración pedagógica.
 5. Separar datos de centro, clase y usuario desde el esquema inicial.
 6. Sincronizar de forma segura los cambios locales pendientes cuando vuelva la conexión.
@@ -388,6 +409,8 @@ Añadir servicios remotos sin romper el uso offline ni abrir datos a otros usuar
 ## Terminado cuando
 
 - Un profesor autenticado solo puede acceder a los recursos aprobados de su centro y clase.
+- La PWA en Netlify exige Auth (salvo DEMO explícito).
+- El usuario puede **definir una contraseña nueva** si olvidó la anterior (D-036).
 
 ---
 

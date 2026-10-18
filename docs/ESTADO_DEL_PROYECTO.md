@@ -1,6 +1,6 @@
 ﻿# Estado del proyecto
 
-**Verificado contra el código el 2026-10-17.** Este documento es una página de
+**Verificado contra el código el 2026-10-18.** Este documento es una página de
 estado: dice en qué punto va el proyecto y **enlaza** a quien tiene el detalle. No
 mantiene su propia lista de actividades migradas ni sus propias cifras, porque
 esa duplicación es lo que hacía que los documentos de `docs/` se contradijeran
@@ -34,8 +34,19 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
   bastan; no se prioriza recuperar sesión a mitad tras cerrar por error.
 - **Fase 7 (generador de fichas):** **cerrada** el 2026-10-17 — 62/62 validadas.
 - **Fase 9 (privacidad / infra):** alcance **aprobado** (D-028) — sin datos de
-  alumnos; BD Supabase (colegios + profesorado); app en Netlify. Implementación
-  = Fase 10.
+  alumnos; BD Supabase (colegios + profesorado); publicación en Netlify.
+  Formalizar RGPD con el colegio cuando el piloto lo exija.
+- **Fase 10 (API / identidad / staff):** **en curso** (2026-10-18). Ya en código
+  y probado en local: alta de colegio (owner), login, invitaciones de docente,
+  alta con contraseña, activar/desactivar/eliminar (ban Auth + corte de sesión),
+  chips de Profesorado, Edge Functions `accept-teacher-invite` /
+  `manage-teacher`, migraciones Supabase, tests Vitest con mocks
+  (`staffFlows.test.ts`). Decisiones D-028–D-036.
+  - **Siguiente dentro de Fase 10:** (1) despliegue **Netlify** de la PWA _con_
+    gate de login (ya no la app abierta sin Auth); (2) **cambiar contraseña** =
+    definir una nueva (nunca “recuperar” la antigua) — D-036; (3) E2E staff
+    contra Supabase de prueba (después de Netlify + cambio de contraseña).
+  - Checklist operativo: [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md).
 - **Siguiente motor:** **ninguno**.
 - **Fase 6 (offline/PWA):** aplazada; se retomará más adelante.
 - **Fase 4 (pizarra física):** a la espera de feedback del colegio (hardware).
@@ -57,7 +68,9 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 La V1 incluye exclusivamente Matemáticas de 1.º y 2.º de Primaria,
 profesorado, pizarra digital, fichas, sesiones offline y reconocimiento de
 dígitos. La arquitectura se mantiene preparada para crecer, pero alumnado,
-tareas, familias y multi-colegio no entran en esta versión.
+tareas y familias no entran en esta versión. El **piloto multi-colegio** de
+D-028 (varios centros + accesos de profesorado, sin datos de menores) sí entra
+vía Fase 9/10; no es el multi-colegio “completo” con alumnado.
 
 Una **sesión offline** significa que, si se corta Internet durante una
 actividad de pizarra, permanecen disponibles la actividad ya cargada, sus

@@ -436,19 +436,35 @@ Existe aprobación documentada de alcance de datos e infraestructura.
 
 # Fase 10 — API e identidad
 
+## Estado (2026-10-18): en curso
+
+Ver detalle en `ROADMAP_DE_EJECUCION_DETALLADO.md` (Fase 10) y
+`ESTADO_DEL_PROYECTO.md`. Resumen: login + staff + invites **hechos** en local;
+pendiente Netlify con Auth, **cambiar contraseña = nueva** (D-036), luego E2E.
+
 ## Pasos
 
-1. Definir contratos API y modelo de errores versionado.
-2. Crear entorno staging aislado y secretos fuera del repositorio.
-3. Implementar autenticación de profesorado, expiración, cierre y recuperación segura.
+1. Definir contratos API y modelo de errores versionado. 🚧 parcial — piloto usa
+   Supabase RPC + Edge Functions, no una API REST genérica.
+2. Crear entorno staging aislado y secretos fuera del repositorio. 🚧 parcial —
+   secrets en `.env` local; Netlify env pendiente
+   ([CHECKLIST_CALIDAD_AUTH.md](CHECKLIST_CALIDAD_AUTH.md) §E).
+3. Implementar autenticación de profesorado, expiración, cierre y **cambio de
+   contraseña (definir una nueva; D-036)**. 🚧 parcial — login/cierre/ban hechos;
+   UI de contraseña nueva pendiente.
 4. Implementar roles y autorización server-side por centro, clase y recurso.
+   ✅ completado para el piloto staff (RLS + `is_school_owner` / member activo).
 5. Crear endpoints mínimos de perfil, actividades/configuración y sincronización.
-6. Añadir validación de entrada, rate limiting, logs minimizados y pruebas de permisos.
-7. Probar offline/reconexión y conflictos de datos locales.
+   ⏳ pendiente (fuera del cierre mínimo de Fase 10).
+6. Añadir validación de entrada, rate limiting, logs minimizados y pruebas de
+   permisos. 🚧 parcial — OWASP signup, rate invite, `auth_security_events`,
+   Vitest mocks; E2E pendiente.
+7. Probar offline/reconexión y conflictos de datos locales. ⏳ pendiente (Fase 6).
 
 ## Comprobación de salida
 
 Un profesor solo lee/modifica recursos autorizados y los tests bloquean accesos cruzados.
+PWA en Netlify con gate de Auth; cambio de contraseña = contraseña nueva (D-036).
 
 ---
 

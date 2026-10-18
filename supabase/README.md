@@ -100,13 +100,32 @@ En **Authentication → Settings** (o Email), busca **OTP / Mailer OTP expiratio
 3. El docente abre el enlace → pantalla **Registrar Docente** (crear contraseña).
 4. Migración: `20261018120000_peek_teacher_invite.sql` (`peek_teacher_invite`,
    `complete_teacher_invite`).
-5. Edge Function (alta con email ya verificado):
+5. Edge Functions (alta docente + gestión activa/baja):
 
    ```bash
-   npx supabase functions deploy accept-teacher-invite
+   npx supabase functions deploy accept-teacher-invite --no-verify-jwt
+   npx supabase functions deploy manage-teacher --no-verify-jwt
    ```
 
-   Código en `supabase/functions/accept-teacher-invite/`.
+   Código en `supabase/functions/`. El JWT del owner se valida **dentro** de
+   `manage-teacher` (D-035).
+
+## Despliegue Netlify (PWA con Auth)
+
+La build de producción debe incluir el gate de login (no la app antigua sin
+cuenta). En Netlify → Site settings → Environment variables:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY` (Publishable; **nunca** service_role)
+
+Build command habitual: `npm run build`. Publish directory: `dist`.
+
+Tras el primer deploy: actualizar en Supabase Auth el **Site URL** y
+**Redirect URLs** al dominio Netlify. Checklist: `docs/CHECKLIST_CALIDAD_AUTH.md` §E.
+
+**Cambio de contraseña (D-036, Fase 10):** el usuario siempre **elige una
+contraseña nueva** (enlace por email); no se recupera la anterior. Implementación
+en la app pendiente tras este deploy.
 
 ## Checklist producción (OWASP Top 10:2025 — A02)
 
