@@ -10,6 +10,7 @@ import {
   cancelTeacherInvite,
   createTeacherInvite,
   listSchoolStaff,
+  staffChipCounts,
   removeTeacher,
   setTeacherActive,
   type AcceptedTeacherRow,
@@ -87,9 +88,11 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
     email.includes("@") &&
     email.trim().length >= 5;
 
-  const acceptedCount = accepted.length;
-  const activeCount = useMemo(() => accepted.filter((row) => row.is_active).length, [accepted]);
-  const inactiveCount = useMemo(() => accepted.filter((row) => !row.is_active).length, [accepted]);
+  const chipCounts = useMemo(() => staffChipCounts({ pending, accepted }), [pending, accepted]);
+  const acceptedCount = chipCounts.accepted;
+  const activeCount = chipCounts.active;
+  const inactiveCount = chipCounts.inactive;
+  const pendingCount = chipCounts.pending;
 
   const filteredAccepted = useMemo(() => {
     const q = filter.trim().toLowerCase();
@@ -258,7 +261,7 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
               <div className="prof__stat">
                 <span className="prof__dot prof__dot--warn" />
                 <span className="prof__stat-label">Pendientes:</span>
-                <span className="prof__stat-value">{pending.length}</span>
+                <span className="prof__stat-value">{pendingCount}</span>
               </div>
               <div className="prof__stat">
                 <span className="prof__dot prof__dot--ok" />
@@ -597,7 +600,7 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
                 <h2 className="prof__section-title">Invitaciones pendientes</h2>
                 <span className="prof__chip prof__chip--warn">
                   <span className="prof__dot prof__dot--warn" />
-                  {pending.length} pendiente{pending.length === 1 ? "" : "s"}
+                  {pendingCount} pendiente{pendingCount === 1 ? "" : "s"}
                 </span>
               </div>
               <span className="prof__block-note">

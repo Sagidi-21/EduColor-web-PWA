@@ -35,6 +35,21 @@ export interface StaffLists {
   accepted: AcceptedTeacherRow[];
 }
 
+/** Chips de Profesorado: misma regla que la UI (aceptadas = total memberships teacher). */
+export function staffChipCounts(lists: {
+  pending: PendingInviteRow[];
+  accepted: AcceptedTeacherRow[];
+}): { pending: number; accepted: number; active: number; inactive: number } {
+  const accepted = lists.accepted.length;
+  const active = lists.accepted.filter((row) => row.is_active).length;
+  return {
+    pending: lists.pending.length,
+    accepted,
+    active,
+    inactive: accepted - active,
+  };
+}
+
 export type CreateInviteResult =
   { ok: true; inviteUrl: string; expiresAt: string } | { ok: false; message: string };
 
