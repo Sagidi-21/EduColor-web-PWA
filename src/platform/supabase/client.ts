@@ -1,7 +1,9 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "./types";
 
-let client: SupabaseClient<Database> | null = null;
+// Sin genérico Database: supabase-js ≥2.49 exige un shape de schema que nuestro
+// types.ts mínimo no cumple (RPC/select caían en `never` y rompían `tsc -b` / pre-push).
+// Los contratos de dominio siguen en `./types` para la app.
+let client: SupabaseClient | null = null;
 
 /** true si hay URL + Publishable key en el entorno Vite. */
 export function isSupabaseConfigured(): boolean {
@@ -14,7 +16,7 @@ export function isSupabaseConfigured(): boolean {
  * Cliente único de Supabase para el frontend.
  * Usa solo la Publishable / anon key (nunca la Secret).
  */
-export function getSupabase(): SupabaseClient<Database> {
+export function getSupabase(): SupabaseClient {
   if (client) return client;
 
   const url = import.meta.env.VITE_SUPABASE_URL?.trim();
@@ -26,7 +28,7 @@ export function getSupabase(): SupabaseClient<Database> {
     );
   }
 
-  client = createClient<Database>(url, key, {
+  client = createClient(url, key, {
     auth: {
       persistSession: true,
       autoRefreshToken: true,
