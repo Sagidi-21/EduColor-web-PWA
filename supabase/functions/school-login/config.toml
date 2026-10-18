@@ -1,0 +1,2 @@
+# JWT validado en el cuerpo (email/password). Gateway verify_jwt=false.
+verify_jwt = false

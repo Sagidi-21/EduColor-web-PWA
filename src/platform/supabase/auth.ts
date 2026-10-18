@@ -68,8 +68,12 @@ export type AuthResult =
 
 /** Mensajes genéricos (OWASP A07): no revelar si email/nombre existen ni el estado de confirmación. */
 const MSG_CREDS_INVALID = "Credenciales inválidas.";
+/** D-037: tras 3 fallos (email+IP) o mientras dura el bloqueo. */
+export const MSG_LOGIN_LOCKOUT = "Demasiadas credenciales inválidas. Espera 15 minutos.";
 const MSG_PASSWORD_INVALID = "La contraseña no cumple con las restricciones.";
 const MSG_RATE_LIMIT = "Demasiados intentos. Espera un momento e inténtalo de nuevo.";
+const MSG_FORGOT_NEUTRAL =
+  "Si el email está registrado, recibirás un enlace para definir una contraseña nueva.";
 
 function mapAuthError(message: string): string {
   const lower = message.toLowerCase();
@@ -132,31 +136,74 @@ export async function signInWithPassword(email: string, password: string): Promi
     return { ok: false, message: "Supabase no está configurado en este entorno." };
   }
   const supabase = getSupabase();
-  const { error } = await supabase.auth.signInWithPassword({
-    email: email.trim(),
-    password,
+  // D-037: login vía Edge (lockout email+IP; ban/membresía en servidor).
+  const { data, error } = await supabase.functions.invoke("school-login", {
+    body: { email: email.trim().toLowerCase(), password },
   });
-  if (error) {
+  const payload = data as {
+    ok?: boolean;
+    message?: string;
+    locked?: boolean;
+    access_token?: string;
+    refresh_token?: string;
+  } | null;
+
+  if (error && !payload) {
     const message = mapAuthError(error.message);
     void logAuthSecurityEvent("login_fail", message);
     return { ok: false, message };
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  // Desactivado / sin membresía: misma respuesta que login fallido (sin dejar sesión).
-  if (!user || !(await sessionHasAppAccess(user.id))) {
-    try {
-      await supabase.auth.signOut({ scope: "local" });
-    } catch {
-      // ignore
-    }
-    void logAuthSecurityEvent("login_fail", "inactive_or_removed");
+  if (!payload?.ok) {
+    const message =
+      payload?.locked || payload?.message === MSG_LOGIN_LOCKOUT
+        ? MSG_LOGIN_LOCKOUT
+        : (payload?.message ?? MSG_CREDS_INVALID);
+    return { ok: false, message };
+  }
+
+  if (!payload.access_token || !payload.refresh_token) {
+    return { ok: false, message: MSG_CREDS_INVALID };
+  }
+
+  const { error: sessionError } = await supabase.auth.setSession({
+    access_token: payload.access_token,
+    refresh_token: payload.refresh_token,
+  });
+  if (sessionError) {
     return { ok: false, message: MSG_CREDS_INVALID };
   }
 
   return { ok: true };
+}
+
+/** D-037: Olvidé la contraseña — correo neutro, sin lockout. */
+export async function requestNewPassword(email: string): Promise<AuthResult> {
+  if (!isSupabaseConfigured()) {
+    return { ok: false, message: "Supabase no está configurado en este entorno." };
+  }
+  const trimmed = email.trim().toLowerCase();
+  if (!trimmed.includes("@")) {
+    return { ok: true, message: MSG_FORGOT_NEUTRAL };
+  }
+  const { data, error } = await getSupabase().functions.invoke("request-new-password", {
+    body: { email: trimmed },
+  });
+  const payload = data as { ok?: boolean; message?: string } | null;
+  if (error && !payload) {
+    return { ok: true, message: MSG_FORGOT_NEUTRAL };
+  }
+  return { ok: true, message: payload?.message ?? MSG_FORGOT_NEUTRAL };
+}
+
+/** Tras definir contraseña nueva (recovery): anula lockouts de ese email (D-037). */
+export async function clearLoginGuardAfterPasswordChange(): Promise<void> {
+  if (!isSupabaseConfigured()) return;
+  try {
+    await getSupabase().functions.invoke("clear-login-guard", { body: {} });
+  } catch {
+    // no bloquear el flujo de contraseña
+  }
 }
 
 export async function signUpOwner(input: {

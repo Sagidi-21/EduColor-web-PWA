@@ -41,11 +41,11 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
   alta con contraseña, activar/desactivar/eliminar (ban Auth + corte de sesión),
   chips de Profesorado, Edge Functions `accept-teacher-invite` /
   `manage-teacher`, migraciones Supabase, tests Vitest con mocks
-  (`staffFlows.test.ts`). Decisiones D-028–D-036.
-  - **Siguiente dentro de Fase 10:** (1) despliegue **Netlify** de la PWA _con_
-    gate de login (ya no la app abierta sin Auth); (2) **cambiar contraseña** =
-    definir una nueva (nunca “recuperar” la antigua) — D-036; (3) E2E staff
-    contra Supabase de prueba (después de Netlify + cambio de contraseña).
+  (`staffFlows.test.ts`). Decisiones D-028–D-037.
+  - **Siguiente dentro de Fase 10:** (1) **D-036/D-037** — contraseña nueva,
+    lockout 3/15, Olvidé contraseña, correos (en implementación); (2) despliegue
+    **Netlify** con gate de login (cuando convenga); (3) E2E staff; (4) aviso
+    admin + pantalla de fallos más adelante.
   - Checklist operativo: [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md).
 - **Siguiente motor:** **ninguno**.
 - **Fase 6 (offline/PWA):** aplazada; se retomará más adelante.

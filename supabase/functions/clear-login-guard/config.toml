@@ -1,0 +1,2 @@
+# Requiere Bearer del usuario (recovery o sesión) — se valida en la función.
+verify_jwt = false

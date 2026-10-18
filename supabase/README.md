@@ -123,9 +123,17 @@ Build command habitual: `npm run build`. Publish directory: `dist`.
 Tras el primer deploy: actualizar en Supabase Auth el **Site URL** y
 **Redirect URLs** al dominio Netlify. Checklist: `docs/CHECKLIST_CALIDAD_AUTH.md` §E.
 
-**Cambio de contraseña (D-036, Fase 10):** el usuario siempre **elige una
-contraseña nueva** (enlace por email); no se recupera la anterior. Implementación
-en la app pendiente tras este deploy.
+**Cambio de contraseña / lockout (D-036 / D-037):** el usuario siempre **elige
+una contraseña nueva**. Login vía Edge `school-login` (3 fallos → 15 min).
+Olvidé / 3.er fallo → `request-new-password` / recovery email. Pantalla
+`SetPasswordScreen` (`?setPassword=1`). Plantilla sugerida:
+`docs/email/password-new.html` (Auth → Reset password).
+
+```bash
+npx supabase functions deploy school-login --no-verify-jwt
+npx supabase functions deploy request-new-password --no-verify-jwt
+npx supabase functions deploy clear-login-guard --no-verify-jwt
+```
 
 ## Checklist producción (OWASP Top 10:2025 — A02)
 

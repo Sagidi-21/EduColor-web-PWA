@@ -425,6 +425,33 @@
   text-align: center;
 }
 
+.sa__forgot {
+  display: block;
+  margin: 0.75rem auto 0;
+  text-align: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+.sa__forgot:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sa__forgot {
+  display: block;
+  margin: 0.75rem auto 0;
+  text-align: center;
+  width: 100%;
+}
+
+.sa__forgot:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .sa__text-link {
   border: none;
   background: none;

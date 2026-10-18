@@ -1,6 +1,6 @@
 # Checklist de calidad — Auth / producción (D-028 / Fase 10)
 
-Marca cada ítem. Actualizado 2026-10-18. Detalle de producto: D-028–D-036.
+Marca cada ítem. Actualizado 2026-10-18. Detalle de producto: D-028–D-037.
 Estado del proyecto: [ESTADO_DEL_PROYECTO.md](./ESTADO_DEL_PROYECTO.md).
 
 ## A. Supabase — esquema
@@ -39,20 +39,24 @@ Estado del proyecto: [ESTADO_DEL_PROYECTO.md](./ESTADO_DEL_PROYECTO.md).
 
 ## D. Flujo funcional (prueba manual / local)
 
-| #   | Ítem                                | Esperado                                                   | Estado    |
-| --- | ----------------------------------- | ---------------------------------------------------------- | --------- |
-| D1  | Registrar colegio (password válida) | Aviso de confirmar email; **sin** entrar aún               | [x] local |
-| D2  | Abrir enlace del correo             | Vuelve a la app / sesión                                   | [x] local |
-| D3  | Filas en BD                         | `profiles` + `schools` + `school_memberships`              | [x] local |
-| D4  | Home                                | Nombre del colegio (no placeholder de alta)                | [x] local |
-| D5  | Login fallido / desactivado         | **«Credenciales inválidas.»**                              | [x]       |
-| D6  | Password débil en registro          | Botón gris desactivado + tip; sin submit inválido          | [x]       |
-| D7  | Nombre/email duplicado              | Mensaje genérico en pantalla (sin falso “revisa el email”) | [x]       |
-| D8  | DEMO                                | Catálogo limitado; salir al registro                       | [x]       |
-| D9  | Invitar docente → link `?invite=`   | Registrar Docente + popup → Entrar al Colegio (login)      | [x] local |
-| D10 | Desactivar / eliminar con sesión    | Corte inmediato; re-login = credenciales inválidas         | [x] local |
-| D11 | Chips Profesorado                   | pendientes / aceptadas / activos / desactivados coherentes | [x] local |
-| D12 | Cambiar contraseña (nueva)          | D-036 — **pendiente de implementar**                       | [ ]       |
+| #   | Ítem                                | Esperado                                                        | Estado    |
+| --- | ----------------------------------- | --------------------------------------------------------------- | --------- |
+| D1  | Registrar colegio (password válida) | Aviso de confirmar email; **sin** entrar aún                    | [x] local |
+| D2  | Abrir enlace del correo             | Vuelve a la app / sesión                                        | [x] local |
+| D3  | Filas en BD                         | `profiles` + `schools` + `school_memberships`                   | [x] local |
+| D4  | Home                                | Nombre del colegio (no placeholder de alta)                     | [x] local |
+| D5  | Login fallido / desactivado         | **«Credenciales inválidas.»**                                   | [x]       |
+| D6  | Password débil en registro          | Botón gris desactivado + tip; sin submit inválido               | [x]       |
+| D7  | Nombre/email duplicado              | Mensaje genérico en pantalla (sin falso “revisa el email”)      | [x]       |
+| D8  | DEMO                                | Catálogo limitado; salir al registro                            | [x]       |
+| D9  | Invitar docente → link `?invite=`   | Registrar Docente + popup → Entrar al Colegio (login)           | [x] local |
+| D10 | Desactivar / eliminar con sesión    | Corte inmediato; re-login = credenciales inválidas              | [x] local |
+| D11 | Chips Profesorado                   | pendientes / aceptadas / activos / desactivados coherentes      | [x] local |
+| D12 | Cambiar contraseña (nueva)          | D-036 — pantalla unificada (como invite)                        | [ ]       |
+| D13 | Lockout 3 fallos / 15 min           | D-037 — «Demasiadas credenciales inválidas. Espera 15 minutos.» | [ ]       |
+| D14 | Correo al 3.er fallo (si existe)    | D-037 — con aviso de intentos + enlace                          | [ ]       |
+| D15 | Olvidé la contraseña                | D-037 — correo sin aviso de intentos; sin lockout               | [ ]       |
+| D16 | Correo/pantalla admin de fallos     | Email fijo ops — **más adelante**                               | [ ]       |
 
 ## E. Producción Netlify (build con Auth)
 
@@ -69,13 +73,14 @@ colegio), no el despliegue antiguo “sin cuenta”.
 
 ## F. Orden de trabajo acordado (2026-10-18)
 
-1. Documentación al día (este checklist + ESTADO + D-036) y push.
-2. Build / deploy Netlify con Auth (§E).
-3. Implementar **cambiar contraseña = nueva** (D-036 / D12).
-4. E2E staff (Playwright + Supabase de prueba).
+1. Documentación D-036/D-037 (hecho) e implementación lockout + contraseña.
+2. Deploy Netlify con Auth (§E) cuando haya avance suficiente.
+3. E2E staff (Playwright + Supabase de prueba).
+4. Admin email fijo + pantalla de fallos (después).
 
 ## Notas
 
 - DEMO / soft gate es riesgo de producto aceptado.
-- MFA y alertas sobre `auth_security_events` → fase siguiente.
+- MFA / CSP completa → Fase 12.
 - No se “recuperan” contraseñas antiguas: siempre se **elige una nueva** (D-036).
+- Lockout: contador **email + IP**; solo pantalla Entrar al Colegio (D-037).

@@ -387,9 +387,9 @@ Añadir servicios remotos sin romper el uso offline ni abrir datos a otros usuar
 
 ### Pendiente para cerrar el núcleo de Fase 10
 
-1. **Despliegue Netlify** de la PWA **con** Auth (env `VITE_SUPABASE_*`, Site URL / redirects Supabase). Deja de publicarse la app “abierta” sin login.
-2. **Cambiar contraseña** (D-036): enlace por email → el usuario **elige una contraseña nueva** (no se recupera la antigua).
-3. E2E staff (Playwright + Supabase de prueba) **después** de 1 y 2.
+1. **D-036/D-037** (en curso): contraseña nueva, lockout 3/15, Olvidé contraseña, correos; aviso admin + pantalla de fallos más adelante.
+2. **Despliegue Netlify** de la PWA **con** Auth (cuando convenga; no bloquea el desarrollo local).
+3. E2E staff (Playwright + Supabase de prueba) **después** de lockout/contraseña.
 4. Formalizar RGPD institucional si el piloto lo exige (cruzado con Fase 9).
 
 ### Fuera de este cierre (siguen en roadmap amplio)

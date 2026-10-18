@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import welcomeBgUrl from "../../assets/welcome-bg.png";
 import logoMarkUrl from "../../assets/logo_sin texto.png";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
-import { signInWithPassword, signUpOwner } from "../../platform/supabase/auth";
+import { requestNewPassword, signInWithPassword, signUpOwner } from "../../platform/supabase/auth";
 import {
   EMAIL_MAX_LEN,
   isAuthEmailValid,
@@ -228,6 +228,26 @@ export function SchoolAccessScreen({
     }
   };
 
+  const onForgotPassword = async () => {
+    setError("");
+    setInfo("");
+    if (!configured) {
+      setError("Falta configurar VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en .env");
+      return;
+    }
+    if (!email.trim().includes("@")) {
+      setError("Escribe tu correo electrónico para enviarte el enlace.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const result = await requestNewPassword(email);
+      setInfo(result.message ?? "Si el email está registrado, recibirás un enlace.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const sliderSubtext = isLoginMode
     ? "Impulsa el aprendizaje digital en tus aulas con herramientas intuitivas."
     : "Gestión centralizada para directores, docentes y alumnos de tu centro educativo.";
@@ -425,6 +445,14 @@ export function SchoolAccessScreen({
                 </div>
                 <button type="submit" className="sa__btn sa__btn--primary" disabled={busy}>
                   {busy && isLoginMode ? "Espera…" : "Entrar"}
+                </button>
+                <button
+                  type="button"
+                  className="sa__text-link sa__forgot"
+                  disabled={busy}
+                  onClick={() => void onForgotPassword()}
+                >
+                  Olvidé la contraseña
                 </button>
               </form>
             </div>

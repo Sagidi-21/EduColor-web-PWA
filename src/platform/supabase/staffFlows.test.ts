@@ -18,6 +18,7 @@ const mocks = vi.hoisted(() => {
   const rpc = vi.fn();
   const invoke = vi.fn();
   const signInWithPassword = vi.fn();
+  const setSession = vi.fn();
   const signUp = vi.fn();
   const getUser = vi.fn();
   const signOut = vi.fn();
@@ -58,6 +59,7 @@ const mocks = vi.hoisted(() => {
     rpc,
     invoke,
     signInWithPassword,
+    setSession,
     signUp,
     getUser,
     signOut,
@@ -70,6 +72,8 @@ const mocks = vi.hoisted(() => {
       rpc.mockReset();
       invoke.mockReset();
       signInWithPassword.mockReset();
+      setSession.mockReset();
+      setSession.mockResolvedValue({ data: { session: {} }, error: null });
       signUp.mockReset();
       getUser.mockReset();
       signOut.mockReset();
@@ -87,6 +91,7 @@ vi.mock("./client", () => ({
     from: mocks.from,
     auth: {
       signInWithPassword: mocks.signInWithPassword,
+      setSession: mocks.setSession,
       signUp: mocks.signUp,
       getUser: mocks.getUser,
       signOut: mocks.signOut,
@@ -173,58 +178,70 @@ describe("staffFlows (mocks)", () => {
       );
     });
 
-    it("signInWithPassword permite owner activo", async () => {
-      mocks.signInWithPassword.mockResolvedValue({ data: { session: {} }, error: null });
-      mocks.getUser.mockResolvedValue({
-        data: { user: { id: OWNER_USER_ID, email: "direccion@colegio.edu" } },
+    it("signInWithPassword permite owner activo (vía school-login)", async () => {
+      mocks.invoke.mockResolvedValue({
+        data: { ok: true, access_token: "a", refresh_token: "r" },
+        error: null,
       });
-      mocks.setMemberships([{ role: "owner", is_active: true, user_id: OWNER_USER_ID }]);
 
       const { signInWithPassword } = await import("./auth");
       const result = await signInWithPassword("direccion@colegio.edu", VALID_PASSWORD);
       expect(result).toEqual({ ok: true });
+      expect(mocks.invoke).toHaveBeenCalledWith(
+        "school-login",
+        expect.objectContaining({
+          body: { email: "direccion@colegio.edu", password: VALID_PASSWORD },
+        }),
+      );
+      expect(mocks.setSession).toHaveBeenCalled();
     });
   });
 
-  // —— 5 (login bloqueado) también cubre “credenciales inválidas” ——
-  describe("2+5. Acceso denegado → Credenciales inválidas", () => {
-    it("login Auth ok pero teacher desactivado → Credenciales inválidas + signOut local", async () => {
-      mocks.signInWithPassword.mockResolvedValue({ data: { session: {} }, error: null });
-      mocks.getUser.mockResolvedValue({
-        data: { user: { id: TEACHER_USER_ID, email: "docente@colegio.edu" } },
+  // —— Lockout + credenciales (D-037; el Edge aplica el contador) ——
+  describe("2+5. Acceso denegado / lockout (cliente)", () => {
+    it("school-login responde credenciales inválidas", async () => {
+      mocks.invoke.mockResolvedValue({
+        data: { ok: false, message: "Credenciales inválidas." },
+        error: null,
       });
-      mocks.setMemberships([{ role: "teacher", is_active: false, user_id: TEACHER_USER_ID }]);
-
-      const { signInWithPassword } = await import("./auth");
-      const result = await signInWithPassword("docente@colegio.edu", VALID_PASSWORD);
-      expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.message).toBe("Credenciales inválidas.");
-      expect(mocks.signOut).toHaveBeenCalledWith({ scope: "local" });
-    });
-
-    it("login Auth ok pero sin membresía → Credenciales inválidas", async () => {
-      mocks.signInWithPassword.mockResolvedValue({ data: { session: {} }, error: null });
-      mocks.getUser.mockResolvedValue({
-        data: { user: { id: TEACHER_USER_ID, email: "docente@colegio.edu", user_metadata: {} } },
-      });
-      mocks.setMemberships([]);
-
       const { signInWithPassword } = await import("./auth");
       const result = await signInWithPassword("docente@colegio.edu", VALID_PASSWORD);
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.message).toBe("Credenciales inválidas.");
     });
 
-    it("Auth banned / invalid login → Credenciales inválidas", async () => {
-      mocks.signInWithPassword.mockResolvedValue({
-        data: { session: null },
-        error: { message: "Invalid login credentials" },
+    it("school-login locked → mensaje D-037", async () => {
+      mocks.invoke.mockResolvedValue({
+        data: {
+          ok: false,
+          locked: true,
+          message: "Demasiadas credenciales inválidas. Espera 15 minutos.",
+        },
+        error: null,
       });
-
-      const { signInWithPassword } = await import("./auth");
+      const { signInWithPassword, MSG_LOGIN_LOCKOUT } = await import("./auth");
       const result = await signInWithPassword("docente@colegio.edu", VALID_PASSWORD);
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.message).toBe("Credenciales inválidas.");
+      if (!result.ok) expect(result.message).toBe(MSG_LOGIN_LOCKOUT);
+    });
+
+    it("requestNewPassword siempre mensaje neutro", async () => {
+      mocks.invoke.mockResolvedValue({
+        data: {
+          ok: true,
+          message:
+            "Si el email está registrado, recibirás un enlace para definir una contraseña nueva.",
+        },
+        error: null,
+      });
+      const { requestNewPassword } = await import("./auth");
+      const result = await requestNewPassword("docente@colegio.edu");
+      expect(result.ok).toBe(true);
+      expect(result.message).toMatch(/Si el email está registrado/i);
+      expect(mocks.invoke).toHaveBeenCalledWith(
+        "request-new-password",
+        expect.objectContaining({ body: { email: "docente@colegio.edu" } }),
+      );
     });
 
     it("sessionHasAppAccess false si teacher is_active=false", async () => {
@@ -322,13 +339,11 @@ describe("staffFlows (mocks)", () => {
 
   // —— 4. Login profesor ——
   describe("5. Login del profesor activo", () => {
-    it("signInWithPassword ok con teacher is_active true", async () => {
-      mocks.signInWithPassword.mockResolvedValue({ data: { session: {} }, error: null });
-      mocks.getUser.mockResolvedValue({
-        data: { user: { id: TEACHER_USER_ID, email: "docente@colegio.edu" } },
+    it("signInWithPassword ok vía school-login", async () => {
+      mocks.invoke.mockResolvedValue({
+        data: { ok: true, access_token: "a", refresh_token: "r" },
+        error: null,
       });
-      mocks.setMemberships([{ role: "teacher", is_active: true, user_id: TEACHER_USER_ID }]);
-
       const { signInWithPassword } = await import("./auth");
       await expect(signInWithPassword("docente@colegio.edu", VALID_PASSWORD)).resolves.toEqual({
         ok: true,

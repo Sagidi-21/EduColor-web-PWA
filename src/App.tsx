@@ -7,6 +7,12 @@ import { ViewTransition } from "./core/transition/ViewTransition";
 import { AcceptInviteScreen } from "./features/auth/AcceptInviteScreen";
 import { clearInviteFromUrl, readInviteTokenFromUrl } from "./features/auth/inviteUrl";
 import { SchoolAccessScreen } from "./features/auth/SchoolAccessScreen";
+import {
+  clearSetPasswordFromUrl,
+  readSetPasswordFromUrl,
+  SetPasswordScreen,
+} from "./features/auth/SetPasswordScreen";
+import { getSupabase, isSupabaseConfigured } from "./platform/supabase/client";
 import { ConfiguracionScreen } from "./features/configuracion/ConfiguracionScreen";
 import { ProfesoradoScreen } from "./features/profesorado/ProfesoradoScreen";
 import { ExerciseSessionProvider } from "./features/matematicas/ExerciseSessionContext";
@@ -43,12 +49,29 @@ function AppShell() {
   const [preferLoginAccess, setPreferLoginAccess] = useState(false);
   /** Tras splash→auth: si la sesión llega tarde, saltar el gate. */
   const [awaitingAuthGate, setAwaitingAuthGate] = useState(false);
+  /** D-036/D-037: definir contraseña nueva (recovery / setPassword en URL). */
+  const [setPasswordFlow, setSetPasswordFlow] = useState(() => readSetPasswordFromUrl());
 
   React.useEffect(() => {
     const zoomKey = "educolor_zoom";
     const zoom = Number.parseFloat(localStorage.getItem(zoomKey) ?? "1.5") || 1.5;
     document.body.style.setProperty("zoom", String(zoom));
     document.body.style.setProperty("--zoom", String(zoom));
+  }, []);
+
+  React.useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+    const {
+      data: { subscription },
+    } = getSupabase().auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setSetPasswordFlow((prev) => ({
+          active: true,
+          source: prev.source || readSetPasswordFromUrl().source || "forgot",
+        }));
+      }
+    });
+    return () => subscription.unsubscribe();
   }, []);
 
   const canSkipAuth = !authLoading && (!!session || authSkipped);
@@ -114,6 +137,25 @@ function AppShell() {
         onGoToLogin={() => {
           setInviteToken(null);
           clearInviteFromUrl();
+          sessionStorage.removeItem(AUTH_SKIP_KEY);
+          setAuthSkipped(false);
+          writeDemoMode(false);
+          setDemoMode(false);
+          setPreferLoginAccess(true);
+          setForceAuth(true);
+          setBootDone(true);
+        }}
+      />
+    );
+  }
+
+  if (setPasswordFlow.active) {
+    return (
+      <SetPasswordScreen
+        source={setPasswordFlow.source}
+        onDone={() => {
+          clearSetPasswordFromUrl();
+          setSetPasswordFlow({ active: false, source: "forgot" });
           sessionStorage.removeItem(AUTH_SKIP_KEY);
           setAuthSkipped(false);
           writeDemoMode(false);
