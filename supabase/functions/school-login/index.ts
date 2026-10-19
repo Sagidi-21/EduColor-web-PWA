@@ -64,10 +64,9 @@ Deno.serve(async (req) => {
 
     if (signError || !signed.session || !signed.user) {
       const result = await registerFailure(admin, email, ipHash, supabaseUrl, anonKey, siteOrigin);
-      void admin.rpc("log_auth_security_event", {
-        p_event_type: result.locked ? "login_lockout" : "login_fail",
-        p_context: email.slice(0, 80),
-      });
+      // Fallo siempre; lockout aparte (solo al activar el bloqueo de 15 min).
+      await logSec(admin, "login_fail", email.slice(0, 80));
+      if (result.newlyLocked) await logSec(admin, "login_lockout", email.slice(0, 80));
       return json({
         ok: false,
         message: result.locked ? MSG_LOCKOUT : MSG_CREDS,
@@ -83,10 +82,8 @@ Deno.serve(async (req) => {
         // ignore
       }
       const result = await registerFailure(admin, email, ipHash, supabaseUrl, anonKey, siteOrigin);
-      void admin.rpc("log_auth_security_event", {
-        p_event_type: result.locked ? "login_lockout" : "login_fail",
-        p_context: "inactive_or_removed",
-      });
+      await logSec(admin, "login_fail", "inactive_or_removed");
+      if (result.newlyLocked) await logSec(admin, "login_lockout", "inactive_or_removed");
       return json({
         ok: false,
         message: result.locked ? MSG_LOCKOUT : MSG_CREDS,
@@ -154,14 +151,14 @@ async function registerFailure(
   supabaseUrl: string,
   anonKey: string,
   siteOrigin: string,
-): Promise<{ locked: boolean }> {
+): Promise<{ locked: boolean; newlyLocked: boolean }> {
   const now = Date.now();
   const existing = await loadGuard(admin, email);
   let failCount = (existing?.fail_count ?? 0) + 1;
   let lockedUntil: string | null = existing?.locked_until ?? null;
 
   if (lockedUntil && new Date(lockedUntil).getTime() > now) {
-    return { locked: true };
+    return { locked: true, newlyLocked: false };
   }
 
   if (lockedUntil && new Date(lockedUntil).getTime() <= now) {
@@ -170,8 +167,10 @@ async function registerFailure(
   }
 
   let locked = false;
+  let newlyLocked = false;
   if (failCount >= MAX_FAILS) {
     locked = true;
+    newlyLocked = true;
     lockedUntil = new Date(now + LOCK_MINUTES * 60_000).toISOString();
     failCount = MAX_FAILS;
   }
@@ -190,13 +189,29 @@ async function registerFailure(
     console.error("auth_login_guards upsert", upsertError.message);
   }
 
-  if (locked) {
+  if (newlyLocked) {
     await sendRecoveryEmail(supabaseUrl, anonKey, admin, email, siteOrigin, "lockout");
-    // D16: aviso a ops (Resend). No bloquea el lockout si falla el envío.
-    void notifyOpsLockout(email, ipHash);
+    // D16: await obligatorio — si va en void, Deno corta el fetch a Resend al devolver la respuesta.
+    try {
+      await notifyOpsLockout(email, ipHash);
+    } catch (err) {
+      console.error("notifyOpsLockout (no bloquea lockout)", err);
+    }
   }
 
-  return { locked };
+  return { locked, newlyLocked };
+}
+
+async function logSec(
+  admin: ReturnType<typeof createClient>,
+  eventType: "login_fail" | "login_lockout",
+  context: string,
+): Promise<void> {
+  const { error } = await admin.rpc("log_auth_security_event", {
+    p_event_type: eventType,
+    p_context: context,
+  });
+  if (error) console.error("log_auth_security_event", eventType, error.message);
 }
 
 /** Destinatarios ops por defecto (D16); override con secret OPS_ALERT_EMAILS. */
@@ -230,21 +245,26 @@ async function notifyOpsLockout(attemptedEmail: string, ipHash: string): Promise
     "Revisa también el chip Seguridad (24 h) en Admin Central / auth_security_events.",
   ].join("\n");
 
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ from, to, subject, text }),
-    });
-    if (!res.ok) {
+  // Un destinatario por petición: más fiable con onboarding@resend.dev.
+  for (const recipient of to) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ from, to: [recipient], subject, text }),
+      });
       const body = await res.text();
-      console.error("notifyOpsLockout Resend", res.status, body.slice(0, 300));
+      if (!res.ok) {
+        console.error("notifyOpsLockout Resend", recipient, res.status, body.slice(0, 400));
+      } else {
+        console.log("notifyOpsLockout ok", recipient, body.slice(0, 120));
+      }
+    } catch (err) {
+      console.error("notifyOpsLockout", recipient, err);
     }
-  } catch (err) {
-    console.error("notifyOpsLockout", err);
   }
 }
 

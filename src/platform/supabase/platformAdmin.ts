@@ -73,5 +73,6 @@ export function summarizeSecurity(events: AdminSecurityEvent[]): {
   const recent = events.filter((e) => new Date(e.created_at).getTime() >= dayAgo);
   const lockouts = recent.filter((e) => e.event_type === "login_lockout").length;
   const fails = recent.filter((e) => e.event_type === "login_fail").length;
-  return { ok: lockouts === 0 && fails < 20, lockouts, fails };
+  // KO si hubo bloqueos o bastantes fallos (piloto: umbral 5; antes 20 ocultaba actividad).
+  return { ok: lockouts === 0 && fails < 5, lockouts, fails };
 }

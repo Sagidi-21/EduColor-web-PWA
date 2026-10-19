@@ -9,7 +9,9 @@ test.describe("Cerrar sesión", () => {
 
     await page.getByRole("button", { name: /Cerrar Sesión/i }).click();
 
-    await expect(page.getByRole("button", { name: /Acceder aquí|Acceder al Registro/i })).toBeVisible({
+    await expect(
+      page.getByRole("button", { name: /Acceder aquí|Acceder al Registro/i }),
+    ).toBeVisible({
       timeout: 20_000,
     });
     await expect(page.getByRole("button", { name: /Cerrar Sesión/i })).toHaveCount(0);

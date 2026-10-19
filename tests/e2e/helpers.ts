@@ -6,9 +6,11 @@ export async function goToSchoolAccess(page: Page): Promise<void> {
   await expect(page.getByRole("button", { name: /Entrar sin Video/i })).toBeVisible();
   await page.getByRole("button", { name: /Entrar sin Video/i }).click();
   // Ambos headings están en el DOM en desktop; basta con el CTA del slider o el título de registro.
-  await expect(page.getByRole("button", { name: /Acceder aquí|Acceder al Registro/i })).toBeVisible({
-    timeout: 20_000,
-  });
+  await expect(page.getByRole("button", { name: /Acceder aquí|Acceder al Registro/i })).toBeVisible(
+    {
+      timeout: 20_000,
+    },
+  );
 }
 
 /**

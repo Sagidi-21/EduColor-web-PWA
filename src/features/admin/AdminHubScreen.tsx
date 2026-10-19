@@ -175,7 +175,7 @@ export function AdminHubScreen({
   const showSecurityHint = () =>
     setConfirm({
       kind: "info",
-      title: "Seguridad",
+      title: securityOk ? "Seguridad OK" : "Seguridad KO",
       text:
         `Resumen 24 h:\n· Fallos de login: ${secFails}\n· Lockouts: ${secLockouts}\n\n` +
         `Detalle fino → panel de Supabase (Authentication / Logs).`,
