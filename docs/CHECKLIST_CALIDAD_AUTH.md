@@ -56,7 +56,7 @@ Estado del proyecto: [ESTADO_DEL_PROYECTO.md](./ESTADO_DEL_PROYECTO.md).
 | D10 | Desactivar / eliminar con sesión    | Corte inmediato; re-login = credenciales inválidas                    | [x] local                                             |
 | D11 | Chips Profesorado                   | pendientes / aceptadas / activos / desactivados coherentes            | [x] local                                             |
 | D12 | Cambiar contraseña (nueva)          | D-036 — pantalla + popup «Contraseña actualizada»                     | [x] OK 2026-10-19 (popup + navegación)                |
-| D13 | Lockout 3 fallos / 15 min           | D-037 — «Demasiadas credenciales inválidas. Espera 15 minutos.»       | [x]                                                   |
+| D13 | Lockout 3 fallos / 15 min           | D-037 — bloqueo 15 min + aviso si hay correo de contraseña nueva      | [x]                                                   |
 | D14 | Correo al 3.er fallo (si existe)    | D-037 — con aviso de intentos + enlace                                | [x]                                                   |
 | D15 | Olvidé la contraseña                | D-037 — correo neutro; enlace un solo uso (Auth); popup éxito         | [x] OK 2026-10-19 (consume tras guardar, no al abrir) |
 | D16 | Correo ops de fallos (lockout)      | Resend → 2 Gmail; guía [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md) | [x] código; secrets Edge + deploy (tú)                |

@@ -216,7 +216,8 @@ describe("staffFlows (mocks)", () => {
         data: {
           ok: false,
           locked: true,
-          message: "Demasiadas credenciales inválidas. Espera 15 minutos.",
+          message:
+            "Demasiadas credenciales inválidas. Espera 15 minutos. Si el email está registrado, recibirás un enlace para definir una contraseña nueva.",
         },
         error: null,
       });

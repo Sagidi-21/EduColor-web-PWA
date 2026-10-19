@@ -4,10 +4,12 @@ Cuando alguien falla el login **3 veces**, EduColor bloquea 15 minutos y puede
 enviar correo de contraseña nueva al usuario. **Además**, avisa a ops por
 correo (D16) usando **Resend** (plan gratis).
 
-**Destinatarios:**
+**Destinatario (piloto, sin dominio propio):**
 
-- `salvadorginestarhernadez@gmail.com`
-- `sagidiappcursor@gmail.com`
+- `salvadorginestarhernandez@gmail.com` (mismo email de la cuenta Resend)
+
+Con `onboarding@resend.dev` no se puede avisar a otros correos. Cuando verifiques
+un dominio, podrás ampliar `OPS_ALERT_EMAILS` (lista separada por comas).
 
 Sentry **no** sustituye esto: Sentry es para errores de la app; el lockout es
 un aviso de seguridad. Guía aparte cuando montéis Sentry.
@@ -24,12 +26,24 @@ un aviso de seguridad. Guía aparte cuando montéis Sentry.
 
 ## 2. Remitente (desde quién sale el correo)
 
-En el plan Free, sin dominio propio, Resend permite enviar desde:
+### Limitación importante (`onboarding@resend.dev`)
+
+Sin dominio propio, el remitente de prueba es:
 
 `EduColor Ops <onboarding@resend.dev>`
 
-Eso vale para probar y para el piloto. Más adelante puedes verificar tu dominio
-en Resend → **Domains** y cambiar el remitente.
+Con ese remitente Resend **solo** entrega al email con el que te registraste
+en Resend. Si `OPS_ALERT_EMAILS` tiene otros Gmail → error 403 y **no llega nada**.
+
+- **Prueba rápida:** pon en `OPS_ALERT_EMAILS` solo el email de tu cuenta Resend.
+- **Producción / dos destinatarios:** verifica un dominio en Resend → **Domains**
+  y cambia `RESEND_FROM` a p. ej. `EduColor Ops <avisos@tudominio.com>`.
+
+### No confundir con el correo Auth
+
+Al 3.er fallo, Supabase Auth puede enviar **reset de contraseña** al email que
+intentó entrar (si la cuenta existe). Eso es D-037 y **es correcto**. El aviso
+ops (Resend) es un correo **aparte** a tus direcciones de administración.
 
 ## 3. Secretos en Supabase (Edge Functions)
 
@@ -37,11 +51,11 @@ en Resend → **Domains** y cambiar el remitente.
 2. Ve a **Project Settings** → **Edge Functions** → **Secrets** (o **Manage secrets**).
 3. Añade estos secretos (nombres exactos):
 
-| Nombre             | Valor                                                          |
-| ------------------ | -------------------------------------------------------------- |
-| `RESEND_API_KEY`   | La clave `re_...` que copiaste                                 |
-| `OPS_ALERT_EMAILS` | `salvadorginestarhernadez@gmail.com,sagidiappcursor@gmail.com` |
-| `RESEND_FROM`      | `EduColor Ops <onboarding@resend.dev>`                         |
+| Nombre             | Valor                                  |
+| ------------------ | -------------------------------------- |
+| `RESEND_API_KEY`   | La clave `re_...` que copiaste         |
+| `OPS_ALERT_EMAILS` | `salvadorginestarhernandez@gmail.com`  |
+| `RESEND_FROM`      | `EduColor Ops <onboarding@resend.dev>` |
 
 Sin `RESEND_API_KEY`, el login sigue funcionando; solo **no** se envía el aviso ops
 (quedará un log en la función).

@@ -25,7 +25,7 @@ test.describe("Lockout login (D-037)", () => {
     // 3.er fallo → lockout (mismo email + IP)
     await entrar.click();
     await expect(page.getByRole("alert")).toContainText(
-      /Demasiadas credenciales inválidas\. Espera 15 minutos/i,
+      /Demasiadas credenciales inválidas\. Espera 15 minutos/i, // + aviso correo si existe
       { timeout: 25_000 },
     );
   });

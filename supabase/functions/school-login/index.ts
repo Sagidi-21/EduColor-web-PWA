@@ -7,7 +7,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-authorization",
 };
 
-const MSG_LOCKOUT = "Demasiadas credenciales inválidas. Espera 15 minutos.";
+const MSG_LOCKOUT =
+  "Demasiadas credenciales inválidas. Espera 15 minutos. Si el email está registrado, recibirás un enlace para definir una contraseña nueva.";
 const MSG_CREDS = "Credenciales inválidas.";
 const MAX_FAILS = 3;
 const LOCK_MINUTES = 15;
@@ -199,8 +200,8 @@ async function registerFailure(
 }
 
 /** Destinatarios ops por defecto (D16); override con secret OPS_ALERT_EMAILS. */
-const DEFAULT_OPS_ALERT_EMAILS =
-  "salvadorginestarhernadez@gmail.com,sagidiappcursor@gmail.com";
+/** Con onboarding@resend.dev solo llega al email de la cuenta Resend. */
+const DEFAULT_OPS_ALERT_EMAILS = "salvadorginestarhernandez@gmail.com";
 
 async function notifyOpsLockout(attemptedEmail: string, ipHash: string): Promise<void> {
   const apiKey = Deno.env.get("RESEND_API_KEY")?.trim();
@@ -217,8 +218,7 @@ async function notifyOpsLockout(attemptedEmail: string, ipHash: string): Promise
     console.warn("notifyOpsLockout: OPS_ALERT_EMAILS vacío");
     return;
   }
-  const from =
-    Deno.env.get("RESEND_FROM")?.trim() || "EduColor Ops <onboarding@resend.dev>";
+  const from = Deno.env.get("RESEND_FROM")?.trim() || "EduColor Ops <onboarding@resend.dev>";
   const subject = "EduColor: bloqueo de login (3 fallos)";
   const text = [
     "Se ha bloqueado un intento de Entrar al Colegio tras 3 credenciales inválidas.",

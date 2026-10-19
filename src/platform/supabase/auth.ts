@@ -69,7 +69,8 @@ export type AuthResult =
 /** Mensajes genéricos (OWASP A07): no revelar si email/nombre existen ni el estado de confirmación. */
 const MSG_CREDS_INVALID = "Credenciales inválidas.";
 /** D-037: tras 3 fallos (email+IP) o mientras dura el bloqueo. */
-export const MSG_LOGIN_LOCKOUT = "Demasiadas credenciales inválidas. Espera 15 minutos.";
+export const MSG_LOGIN_LOCKOUT =
+  "Demasiadas credenciales inválidas. Espera 15 minutos. Si el email está registrado, recibirás un enlace para definir una contraseña nueva.";
 const MSG_PASSWORD_INVALID = "La contraseña no cumple con las restricciones.";
 const MSG_RATE_LIMIT = "Demasiados intentos. Espera un momento e inténtalo de nuevo.";
 const MSG_FORGOT_NEUTRAL =
