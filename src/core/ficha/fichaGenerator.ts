@@ -11,7 +11,7 @@ import { downloadHtmlAsPdf } from "./pdfExport";
 import { downloadHtmlAsWord } from "./wordHtmlExport";
 import type { FichaMeta, FichaMode, SheetConfig, SheetExercise } from "./types";
 /** Logo empaquetado por Vite (URL estable + inlinable a data URL en export). */
-import colegioLogoUrl from "../../assets/logo-ficha.png";
+import colegioLogoUrl from "../../assets/welcome-logo-bg.png";
 
 const LAST_FICHA_KEY = "educolor_ficha_last";
 

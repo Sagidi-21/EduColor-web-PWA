@@ -1,5 +1,6 @@
 import type { ActivityDifficulty } from "../../core/content/contracts";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
+import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import {
   buildFichaDocument,
   buildPrintDocumentHtml,
@@ -8,7 +9,7 @@ import {
   type SheetConfig,
 } from "../../core/ficha";
 import { getActivityManifest } from "../../manifests/content-registry";
-import colegioLogoUrl from "../../assets/logo-ficha.png";
+import defaultFichaLogoUrl from "../../assets/welcome-logo-bg.png";
 import "./FichaPreviewScreen.css";
 
 function parseModes(raw: string | null): FichaMode[] {
@@ -63,6 +64,8 @@ function readParams(): {
 export function FichaPreviewScreen(): JSX.Element {
   const opts = readParams();
   const { profile } = useClassProfile();
+  const { primarySchool } = useSchoolAuth();
+  const logoUrl = primarySchool?.logo_ficha_url || defaultFichaLogoUrl;
   const manifest = getActivityManifest(opts.activityId);
   const title = manifest?.title ?? opts.activityId;
   const modeLabel = opts.modes.join(" + ");
@@ -88,7 +91,7 @@ export function FichaPreviewScreen(): JSX.Element {
         subject: opts.subject,
         className: opts.className || profile.className || undefined,
       },
-      logoUrl: colegioLogoUrl,
+      logoUrl,
       accentColor: profile.accentColor,
     });
     srcDoc = buildPrintDocumentHtml({

@@ -13,8 +13,9 @@ import {
   type FichaDocument,
   type FichaMode,
 } from "../../core/ficha";
+import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import { ModalCloseButton } from "../shared/components/ModalCloseButton";
-import appLogoUrl from "../../assets/welcome-logo-bg.png";
+import defaultFichaLogoUrl from "../../assets/welcome-logo-bg.png";
 import "./FichaModal.css";
 
 function activitySupportsImages(activityId: string): boolean {
@@ -58,6 +59,8 @@ export function FichaModal({
   accentColor,
   onClose,
 }: FichaModalProps): JSX.Element {
+  const { primarySchool } = useSchoolAuth();
+  const schoolLogoUrl = primarySchool?.logo_ficha_url || defaultFichaLogoUrl;
   const [countDraft, setCountDraft] = useState(() => ({
     activityId: activity.id,
     count: defaultFichaCount(activity.id),
@@ -111,7 +114,7 @@ export function FichaModal({
           className,
           mascotUrl,
         },
-        logoUrl: demoMode ? appLogoUrl : undefined,
+        logoUrl: schoolLogoUrl,
         accentColor,
       });
       return { doc };
@@ -131,6 +134,7 @@ export function FichaModal({
     effectiveWithImages,
     gradeTitle,
     mascotUrl,
+    schoolLogoUrl,
     seed,
     selectedModes,
     subjectTitle,

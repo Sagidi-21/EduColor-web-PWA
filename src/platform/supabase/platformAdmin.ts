@@ -9,6 +9,8 @@ export interface AdminSchoolRow {
   status: SchoolStatus;
   created_at: string;
   owner_email: string | null;
+  background_url?: string | null;
+  logo_ficha_url?: string | null;
 }
 
 export interface AdminSecurityEvent {

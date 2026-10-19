@@ -1,8 +1,16 @@
 import { useEffect, useRef, useState } from "react";
+import defaultSchoolBgUrl from "../../assets/demo-school-exterior.jpg";
+/** Mismo logo que la ficha en modo DEMO (`FichaModal` → welcome-logo-bg). */
+import defaultFichaLogoUrl from "../../assets/welcome-logo-bg.png";
 import { getAulaLabel, useClassProfile } from "../../core/context/ClassProfileContext";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import { readDemoMode } from "../../core/demo/demoMode";
 import { THEMES, useTransitionTheme } from "../../core/transition";
+import {
+  clearSchoolBranding,
+  uploadSchoolBranding,
+  type BrandingKind,
+} from "../../platform/supabase/schoolBranding";
 import type { AppView } from "../home/HomeScreen";
 import "./ConfiguracionScreen.css";
 
@@ -34,14 +42,19 @@ export function ConfiguracionScreen({
 }) {
   const { aulas, activeAulaId, profile, setActiveAula, save, getProfile, addAula, removeAula } =
     useClassProfile();
-  const { isOwner, session } = useSchoolAuth();
+  const { isOwner, session, primarySchool, refreshSchools } = useSchoolAuth();
   const { theme, setTheme } = useTransitionTheme();
   const [name, setName] = useState(profile.className);
   const [color, setColor] = useState(profile.accentColor);
   const [zoom, setZoom] = useState(storedZoom);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [brandingBusy, setBrandingBusy] = useState<BrandingKind | null>(null);
+  const [brandingMsg, setBrandingMsg] = useState("");
+  const [brandingHint, setBrandingHint] = useState("");
   const input = useRef<HTMLInputElement>(null);
+  const bgInput = useRef<HTMLInputElement>(null);
+  const logoInput = useRef<HTMLInputElement>(null);
 
   // Cinturón: si DEMO se fuerza por consola, no servir configuración.
   useEffect(() => {
@@ -94,6 +107,43 @@ export function ConfiguracionScreen({
   const applyZoom = (value: number) => {
     setZoom(value);
   };
+
+  const onBrandingFile = async (kind: BrandingKind, file: File | undefined) => {
+    if (!file || !primarySchool?.id) return;
+    setBrandingBusy(kind);
+    setBrandingMsg("");
+    setBrandingHint("");
+    const result = await uploadSchoolBranding(primarySchool.id, kind, file);
+    setBrandingBusy(null);
+    if (!result.ok) {
+      setBrandingMsg(result.message);
+      return;
+    }
+    if (result.hint) setBrandingHint(result.hint);
+    setBrandingMsg(kind === "background" ? "Fondo actualizado." : "Logo de fichas actualizado.");
+    await refreshSchools();
+  };
+
+  const onClearBranding = async (kind: BrandingKind) => {
+    if (!primarySchool?.id) return;
+    setBrandingBusy(kind);
+    setBrandingMsg("");
+    setBrandingHint("");
+    const result = await clearSchoolBranding(primarySchool.id, kind);
+    setBrandingBusy(null);
+    if (!result.ok) {
+      setBrandingMsg(result.message ?? "No se pudo restaurar.");
+      return;
+    }
+    setBrandingMsg(
+      kind === "background" ? "Fondo restaurado (demo)." : "Logo restaurado (EduColor).",
+    );
+    await refreshSchools();
+  };
+
+  const bgPreview = primarySchool?.background_url || defaultSchoolBgUrl;
+  const logoPreview = primarySchool?.logo_ficha_url || defaultFichaLogoUrl;
+
   return (
     <div className="cfg">
       <header className="cfg__header">
@@ -104,19 +154,120 @@ export function ConfiguracionScreen({
       </header>
       <div className="cfg__body">
         {session && isOwner ? (
-          <section className="cfg__section">
-            <h2 className="cfg__section-title">Profesores</h2>
-            <p className="cfg__section-desc">
-              Invita docentes, consulta pendientes y gestiona el equipo del colegio.
-            </p>
-            <button
-              type="button"
-              className="cfg__mascota-btn"
-              onClick={() => onNavigate?.("profesorado")}
-            >
-              Acceder
-            </button>
-          </section>
+          <>
+            <section className="cfg__section">
+              <h2 className="cfg__section-title">Profesores</h2>
+              <p className="cfg__section-desc">
+                Invita docentes, consulta pendientes y gestiona el equipo del colegio.
+              </p>
+              <button
+                type="button"
+                className="cfg__mascota-btn"
+                onClick={() => onNavigate?.("profesorado")}
+              >
+                Acceder
+              </button>
+            </section>
+
+            <section className="cfg__section">
+              <h2 className="cfg__section-title">Imagen del colegio</h2>
+              {brandingMsg ? <p className="cfg__branding-msg">{brandingMsg}</p> : null}
+              {brandingHint ? <p className="cfg__branding-hint">{brandingHint}</p> : null}
+
+              <div className="cfg__branding-grid">
+                <div className="cfg__branding-block">
+                  <h3 className="cfg__branding-subtitle">Fondo de selección de curso</h3>
+                  <ul className="cfg__branding-reqs">
+                    <li>Formato: JPG, PNG o WebP</li>
+                    <li>
+                      Horizontal (paisaje), recomendado <strong>1920 × 1080</strong> (16:9)
+                    </li>
+                    <li>Máximo 5 MB (se comprime al guardar)</li>
+                  </ul>
+                  <div
+                    className="cfg__branding-bg-preview"
+                    style={{ backgroundImage: `url(${bgPreview})` }}
+                    role="img"
+                    aria-label="Vista previa del fondo"
+                  />
+                  <input
+                    ref={bgInput}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    hidden
+                    onChange={(e) => {
+                      void onBrandingFile("background", e.target.files?.[0]);
+                      e.target.value = "";
+                    }}
+                  />
+                  <div className="cfg__branding-actions">
+                    <button
+                      type="button"
+                      className="cfg__upload-btn"
+                      disabled={brandingBusy !== null || !primarySchool}
+                      onClick={() => bgInput.current?.click()}
+                    >
+                      {brandingBusy === "background" ? "Subiendo…" : "📷 Subir fondo"}
+                    </button>
+                    {primarySchool?.background_url ? (
+                      <button
+                        type="button"
+                        className="cfg__remove-btn"
+                        disabled={brandingBusy !== null}
+                        onClick={() => void onClearBranding("background")}
+                      >
+                        Restaurar fondo demo
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className="cfg__branding-block">
+                  <h3 className="cfg__branding-subtitle">Logo de fichas</h3>
+                  <ul className="cfg__branding-reqs">
+                    <li>Formato: PNG preferible (transparencia) o JPG</li>
+                    <li>
+                      Cuadrado, recomendado <strong>512 × 512</strong> (mín. 256 × 256)
+                    </li>
+                    <li>Máximo 2 MB</li>
+                  </ul>
+                  <div className="cfg__branding-logo-preview">
+                    <img src={logoPreview} alt="Logo de fichas" />
+                  </div>
+                  <input
+                    ref={logoInput}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    hidden
+                    onChange={(e) => {
+                      void onBrandingFile("logo_ficha", e.target.files?.[0]);
+                      e.target.value = "";
+                    }}
+                  />
+                  <div className="cfg__branding-actions">
+                    <button
+                      type="button"
+                      className="cfg__upload-btn"
+                      disabled={brandingBusy !== null || !primarySchool}
+                      onClick={() => logoInput.current?.click()}
+                    >
+                      {brandingBusy === "logo_ficha" ? "Subiendo…" : "📷 Subir logo"}
+                    </button>
+                    {primarySchool?.logo_ficha_url ? (
+                      <button
+                        type="button"
+                        className="cfg__remove-btn"
+                        disabled={brandingBusy !== null}
+                        onClick={() => void onClearBranding("logo_ficha")}
+                      >
+                        Restaurar logo EduColor
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            </section>
+          </>
         ) : null}
         <section className="cfg__section">
           <h2 className="cfg__section-title">Perfil de clase</h2>

@@ -59,7 +59,9 @@ interface SchoolAuthValue {
   /** Admin: entrar a un colegio como OW. */
   enterSchoolAsAdmin: (
     school: Pick<School, "id" | "name"> &
-      Partial<Pick<School, "slug" | "created_at" | "updated_at">>,
+      Partial<
+        Pick<School, "slug" | "created_at" | "updated_at" | "background_url" | "logo_ficha_url">
+      >,
   ) => void;
   /** Admin: volver a la Central. */
   leaveAdminSchool: () => void;
@@ -142,9 +144,22 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
       setAvatarInitials("");
       return;
     }
+    // Admin en modo OW: recargar solo ese colegio (no la lista real del admin).
+    if (actingSchool) {
+      const { data } = await getSupabase()
+        .from("schools")
+        .select("*")
+        .eq("id", actingSchool.id)
+        .maybeSingle();
+      if (data) {
+        setActingSchool(data);
+        setSchools([data]);
+      }
+      return;
+    }
     const list = await fetchMySchools();
     await applySchools(list, session.user.id);
-  }, [configured, session, applySchools]);
+  }, [configured, session, applySchools, actingSchool]);
 
   const runBootstrap = useCallback(async () => {
     const { schools: next, error } = await syncPendingSchool();
@@ -263,7 +278,9 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
   const enterSchoolAsAdmin = useCallback(
     (
       school: Pick<School, "id" | "name"> &
-        Partial<Pick<School, "slug" | "created_at" | "updated_at">>,
+        Partial<
+          Pick<School, "slug" | "created_at" | "updated_at" | "background_url" | "logo_ficha_url">
+        >,
     ) => {
       if (!isPlatformAdmin) return;
       const now = new Date().toISOString();
@@ -272,6 +289,8 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
         name: school.name,
         slug: school.slug ?? null,
         status: "active",
+        background_url: school.background_url ?? null,
+        logo_ficha_url: school.logo_ficha_url ?? null,
         created_at: school.created_at ?? now,
         updated_at: school.updated_at ?? now,
       };

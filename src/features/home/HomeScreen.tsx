@@ -1,7 +1,6 @@
 import { useState, type CSSProperties } from "react";
 import logoUrl from "../../assets/splash-logo.png";
-import schoolBgUrl from "../../assets/school-bg.jpg";
-import demoSchoolBgUrl from "../../assets/demo-school-exterior.jpg";
+import defaultSchoolBgUrl from "../../assets/demo-school-exterior.jpg";
 import { getAulaLabel, useClassProfile } from "../../core/context/ClassProfileContext";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import { OWNER_AVATAR_COLOR, avatarTextColor } from "../shared/teacherAvatar";
@@ -88,7 +87,9 @@ export function HomeScreen({
       className={`home${demoMode ? " home--demo" : ""}`}
       style={
         {
-          "--home-bg-image": `url(${demoMode ? demoSchoolBgUrl : schoolBgUrl})`,
+          "--home-bg-image": `url(${
+            demoMode ? defaultSchoolBgUrl : (primarySchool?.background_url ?? defaultSchoolBgUrl)
+          })`,
         } as CSSProperties
       }
     >

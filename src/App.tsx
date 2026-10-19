@@ -53,7 +53,7 @@ function AppShell() {
     schoolPendingApproval,
     leaveAdminSchool,
   } = useSchoolAuth();
-  const [adminView, setAdminView] = useState<AdminView>("home");
+  const [adminView, setAdminView] = useState<AdminView>("accepted");
   const [inviteToken, setInviteToken] = useState(() => readInviteTokenFromUrl());
   const [bootDone, setBootDone] = useState(false);
   const [authSkipped, setAuthSkipped] = useState(

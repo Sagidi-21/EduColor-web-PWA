@@ -10,3 +10,5 @@ export {
 } from "./auth";
 export type { AuthResult } from "./auth";
 export type { Database, Profile, School, SchoolMembership, SchoolRole } from "./types";
+export { clearSchoolBranding, uploadSchoolBranding, brandingAspectHint } from "./schoolBranding";
+export type { BrandingKind, BrandingUploadResult } from "./schoolBranding";

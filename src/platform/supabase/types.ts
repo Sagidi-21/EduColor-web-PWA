@@ -16,6 +16,10 @@ export interface School {
   name: string;
   slug: string | null;
   status?: SchoolStatus;
+  /** Fondo Home; null = asset demo genérico. */
+  background_url?: string | null;
+  /** Logo de fichas; null = logo EduColor. */
+  logo_ficha_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -59,7 +63,7 @@ export interface Database {
       schools: {
         Row: School;
         Insert: { name: string; slug?: string | null };
-        Update: Partial<Pick<School, "name" | "slug">>;
+        Update: Partial<Pick<School, "name" | "slug" | "background_url" | "logo_ficha_url">>;
         Relationships: [];
       };
       school_memberships: {

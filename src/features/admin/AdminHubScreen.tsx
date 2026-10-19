@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import logoUrl from "../../assets/splash-logo.png";
-import schoolBgUrl from "../../assets/school-bg.jpg";
+import defaultSchoolBgUrl from "../../assets/demo-school-exterior.jpg";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import {
   adminDeleteSchool,
@@ -35,6 +35,7 @@ export function AdminHubScreen({
 }) {
   const { signOut, enterSchoolAsAdmin } = useSchoolAuth();
   const [schools, setSchools] = useState<AdminSchoolRow[]>([]);
+  const [schoolsLoading, setSchoolsLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [securityOk, setSecurityOk] = useState(true);
@@ -42,31 +43,36 @@ export function AdminHubScreen({
   const [secLockouts, setSecLockouts] = useState(0);
   const [confirm, setConfirm] = useState<ConfirmState | null>(null);
 
-  const reload = useCallback(async () => {
-    setError("");
-    const [list, events] = await Promise.all([adminListSchools(), adminListSecurityEvents(80)]);
-    setSchools(list);
+  const reloadSecurity = useCallback(async () => {
+    const events = await adminListSecurityEvents(40);
     const summary = summarizeSecurity(events);
     setSecurityOk(summary.ok);
     setSecFails(summary.fails);
     setSecLockouts(summary.lockouts);
   }, []);
 
+  const reload = useCallback(async () => {
+    setError("");
+    const list = await adminListSchools();
+    setSchools(list);
+    setSchoolsLoading(false);
+    void reloadSecurity();
+  }, [reloadSecurity]);
+
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      const [list, events] = await Promise.all([adminListSchools(), adminListSecurityEvents(80)]);
+      // Primero las cajas; seguridad en segundo plano (no bloquea la UI).
+      const list = await adminListSchools();
       if (cancelled) return;
       setSchools(list);
-      const summary = summarizeSecurity(events);
-      setSecurityOk(summary.ok);
-      setSecFails(summary.fails);
-      setSecLockouts(summary.lockouts);
+      setSchoolsLoading(false);
+      void reloadSecurity();
     })();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadSecurity]);
 
   const pending = schools.filter((s) => s.status === "pending");
   const active = schools.filter((s) => s.status === "active");
@@ -193,13 +199,15 @@ export function AdminHubScreen({
       slug: school.slug,
       created_at: school.created_at,
       updated_at: school.created_at,
+      background_url: school.background_url ?? null,
+      logo_ficha_url: school.logo_ficha_url ?? null,
     });
   };
 
   return (
     <div
       className="home home--admin"
-      style={{ "--home-bg-image": `url(${schoolBgUrl})` } as CSSProperties}
+      style={{ "--home-bg-image": `url(${defaultSchoolBgUrl})` } as CSSProperties}
     >
       <header className="home__header">
         <div className="home__logo-area">
@@ -258,7 +266,9 @@ export function AdminHubScreen({
           <>
             <section className="home__section">
               <h2 className="home__section-title">Colegios activos</h2>
-              {active.length === 0 ? (
+              {schoolsLoading ? (
+                <p className="admin__empty">Cargando colegios…</p>
+              ) : active.length === 0 ? (
                 <p className="admin__empty">No hay colegios activos todavía.</p>
               ) : (
                 <div className="admin__school-grid">
@@ -298,7 +308,9 @@ export function AdminHubScreen({
         {view === "pending" ? (
           <section className="home__section">
             <h2 className="home__section-title">Solicitudes pendientes</h2>
-            {pending.length === 0 ? (
+            {schoolsLoading ? (
+              <p className="admin__empty">Cargando…</p>
+            ) : pending.length === 0 ? (
               <p className="admin__empty">No hay colegios pendientes.</p>
             ) : (
               <div className="admin__school-grid">
