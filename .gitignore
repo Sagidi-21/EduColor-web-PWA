@@ -14,5 +14,10 @@ vite.config.d.ts
 # Caché local del CLI de Supabase
 supabase/.temp/
 
+# Playwright
+playwright-report/
+test-results/
+blob-report/
+
 # Referencia local del proyecto Electron original — no subir al repositorio
 electron-reference/
