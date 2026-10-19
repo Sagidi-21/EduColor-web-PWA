@@ -53,7 +53,7 @@ function AppShell() {
     schoolPendingApproval,
     leaveAdminSchool,
   } = useSchoolAuth();
-  const [adminView, setAdminView] = useState<AdminView>("hub");
+  const [adminView, setAdminView] = useState<AdminView>("home");
   const [inviteToken, setInviteToken] = useState(() => readInviteTokenFromUrl());
   const [bootDone, setBootDone] = useState(false);
   const [authSkipped, setAuthSkipped] = useState(
@@ -358,7 +358,7 @@ function AppShell() {
                 isPlatformAdmin && isActingAsSchool
                   ? () => {
                       leaveAdminSchool();
-                      setAdminView("hub");
+                      setAdminView("accepted");
                     }
                   : undefined
               }
