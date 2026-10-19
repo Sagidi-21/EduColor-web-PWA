@@ -41,11 +41,14 @@ export function HomeScreen({
   onOpenSchoolAccess,
   demoMode = false,
   onExitDemo,
+  onBackToAdmin,
 }: {
   onNavigate: (view: AppView) => void;
   onOpenSchoolAccess?: () => void;
   demoMode?: boolean;
   onExitDemo?: () => void;
+  /** Admin en modo OW: volver a la Central. */
+  onBackToAdmin?: () => void;
 }) {
   const { aulas, setActiveAula } = useClassProfile();
   const {
@@ -112,6 +115,11 @@ export function HomeScreen({
           </div>
         </div>
         <div className="home__header-right">
+          {onBackToAdmin ? (
+            <button type="button" className="home__exit-demo" onClick={onBackToAdmin}>
+              ← Central admin
+            </button>
+          ) : null}
           {demoMode && onExitDemo ? (
             <button type="button" className="home__exit-demo" onClick={onExitDemo}>
               Salir al registro

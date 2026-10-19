@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const allowed = await userHasAppAccess(admin, signed.user.id);
+    const allowed = await userHasAppAccess(admin, signed.user.id, email);
     if (!allowed) {
       try {
         await userClient.auth.signOut();
@@ -109,7 +109,19 @@ Deno.serve(async (req) => {
 async function userHasAppAccess(
   admin: ReturnType<typeof createClient>,
   userId: string,
+  emailNorm: string,
 ): Promise<boolean> {
+  const { data: adminRow } = await admin
+    .from("platform_admins")
+    .select("email_norm")
+    .eq("email_norm", emailNorm)
+    .maybeSingle();
+  if (adminRow) return true;
+
+  const { data: rpcOk } = await admin.rpc("session_has_app_access", { p_user_id: userId });
+  if (rpcOk === true) return true;
+
+  // Fallback si la RPC aún no está desplegada.
   const { data, error } = await admin
     .from("school_memberships")
     .select("role, is_active")

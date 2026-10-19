@@ -17,6 +17,7 @@ import {
   signOut as supabaseSignOut,
 } from "../../platform/supabase/auth";
 import { getSupabase, isSupabaseConfigured } from "../../platform/supabase/client";
+import { fetchIsPlatformAdmin } from "../../platform/supabase/platformAdmin";
 import { fetchMyMembershipAvatar, fetchMyRole } from "../../platform/supabase/teachers";
 import type { School, SchoolRole } from "../../platform/supabase/types";
 import {
@@ -40,15 +41,28 @@ interface SchoolAuthValue {
   /** Rol en el colegio principal (owner / teacher). */
   schoolRole: SchoolRole | null;
   isOwner: boolean;
+  /** Operador de la plataforma (Central admin). */
+  isPlatformAdmin: boolean;
+  /** Admin ha entrado en un colegio (modo OW). */
+  isActingAsSchool: boolean;
+  /** Colegio pendiente de aceptación (owner real, no admin). */
+  schoolPendingApproval: boolean;
   /** HEX del avatar en el colegio principal. */
   avatarColor: string | null;
-  /** Iniciales (OW si owner). */
+  /** Iniciales (OW si owner; AD si admin en hub). */
   avatarInitials: string;
   /** Error al completar el alta del colegio (A10: no fallar en silencio). */
   schoolBootstrapError: string | null;
   refreshSchools: () => Promise<void>;
   retrySchoolBootstrap: () => Promise<void>;
   signOut: () => Promise<void>;
+  /** Admin: entrar a un colegio como OW. */
+  enterSchoolAsAdmin: (
+    school: Pick<School, "id" | "name"> &
+      Partial<Pick<School, "slug" | "created_at" | "updated_at">>,
+  ) => void;
+  /** Admin: volver a la Central. */
+  leaveAdminSchool: () => void;
 }
 
 const SchoolAuthContext = createContext<SchoolAuthValue | null>(null);
@@ -92,6 +106,8 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
   const [avatarColor, setAvatarColor] = useState<string | null>(null);
   const [avatarInitials, setAvatarInitials] = useState("");
   const [schoolBootstrapError, setSchoolBootstrapError] = useState<string | null>(null);
+  const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
+  const [actingSchool, setActingSchool] = useState<School | null>(null);
 
   const applySchools = useCallback(async (list: School[], userId?: string | null) => {
     setSchools(list);
@@ -151,6 +167,8 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
         setAvatarColor(null);
         setAvatarInitials("");
         setSchoolBootstrapError(null);
+        setIsPlatformAdmin(false);
+        setActingSchool(null);
         return;
       }
       // Recovery de contraseña: no expulsar la sesión (hace falta para updateUser).
@@ -179,6 +197,20 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
         setAvatarColor(null);
         setAvatarInitials("");
         setSchoolBootstrapError(null);
+        setIsPlatformAdmin(false);
+        setActingSchool(null);
+        return;
+      }
+      const platformAdmin = await fetchIsPlatformAdmin();
+      if (cancelled) return;
+      setIsPlatformAdmin(platformAdmin);
+      if (platformAdmin) {
+        setActingSchool(null);
+        setSchoolBootstrapError(null);
+        await applySchools([], next.user.id);
+        setAvatarColor(OWNER_AVATAR_COLOR);
+        setAvatarInitials("AD");
+        setSession(next);
         return;
       }
       // Colegios antes que session: el header no debe mostrar el placeholder de alta de owner.
@@ -224,7 +256,48 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
     setAvatarColor(null);
     setAvatarInitials("");
     setSchoolBootstrapError(null);
+    setIsPlatformAdmin(false);
+    setActingSchool(null);
   }, []);
+
+  const enterSchoolAsAdmin = useCallback(
+    (
+      school: Pick<School, "id" | "name"> &
+        Partial<Pick<School, "slug" | "created_at" | "updated_at">>,
+    ) => {
+      if (!isPlatformAdmin) return;
+      const now = new Date().toISOString();
+      const full: School = {
+        id: school.id,
+        name: school.name,
+        slug: school.slug ?? null,
+        status: "active",
+        created_at: school.created_at ?? now,
+        updated_at: school.updated_at ?? now,
+      };
+      setActingSchool(full);
+      setSchools([full]);
+      setSchoolRole("owner");
+      setAvatarColor(OWNER_AVATAR_COLOR);
+      setAvatarInitials(OWNER_AVATAR_INITIALS);
+    },
+    [isPlatformAdmin],
+  );
+
+  const leaveAdminSchool = useCallback(() => {
+    setActingSchool(null);
+    setSchools([]);
+    setSchoolRole(null);
+    setAvatarColor(OWNER_AVATAR_COLOR);
+    setAvatarInitials("AD");
+  }, []);
+
+  const primarySchool = actingSchool ?? schools[0] ?? null;
+  const schoolPendingApproval =
+    !isPlatformAdmin &&
+    !actingSchool &&
+    Boolean(primarySchool?.status === "pending" || (schools[0] && schools[0].status === "pending"));
+  const effectiveIsOwner = schoolRole === "owner" || Boolean(isPlatformAdmin && actingSchool);
 
   const value = useMemo<SchoolAuthValue>(
     () => ({
@@ -233,28 +306,40 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
       session,
       user: session?.user ?? null,
       schools,
-      primarySchool: schools[0] ?? null,
+      primarySchool,
       schoolRole,
-      isOwner: schoolRole === "owner",
+      isOwner: effectiveIsOwner,
+      isPlatformAdmin,
+      isActingAsSchool: Boolean(actingSchool),
+      schoolPendingApproval,
       avatarColor,
       avatarInitials,
       schoolBootstrapError,
       refreshSchools,
       retrySchoolBootstrap: runBootstrap,
       signOut,
+      enterSchoolAsAdmin,
+      leaveAdminSchool,
     }),
     [
       configured,
       loading,
       session,
       schools,
+      primarySchool,
       schoolRole,
+      effectiveIsOwner,
+      isPlatformAdmin,
+      actingSchool,
+      schoolPendingApproval,
       avatarColor,
       avatarInitials,
       schoolBootstrapError,
       refreshSchools,
       runBootstrap,
       signOut,
+      enterSchoolAsAdmin,
+      leaveAdminSchool,
     ],
   );
 

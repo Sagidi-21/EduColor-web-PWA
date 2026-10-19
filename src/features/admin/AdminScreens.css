@@ -1,0 +1,170 @@
+.admin__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  max-width: min(52rem, 70vw);
+}
+
+.admin__chip {
+  border: 1px solid var(--color-border, #cbd5e1);
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.admin__chip--muted {
+  cursor: default;
+  opacity: 0.85;
+}
+
+.admin__chip--ok {
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+
+.admin__chip--ko,
+.admin__chip--warn {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.admin__chip--warn {
+  background: #fffbeb;
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.admin__hint {
+  margin: 0 0 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+}
+
+.admin__empty {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+}
+
+.admin__error {
+  background: #fef2f2;
+  color: #991b1b;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+}
+
+.admin__school-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.admin__school-card--disabled {
+  opacity: 0.85;
+}
+
+.admin__school-enter {
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+button.admin__school-enter:hover .home__class-name {
+  text-decoration: underline;
+}
+
+.admin__school-meta {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.admin__school-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin__btn {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.admin__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin__btn--ok {
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+
+.admin__btn--warn {
+  background: #fffbeb;
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.admin__btn--danger {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.admin__panel {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  color: #0f172a;
+  max-width: 48rem;
+}
+
+.admin__panel .home__section-title,
+.admin__panel .admin__hint,
+.admin__panel .admin__empty {
+  color: inherit;
+}
+
+.admin__log {
+  margin: 0;
+  padding-left: 1.1rem;
+  max-height: 50vh;
+  overflow: auto;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.admin__waiting {
+  max-width: 28rem;
+  margin: 4rem auto;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 2rem 1.5rem;
+  border-radius: 1.25rem;
+  color: #0f172a;
+}

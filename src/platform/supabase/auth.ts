@@ -113,6 +113,15 @@ export async function logAuthSecurityEvent(
  */
 export async function sessionHasAppAccess(userId: string): Promise<boolean> {
   const supabase = getSupabase();
+
+  const { data: isAdmin } = await supabase.rpc("is_platform_admin");
+  if (isAdmin === true) return true;
+
+  const { data: rpcAccess } = await supabase.rpc("session_has_app_access", {
+    p_user_id: userId,
+  });
+  if (rpcAccess === true) return true;
+
   const { data, error } = await supabase
     .from("school_memberships")
     .select("role, is_active")

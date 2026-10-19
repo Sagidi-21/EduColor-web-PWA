@@ -23,6 +23,8 @@ import { ConfiguracionScreen } from "./features/configuracion/ConfiguracionScree
 import { ProfesoradoScreen } from "./features/profesorado/ProfesoradoScreen";
 import { ExerciseSessionProvider } from "./features/matematicas/ExerciseSessionContext";
 import { ExerciseView } from "./features/matematicas/ExerciseView";
+import { AdminHubScreen, type AdminView } from "./features/admin/AdminHubScreen";
+import { WaitingApprovalScreen } from "./features/admin/WaitingApprovalScreen";
 import { HomeScreen } from "./features/home/HomeScreen";
 import { MatematicasCatalogScreen } from "./features/matematicas/MatematicasCatalogScreen";
 import { SplashScreen } from "./features/splash/SplashScreen";
@@ -43,7 +45,15 @@ function AuthBusyPlaceholder() {
 
 function AppShell() {
   const { activeAulaId, aulas, save } = useClassProfile();
-  const { loading: authLoading, session } = useSchoolAuth();
+  const {
+    loading: authLoading,
+    session,
+    isPlatformAdmin,
+    isActingAsSchool,
+    schoolPendingApproval,
+    leaveAdminSchool,
+  } = useSchoolAuth();
+  const [adminView, setAdminView] = useState<AdminView>("hub");
   const [inviteToken, setInviteToken] = useState(() => readInviteTokenFromUrl());
   const [bootDone, setBootDone] = useState(false);
   const [authSkipped, setAuthSkipped] = useState(
@@ -322,6 +332,14 @@ function AppShell() {
     return renderSchoolAccess();
   }
 
+  if (session && isPlatformAdmin && !isActingAsSchool) {
+    return <AdminHubScreen view={adminView} onChangeView={setAdminView} />;
+  }
+
+  if (session && schoolPendingApproval) {
+    return <WaitingApprovalScreen />;
+  }
+
   const activeAula = aulas.find((aula) => aula.id === activeAulaId) ?? aulas[0];
   const initialGradeId = activeAula.grade === 1 ? "grade-1" : "grade-2";
 
@@ -336,6 +354,14 @@ function AppShell() {
               onOpenSchoolAccess={() => setForceAuth(true)}
               demoMode={demoMode}
               onExitDemo={exitDemoToRegister}
+              onBackToAdmin={
+                isPlatformAdmin && isActingAsSchool
+                  ? () => {
+                      leaveAdminSchool();
+                      setAdminView("hub");
+                    }
+                  : undefined
+              }
             />
           ),
           configuration: ({ navigate }) =>

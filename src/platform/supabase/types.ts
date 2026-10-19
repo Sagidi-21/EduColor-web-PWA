@@ -9,10 +9,13 @@ export interface Profile {
   updated_at: string;
 }
 
+export type SchoolStatus = "pending" | "active" | "disabled";
+
 export interface School {
   id: string;
   name: string;
   slug: string | null;
+  status?: SchoolStatus;
   created_at: string;
   updated_at: string;
 }
