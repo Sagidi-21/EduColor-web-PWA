@@ -19,12 +19,10 @@ Misma app y mismo login. Si tu email está en `platform_admins`, tras entrar ves
 ## Cómo crear el admin (una vez)
 
 1. Crea un usuario en Supabase → Authentication → Users (o regístrate en la app).
-2. En SQL Editor:
+2. En SQL Editor (no uses `INSERT` directo: la tabla está cerrada a propósito):
 
 ```sql
-insert into public.platform_admins (email_norm)
-values (lower(trim('tu-email-admin@ejemplo.com')))
-on conflict (email_norm) do nothing;
+select public.add_platform_admin('tu-email-admin@ejemplo.com');
 ```
 
 3. Login con ese email → debes ver **Administrador**.
