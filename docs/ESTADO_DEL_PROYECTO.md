@@ -20,6 +20,8 @@ entre sí.
 | ¿Hacia dónde va el producto a largo plazo?            | [ROADMAP_DE_EJECUCION_DETALLADO.md](./ROADMAP_DE_EJECUCION_DETALLADO.md) y [EJECUCION_PASO_A_PASO.md](./EJECUCION_PASO_A_PASO.md) ([ROADMAP_MAESTRO.md](./ROADMAP_MAESTRO.md) es histórico) |
 | ¿Auth / calidad login listos para prod?               | [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md)                                                                                                                                    |
 | ¿Cómo se opera la Central de colegios?                | [ADMIN_CENTRAL.md](./ADMIN_CENTRAL.md)                                                                                                                                                      |
+| ¿Amenazas / riesgos del piloto?                       | [THREAT_MODEL.md](./THREAT_MODEL.md)                                                                                                                                                        |
+| ¿Cómo activo avisos de lockout por correo?            | [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md)                                                                                                                                              |
 
 El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 `src/core/content/engine-registry.ts`, la suite falla.
@@ -51,10 +53,10 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
   branding por colegio (fondo + logo ficha en Storage), CSP con
   `img-src` Supabase Storage (G5 OK). E2E staff (F1–F6) + Vitest mocks.
   Decisiones D-028–D-037.
-  - **Siguiente:** push del fix recovery → smoke Olvidé en Netlify; residual
-    Fase 12 en DT-028 (threat model, Dependabot, MFA aparcado, D16, SMTP).
+  - **Siguiente:** guía Resend ([OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md))
+    → secrets Edge + deploy `school-login`; push → smoke Olvidé + lockout ops.
   - Checklist: [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md).
-  - Deuda abierta: [DEUDA_TECNICA.md](./DEUDA_TECNICA.md) (DT-009, 017, 024, 028).
+  - Deuda MVP: **ninguna abierta** (DT-009/017/024/028 cerradas 2026-10-19).
 - **Siguiente motor:** **ninguno**.
 - **Fase 6 (offline/PWA):** aplazada; se retomará más adelante.
 - **Fase 4 (pizarra física):** a la espera de feedback del colegio (hardware).

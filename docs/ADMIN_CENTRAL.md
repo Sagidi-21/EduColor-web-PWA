@@ -14,7 +14,8 @@ Misma app y mismo login. Si tu email está en `platform_admins`, tras entrar ves
 **No (usan herramientas gratis, no pantallas propias):**
 
 - Consola de ciberataques → chip Seguridad OK/KO = resumen 24 h + ir a **Supabase**
-- Pantalla de roturas → chip Sin Fallos = aviso; más adelante **Sentry** + Netlify
+- Correo ops en cada **lockout** → Resend ([OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md)); no Sentry
+- Pantalla de roturas → chip Sin Fallos = aviso; más adelante **Sentry** + Netlify (errores de app)
 
 ## Cómo crear el admin (una vez)
 

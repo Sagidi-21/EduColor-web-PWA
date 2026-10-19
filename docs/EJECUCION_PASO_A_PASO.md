@@ -436,13 +436,13 @@ Existe aprobación documentada de alcance de datos e infraestructura.
 
 # Fase 10 — API e identidad
 
-## Estado (2026-10-19): núcleo Auth + Admin + branding listos
+## Estado (2026-10-19): núcleo Auth + Fase 12 docs listos
 
 Ver detalle en `ROADMAP_DE_EJECUCION_DETALLADO.md` (Fase 10) y
-`ESTADO_DEL_PROYECTO.md`. Resumen: login + staff + invites + D-036/D-037 +
-Netlify + E2E F1–F6 + Admin Central + branding + CSP Storage + recovery
-(consume tras guardar) **hechos**. Residual Fase 12: DT-028 (threat model,
-Dependabot, MFA aparcado, D16, SMTP).
+`ESTADO_DEL_PROYECTO.md`. Resumen: login + staff + D-036/D-037 + Netlify + E2E +
+Admin + branding + CSP + recovery (tras guardar) + threat model + Dependabot +
+D16 Resend (código) **hechos**. Tú: secrets Resend + deploy
+([OPS_ALERTS_RESEND.md](OPS_ALERTS_RESEND.md)). MFA post-piloto.
 
 ## Pasos
 
@@ -489,12 +489,10 @@ Se puede desplegar, observar, restaurar y revertir una versión con procedimient
 
 # Fase 12 — Seguridad
 
-## Estado (2026-10-19): arranque parcial
+## Estado (2026-10-19): piloto docs listo
 
-Hecho: CSP Netlify + Storage (`public/_headers`, G5), lockout/rate Auth (D-037),
-RLS staff, Admin Central sin SIEM propio. Abierto: DT-028 (G2 threat model, G4
-Dependabot, G3 MFA aparcado, D16, SMTP). Checklist:
-[CHECKLIST_CALIDAD_AUTH.md](CHECKLIST_CALIDAD_AUTH.md) §G.
+Hecho: CSP, lockout, RLS, Admin Central, G2/G4/D16 (Resend), SMTP Free OK.
+MFA G3 deferido. Guía: [OPS_ALERTS_RESEND.md](OPS_ALERTS_RESEND.md). Checklist §G.
 
 ## Pasos
 

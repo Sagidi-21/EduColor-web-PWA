@@ -389,13 +389,12 @@ Añadir servicios remotos sin romper el uso offline ni abrir datos a otros usuar
 - CSP Netlify con `img-src` Supabase Storage (G5 OK).
 - Tests Vitest (`staffFlows.test.ts`) + E2E Playwright F1–F6. Decisiones D-028–D-037.
 
-### Pendiente residual (no bloquea núcleo; ver DT-028)
+### Pendiente residual (núcleo Auth cerrado; Fase 12 docs 2026-10-19)
 
-1. Smoke Olvidé en Netlify tras push del fix recovery.
-2. SMTP propio si el cupo Free (2 emails Auth/h) no basta.
-3. Aviso admin + pantalla de fallos (D16; chip Seguridad 24 h ya resume).
-4. Formalizar RGPD institucional si el piloto lo exige (cruzado con Fase 9).
-5. Fase 12: threat model (G2), Dependabot (G4); MFA owner aparcado (G3).
+1. Secrets Resend + deploy `school-login` ([OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md)).
+2. Smoke Olvidé + lockout ops tras push.
+3. Formalizar RGPD institucional si el piloto lo exige (Fase 9).
+4. MFA owner (G3) — post-piloto (D-038).
 
 ### Fuera de este cierre (siguen en roadmap amplio)
 
@@ -451,10 +450,11 @@ Hacer repetible el paso de código validado a piloto, staging y producción.
 
 Aplicar controles de seguridad antes de manejar identidades, datos remotos o centros múltiples.
 
-## Estado: ARRANQUE PARCIAL (2026-10-19)
+## Estado: PILOTO LISTO EN DOCS (2026-10-19)
 
-Hecho: CSP + Storage, lockout Auth, RLS, Admin Central (sin SIEM propio). Abierto:
-[DEUDA_TECNICA.md](./DEUDA_TECNICA.md) DT-028 y [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md) §G.
+Hecho: CSP + Storage, lockout Auth, RLS, Admin Central, threat model (G2),
+Dependabot (G4), D16 Resend (código; secrets tuyos), SMTP Free aceptado.
+MFA (G3) deferido. Ver [THREAT_MODEL.md](./THREAT_MODEL.md) y checklist §G.
 
 ## Qué hacer
 

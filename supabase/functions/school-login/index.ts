@@ -191,9 +191,61 @@ async function registerFailure(
 
   if (locked) {
     await sendRecoveryEmail(supabaseUrl, anonKey, admin, email, siteOrigin, "lockout");
+    // D16: aviso a ops (Resend). No bloquea el lockout si falla el envío.
+    void notifyOpsLockout(email, ipHash);
   }
 
   return { locked };
+}
+
+/** Destinatarios ops por defecto (D16); override con secret OPS_ALERT_EMAILS. */
+const DEFAULT_OPS_ALERT_EMAILS =
+  "salvadorginestarhernadez@gmail.com,sagidiappcursor@gmail.com";
+
+async function notifyOpsLockout(attemptedEmail: string, ipHash: string): Promise<void> {
+  const apiKey = Deno.env.get("RESEND_API_KEY")?.trim();
+  if (!apiKey) {
+    console.warn("notifyOpsLockout: RESEND_API_KEY no configurado; se omite aviso ops");
+    return;
+  }
+  const raw = Deno.env.get("OPS_ALERT_EMAILS")?.trim() || DEFAULT_OPS_ALERT_EMAILS;
+  const to = raw
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter((e) => e.includes("@"));
+  if (!to.length) {
+    console.warn("notifyOpsLockout: OPS_ALERT_EMAILS vacío");
+    return;
+  }
+  const from =
+    Deno.env.get("RESEND_FROM")?.trim() || "EduColor Ops <onboarding@resend.dev>";
+  const subject = "EduColor: bloqueo de login (3 fallos)";
+  const text = [
+    "Se ha bloqueado un intento de Entrar al Colegio tras 3 credenciales inválidas.",
+    "",
+    `Email intentado: ${attemptedEmail}`,
+    `ip_hash (auditoría): ${ipHash.slice(0, 16)}…`,
+    `Bloqueo: ${LOCK_MINUTES} minutos.`,
+    "",
+    "Revisa también el chip Seguridad (24 h) en Admin Central / auth_security_events.",
+  ].join("\n");
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ from, to, subject, text }),
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      console.error("notifyOpsLockout Resend", res.status, body.slice(0, 300));
+    }
+  } catch (err) {
+    console.error("notifyOpsLockout", err);
+  }
 }
 
 async function sendRecoveryEmail(

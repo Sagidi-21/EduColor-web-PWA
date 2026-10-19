@@ -42,25 +42,25 @@ Estado del proyecto: [ESTADO_DEL_PROYECTO.md](./ESTADO_DEL_PROYECTO.md).
 
 ## D. Flujo funcional (prueba manual / local)
 
-| #   | Ítem                                | Esperado                                                        | Estado                                                |
-| --- | ----------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------- |
-| D1  | Registrar colegio (password válida) | Aviso de confirmar email; **sin** entrar aún                    | [x] local                                             |
-| D2  | Abrir enlace del correo             | Vuelve a la app / sesión                                        | [x] local                                             |
-| D3  | Filas en BD                         | `profiles` + `schools` + `school_memberships`                   | [x] local                                             |
-| D4  | Home                                | Nombre del colegio (no placeholder de alta)                     | [x] local                                             |
-| D5  | Login fallido / desactivado         | **«Credenciales inválidas.»**                                   | [x]                                                   |
-| D6  | Password débil en registro          | Botón gris desactivado + tip; sin submit inválido               | [x]                                                   |
-| D7  | Nombre/email duplicado              | Mensaje genérico en pantalla (sin falso “revisa el email”)      | [x]                                                   |
-| D8  | DEMO                                | Catálogo limitado; salir al registro                            | [x]                                                   |
-| D9  | Invitar docente → link `?invite=`   | Registrar Docente + popup → Entrar al Colegio (login)           | [x] local                                             |
-| D10 | Desactivar / eliminar con sesión    | Corte inmediato; re-login = credenciales inválidas              | [x] local                                             |
-| D11 | Chips Profesorado                   | pendientes / aceptadas / activos / desactivados coherentes      | [x] local                                             |
-| D12 | Cambiar contraseña (nueva)          | D-036 — pantalla + popup «Contraseña actualizada»               | [x] OK 2026-10-19 (popup + navegación)                |
-| D13 | Lockout 3 fallos / 15 min           | D-037 — «Demasiadas credenciales inválidas. Espera 15 minutos.» | [x]                                                   |
-| D14 | Correo al 3.er fallo (si existe)    | D-037 — con aviso de intentos + enlace                          | [x]                                                   |
-| D15 | Olvidé la contraseña                | D-037 — correo neutro; enlace un solo uso (Auth); popup éxito   | [x] OK 2026-10-19 (consume tras guardar, no al abrir) |
-| D16 | Correo/pantalla admin de fallos     | Email fijo ops — **más adelante**                               | [ ]                                                   |
-| D17 | Avatar + Cerrar Sesión en home      | Bola (OW / iniciales) + botón en banner inferior                | [x]                                                   |
+| #   | Ítem                                | Esperado                                                              | Estado                                                |
+| --- | ----------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------- |
+| D1  | Registrar colegio (password válida) | Aviso de confirmar email; **sin** entrar aún                          | [x] local                                             |
+| D2  | Abrir enlace del correo             | Vuelve a la app / sesión                                              | [x] local                                             |
+| D3  | Filas en BD                         | `profiles` + `schools` + `school_memberships`                         | [x] local                                             |
+| D4  | Home                                | Nombre del colegio (no placeholder de alta)                           | [x] local                                             |
+| D5  | Login fallido / desactivado         | **«Credenciales inválidas.»**                                         | [x]                                                   |
+| D6  | Password débil en registro          | Botón gris desactivado + tip; sin submit inválido                     | [x]                                                   |
+| D7  | Nombre/email duplicado              | Mensaje genérico en pantalla (sin falso “revisa el email”)            | [x]                                                   |
+| D8  | DEMO                                | Catálogo limitado; salir al registro                                  | [x]                                                   |
+| D9  | Invitar docente → link `?invite=`   | Registrar Docente + popup → Entrar al Colegio (login)                 | [x] local                                             |
+| D10 | Desactivar / eliminar con sesión    | Corte inmediato; re-login = credenciales inválidas                    | [x] local                                             |
+| D11 | Chips Profesorado                   | pendientes / aceptadas / activos / desactivados coherentes            | [x] local                                             |
+| D12 | Cambiar contraseña (nueva)          | D-036 — pantalla + popup «Contraseña actualizada»                     | [x] OK 2026-10-19 (popup + navegación)                |
+| D13 | Lockout 3 fallos / 15 min           | D-037 — «Demasiadas credenciales inválidas. Espera 15 minutos.»       | [x]                                                   |
+| D14 | Correo al 3.er fallo (si existe)    | D-037 — con aviso de intentos + enlace                                | [x]                                                   |
+| D15 | Olvidé la contraseña                | D-037 — correo neutro; enlace un solo uso (Auth); popup éxito         | [x] OK 2026-10-19 (consume tras guardar, no al abrir) |
+| D16 | Correo ops de fallos (lockout)      | Resend → 2 Gmail; guía [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md) | [x] código; secrets Edge + deploy (tú)                |
+| D17 | Avatar + Cerrar Sesión en home      | Bola (OW / iniciales) + botón en banner inferior                      | [x]                                                   |
 
 ## E. Producción Netlify (build con Auth)
 
@@ -89,26 +89,28 @@ colegio), no el despliegue antiguo “sin cuenta”.
 
 ## G. Fase 12 — seguridad piloto (arranque)
 
-| #   | Ítem                                                      | Estado                                                                                  |
-| --- | --------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| G1  | Headers de seguridad + CSP en Netlify (`public/_headers`) | [x] + hash inline Netlify; `img-src` incluye `https://*.supabase.co` (branding Storage) |
-| G2  | Threat model / inventario de activos (doc corto)          | [ ] doc corto pendiente (roadmap Fase 12)                                               |
-| G3  | MFA TOTP para owner (Supabase Auth MFA)                   | [ ] aparcado a propósito (admin Central hecho)                                          |
-| G4  | Secret scanning / Dependabot                              | [ ] activar en GitHub cuando el repo esté público/remoto al día                         |
-| G5  | CSP comprobada en staging/prod (consola sin violaciones)  | [x] branding Storage OK en prod (2026-10-19)                                            |
+| #   | Ítem                                                      | Estado                                                                                                                                         |
+| --- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| G1  | Headers de seguridad + CSP en Netlify (`public/_headers`) | [x] + hash inline Netlify; `img-src` incluye `https://*.supabase.co` (branding Storage)                                                        |
+| G2  | Threat model / inventario de activos (doc corto)          | [x] [THREAT_MODEL.md](./THREAT_MODEL.md) (2026-10-19)                                                                                          |
+| G3  | MFA TOTP para owner (Supabase Auth MFA)                   | [~] **deferido post-piloto** (decisión 2026-10-19)                                                                                             |
+| G4  | Secret scanning / Dependabot                              | [x] Dependabot alerts ON; `.github/dependabot.yml` (version updates tras push). Secret scanning no disponible en repo privado personal gratis. |
+| G5  | CSP comprobada en staging/prod (consola sin violaciones)  | [x] branding Storage OK en prod (2026-10-19)                                                                                                   |
 
 ## H. Orden de trabajo (actualizado)
 
-1. ~~Auth Netlify + E2E + Admin + branding + D12/D15 + docs deuda~~.
-2. **Siguiente:** push del **fix recovery** (DT-027) → smoke Olvidé en Netlify.
-3. Residual Fase 12 = [DEUDA_TECNICA.md](./DEUDA_TECNICA.md) **DT-028** (G2/G4/G3/D16/SMTP).
-4. Deuda UI/cobertura no Auth: DT-009, DT-017, DT-024.
+1. ~~Auth + E2E + Admin + branding + D12/D15 + Fase 12 G2/G4/D16 + deudas MVP~~.
+2. **Tú ahora:** [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md) (API key + secrets + deploy `school-login`).
+3. Push (recovery + esta pasada) → smoke Olvidé + lockout ops en Netlify.
+4. MFA (G3) — después del piloto. Sentry — más adelante (errores de app).
 
 ## Notas
 
 - DEMO / soft gate es riesgo de producto aceptado.
-- MFA owner = Fase 12, aparcado.
+- MFA owner = **después del piloto** (G3).
 - No se “recuperan” contraseñas antiguas: siempre se **elige una nueva** (D-036).
 - Lockout: contador por **email** (`ip_hash` auditoría); solo Entrar al Colegio (D-037).
-- SMTP integrado Free: **2 emails Auth/hora** (proyecto); esperar o SMTP custom.
+- SMTP Auth Free: **2 emails/hora** — aceptado para piloto (sesiones largas en portátil).
+- Avisos ops lockout: Resend (no gasta cupo Auth) — [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md).
 - SQL Editor DDL: `reset role` en el **mismo Run** ([ADMIN_CENTRAL.md](./ADMIN_CENTRAL.md)).
+- GitHub: Dependabot alerts **ON** (2026-10-19). Secret scanning suele no salir en repo privado personal gratis.
