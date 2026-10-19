@@ -33,3 +33,16 @@ select public.add_platform_admin('tu-email-admin@ejemplo.com');
 - Redesplegar Edge `school-login` (admins sin membresía de colegio).
 
 Las altas nuevas de «Registrar Colegio» quedan `pending` hasta que las aceptes.
+
+## Table Editor: “permission denied”
+
+Tablas como `password_recovery_consumptions`, `auth_login_guards`, `auth_security_events` y
+`platform_admins` **no se abren en Table Editor** a propósito (la app tampoco puede
+leerlas por API). No es que estén rotas.
+
+Para ver datos, usa **SQL Editor**:
+
+```sql
+select * from public.auth_security_events order by created_at desc limit 50;
+select * from public.platform_admins;
+```
