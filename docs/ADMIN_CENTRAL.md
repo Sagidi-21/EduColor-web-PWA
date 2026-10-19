@@ -30,9 +30,33 @@ select public.add_platform_admin('tu-email-admin@ejemplo.com');
 ## Migración / Edge
 
 - `supabase/migrations/20261019130000_platform_admin.sql`
+- `supabase/migrations/20261019140000_school_branding.sql` (columnas `background_url` / `logo_ficha_url` + bucket Storage `school-branding`)
 - Redesplegar Edge `school-login` (admins sin membresía de colegio).
 
 Las altas nuevas de «Registrar Colegio» quedan `pending` hasta que las aceptes.
+
+## SQL Editor: `must be owner of table …`
+
+Aunque `pg_tables.tableowner` diga `postgres`, el Editor a menudo ejecuta con
+**`current_user = authenticated`** (`session_user` sigue siendo `postgres`).
+En ese modo **no puedes** `ALTER TABLE` / DDL sobre tablas tuyas →
+`ERROR: 42501: must be owner of table …`.
+
+**Arreglo:** en el **mismo Run** (cada Run vuelve a `authenticated`):
+
+```sql
+reset role;
+-- … aquí el ALTER / migración completa …
+select current_user;  -- debe ser postgres
+```
+
+Comprobar rol antes de DDL:
+
+```sql
+select current_user, session_user;
+```
+
+Si hay selector de rol / «Run as» en el Editor, déjalo en **postgres**.
 
 ## Table Editor: “permission denied”
 

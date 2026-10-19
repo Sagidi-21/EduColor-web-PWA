@@ -5,18 +5,19 @@ Estado del proyecto: [ESTADO_DEL_PROYECTO.md](./ESTADO_DEL_PROYECTO.md).
 
 ## A. Supabase — esquema
 
-| #   | Ítem                                                     | Cómo comprobar                                           | Estado |
-| --- | -------------------------------------------------------- | -------------------------------------------------------- | ------ |
-| A1  | Migración base `schools` / `profiles` / memberships      | Table Editor: existen las 3 tablas                       | [x]    |
-| A2  | `create_school_as_owner`                                 | SQL: `\df create_school_as_owner` o Database → Functions | [x]    |
-| A3  | `memberships_select_own`                                 | Policies de `school_memberships`                         | [x]    |
-| A4  | Índice único nombre colegio                              | `schools_name_unique_ci` en Indexes                      | [x]    |
-| A5  | `auth_security_events` + `log_auth_security_event`       | Tabla + Function tras hardening OWASP                    | [x]    |
-| A6  | Invites + staff RPCs (`owner_*`, `peek_*`, `complete_*`) | Functions + migraciones `20261018*`                      | [x]    |
-| A7  | `is_school_member` exige docente activo                  | Migración `…_member_requires_active`                     | [x]    |
-| A8  | `owner_list_staff` sin INNER JOIN a profiles             | Migración `…_owner_list_staff_memberships`               | [x]    |
-| A9  | `avatar_color` + unicidad por colegio                    | Migración `…_membership_avatar_color`                    | [x]    |
-| A10 | Recovery un solo uso (`password_recovery_consumptions`)  | Migración `…_password_recovery_single_use`               | [x]    |
+| #   | Ítem                                                                             | Cómo comprobar                                                                                                                      | Estado |
+| --- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| A1  | Migración base `schools` / `profiles` / memberships                              | Table Editor: existen las 3 tablas                                                                                                  | [x]    |
+| A2  | `create_school_as_owner`                                                         | SQL: `\df create_school_as_owner` o Database → Functions                                                                            | [x]    |
+| A3  | `memberships_select_own`                                                         | Policies de `school_memberships`                                                                                                    | [x]    |
+| A4  | Índice único nombre colegio                                                      | `schools_name_unique_ci` en Indexes                                                                                                 | [x]    |
+| A5  | `auth_security_events` + `log_auth_security_event`                               | Tabla + Function tras hardening OWASP                                                                                               | [x]    |
+| A6  | Invites + staff RPCs (`owner_*`, `peek_*`, `complete_*`)                         | Functions + migraciones `20261018*`                                                                                                 | [x]    |
+| A7  | `is_school_member` exige docente activo                                          | Migración `…_member_requires_active`                                                                                                | [x]    |
+| A8  | `owner_list_staff` sin INNER JOIN a profiles                                     | Migración `…_owner_list_staff_memberships`                                                                                          | [x]    |
+| A9  | `avatar_color` + unicidad por colegio                                            | Migración `…_membership_avatar_color`                                                                                               | [x]    |
+| A10 | Recovery un solo uso (`password_recovery_consumptions`)                          | Migración `…_password_recovery_single_use`                                                                                          | [x]    |
+| A11 | Branding colegio (`background_url`, `logo_ficha_url` + bucket `school-branding`) | Migración `…_school_branding`; Storage bucket Public; DDL con `reset role` en el mismo Run ([ADMIN_CENTRAL.md](./ADMIN_CENTRAL.md)) | [x]    |
 
 ## B. Supabase — Auth (panel)
 
@@ -88,27 +89,32 @@ colegio), no el despliegue antiguo “sin cuenta”.
 
 ## G. Fase 12 — seguridad piloto (arranque)
 
-| #   | Ítem                                                      | Estado                         |
-| --- | --------------------------------------------------------- | ------------------------------ |
-| G1  | Headers de seguridad + CSP en Netlify (`public/_headers`) | [x] + hash inline Netlify      |
-| G2  | Threat model / inventario de activos (doc corto)          | [ ]                            |
-| G3  | MFA TOTP para owner (Supabase Auth MFA)                   | [ ] aparcado; priorizar admin  |
-| G4  | Secret scanning / Dependabot                              | [ ]                            |
-| G5  | CSP comprobada en staging/prod (consola sin violaciones)  | [ ] re-probar tras este deploy |
+| #   | Ítem                                                      | Estado                                                                                  |
+| --- | --------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| G1  | Headers de seguridad + CSP en Netlify (`public/_headers`) | [x] + hash inline Netlify; `img-src` incluye `https://*.supabase.co` (branding Storage) |
+| G2  | Threat model / inventario de activos (doc corto)          | [ ] doc corto pendiente (roadmap Fase 12)                                               |
+| G3  | MFA TOTP para owner (Supabase Auth MFA)                   | [ ] aparcado a propósito (admin Central hecho)                                          |
+| G4  | Secret scanning / Dependabot                              | [ ] activar en GitHub cuando el repo esté público/remoto al día                         |
+| G5  | CSP comprobada en staging/prod (consola sin violaciones)  | [ ] re-probar en Netlify **tras push** (fondo/logo Storage)                             |
 
-## H. Orden de trabajo (2026-10-19)
+## H. Orden de trabajo (2026-10-19 → actualizado)
 
-1. ~~D-036/D-037 + Netlify Auth~~ (hecho).
-2. Re-probar popup contraseña en prod (cupo email Free 2/h) → marcar D12/D15 al 100 %.
-3. ~~E2E staff críticos (smoke, fail, forgot, lockout) + owner/logout con env~~.
-4. Verificar CSP en Netlify (G5) → luego MFA owner (G3).
-5. **SMTP propio** si hace falta más de 2 correos Auth/hora.
-6. Admin email fijo + pantalla de fallos (D16).
+1. ~~D-036/D-037 + Netlify Auth~~.
+2. ~~E2E staff críticos + owner/logout~~.
+3. ~~Admin Central + branding colegio (migración + UI)~~ — código local; **push pendiente**.
+4. **Siguiente:** push → verificar CSP en prod (G5) con branding cargado.
+5. Re-probar popup contraseña / olvido en prod (D12/D15; cupo email Free 2/h).
+6. Threat model corto (G2) y Dependabot (G4) cuando toque higiene repo.
+7. SMTP propio si hace falta >2 correos Auth/hora.
+8. D16 admin email de fallos — más adelante (chip Seguridad ya resume 24 h).
+9. MFA owner (G3) — aparcado hasta después de G5.
 
 ## Notas
 
 - DEMO / soft gate es riesgo de producto aceptado.
-- MFA owner = siguiente pieza de Fase 12 tras validar CSP en prod.
+- MFA owner = Fase 12 tras validar CSP en prod con Storage.
 - No se “recuperan” contraseñas antiguas: siempre se **elige una nueva** (D-036).
 - Lockout: contador por **email** (`ip_hash` auditoría); solo Entrar al Colegio (D-037).
 - SMTP integrado Free: **2 emails Auth/hora** (proyecto); esperar o SMTP custom.
+- SQL Editor DDL: `reset role` en el **mismo Run** ([ADMIN_CENTRAL.md](./ADMIN_CENTRAL.md)).
+- Docs ADMIN + A11 checklist: pendientes de commit si aún no están en el último commit.
