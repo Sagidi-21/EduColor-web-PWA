@@ -436,22 +436,22 @@ Existe aprobación documentada de alcance de datos e infraestructura.
 
 # Fase 10 — API e identidad
 
-## Estado (2026-10-18): en curso
+## Estado (2026-10-19): en curso (núcleo Auth + Netlify listos)
 
 Ver detalle en `ROADMAP_DE_EJECUCION_DETALLADO.md` (Fase 10) y
-`ESTADO_DEL_PROYECTO.md`. Resumen: login + staff + invites **hechos** en local;
-pendiente Netlify con Auth, **cambiar contraseña = nueva** (D-036), luego E2E.
+`ESTADO_DEL_PROYECTO.md`. Resumen: login + staff + invites + D-036/D-037 +
+Netlify prod **hechos**; pendiente E2E, SMTP si hace falta, admin fails.
 
 ## Pasos
 
 1. Definir contratos API y modelo de errores versionado. 🚧 parcial — piloto usa
    Supabase RPC + Edge Functions, no una API REST genérica.
-2. Crear entorno staging aislado y secretos fuera del repositorio. 🚧 parcial —
-   secrets en `.env` local; Netlify env pendiente
-   ([CHECKLIST_CALIDAD_AUTH.md](CHECKLIST_CALIDAD_AUTH.md) §E).
+2. Crear entorno staging aislado y secretos fuera del repositorio. ✅ parcial —
+   `.env` local + Netlify env Publishable
+   ([CHECKLIST_CALIDAD_AUTH.md](CHECKLIST_CALIDAD_AUTH.md) §C/§E).
 3. Implementar autenticación de profesorado, expiración, cierre y **cambio de
-   contraseña (definir una nueva; D-036)**. 🚧 parcial — login/cierre/ban hechos;
-   UI de contraseña nueva pendiente.
+   contraseña (definir una nueva; D-036)**. ✅ — login/cierre/ban + pantallas
+   contraseña nueva + recovery un uso + popup éxito.
 4. Implementar roles y autorización server-side por centro, clase y recurso.
    ✅ completado para el piloto staff (RLS + `is_school_owner` / member activo).
 5. Crear endpoints mínimos de perfil, actividades/configuración y sincronización.
