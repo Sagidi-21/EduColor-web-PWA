@@ -20,6 +20,10 @@ import { getSupabase, isSupabaseConfigured } from "../../platform/supabase/clien
 import { fetchMyMembershipAvatar, fetchMyRole } from "../../platform/supabase/teachers";
 import type { School, SchoolRole } from "../../platform/supabase/types";
 import {
+  isPasswordRecoveryActive,
+  markPasswordRecoveryActive,
+} from "../../features/auth/passwordRecovery";
+import {
   OWNER_AVATAR_COLOR,
   OWNER_AVATAR_INITIALS,
   normalizeHexColor,
@@ -149,6 +153,18 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
         setSchoolBootstrapError(null);
         return;
       }
+      // Recovery de contraseña: no expulsar la sesión (hace falta para updateUser).
+      const hash = typeof window !== "undefined" ? window.location.hash : "";
+      if (hash.includes("type=recovery")) {
+        markPasswordRecoveryActive();
+      }
+      if (isPasswordRecoveryActive()) {
+        if (cancelled) return;
+        setSchoolBootstrapError(null);
+        setSession(next);
+        void applySchools([], next.user.id);
+        return;
+      }
       // No publicar sesión si el docente está desactivado / sin colegio (evita salto a Welcome).
       const allowed = await sessionHasAppAccess(next.user.id);
       if (!allowed) {
@@ -181,7 +197,11 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
 
     // Diferir queries: dentro de onAuthStateChange el cliente Auth puede bloquearse
     // (lock) y dejar schools vacío → header «Completando alta del colegio…».
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, next) => {
+      // Antes que AppShell: conservar sesión recovery para updateUser.
+      if (event === "PASSWORD_RECOVERY") {
+        markPasswordRecoveryActive();
+      }
       window.setTimeout(() => {
         void (async () => {
           if (cancelled) return;

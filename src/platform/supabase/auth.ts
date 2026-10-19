@@ -85,8 +85,14 @@ function mapAuthError(message: string): string {
   return MSG_CREDS_INVALID;
 }
 
-async function logAuthSecurityEvent(
-  eventType: "login_fail" | "signup_fail" | "school_create_fail" | "school_create_ok",
+export async function logAuthSecurityEvent(
+  eventType:
+    | "login_fail"
+    | "signup_fail"
+    | "school_create_fail"
+    | "school_create_ok"
+    | "password_reset_ok"
+    | "password_reset_request",
   context?: string,
 ): Promise<void> {
   if (!isSupabaseConfigured()) return;

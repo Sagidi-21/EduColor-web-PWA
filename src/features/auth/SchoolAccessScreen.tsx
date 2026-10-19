@@ -52,6 +52,9 @@ interface SchoolAccessScreenProps {
   onContinueLocal?: () => void;
   /** Abrir en «Entrar al Colegio» (p. ej. tras Registrar Docente). */
   initialLoginMode?: boolean;
+  /** Mensaje de error inicial (p. ej. enlace recovery ya usado). */
+  initialStatus?: string;
+  onStatusConsumed?: () => void;
 }
 
 function IconMail() {
@@ -117,11 +120,16 @@ export function SchoolAccessScreen({
   onAuthenticated,
   onContinueLocal,
   initialLoginMode = false,
+  initialStatus = "",
+  onStatusConsumed,
 }: SchoolAccessScreenProps) {
   const { configured, refreshSchools } = useSchoolAuth();
   const [authBoot] = useState(() => {
     // peek (no take): Strict Mode remonta y un consume prematuro abría registro.
     const fromInviteSuccess = peekInviteSuccessFlash();
+    if (initialStatus.trim()) {
+      return { login: true, error: initialStatus.trim(), info: "" };
+    }
     if (fromInviteSuccess || initialLoginMode) {
       return {
         login: true,
@@ -137,6 +145,11 @@ export function SchoolAccessScreen({
   useEffect(() => {
     if (authBoot.login) clearInviteSuccessFlash();
   }, [authBoot.login]);
+
+  useEffect(() => {
+    if (initialStatus.trim()) onStatusConsumed?.();
+  }, [initialStatus, onStatusConsumed]);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [schoolName, setSchoolName] = useState("");

@@ -12,6 +12,12 @@ import {
   readSetPasswordFromUrl,
   SetPasswordScreen,
 } from "./features/auth/SetPasswordScreen";
+import {
+  MSG_RECOVERY_USED,
+  clearPasswordRecoveryActive,
+  consumePasswordRecoveryLink,
+  isPasswordRecoveryActive,
+} from "./features/auth/passwordRecovery";
 import { getSupabase, isSupabaseConfigured } from "./platform/supabase/client";
 import { ConfiguracionScreen } from "./features/configuracion/ConfiguracionScreen";
 import { ProfesoradoScreen } from "./features/profesorado/ProfesoradoScreen";
@@ -49,8 +55,25 @@ function AppShell() {
   const [preferLoginAccess, setPreferLoginAccess] = useState(false);
   /** Tras splash→auth: si la sesión llega tarde, saltar el gate. */
   const [awaitingAuthGate, setAwaitingAuthGate] = useState(false);
-  /** D-036/D-037: definir contraseña nueva (recovery / setPassword en URL). */
-  const [setPasswordFlow, setSetPasswordFlow] = useState(() => readSetPasswordFromUrl());
+  /**
+   * Solo tras PASSWORD_RECOVERY consumido (un uso).
+   * `?setPassword=1` no abre la pantalla por sí solo (evita reutilizar el enlace).
+   */
+  const [setPasswordFlow, setSetPasswordFlow] = useState<{
+    active: boolean;
+    source: string;
+    waiting: boolean;
+    error: string;
+  }>(() => {
+    const fromUrl = readSetPasswordFromUrl();
+    const resume = isPasswordRecoveryActive();
+    return {
+      active: resume,
+      source: fromUrl.source || "forgot",
+      waiting: fromUrl.active && !resume,
+      error: "",
+    };
+  });
 
   React.useEffect(() => {
     const zoomKey = "educolor_zoom";
@@ -61,17 +84,82 @@ function AppShell() {
 
   React.useEffect(() => {
     if (!isSupabaseConfigured()) return;
+    let cancelled = false;
+
+    const activateRecovery = async () => {
+      const {
+        data: { session },
+      } = await getSupabase().auth.getSession();
+      if (cancelled) return;
+      if (!session?.access_token) {
+        clearPasswordRecoveryActive();
+        clearSetPasswordFromUrl();
+        setSetPasswordFlow({
+          active: false,
+          source: "forgot",
+          waiting: false,
+          error: MSG_RECOVERY_USED,
+        });
+        return;
+      }
+      const consumed = await consumePasswordRecoveryLink(session.access_token);
+      if (cancelled) return;
+      if (!consumed.ok) {
+        clearPasswordRecoveryActive();
+        clearSetPasswordFromUrl();
+        try {
+          await getSupabase().auth.signOut({ scope: "local" });
+        } catch {
+          // ignore
+        }
+        setSetPasswordFlow({
+          active: false,
+          source: "forgot",
+          waiting: false,
+          error: MSG_RECOVERY_USED,
+        });
+        return;
+      }
+      setSetPasswordFlow((prev) => ({
+        active: true,
+        source: prev.source || readSetPasswordFromUrl().source || "forgot",
+        waiting: false,
+        error: "",
+      }));
+    };
+
     const {
       data: { subscription },
     } = getSupabase().auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
-        setSetPasswordFlow((prev) => ({
-          active: true,
-          source: prev.source || readSetPasswordFromUrl().source || "forgot",
-        }));
+        void activateRecovery();
       }
     });
-    return () => subscription.unsubscribe();
+
+    // Si aterrizamos con ?setPassword=1, esperamos el evento recovery del hash.
+    const fromUrl = readSetPasswordFromUrl();
+    let timeoutId: number | undefined;
+    if (fromUrl.active && !isPasswordRecoveryActive()) {
+      timeoutId = window.setTimeout(() => {
+        if (cancelled) return;
+        setSetPasswordFlow((prev) => {
+          if (prev.active) return prev;
+          clearSetPasswordFromUrl();
+          return {
+            active: false,
+            source: "forgot",
+            waiting: false,
+            error: MSG_RECOVERY_USED,
+          };
+        });
+      }, 4000);
+    }
+
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+      if (timeoutId) window.clearTimeout(timeoutId);
+    };
   }, []);
 
   const canSkipAuth = !authLoading && (!!session || authSkipped);
@@ -149,13 +237,43 @@ function AppShell() {
     );
   }
 
+  if (setPasswordFlow.waiting) {
+    return <AuthBusyPlaceholder />;
+  }
+
+  if (setPasswordFlow.error && !setPasswordFlow.active) {
+    // Mantener el error en estado: si se limpia al montar, caemos en Welcome.
+    return (
+      <SchoolAccessScreen
+        onAuthenticated={() => {
+          setSetPasswordFlow({
+            active: false,
+            source: "forgot",
+            waiting: false,
+            error: "",
+          });
+          finishAuthGate(false);
+        }}
+        onContinueLocal={enterDemo}
+        initialLoginMode
+        initialStatus={setPasswordFlow.error}
+      />
+    );
+  }
+
   if (setPasswordFlow.active) {
     return (
       <SetPasswordScreen
         source={setPasswordFlow.source}
         onDone={() => {
+          clearPasswordRecoveryActive();
           clearSetPasswordFromUrl();
-          setSetPasswordFlow({ active: false, source: "forgot" });
+          setSetPasswordFlow({
+            active: false,
+            source: "forgot",
+            waiting: false,
+            error: "",
+          });
           sessionStorage.removeItem(AUTH_SKIP_KEY);
           setAuthSkipped(false);
           writeDemoMode(false);

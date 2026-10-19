@@ -130,6 +130,10 @@ export interface Database {
         Args: { p_token: string; p_user_id?: string | null };
         Returns: Record<string, unknown>;
       };
+      consume_password_recovery: {
+        Args: { p_fingerprint: string };
+        Returns: Record<string, unknown>;
+      };
     };
     Enums: {
       school_role: SchoolRole;

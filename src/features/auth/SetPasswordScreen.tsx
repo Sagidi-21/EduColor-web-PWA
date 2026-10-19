@@ -1,14 +1,18 @@
 import { useState, type FormEvent } from "react";
 import welcomeBgUrl from "../../assets/welcome-bg.png";
 import logoMarkUrl from "../../assets/logo_sin texto.png";
-import { clearLoginGuardAfterPasswordChange, signOut } from "../../platform/supabase/auth";
+import {
+  clearLoginGuardAfterPasswordChange,
+  logAuthSecurityEvent,
+  signOut,
+} from "../../platform/supabase/auth";
 import { getSupabase } from "../../platform/supabase/client";
 import {
   isAuthPasswordValid,
   PASSWORD_MAX_LEN,
   PASSWORD_MIN_LEN,
 } from "../../platform/supabase/formLimits";
-import { setInviteSuccessFlash } from "./inviteUrl";
+import { MSG_RECOVERY_EXPIRED, clearPasswordRecoveryActive } from "./passwordRecovery";
 import "./SchoolAccessScreen.css";
 
 function IconEye({ off }: { off?: boolean }) {
@@ -47,6 +51,7 @@ export function SetPasswordScreen({ source = "forgot", onDone }: SetPasswordScre
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [savedOk, setSavedOk] = useState(false);
 
   const passwordFails = password.length > 0 && !isAuthPasswordValid(password);
   const passwordsMismatch = password2.length > 0 && password !== password2;
@@ -57,30 +62,55 @@ export function SetPasswordScreen({ source = "forgot", onDone }: SetPasswordScre
       ? "Hemos detectado varios accesos fallidos. Define una contraseña nueva para tu cuenta."
       : "Elige una contraseña nueva para volver a Entrar al Colegio.";
 
+  const goToLoginAfterSuccess = () => {
+    clearSetPasswordFromUrl();
+    onDone();
+  };
+
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formValid) return;
     setError("");
     setBusy(true);
     try {
-      const { error: updateError } = await getSupabase().auth.updateUser({ password });
-      if (updateError) {
-        setError(
-          updateError.message.toLowerCase().includes("password")
-            ? "La contraseña no cumple con las restricciones."
-            : "No se pudo guardar la contraseña. Inténtalo de nuevo.",
-        );
+      const {
+        data: { session },
+      } = await getSupabase().auth.getSession();
+      if (!session) {
+        setError(MSG_RECOVERY_EXPIRED);
         return;
       }
+
+      const { error: updateError } = await getSupabase().auth.updateUser({ password });
+      if (updateError) {
+        const lower = updateError.message.toLowerCase();
+        console.error("[SetPassword] updateUser", updateError.message);
+        if (lower.includes("same") || lower.includes("different") || lower.includes("identical")) {
+          setError("La contraseña nueva debe ser distinta de la anterior.");
+        } else if (
+          lower.includes("session") ||
+          lower.includes("jwt") ||
+          lower.includes("expired") ||
+          lower.includes("not authenticated")
+        ) {
+          setError(MSG_RECOVERY_EXPIRED);
+        } else if (lower.includes("password") || lower.includes("weak")) {
+          setError("La contraseña no cumple con las restricciones.");
+        } else {
+          setError("No se pudo guardar la contraseña. Inténtalo de nuevo.");
+        }
+        return;
+      }
+      void logAuthSecurityEvent("password_reset_ok", source);
       await clearLoginGuardAfterPasswordChange();
-      setInviteSuccessFlash();
+      clearPasswordRecoveryActive();
       try {
         await signOut();
       } catch {
         // ignore
       }
       clearSetPasswordFromUrl();
-      onDone();
+      setSavedOk(true);
     } finally {
       setBusy(false);
     }
@@ -201,6 +231,37 @@ export function SetPasswordScreen({ source = "forgot", onDone }: SetPasswordScre
           </div>
         </div>
       </div>
+
+      {savedOk ? (
+        <div className="sa__modal" role="dialog" aria-modal="true" aria-labelledby="pwd-ok-title">
+          <div className="sa__modal-card">
+            <div className="sa__modal-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2.5"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h2 id="pwd-ok-title" className="sa__modal-title">
+              Contraseña actualizada
+            </h2>
+            <p className="sa__modal-text">
+              Tu contraseña nueva ya está guardada. Entra al colegio con tu email y la contraseña
+              que acabas de definir.
+            </p>
+            <button
+              type="button"
+              className="sa__btn sa__btn--primary"
+              onClick={goToLoginAfterSuccess}
+            >
+              Entrar al Colegio
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
