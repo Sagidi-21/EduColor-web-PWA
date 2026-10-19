@@ -11,5 +11,8 @@ vite.config.d.ts
 .env.local
 .env.production
 
+# Caché local del CLI de Supabase
+supabase/.temp/
+
 # Referencia local del proyecto Electron original — no subir al repositorio
 electron-reference/

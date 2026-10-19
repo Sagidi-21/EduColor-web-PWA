@@ -34,17 +34,13 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     const anonKey =
-      Deno.env.get("SUPABASE_ANON_KEY") ??
-      Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ??
-      "";
+      Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "";
     if (!supabaseUrl || !serviceKey || !anonKey) {
       return json({ ok: false, message: "Servidor no configurado." }, 500);
     }
 
     const siteOrigin =
-      req.headers.get("origin") ||
-      Deno.env.get("SITE_URL") ||
-      "http://localhost:5173";
+      req.headers.get("origin") || Deno.env.get("SITE_URL") || "http://localhost:5173";
 
     const ipHash = await hashIp(clientIp(req));
     const admin = createClient(supabaseUrl, serviceKey, {
@@ -130,11 +126,7 @@ async function userHasAppAccess(
   );
 }
 
-async function loadGuard(
-  admin: ReturnType<typeof createClient>,
-  email: string,
-  ipHash: string,
-) {
+async function loadGuard(admin: ReturnType<typeof createClient>, email: string, ipHash: string) {
   const { data } = await admin
     .from("auth_login_guards")
     .select("fail_count, locked_until")
@@ -144,11 +136,7 @@ async function loadGuard(
   return data as { fail_count: number; locked_until: string | null } | null;
 }
 
-async function clearGuard(
-  admin: ReturnType<typeof createClient>,
-  email: string,
-  ipHash: string,
-) {
+async function clearGuard(admin: ReturnType<typeof createClient>, email: string, ipHash: string) {
   await admin.from("auth_login_guards").delete().eq("email_norm", email).eq("ip_hash", ipHash);
 }
 
@@ -225,11 +213,7 @@ async function sendRecoveryEmail(
 function clientIp(req: Request): string {
   const xf = req.headers.get("x-forwarded-for");
   if (xf) return xf.split(",")[0]?.trim() || "unknown";
-  return (
-    req.headers.get("cf-connecting-ip") ||
-    req.headers.get("x-real-ip") ||
-    "unknown"
-  );
+  return req.headers.get("cf-connecting-ip") || req.headers.get("x-real-ip") || "unknown";
 }
 
 async function hashIp(ip: string): Promise<string> {

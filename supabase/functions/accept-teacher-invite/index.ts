@@ -38,9 +38,7 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     const anonKey =
-      Deno.env.get("SUPABASE_ANON_KEY") ??
-      Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ??
-      "";
+      Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "";
     if (!supabaseUrl || !serviceKey) {
       return json({ ok: false, message: "Servidor no configurado." }, 500);
     }
@@ -98,7 +96,12 @@ Deno.serve(async (req) => {
         );
       }
 
-      if (msg.includes("weak") || msg.includes("pwned") || msg.includes("leaked") || msg.includes("easy to guess")) {
+      if (
+        msg.includes("weak") ||
+        msg.includes("pwned") ||
+        msg.includes("leaked") ||
+        msg.includes("easy to guess")
+      ) {
         return json(
           {
             ok: false,
@@ -233,8 +236,7 @@ async function recoverExistingUser(
   password: string,
   token: string,
 ): Promise<
-  | { ok: true; body: Record<string, unknown> }
-  | { ok: false; message?: string; status?: number }
+  { ok: true; body: Record<string, unknown> } | { ok: false; message?: string; status?: number }
 > {
   const userClient = createClient(supabaseUrl, anonKey, {
     auth: { autoRefreshToken: false, persistSession: false },

@@ -11,9 +11,9 @@ Esquema de la base de datos remota según **D-028**:
 Los ficheros en `migrations/` **se quedan en el repositorio**. No se borran tras
 ejecutarlos: son la fuente de verdad del esquema (igual que el código de la app).
 
-| Acción | Qué hacer |
-| ------ | --------- |
-| Primera vez | Abrir Supabase → **SQL Editor** → pegar el contenido de la migración → **Run** |
+| Acción          | Qué hacer                                                                        |
+| --------------- | -------------------------------------------------------------------------------- |
+| Primera vez     | Abrir Supabase → **SQL Editor** → pegar el contenido de la migración → **Run**   |
 | Cambios futuros | Añadir un fichero nuevo `migrations/YYYYMMDDHHMMSS_descripcion.sql` y ejecutarlo |
 
 ## Cómo aplicar la primera migración

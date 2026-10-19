@@ -31,9 +31,7 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     const anonKey =
-      Deno.env.get("SUPABASE_ANON_KEY") ??
-      Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ??
-      "";
+      Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "";
     if (!supabaseUrl || !serviceKey || !anonKey) {
       return json({ ok: false, message: "Servidor no configurado." }, 500);
     }
@@ -96,7 +94,9 @@ Deno.serve(async (req) => {
         return json(
           {
             ok: false,
-            message: active ? "No se pudo activar al docente." : "No se pudo desactivar al docente.",
+            message: active
+              ? "No se pudo activar al docente."
+              : "No se pudo desactivar al docente.",
             detail: rpcError.message.slice(0, 160),
           },
           400,
@@ -142,10 +142,9 @@ Deno.serve(async (req) => {
 
     // remove: ban primero (igual que desactivar → corte de sesión al instante),
     // luego membresía y borrado Auth.
-    const { error: banBeforeRemoveError } = await admin.auth.admin.updateUserById(
-      teacherUserId,
-      { ban_duration: "87600h" },
-    );
+    const { error: banBeforeRemoveError } = await admin.auth.admin.updateUserById(teacherUserId, {
+      ban_duration: "87600h",
+    });
     if (banBeforeRemoveError) {
       console.error("ban before remove", banBeforeRemoveError.message);
       return json(
