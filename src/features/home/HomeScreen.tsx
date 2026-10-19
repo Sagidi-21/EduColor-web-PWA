@@ -117,34 +117,17 @@ export function HomeScreen({
               Salir al registro
             </button>
           ) : (
-            <>
-              <div className="home__settings">
-                <button
-                  type="button"
-                  className="home__settings-gear"
-                  aria-label="Configuración"
-                  onClick={() => onNavigate("configuration")}
-                >
-                  ⚙️
-                </button>
-                <div className="home__settings-tooltip">Temas, clases y ajustes</div>
-              </div>
-              {session ? (
-                <>
-                  <span
-                    className="home__avatar"
-                    style={{ background: headerAvatarBg, color: headerAvatarFg }}
-                    title={avatarInitials || "Usuario"}
-                    aria-label={`Sesión ${avatarInitials || "activa"}`}
-                  >
-                    {avatarInitials || "?"}
-                  </span>
-                  <button type="button" className="home__sign-out" onClick={() => void signOut()}>
-                    Cerrar Sesión
-                  </button>
-                </>
-              ) : null}
-            </>
+            <div className="home__settings">
+              <button
+                type="button"
+                className="home__settings-gear"
+                aria-label="Configuración"
+                onClick={() => onNavigate("configuration")}
+              >
+                ⚙️
+              </button>
+              <div className="home__settings-tooltip">Temas, clases y ajustes</div>
+            </div>
           )}
         </div>
       </header>
@@ -232,7 +215,22 @@ export function HomeScreen({
         </section>
       </main>
       <footer className="home__footer">
-        <span>Software educativo · {schoolLabel}</span>
+        <span className="home__footer-copy">Software educativo · {schoolLabel}</span>
+        {!demoMode && session ? (
+          <div className="home__footer-session">
+            <span
+              className="home__avatar"
+              style={{ backgroundColor: headerAvatarBg, color: headerAvatarFg }}
+              title={avatarInitials || "Usuario"}
+              aria-label={`Sesión ${avatarInitials || "activa"}`}
+            >
+              {avatarInitials || "?"}
+            </span>
+            <button type="button" className="home__sign-out" onClick={() => void signOut()}>
+              Cerrar Sesión
+            </button>
+          </div>
+        ) : null}
       </footer>
     </div>
   );
