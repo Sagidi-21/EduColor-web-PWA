@@ -41,8 +41,11 @@ export default defineConfig({
         screenshots: [],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2,json,bin,mp4,webp,jpg,jpeg}"],
-        globIgnores: ["**/benchmark-digit.html"],
+        // Sin mp4 en precache: los vídeos de celebración/libro superan 2 MiB y
+        // rompían el build de Netlify. Se sirven bajo demanda (runtimeCaching /assets/).
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2,json,bin,webp,jpg,jpeg}"],
+        globIgnores: ["**/benchmark-digit.html", "**/*.mp4", "**/*.webm"],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         runtimeCaching: [
           {
             urlPattern: /\/model\/.*/,
