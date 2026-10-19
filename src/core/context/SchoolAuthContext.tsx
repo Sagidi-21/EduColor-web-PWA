@@ -17,8 +17,14 @@ import {
   signOut as supabaseSignOut,
 } from "../../platform/supabase/auth";
 import { getSupabase, isSupabaseConfigured } from "../../platform/supabase/client";
-import { fetchMyRole } from "../../platform/supabase/teachers";
+import { fetchMyMembershipAvatar, fetchMyRole } from "../../platform/supabase/teachers";
 import type { School, SchoolRole } from "../../platform/supabase/types";
+import {
+  OWNER_AVATAR_COLOR,
+  OWNER_AVATAR_INITIALS,
+  normalizeHexColor,
+  teacherInitials,
+} from "../../features/shared/teacherAvatar";
 
 interface SchoolAuthValue {
   configured: boolean;
@@ -30,6 +36,10 @@ interface SchoolAuthValue {
   /** Rol en el colegio principal (owner / teacher). */
   schoolRole: SchoolRole | null;
   isOwner: boolean;
+  /** HEX del avatar en el colegio principal. */
+  avatarColor: string | null;
+  /** Iniciales (OW si owner). */
+  avatarInitials: string;
   /** Error al completar el alta del colegio (A10: no fallar en silencio). */
   schoolBootstrapError: string | null;
   refreshSchools: () => Promise<void>;
@@ -75,32 +85,51 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [schools, setSchools] = useState<School[]>([]);
   const [schoolRole, setSchoolRole] = useState<SchoolRole | null>(null);
+  const [avatarColor, setAvatarColor] = useState<string | null>(null);
+  const [avatarInitials, setAvatarInitials] = useState("");
   const [schoolBootstrapError, setSchoolBootstrapError] = useState<string | null>(null);
 
-  const applySchools = useCallback(async (list: School[]) => {
+  const applySchools = useCallback(async (list: School[], userId?: string | null) => {
     setSchools(list);
     const primary = list[0];
-    if (!primary) {
+    if (!primary || !userId) {
       setSchoolRole(null);
+      setAvatarColor(null);
+      setAvatarInitials("");
       return;
     }
-    const role = await fetchMyRole(primary.id);
+    const [role, membership] = await Promise.all([
+      fetchMyRole(primary.id),
+      fetchMyMembershipAvatar(primary.id, userId),
+    ]);
     setSchoolRole(role);
+    if (role === "owner" || membership?.role === "owner") {
+      setAvatarColor(OWNER_AVATAR_COLOR);
+      setAvatarInitials(OWNER_AVATAR_INITIALS);
+      return;
+    }
+    setAvatarColor(normalizeHexColor(membership?.avatar_color) ?? null);
+    setAvatarInitials(
+      teacherInitials(membership?.first_name, membership?.last_name_1, null) || "?",
+    );
   }, []);
 
   const refreshSchools = useCallback(async () => {
     if (!configured || !session) {
       setSchools([]);
       setSchoolRole(null);
+      setAvatarColor(null);
+      setAvatarInitials("");
       return;
     }
     const list = await fetchMySchools();
-    await applySchools(list);
+    await applySchools(list, session.user.id);
   }, [configured, session, applySchools]);
 
   const runBootstrap = useCallback(async () => {
     const { schools: next, error } = await syncPendingSchool();
-    await applySchools(next);
+    const uid = (await getSupabase().auth.getSession()).data.session?.user.id ?? null;
+    await applySchools(next, uid);
     setSchoolBootstrapError(error);
   }, [applySchools]);
 
@@ -115,6 +144,8 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
         setSession(null);
         setSchools([]);
         setSchoolRole(null);
+        setAvatarColor(null);
+        setAvatarInitials("");
         setSchoolBootstrapError(null);
         return;
       }
@@ -129,13 +160,15 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
         setSession(null);
         setSchools([]);
         setSchoolRole(null);
+        setAvatarColor(null);
+        setAvatarInitials("");
         setSchoolBootstrapError(null);
         return;
       }
       // Colegios antes que session: el header no debe mostrar el placeholder de alta de owner.
       const { schools: list, error } = await syncPendingSchool();
       if (cancelled) return;
-      await applySchools(list);
+      await applySchools(list, next.user.id);
       setSchoolBootstrapError(error);
       setSession(next);
     };
@@ -168,6 +201,8 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
     await supabaseSignOut();
     setSchools([]);
     setSchoolRole(null);
+    setAvatarColor(null);
+    setAvatarInitials("");
     setSchoolBootstrapError(null);
   }, []);
 
@@ -181,6 +216,8 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
       primarySchool: schools[0] ?? null,
       schoolRole,
       isOwner: schoolRole === "owner",
+      avatarColor,
+      avatarInitials,
       schoolBootstrapError,
       refreshSchools,
       retrySchoolBootstrap: runBootstrap,
@@ -192,6 +229,8 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
       session,
       schools,
       schoolRole,
+      avatarColor,
+      avatarInitials,
       schoolBootstrapError,
       refreshSchools,
       runBootstrap,

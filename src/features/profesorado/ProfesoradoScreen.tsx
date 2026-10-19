@@ -13,9 +13,17 @@ import {
   staffChipCounts,
   removeTeacher,
   setTeacherActive,
+  updateTeacherAvatarColor,
   type AcceptedTeacherRow,
   type PendingInviteRow,
 } from "../../platform/supabase/teachers";
+import {
+  OWNER_AVATAR_COLOR,
+  avatarTextColor,
+  normalizeHexColor,
+  resolveAvatarColors,
+  teacherInitials,
+} from "../shared/teacherAvatar";
 import "./ProfesoradoScreen.css";
 
 function formatDate(iso: string | null | undefined): string {
@@ -33,11 +41,8 @@ function formatDate(iso: string | null | undefined): string {
   }
 }
 
-function initials(first?: string | null, last?: string | null): string {
-  const a = (first ?? "").trim().charAt(0);
-  const b = (last ?? "").trim().charAt(0);
-  const value = `${a}${b}`.toUpperCase();
-  return value || "?";
+function initials(first?: string | null, last?: string | null, email?: string | null): string {
+  return teacherInitials(first, last, email);
 }
 
 function hoursUntil(iso: string): { hours: number; urgent: boolean } {
@@ -58,6 +63,7 @@ function teacherDisplayName(row: AcceptedTeacherRow): string {
 }
 
 type StaffConfirm = { kind: "activate" | "deactivate" | "remove"; row: AcceptedTeacherRow } | null;
+type ColorEdit = { row: AcceptedTeacherRow; draft: string } | null;
 
 export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
   const { primarySchool, isOwner, loading: authLoading } = useSchoolAuth();
@@ -76,6 +82,9 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
   const [email, setEmail] = useState("");
   const [staffConfirm, setStaffConfirm] = useState<StaffConfirm>(null);
   const [confirmBusy, setConfirmBusy] = useState(false);
+  const [colorEdit, setColorEdit] = useState<ColorEdit>(null);
+  const [colorBusy, setColorBusy] = useState(false);
+  const [colorError, setColorError] = useState("");
   const [alertDialog, setAlertDialog] = useState<{ title: string; message: string } | null>(null);
 
   const showError = (message: string, title = "No se pudo completar") => {
@@ -512,6 +521,7 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
                       filteredAccepted.map((row) => {
                         const apellidos =
                           [row.last_name_1, row.last_name_2].filter(Boolean).join(" ") || "—";
+                        const { bg, fg } = resolveAvatarColors(row.avatar_color, row.is_active);
                         return (
                           <tr
                             key={row.membership_id}
@@ -519,10 +529,42 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
                           >
                             <td>
                               <div className="prof__name-cell">
-                                <span
-                                  className={`prof__avatar prof__avatar--t${avatarTone(row.email ?? row.membership_id)}`}
-                                >
-                                  {initials(row.first_name, row.last_name_1)}
+                                <span className="prof__avatar-wrap">
+                                  <span
+                                    className="prof__avatar"
+                                    style={{ backgroundColor: bg, color: fg }}
+                                  >
+                                    {initials(row.first_name, row.last_name_1, row.email)}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    className="prof__avatar-edit"
+                                    title="Editar color"
+                                    aria-label={`Editar color de ${teacherDisplayName(row)}`}
+                                    onClick={() => {
+                                      setColorError("");
+                                      setColorEdit({
+                                        row,
+                                        draft:
+                                          normalizeHexColor(row.avatar_color) ?? OWNER_AVATAR_COLOR,
+                                      });
+                                    }}
+                                  >
+                                    <svg
+                                      className="prof__icon"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      aria-hidden
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M15.232 5.232l3.536 3.536M4 20h4.586a1 1 0 00.707-.293l9.414-9.414a2 2 0 000-2.828l-2.172-2.172a2 2 0 00-2.828 0L4.293 14.707A1 1 0 004 15.414V20z"
+                                      />
+                                    </svg>
+                                  </button>
                                 </span>
                                 <span className="prof__name">{row.first_name ?? "—"}</span>
                               </div>
@@ -640,7 +682,7 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
                                 <span
                                   className={`prof__avatar prof__avatar--t${avatarTone(row.email)}`}
                                 >
-                                  {initials(row.first_name, row.last_name_1)}
+                                  {initials(row.first_name, row.last_name_1, row.email)}
                                 </span>
                                 <span className="prof__name">{row.first_name}</span>
                               </div>
@@ -748,6 +790,118 @@ export function ProfesoradoScreen({ onBack }: { onBack: () => void }) {
                 onClick={() => setAlertDialog(null)}
               >
                 Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {colorEdit ? (
+        <div
+          className="prof__modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="prof-color-title"
+        >
+          <button
+            type="button"
+            className="prof__modal-backdrop"
+            aria-label="Cerrar"
+            disabled={colorBusy}
+            onClick={() => {
+              if (!colorBusy) setColorEdit(null);
+            }}
+          />
+          <div className="prof__modal-card">
+            <h2 id="prof-color-title" className="prof__modal-title">
+              Color del avatar
+            </h2>
+            <p className="prof__modal-text">
+              Elige un color para <strong>{teacherDisplayName(colorEdit.row)}</strong>. No puede
+              coincidir con el de otro profesor del colegio.
+            </p>
+            <div className="prof__color-edit">
+              <span
+                className="prof__avatar prof__avatar--preview"
+                style={{
+                  background: normalizeHexColor(colorEdit.draft) ?? colorEdit.draft,
+                  color: avatarTextColor(normalizeHexColor(colorEdit.draft) ?? OWNER_AVATAR_COLOR),
+                }}
+              >
+                {initials(colorEdit.row.first_name, colorEdit.row.last_name_1, colorEdit.row.email)}
+              </span>
+              <label className="prof__color-field">
+                <span className="prof__color-label">Color</span>
+                <input
+                  type="color"
+                  value={normalizeHexColor(colorEdit.draft) ?? OWNER_AVATAR_COLOR}
+                  disabled={colorBusy}
+                  onChange={(e) => {
+                    setColorError("");
+                    setColorEdit({ ...colorEdit, draft: e.target.value.toUpperCase() });
+                  }}
+                />
+              </label>
+              <label className="prof__color-field">
+                <span className="prof__color-label">HEX</span>
+                <input
+                  type="text"
+                  className="prof__color-hex"
+                  value={colorEdit.draft}
+                  maxLength={7}
+                  disabled={colorBusy}
+                  onChange={(e) => {
+                    setColorError("");
+                    setColorEdit({ ...colorEdit, draft: e.target.value.toUpperCase() });
+                  }}
+                />
+              </label>
+            </div>
+            {colorError ? (
+              <p className="prof__modal-text prof__modal-text--error" role="alert">
+                {colorError}
+              </p>
+            ) : null}
+            <div className="prof__modal-actions">
+              <button
+                type="button"
+                className="prof__modal-btn prof__modal-btn--ghost"
+                disabled={colorBusy}
+                onClick={() => setColorEdit(null)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="prof__modal-btn prof__modal-btn--primary"
+                disabled={colorBusy || !normalizeHexColor(colorEdit.draft)}
+                onClick={() => {
+                  const hex = normalizeHexColor(colorEdit.draft);
+                  if (!hex) {
+                    setColorError("Usa un HEX válido (#RRGGBB).");
+                    return;
+                  }
+                  setColorBusy(true);
+                  setColorError("");
+                  void (async () => {
+                    try {
+                      const result = await updateTeacherAvatarColor(
+                        colorEdit.row.membership_id,
+                        hex,
+                      );
+                      if (!result.ok) {
+                        setColorError(result.message ?? "No se pudo guardar el color.");
+                        return;
+                      }
+                      setColorEdit(null);
+                      await refresh();
+                    } finally {
+                      setColorBusy(false);
+                    }
+                  })();
+                }}
+              >
+                {colorBusy ? "Guardando…" : "Guardar"}
               </button>
             </div>
           </div>

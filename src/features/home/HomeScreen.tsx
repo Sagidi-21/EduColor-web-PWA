@@ -4,6 +4,7 @@ import schoolBgUrl from "../../assets/school-bg.jpg";
 import demoSchoolBgUrl from "../../assets/demo-school-exterior.jpg";
 import { getAulaLabel, useClassProfile } from "../../core/context/ClassProfileContext";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
+import { OWNER_AVATAR_COLOR, avatarTextColor } from "../shared/teacherAvatar";
 import "./HomeScreen.css";
 
 export type AppView =
@@ -54,7 +55,12 @@ export function HomeScreen({
     schoolBootstrapError,
     retrySchoolBootstrap,
     signOut,
+    isOwner,
+    avatarColor,
+    avatarInitials,
   } = useSchoolAuth();
+  const headerAvatarBg = isOwner ? OWNER_AVATAR_COLOR : (avatarColor ?? "#2563EB");
+  const headerAvatarFg = avatarTextColor(headerAvatarBg);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [bootstrapBusy, setBootstrapBusy] = useState(false);
   const selected = aulas.find((aula) => aula.id === selectedId);
@@ -112,7 +118,6 @@ export function HomeScreen({
             </button>
           ) : (
             <>
-              <span className="home__badge">PWA · Desarrollo</span>
               <div className="home__settings">
                 <button
                   type="button"
@@ -124,6 +129,21 @@ export function HomeScreen({
                 </button>
                 <div className="home__settings-tooltip">Temas, clases y ajustes</div>
               </div>
+              {session ? (
+                <>
+                  <span
+                    className="home__avatar"
+                    style={{ background: headerAvatarBg, color: headerAvatarFg }}
+                    title={avatarInitials || "Usuario"}
+                    aria-label={`Sesión ${avatarInitials || "activa"}`}
+                  >
+                    {avatarInitials || "?"}
+                  </span>
+                  <button type="button" className="home__sign-out" onClick={() => void signOut()}>
+                    Cerrar Sesión
+                  </button>
+                </>
+              ) : null}
             </>
           )}
         </div>

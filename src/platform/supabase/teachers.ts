@@ -28,6 +28,8 @@ export interface AcceptedTeacherRow {
   is_active: boolean;
   accepted_at: string | null;
   sent_at: string | null;
+  /** HEX #RRGGBB del avatar en este colegio. */
+  avatar_color: string | null;
 }
 
 export interface StaffLists {
@@ -136,6 +138,7 @@ export async function listSchoolStaff(schoolId: string): Promise<StaffListsResul
       is_active: activeRaw === false || activeRaw === "false" ? false : true,
       accepted_at: (row.accepted_at as string | null) ?? null,
       sent_at: (row.sent_at as string | null) ?? null,
+      avatar_color: (row.avatar_color as string | null) ?? null,
     } satisfies AcceptedTeacherRow;
   });
   return {
@@ -263,6 +266,61 @@ export async function removeTeacher(
   membershipId: string,
 ): Promise<{ ok: boolean; message?: string }> {
   return invokeManageTeacher(membershipId, "remove");
+}
+
+export async function updateTeacherAvatarColor(
+  membershipId: string,
+  color: string,
+): Promise<{ ok: boolean; message?: string }> {
+  if (!isSupabaseConfigured()) return { ok: false, message: "Supabase no está configurado." };
+  const { error } = await getSupabase().rpc("owner_update_teacher_avatar_color", {
+    p_membership_id: membershipId,
+    p_color: color,
+  });
+  if (error) {
+    const lower = (error.message ?? "").toLowerCase();
+    if (lower.includes("avatar color taken")) {
+      return { ok: false, message: "Ese color ya lo usa otro profesor de este colegio." };
+    }
+    if (lower.includes("invalid avatar color")) {
+      return { ok: false, message: "El color no es válido. Usa un HEX de 6 dígitos." };
+    }
+    if (lower.includes("owner avatar locked")) {
+      return { ok: false, message: "El color del administrador no se puede cambiar." };
+    }
+    return { ok: false, message: mapInviteError(error.message) };
+  }
+  return { ok: true };
+}
+
+/** Membresía del usuario actual en un colegio (para avatar del header). */
+export async function fetchMyMembershipAvatar(
+  schoolId: string,
+  userId: string,
+): Promise<{
+  role: "owner" | "teacher" | null;
+  avatar_color: string | null;
+  first_name: string | null;
+  last_name_1: string | null;
+} | null> {
+  if (!isSupabaseConfigured() || !userId) return null;
+  const { data, error } = await getSupabase()
+    .from("school_memberships")
+    .select("role, avatar_color, first_name, last_name_1")
+    .eq("school_id", schoolId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error || !data) {
+    console.error("[teachers] fetchMyMembershipAvatar", error);
+    return null;
+  }
+  const role = data.role === "owner" || data.role === "teacher" ? data.role : null;
+  return {
+    role,
+    avatar_color: data.avatar_color ?? null,
+    first_name: data.first_name ?? null,
+    last_name_1: data.last_name_1 ?? null,
+  };
 }
 
 export type InvitePreview =

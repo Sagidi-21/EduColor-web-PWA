@@ -126,6 +126,7 @@ function acceptedRow(
     is_active: true,
     accepted_at: "2026-10-18T12:00:00Z",
     sent_at: "2026-10-18T10:00:00Z",
+    avatar_color: "#DC2626",
     ...partial,
   };
 }

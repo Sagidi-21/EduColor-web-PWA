@@ -773,10 +773,16 @@
   gap: 0.625rem;
 }
 
+.prof__avatar-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 .prof__avatar {
   width: 1.75rem;
   height: 1.75rem;
-  border-radius: 9999px;
+  border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -784,6 +790,80 @@
   font-weight: 700;
   text-transform: uppercase;
   flex-shrink: 0;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  overflow: hidden;
+  isolation: isolate;
+  background-clip: padding-box;
+  /* Evita halo/antialiasing que parece un 2.º círculo debajo */
+  transform: translateZ(0);
+}
+
+.prof__avatar--preview {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 0.875rem;
+}
+
+.prof__avatar-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 2px solid var(--prof-brand-500);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--prof-brand-500);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.prof__avatar-edit:hover,
+.prof__avatar-edit:focus-visible {
+  background: var(--prof-brand-500);
+  color: #fff;
+  border-color: #fff;
+  outline: 2px solid var(--prof-brand-500);
+  outline-offset: 0;
+}
+
+.prof__avatar-edit:active {
+  background: var(--prof-brand-700);
+  color: #fff;
+  border-color: #fff;
+}
+
+.prof__color-edit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.prof__color-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8125rem;
+}
+
+.prof__color-label {
+  font-weight: 600;
+  color: var(--prof-slate-600, #475569);
+}
+
+.prof__color-hex {
+  width: 7rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--prof-slate-300, #cbd5e1);
+  border-radius: 8px;
+  font-family: ui-monospace, monospace;
+  font-size: 0.875rem;
+  text-transform: uppercase;
 }
 
 .prof__avatar--t0 {
@@ -929,8 +1009,13 @@
   background: var(--prof-rose-600);
 }
 
-.prof__row--off {
-  opacity: 0.65;
+/* Sin opacity en toda la fila: la bola desactivada es gris sólido (#E2E8F0). */
+.prof__row--off .prof__name,
+.prof__row--off .prof__strong,
+.prof__row--off .prof__muted-cell,
+.prof__row--off .prof__email,
+.prof__row--off .prof__text-action {
+  opacity: 0.7;
 }
 
 .prof__table-foot {

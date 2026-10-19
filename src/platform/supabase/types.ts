@@ -26,6 +26,8 @@ export interface SchoolMembership {
   first_name: string | null;
   last_name_1: string | null;
   last_name_2: string | null;
+  /** HEX #RRGGBB; único por colegio. */
+  avatar_color: string | null;
   created_at: string;
 }
 
@@ -67,11 +69,12 @@ export interface Database {
           first_name?: string | null;
           last_name_1?: string | null;
           last_name_2?: string | null;
+          avatar_color?: string | null;
         };
         Update: Partial<
           Pick<
             SchoolMembership,
-            "role" | "is_active" | "first_name" | "last_name_1" | "last_name_2"
+            "role" | "is_active" | "first_name" | "last_name_1" | "last_name_2" | "avatar_color"
           >
         >;
         Relationships: [];
@@ -118,6 +121,10 @@ export interface Database {
         Returns: undefined;
       };
       owner_remove_teacher: { Args: { p_membership_id: string }; Returns: undefined };
+      owner_update_teacher_avatar_color: {
+        Args: { p_membership_id: string; p_color: string };
+        Returns: undefined;
+      };
       peek_teacher_invite: { Args: { p_token: string }; Returns: Record<string, unknown> };
       complete_teacher_invite: {
         Args: { p_token: string; p_user_id?: string | null };
