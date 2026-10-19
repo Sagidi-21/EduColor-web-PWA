@@ -88,13 +88,13 @@ colegio), no el despliegue antiguo “sin cuenta”.
 
 ## G. Fase 12 — seguridad piloto (arranque)
 
-| #   | Ítem                                                      | Estado                          |
-| --- | --------------------------------------------------------- | ------------------------------- |
-| G1  | Headers de seguridad + CSP en Netlify (`public/_headers`) | [x] código; verificar en deploy |
-| G2  | Threat model / inventario de activos (doc corto)          | [ ]                             |
-| G3  | MFA TOTP para owner (Supabase Auth MFA)                   | [ ] siguiente slice             |
-| G4  | Secret scanning / Dependabot                              | [ ]                             |
-| G5  | CSP comprobada en staging/prod (consola sin violaciones)  | [ ] tras deploy                 |
+| #   | Ítem                                                      | Estado                         |
+| --- | --------------------------------------------------------- | ------------------------------ |
+| G1  | Headers de seguridad + CSP en Netlify (`public/_headers`) | [x] + hash inline Netlify      |
+| G2  | Threat model / inventario de activos (doc corto)          | [ ]                            |
+| G3  | MFA TOTP para owner (Supabase Auth MFA)                   | [ ] aparcado; priorizar admin  |
+| G4  | Secret scanning / Dependabot                              | [ ]                            |
+| G5  | CSP comprobada en staging/prod (consola sin violaciones)  | [ ] re-probar tras este deploy |
 
 ## H. Orden de trabajo (2026-10-19)
 

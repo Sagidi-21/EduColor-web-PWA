@@ -141,10 +141,11 @@ export function SetPasswordScreen({ source = "forgot", onDone }: SetPasswordScre
                 <p className="sa__pane-sub">{subtitle}</p>
               </div>
               <form className="sa__form" onSubmit={(e) => void onSubmit(e)} noValidate>
-                <label className="sa__field sa__field--pwd-tip">
+                <label className="sa__field sa__field--pwd-tip" htmlFor="set-password">
                   Contraseña
                   <span className="sa__input-icon sa__input-icon--eye-only">
                     <input
+                      id="set-password"
                       type={showPassword ? "text" : "password"}
                       name="educolor-new-password"
                       className={passwordFails ? "sa__input--pwd-invalid" : undefined}
@@ -176,10 +177,11 @@ export function SetPasswordScreen({ source = "forgot", onDone }: SetPasswordScre
                     </ul>
                   </span>
                 </label>
-                <label className="sa__field">
+                <label className="sa__field" htmlFor="set-password2">
                   Repetir contraseña
                   <span className="sa__input-icon sa__input-icon--eye-only">
                     <input
+                      id="set-password2"
                       type={showPassword ? "text" : "password"}
                       name="educolor-new-password2"
                       className={passwordsMismatch ? "sa__input--pwd-invalid" : undefined}

@@ -189,9 +189,11 @@ export function AcceptInviteScreen({ token, onGoToLogin }: AcceptInviteScreenPro
                   noValidate
                   autoComplete="off"
                 >
-                  <label className="sa__field">
+                  <label className="sa__field" htmlFor="invite-display-name">
                     Nombre y apellidos
                     <input
+                      id="invite-display-name"
+                      name="educolor-teacher-name"
                       type="text"
                       value={
                         [preview.firstName, preview.lastName1, preview.lastName2]
@@ -202,15 +204,23 @@ export function AcceptInviteScreen({ token, onGoToLogin }: AcceptInviteScreenPro
                       tabIndex={-1}
                     />
                   </label>
-                  <label className="sa__field">
+                  <label className="sa__field" htmlFor="invite-email">
                     Email
-                    <input type="email" value={preview.email} readOnly tabIndex={-1} />
+                    <input
+                      id="invite-email"
+                      name="educolor-teacher-email"
+                      type="email"
+                      value={preview.email}
+                      readOnly
+                      tabIndex={-1}
+                    />
                   </label>
 
-                  <label className="sa__field sa__field--pwd-tip">
+                  <label className="sa__field sa__field--pwd-tip" htmlFor="invite-password">
                     Contraseña
                     <span className="sa__input-icon sa__input-icon--eye-only">
                       <input
+                        id="invite-password"
                         type={showPassword ? "text" : "password"}
                         name="educolor-teacher-password"
                         className={passwordFails ? "sa__input--pwd-invalid" : undefined}
@@ -246,10 +256,11 @@ export function AcceptInviteScreen({ token, onGoToLogin }: AcceptInviteScreenPro
                     </span>
                   </label>
 
-                  <label className="sa__field">
+                  <label className="sa__field" htmlFor="invite-password2">
                     Repetir contraseña
                     <span className="sa__input-icon sa__input-icon--eye-only">
                       <input
+                        id="invite-password2"
                         type={showPassword ? "text" : "password"}
                         name="educolor-teacher-password2"
                         className={passwordsMismatch ? "sa__input--pwd-invalid" : undefined}

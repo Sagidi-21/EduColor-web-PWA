@@ -316,9 +316,10 @@ export function SchoolAccessScreen({
               </div>
 
               <form className="sa__form" onSubmit={submitRegister} noValidate autoComplete="off">
-                <label className="sa__field">
+                <label className="sa__field" htmlFor="sa-register-school-name">
                   Nombre del Colegio / Institución
                   <input
+                    id="sa-register-school-name"
                     type="text"
                     name="educolor-school-name"
                     placeholder="Ej. Colegio San Agustín"
@@ -332,9 +333,10 @@ export function SchoolAccessScreen({
                     autoComplete="organization"
                   />
                 </label>
-                <label className="sa__field">
+                <label className="sa__field" htmlFor="sa-register-email">
                   Correo Institucional del Centro
                   <input
+                    id="sa-register-email"
                     type="email"
                     name="educolor-register-email"
                     placeholder="direccion@colegio.edu"
@@ -345,10 +347,11 @@ export function SchoolAccessScreen({
                     autoComplete="off"
                   />
                 </label>
-                <label className="sa__field sa__field--pwd-tip">
+                <label className="sa__field sa__field--pwd-tip" htmlFor="sa-register-password">
                   Contraseña Admin
                   <span className="sa__input-icon sa__input-icon--eye-only">
                     <input
+                      id="sa-register-password"
                       type={showPassword ? "text" : "password"}
                       name="educolor-register-password"
                       className={passwordFailsRestrictions ? "sa__input--pwd-invalid" : undefined}
@@ -412,13 +415,15 @@ export function SchoolAccessScreen({
 
               <form className="sa__form sa__form--login" onSubmit={submitLogin} noValidate>
                 <div className="sa__login-fields">
-                  <label className="sa__field">
+                  <label className="sa__field" htmlFor="sa-login-email">
                     Correo electrónico
                     <span className="sa__input-icon">
                       <span className="sa__field-icon">
                         <IconMail />
                       </span>
                       <input
+                        id="sa-login-email"
+                        name="email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(sanitizeEmailInput(e.target.value))}
@@ -429,13 +434,15 @@ export function SchoolAccessScreen({
                       />
                     </span>
                   </label>
-                  <label className="sa__field">
+                  <label className="sa__field" htmlFor="sa-login-password">
                     Contraseña
                     <span className="sa__input-icon">
                       <span className="sa__field-icon">
                         <IconLock />
                       </span>
                       <input
+                        id="sa-login-password"
+                        name="password"
                         type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value.slice(0, PASSWORD_MAX_LEN))}
