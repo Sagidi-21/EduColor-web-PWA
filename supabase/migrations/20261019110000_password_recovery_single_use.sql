@@ -1,4 +1,5 @@
--- Enlace de contraseña nueva: un solo uso al abrirse (aunque no se complete el cambio).
+-- Enlace de contraseña nueva: huella de un solo uso al completar el cambio
+-- (no al abrir: Auth verify ya es one-shot; filtros de correo quemaban el enlace).
 
 create table if not exists public.password_recovery_consumptions (
   fingerprint text primary key,

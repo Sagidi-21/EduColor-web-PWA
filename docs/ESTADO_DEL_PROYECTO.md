@@ -18,6 +18,8 @@ entre sí.
 | ¿Cuál es el ID en inglés y el título en castellano?   | [CATALOGO_IDS_ACTIVIDADES.md](./CATALOGO_IDS_ACTIVIDADES.md)                                                                                                                                |
 | ¿Qué puede reutilizar un renderer?                    | [COMPONENTES_COMPARTIDOS.md](./COMPONENTES_COMPARTIDOS.md)                                                                                                                                  |
 | ¿Hacia dónde va el producto a largo plazo?            | [ROADMAP_DE_EJECUCION_DETALLADO.md](./ROADMAP_DE_EJECUCION_DETALLADO.md) y [EJECUCION_PASO_A_PASO.md](./EJECUCION_PASO_A_PASO.md) ([ROADMAP_MAESTRO.md](./ROADMAP_MAESTRO.md) es histórico) |
+| ¿Auth / calidad login listos para prod?               | [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md)                                                                                                                                    |
+| ¿Cómo se opera la Central de colegios?                | [ADMIN_CENTRAL.md](./ADMIN_CENTRAL.md)                                                                                                                                                      |
 
 El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 `src/core/content/engine-registry.ts`, la suite falla.
@@ -36,21 +38,23 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 - **Fase 9 (privacidad / infra):** alcance **aprobado** (D-028) — sin datos de
   alumnos; BD Supabase (colegios + profesorado); publicación en Netlify.
   Formalizar RGPD con el colegio cuando el piloto lo exija.
-- **Fase 10 (API / identidad / staff):** **en curso** (actualizado 2026-10-19).
+- **Fase 10 (API / identidad / staff):** **núcleo listo** (actualizado 2026-10-19).
   En código + **Netlify prod** (gate de login): alta de colegio (owner), login,
   invitaciones, alta docente, activar/desactivar/eliminar (ban + corte de sesión),
   chips Profesorado, Edge `school-login` / `accept-teacher-invite` /
   `manage-teacher` / `request-new-password` / `clear-login-guard`, D-036/D-037
   (contraseña nueva, lockout 3/15, Olvidé contraseña), avatar por membresía
   (owner OW `#001F3F`; docentes color único editable; desactivado = gris),
-  Cerrar Sesión + bola en banner home, recovery de **un solo uso** al abrir el
-  enlace + popup «Contraseña actualizada». Tests Vitest mocks
-  (`staffFlows.test.ts`). Decisiones D-028–D-037.
-  - **Siguiente dentro de Fase 10 / arranque Fase 12:** (1) re-probar popup
-    contraseña en prod cuando haya cupo Free (2/h); (2) E2E owner/logout con
-    `E2E_OWNER_*`; (3) verificar CSP (`public/_headers`) en Netlify y MFA owner;
-    (4) SMTP propio si hace falta más correo; (5) aviso admin + pantalla fallos.
-  - Checklist operativo: [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md).
+  Cerrar Sesión + bola en banner home, recovery **un solo uso Auth** con
+  huella en BD **tras guardar** (no al abrir; DT-027) + popup «Contraseña
+  actualizada» (D12/D15 OK), Admin Central (aprobar colegios, actuar como OW),
+  branding por colegio (fondo + logo ficha en Storage), CSP con
+  `img-src` Supabase Storage (G5 OK). E2E staff (F1–F6) + Vitest mocks.
+  Decisiones D-028–D-037.
+  - **Siguiente:** push del fix recovery → smoke Olvidé en Netlify; residual
+    Fase 12 en DT-028 (threat model, Dependabot, MFA aparcado, D16, SMTP).
+  - Checklist: [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md).
+  - Deuda abierta: [DEUDA_TECNICA.md](./DEUDA_TECNICA.md) (DT-009, 017, 024, 028).
 - **Siguiente motor:** **ninguno**.
 - **Fase 6 (offline/PWA):** aplazada; se retomará más adelante.
 - **Fase 4 (pizarra física):** a la espera de feedback del colegio (hardware).

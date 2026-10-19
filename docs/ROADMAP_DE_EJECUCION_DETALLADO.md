@@ -375,27 +375,31 @@ Implementación técnica = **Fase 10** (en curso). Formalizar con el colegio (di
 
 Añadir servicios remotos sin romper el uso offline ni abrir datos a otros usuarios.
 
-## Estado: EN CURSO (2026-10-18)
+## Estado: NÚCLEO LISTO (2026-10-19)
 
-### Ya hecho (código + pruebas locales)
+### Ya hecho (código + Netlify + pruebas)
 
 - Esquema Supabase: colegios, perfiles, membresías, invitaciones, RLS, RPCs staff.
 - Login owner / docente; gate de acceso (sin sesión no se entra al catálogo salvo DEMO).
 - Invitación → Registrar Docente → contraseña → Entrar al Colegio.
 - Activar / desactivar / eliminar docente (Edge `manage-teacher` + ban Auth).
-- Tests Vitest con mocks de esos flujos (`staffFlows.test.ts`). Decisiones D-028–D-036.
+- D-036/D-037: contraseña nueva, lockout 3/15, Olvidé; recovery huella **tras guardar** (DT-027).
+- Admin Central (`platform_admins`): aprobar/rechazar, actuar como OW, chips.
+- Branding por colegio: fondo + logo ficha (`school-branding` Storage).
+- CSP Netlify con `img-src` Supabase Storage (G5 OK).
+- Tests Vitest (`staffFlows.test.ts`) + E2E Playwright F1–F6. Decisiones D-028–D-037.
 
-### Pendiente para cerrar el núcleo de Fase 10
+### Pendiente residual (no bloquea núcleo; ver DT-028)
 
-1. ~~D-036/D-037 + Netlify con Auth~~ (hecho 2026-10-19; re-probar popup contraseña en prod cuando haya cupo email).
-2. E2E staff (Playwright + Supabase de prueba).
-3. SMTP propio si el cupo Free (2 emails Auth/h) no basta para el piloto.
-4. Aviso admin + pantalla de fallos (D-037 “más adelante”).
-5. Formalizar RGPD institucional si el piloto lo exige (cruzado con Fase 9).
+1. Smoke Olvidé en Netlify tras push del fix recovery.
+2. SMTP propio si el cupo Free (2 emails Auth/h) no basta.
+3. Aviso admin + pantalla de fallos (D16; chip Seguridad 24 h ya resume).
+4. Formalizar RGPD institucional si el piloto lo exige (cruzado con Fase 9).
+5. Fase 12: threat model (G2), Dependabot (G4); MFA owner aparcado (G3).
 
 ### Fuera de este cierre (siguen en roadmap amplio)
 
-- API REST versionada genérica, sync offline→nube de progreso, dashboard pedagógico remoto, MFA.
+- API REST versionada genérica, sync offline→nube de progreso, dashboard pedagógico remoto.
 
 ## Qué hacer (lista histórica del roadmap; priorizar lo de “Pendiente” arriba)
 
@@ -447,15 +451,20 @@ Hacer repetible el paso de código validado a piloto, staging y producción.
 
 Aplicar controles de seguridad antes de manejar identidades, datos remotos o centros múltiples.
 
+## Estado: ARRANQUE PARCIAL (2026-10-19)
+
+Hecho: CSP + Storage, lockout Auth, RLS, Admin Central (sin SIEM propio). Abierto:
+[DEUDA_TECNICA.md](./DEUDA_TECNICA.md) DT-028 y [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md) §G.
+
 ## Qué hacer
 
-1. Elaborar threat model e inventario de activos.
-2. Aplicar mínimo privilegio, MFA para administración, gestión de secretos y separación de cuentas.
-3. Usar hashes robustos de contraseñas, cookies/sesiones seguras y caducidad.
-4. Aplicar rate limiting, validación estricta, protección de inyección, XSS, CSRF, CORS y CSP.
-5. Proteger logs y telemetría para que no expongan información educativa.
-6. Auditar dependencias, activar secret scanning y proteger CI/CD.
-7. Ejecutar pruebas de permisos, IDOR/BOLA, backup/restauración e incidentes.
+1. Elaborar threat model e inventario de activos. ⏳ G2.
+2. Aplicar mínimo privilegio, MFA para administración, gestión de secretos y separación de cuentas. 🚧 MFA aparcado (G3).
+3. Usar hashes robustos de contraseñas, cookies/sesiones seguras y caducidad. ✅ vía Supabase Auth.
+4. Aplicar rate limiting, validación estricta, protección de inyección, XSS, CSRF, CORS y CSP. ✅ parcial (CSP G5 OK).
+5. Proteger logs y telemetría para que no expongan información educativa. 🚧 `auth_security_events` minimizado.
+6. Auditar dependencias, activar secret scanning y proteger CI/CD. ⏳ G4.
+7. Ejecutar pruebas de permisos, IDOR/BOLA, backup/restauración e incidentes. 🚧 E2E + RLS; backups Free.
 
 ## Terminado cuando
 

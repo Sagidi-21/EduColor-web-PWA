@@ -12,7 +12,11 @@ import {
   PASSWORD_MAX_LEN,
   PASSWORD_MIN_LEN,
 } from "../../platform/supabase/formLimits";
-import { MSG_RECOVERY_EXPIRED, clearPasswordRecoveryActive } from "./passwordRecovery";
+import {
+  MSG_RECOVERY_EXPIRED,
+  clearPasswordRecoveryActive,
+  consumePasswordRecoveryLink,
+} from "./passwordRecovery";
 import "./SchoolAccessScreen.css";
 
 function IconEye({ off }: { off?: boolean }) {
@@ -76,7 +80,7 @@ export function SetPasswordScreen({ source = "forgot", onDone }: SetPasswordScre
       const {
         data: { session },
       } = await getSupabase().auth.getSession();
-      if (!session) {
+      if (!session?.access_token) {
         setError(MSG_RECOVERY_EXPIRED);
         return;
       }
@@ -101,6 +105,8 @@ export function SetPasswordScreen({ source = "forgot", onDone }: SetPasswordScre
         }
         return;
       }
+      // Auditoría de un solo uso (best-effort; Auth verify ya es one-shot).
+      void consumePasswordRecoveryLink(session.access_token);
       void logAuthSecurityEvent("password_reset_ok", source);
       await clearLoginGuardAfterPasswordChange();
       clearPasswordRecoveryActive();

@@ -436,12 +436,13 @@ Existe aprobación documentada de alcance de datos e infraestructura.
 
 # Fase 10 — API e identidad
 
-## Estado (2026-10-19): en curso (núcleo Auth + Netlify listos)
+## Estado (2026-10-19): núcleo Auth + Admin + branding listos
 
 Ver detalle en `ROADMAP_DE_EJECUCION_DETALLADO.md` (Fase 10) y
 `ESTADO_DEL_PROYECTO.md`. Resumen: login + staff + invites + D-036/D-037 +
-Netlify prod **hechos**; E2E staff críticos en código; pendiente verificar CSP
-en deploy, MFA owner (Fase 12), SMTP si hace falta, admin fails.
+Netlify + E2E F1–F6 + Admin Central + branding + CSP Storage + recovery
+(consume tras guardar) **hechos**. Residual Fase 12: DT-028 (threat model,
+Dependabot, MFA aparcado, D16, SMTP).
 
 ## Pasos
 
@@ -452,14 +453,14 @@ en deploy, MFA owner (Fase 12), SMTP si hace falta, admin fails.
    ([CHECKLIST_CALIDAD_AUTH.md](CHECKLIST_CALIDAD_AUTH.md) §C/§E).
 3. Implementar autenticación de profesorado, expiración, cierre y **cambio de
    contraseña (definir una nueva; D-036)**. ✅ — login/cierre/ban + pantallas
-   contraseña nueva + recovery un uso + popup éxito.
+   contraseña nueva + recovery un uso (huella tras guardar; DT-027) + popup éxito.
 4. Implementar roles y autorización server-side por centro, clase y recurso.
-   ✅ completado para el piloto staff (RLS + `is_school_owner` / member activo).
+   ✅ piloto staff (RLS + owner) + Admin Central (`platform_admins`).
 5. Crear endpoints mínimos de perfil, actividades/configuración y sincronización.
-   ⏳ pendiente (fuera del cierre mínimo de Fase 10).
+   🚧 parcial — branding colegio (Storage) + Configuración; sync progreso fuera.
 6. Añadir validación de entrada, rate limiting, logs minimizados y pruebas de
-   permisos. 🚧 parcial — OWASP signup, rate invite, `auth_security_events`,
-   Vitest mocks; E2E pendiente.
+   permisos. ✅ parcial — OWASP signup, rate invite, `auth_security_events`,
+   Vitest + E2E F1–F6.
 7. Probar offline/reconexión y conflictos de datos locales. ⏳ pendiente (Fase 6).
 
 ## Comprobación de salida
@@ -488,14 +489,24 @@ Se puede desplegar, observar, restaurar y revertir una versión con procedimient
 
 # Fase 12 — Seguridad
 
+## Estado (2026-10-19): arranque parcial
+
+Hecho: CSP Netlify + Storage (`public/_headers`, G5), lockout/rate Auth (D-037),
+RLS staff, Admin Central sin SIEM propio. Abierto: DT-028 (G2 threat model, G4
+Dependabot, G3 MFA aparcado, D16, SMTP). Checklist:
+[CHECKLIST_CALIDAD_AUTH.md](CHECKLIST_CALIDAD_AUTH.md) §G.
+
 ## Pasos
 
-1. Crear threat model e inventario de activos.
-2. Configurar secretos, MFA administrativa y mínimo privilegio.
+1. Crear threat model e inventario de activos. ⏳ G2 / DT-028.
+2. Configurar secretos, MFA administrativa y mínimo privilegio. 🚧 secretos en
+   Netlify/Supabase; MFA owner aparcado (G3).
 3. Aplicar sesión segura, rate limiting, validación, XSS, CSRF, CSP y CORS.
-4. Activar auditoría de dependencias, secret scanning y protección de CI.
+   ✅ parcial — CSP + lockout + RLS; ampliar según threat model.
+4. Activar auditoría de dependencias, secret scanning y protección de CI. ⏳ G4.
 5. Probar IDOR/BOLA, enumeración, fuerza bruta, backups y respuesta a incidentes.
-6. Cerrar hallazgos críticos antes de piloto.
+   🚧 parcial — E2E login/lockout; backups Supabase Free.
+6. Cerrar hallazgos críticos antes de piloto. 🚧 en curso vía DT-028.
 
 ## Comprobación de salida
 

@@ -13,10 +13,10 @@ import {
   SetPasswordScreen,
 } from "./features/auth/SetPasswordScreen";
 import {
-  MSG_RECOVERY_USED,
+  MSG_RECOVERY_EXPIRED,
   clearPasswordRecoveryActive,
-  consumePasswordRecoveryLink,
   isPasswordRecoveryActive,
+  markPasswordRecoveryActive,
 } from "./features/auth/passwordRecovery";
 import { getSupabase, isSupabaseConfigured } from "./platform/supabase/client";
 import { ConfiguracionScreen } from "./features/configuracion/ConfiguracionScreen";
@@ -102,34 +102,19 @@ function AppShell() {
       } = await getSupabase().auth.getSession();
       if (cancelled) return;
       if (!session?.access_token) {
+        // Sin sesión: el verify de Auth falló (enlace caducado o quemado por filtro de correo).
         clearPasswordRecoveryActive();
         clearSetPasswordFromUrl();
         setSetPasswordFlow({
           active: false,
           source: "forgot",
           waiting: false,
-          error: MSG_RECOVERY_USED,
+          error: MSG_RECOVERY_EXPIRED,
         });
         return;
       }
-      const consumed = await consumePasswordRecoveryLink(session.access_token);
-      if (cancelled) return;
-      if (!consumed.ok) {
-        clearPasswordRecoveryActive();
-        clearSetPasswordFromUrl();
-        try {
-          await getSupabase().auth.signOut({ scope: "local" });
-        } catch {
-          // ignore
-        }
-        setSetPasswordFlow({
-          active: false,
-          source: "forgot",
-          waiting: false,
-          error: MSG_RECOVERY_USED,
-        });
-        return;
-      }
+      // No consumir aquí: Auth ya hace un solo uso del verify. Consumimos tras guardar.
+      markPasswordRecoveryActive();
       setSetPasswordFlow((prev) => ({
         active: true,
         source: prev.source || readSetPasswordFromUrl().source || "forgot",
@@ -159,10 +144,10 @@ function AppShell() {
             active: false,
             source: "forgot",
             waiting: false,
-            error: MSG_RECOVERY_USED,
+            error: MSG_RECOVERY_EXPIRED,
           };
         });
-      }, 4000);
+      }, 8000);
     }
 
     return () => {
