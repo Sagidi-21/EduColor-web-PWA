@@ -75,18 +75,40 @@ colegio), no el despliegue antiguo “sin cuenta”.
 | E5  | Edge Functions desplegadas en el proyecto       | [x] accept, manage, school-login, request-new-password, clear-login-guard |
 | E6  | Deploy automático en push a `main`              | [x]                                                                       |
 
-## F. Orden de trabajo (2026-10-19)
+## F. E2E Playwright staff (`npm run test:e2e`)
+
+| #   | Ítem                               | Credenciales  | Estado                  |
+| --- | ---------------------------------- | ------------- | ----------------------- |
+| F1  | Smoke Welcome → auth               | No            | [x]                     |
+| F2  | Login fallido → mensaje genérico   | No            | [x]                     |
+| F3  | Olvidé contraseña → mensaje neutro | No            | [x]                     |
+| F4  | Lockout tras 3 fallos              | No            | [x]                     |
+| F5  | Login owner → home                 | `E2E_OWNER_*` | [ ] opcional si hay env |
+| F6  | Cerrar sesión → vuelve a acceso    | `E2E_OWNER_*` | [ ] opcional si hay env |
+
+## G. Fase 12 — seguridad piloto (arranque)
+
+| #   | Ítem                                                      | Estado                          |
+| --- | --------------------------------------------------------- | ------------------------------- |
+| G1  | Headers de seguridad + CSP en Netlify (`public/_headers`) | [x] código; verificar en deploy |
+| G2  | Threat model / inventario de activos (doc corto)          | [ ]                             |
+| G3  | MFA TOTP para owner (Supabase Auth MFA)                   | [ ] siguiente slice             |
+| G4  | Secret scanning / Dependabot                              | [ ]                             |
+| G5  | CSP comprobada en staging/prod (consola sin violaciones)  | [ ] tras deploy                 |
+
+## H. Orden de trabajo (2026-10-19)
 
 1. ~~D-036/D-037 + Netlify Auth~~ (hecho).
 2. Re-probar popup contraseña en prod (cupo email Free 2/h) → marcar D12/D15 al 100 %.
-3. **E2E** staff (Playwright + Supabase de prueba).
-4. **SMTP propio** si hace falta más de 2 correos Auth/hora.
-5. Admin email fijo + pantalla de fallos (D16).
+3. ~~E2E staff críticos (smoke, fail, forgot, lockout)~~; owner/logout con env.
+4. Verificar CSP en Netlify (G5) → luego MFA owner (G3).
+5. **SMTP propio** si hace falta más de 2 correos Auth/hora.
+6. Admin email fijo + pantalla de fallos (D16).
 
 ## Notas
 
 - DEMO / soft gate es riesgo de producto aceptado.
-- MFA / CSP completa → Fase 12.
+- MFA owner = siguiente pieza de Fase 12 tras validar CSP en prod.
 - No se “recuperan” contraseñas antiguas: siempre se **elige una nueva** (D-036).
-- Lockout: contador **email + IP**; solo pantalla Entrar al Colegio (D-037).
+- Lockout: contador por **email** (`ip_hash` auditoría); solo Entrar al Colegio (D-037).
 - SMTP integrado Free: **2 emails Auth/hora** (proyecto); esperar o SMTP custom.

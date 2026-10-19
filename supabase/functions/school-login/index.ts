@@ -47,9 +47,10 @@ Deno.serve(async (req) => {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    const guard = await loadGuard(admin, email, ipHash);
+    const guard = await loadGuard(admin, email);
     if (guard?.locked_until && new Date(guard.locked_until).getTime() > Date.now()) {
-      return json({ ok: false, message: MSG_LOCKOUT, locked: true }, 429);
+      // 200: supabase.functions.invoke a veces no expone el body en 4xx.
+      return json({ ok: false, message: MSG_LOCKOUT, locked: true });
     }
 
     const userClient = createClient(supabaseUrl, anonKey, {
@@ -66,14 +67,11 @@ Deno.serve(async (req) => {
         p_event_type: result.locked ? "login_lockout" : "login_fail",
         p_context: email.slice(0, 80),
       });
-      return json(
-        {
-          ok: false,
-          message: result.locked ? MSG_LOCKOUT : MSG_CREDS,
-          locked: result.locked,
-        },
-        result.locked ? 429 : 401,
-      );
+      return json({
+        ok: false,
+        message: result.locked ? MSG_LOCKOUT : MSG_CREDS,
+        locked: result.locked,
+      });
     }
 
     const allowed = await userHasAppAccess(admin, signed.user.id);
@@ -88,17 +86,14 @@ Deno.serve(async (req) => {
         p_event_type: result.locked ? "login_lockout" : "login_fail",
         p_context: "inactive_or_removed",
       });
-      return json(
-        {
-          ok: false,
-          message: result.locked ? MSG_LOCKOUT : MSG_CREDS,
-          locked: result.locked,
-        },
-        result.locked ? 429 : 401,
-      );
+      return json({
+        ok: false,
+        message: result.locked ? MSG_LOCKOUT : MSG_CREDS,
+        locked: result.locked,
+      });
     }
 
-    await clearGuard(admin, email, ipHash);
+    await clearGuard(admin, email);
 
     return json({
       ok: true,
@@ -126,18 +121,17 @@ async function userHasAppAccess(
   );
 }
 
-async function loadGuard(admin: ReturnType<typeof createClient>, email: string, ipHash: string) {
+async function loadGuard(admin: ReturnType<typeof createClient>, email: string) {
   const { data } = await admin
     .from("auth_login_guards")
     .select("fail_count, locked_until")
     .eq("email_norm", email)
-    .eq("ip_hash", ipHash)
     .maybeSingle();
   return data as { fail_count: number; locked_until: string | null } | null;
 }
 
-async function clearGuard(admin: ReturnType<typeof createClient>, email: string, ipHash: string) {
-  await admin.from("auth_login_guards").delete().eq("email_norm", email).eq("ip_hash", ipHash);
+async function clearGuard(admin: ReturnType<typeof createClient>, email: string) {
+  await admin.from("auth_login_guards").delete().eq("email_norm", email);
 }
 
 async function registerFailure(
@@ -149,7 +143,7 @@ async function registerFailure(
   siteOrigin: string,
 ): Promise<{ locked: boolean }> {
   const now = Date.now();
-  const existing = await loadGuard(admin, email, ipHash);
+  const existing = await loadGuard(admin, email);
   let failCount = (existing?.fail_count ?? 0) + 1;
   let lockedUntil: string | null = existing?.locked_until ?? null;
 
@@ -169,7 +163,7 @@ async function registerFailure(
     failCount = MAX_FAILS;
   }
 
-  await admin.from("auth_login_guards").upsert(
+  const { error: upsertError } = await admin.from("auth_login_guards").upsert(
     {
       email_norm: email,
       ip_hash: ipHash,
@@ -177,8 +171,11 @@ async function registerFailure(
       locked_until: lockedUntil,
       updated_at: new Date().toISOString(),
     },
-    { onConflict: "email_norm,ip_hash" },
+    { onConflict: "email_norm" },
   );
+  if (upsertError) {
+    console.error("auth_login_guards upsert", upsertError.message);
+  }
 
   if (locked) {
     await sendRecoveryEmail(supabaseUrl, anonKey, admin, email, siteOrigin, "lockout");

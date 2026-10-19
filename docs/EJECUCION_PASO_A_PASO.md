@@ -440,7 +440,8 @@ Existe aprobación documentada de alcance de datos e infraestructura.
 
 Ver detalle en `ROADMAP_DE_EJECUCION_DETALLADO.md` (Fase 10) y
 `ESTADO_DEL_PROYECTO.md`. Resumen: login + staff + invites + D-036/D-037 +
-Netlify prod **hechos**; pendiente E2E, SMTP si hace falta, admin fails.
+Netlify prod **hechos**; E2E staff críticos en código; pendiente verificar CSP
+en deploy, MFA owner (Fase 12), SMTP si hace falta, admin fails.
 
 ## Pasos
 
