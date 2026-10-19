@@ -77,14 +77,14 @@ colegio), no el despliegue antiguo “sin cuenta”.
 
 ## F. E2E Playwright staff (`npm run test:e2e`)
 
-| #   | Ítem                               | Credenciales  | Estado                  |
-| --- | ---------------------------------- | ------------- | ----------------------- |
-| F1  | Smoke Welcome → auth               | No            | [x]                     |
-| F2  | Login fallido → mensaje genérico   | No            | [x]                     |
-| F3  | Olvidé contraseña → mensaje neutro | No            | [x]                     |
-| F4  | Lockout tras 3 fallos              | No            | [x]                     |
-| F5  | Login owner → home                 | `E2E_OWNER_*` | [ ] opcional si hay env |
-| F6  | Cerrar sesión → vuelve a acceso    | `E2E_OWNER_*` | [ ] opcional si hay env |
+| #   | Ítem                               | Credenciales  | Estado |
+| --- | ---------------------------------- | ------------- | ------ |
+| F1  | Smoke Welcome → auth               | No            | [x]    |
+| F2  | Login fallido → mensaje genérico   | No            | [x]    |
+| F3  | Olvidé contraseña → mensaje neutro | No            | [x]    |
+| F4  | Lockout tras 3 fallos              | No            | [x]    |
+| F5  | Login owner → home                 | `E2E_OWNER_*` | [x]    |
+| F6  | Cerrar sesión → vuelve a acceso    | `E2E_OWNER_*` | [x]    |
 
 ## G. Fase 12 — seguridad piloto (arranque)
 
@@ -100,7 +100,7 @@ colegio), no el despliegue antiguo “sin cuenta”.
 
 1. ~~D-036/D-037 + Netlify Auth~~ (hecho).
 2. Re-probar popup contraseña en prod (cupo email Free 2/h) → marcar D12/D15 al 100 %.
-3. ~~E2E staff críticos (smoke, fail, forgot, lockout)~~; owner/logout con env.
+3. ~~E2E staff críticos (smoke, fail, forgot, lockout) + owner/logout con env~~.
 4. Verificar CSP en Netlify (G5) → luego MFA owner (G3).
 5. **SMTP propio** si hace falta más de 2 correos Auth/hora.
 6. Admin email fijo + pantalla de fallos (D16).

@@ -1,4 +1,9 @@
+import { config as loadEnv } from "dotenv";
+import { resolve } from "node:path";
 import { defineConfig, devices } from "@playwright/test";
+
+// Solo proceso Node de Playwright (no llega al bundle del navegador).
+loadEnv({ path: resolve(process.cwd(), ".env") });
 
 /**
  * E2E staff / auth (D-015): independiente de Vitest.
