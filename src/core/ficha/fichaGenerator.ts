@@ -9,6 +9,7 @@ import { FichaSoluciones } from "./renderers/soluciones";
 import printCss from "./renderers/print/print-bundle";
 import { downloadHtmlAsPdf } from "./pdfExport";
 import { downloadHtmlAsWord } from "./wordHtmlExport";
+import { isEdgeContentActivity } from "./edgeContentActivities";
 import type { FichaMeta, FichaMode, SheetConfig, SheetExercise } from "./types";
 /** Logo empaquetado por Vite (URL estable + inlinable a data URL en export). */
 import colegioLogoUrl from "../../assets/welcome-logo-bg.png";
@@ -90,19 +91,16 @@ function renderFichaHtml(
   return `<div class="ficha-root">${renderToStaticMarkup(element)}</div>`;
 }
 
-/**
- * Construye el documento de ficha una sola vez (ejercicios + HTML + CSS).
- * Preview y Word deben consumir este builder con la misma seed.
- */
-export function buildFichaDocument(input: BuildFichaDocumentInput): FichaDocument {
+function assembleFichaDocument(
+  input: BuildFichaDocumentInput,
+  exercises: SheetExercise[],
+): FichaDocument {
   const modes = uniqueModes(input.modes);
   if (modes.length === 0) {
     throw new Error("Selecciona al menos un tipo de ficha (alumno o soluciones).");
   }
 
   const { activityId, config, logoUrl = colegioLogoUrl } = input;
-  const generator = getGenerator(activityId);
-  const exercises = generator.generate({ ...config, activityId });
 
   const chunks = modes.map((mode) => {
     const baseMeta = buildMeta(activityId, config, {
@@ -127,6 +125,33 @@ export function buildFichaDocument(input: BuildFichaDocumentInput): FichaDocumen
   const css = `${buildAccentCssVars(input.accentColor)}${printCss}`;
 
   return { exercises, config, modes, css, html, chunks };
+}
+
+/**
+ * Construye el documento con ejercicios ya obtenidos (p. ej. Edge content-ficha).
+ * No invoca motores locales.
+ */
+export function buildFichaDocumentFromExercises(
+  input: BuildFichaDocumentInput & { exercises: SheetExercise[] },
+): FichaDocument {
+  return assembleFichaDocument(input, input.exercises);
+}
+
+/**
+ * Construye el documento de ficha una sola vez (ejercicios + HTML + CSS).
+ * Preview y Word deben consumir este builder con la misma seed.
+ * Actividades Edge (`suma`) deben usar `buildFichaDocumentFromExercises`.
+ */
+export function buildFichaDocument(input: BuildFichaDocumentInput): FichaDocument {
+  if (isEdgeContentActivity(input.activityId)) {
+    throw new Error(
+      `La actividad "${input.activityId}" requiere generación en servidor (content-ficha).`,
+    );
+  }
+
+  const generator = getGenerator(input.activityId);
+  const exercises = generator.generate({ ...input.config, activityId: input.activityId });
+  return assembleFichaDocument(input, exercises);
 }
 
 /** Genera ejercicios + HTML estático listo para imprimir. */

@@ -1,7 +1,11 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { activityManifests } from "../../manifests/content-registry";
+import { generateSumaSession } from "../../platform/content-api/sumaEngine";
+import { sumaExercisesToSheet } from "../../platform/content-api/sumSheet";
+import { isEdgeContentActivity } from "./edgeContentActivities";
 import {
   buildFichaDocument,
+  buildFichaDocumentFromExercises,
   downloadFichas,
   generateFicha,
   loadLastFicha,
@@ -20,6 +24,22 @@ const baseConfig = (activityId: string): SheetConfig => ({
   seed: 42,
 });
 
+/** Simula respuesta Edge content-ficha (espejo de prueba; no es el path de producción). */
+function sumaSheetFromEdgeMirror(
+  count: number,
+  seed: number,
+  modes: Array<"alumno" | "soluciones">,
+  withImages: boolean,
+  difficulty: "easy" | "medium" | "hard" | "expert" = "easy",
+) {
+  const session = generateSumaSession(difficulty, seed).slice(0, count);
+  return sumaExercisesToSheet(session, modes, withImages).map((ex) =>
+    withImages && difficulty === "easy"
+      ? { ...ex, imageUrl: ex.imageUrl || "test-object.png" }
+      : ex,
+  );
+}
+
 describe("fichaGenerator", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -29,22 +49,34 @@ describe("fichaGenerator", () => {
     vi.restoreAllMocks();
   });
 
-  it("generateFicha('suma') produce HTML alumno con operaciones", () => {
-    const result = generateFicha({
+  it("buildFichaDocument rechaza suma (D2: solo Edge)", () => {
+    expect(() =>
+      buildFichaDocument({
+        activityId: "suma",
+        config: baseConfig("suma"),
+        modes: ["alumno"],
+      }),
+    ).toThrow(/servidor|content-ficha/i);
+  });
+
+  it("buildFichaDocumentFromExercises('suma') produce HTML alumno con operaciones", () => {
+    const exercises = sumaSheetFromEdgeMirror(5, 42, ["alumno"], false);
+    const doc = buildFichaDocumentFromExercises({
       activityId: "suma",
       config: baseConfig("suma"),
-      mode: "alumno",
+      modes: ["alumno"],
+      exercises,
       meta: { title: "Suma", grade: "1º", studentName: true },
     });
 
-    expect(result.exercises).toHaveLength(5);
-    expect(result.exercises.every((ex) => ex.kind === "operation")).toBe(true);
-    expect(result.html).toContain("ficha-page");
-    expect(result.html).toContain("Suma");
-    expect(result.html).not.toContain("ficha-answer");
-    expect(result.html).toContain("ficha-grid");
-    expect(result.html).toContain("ficha-grid__cell");
-    expect(result.html).toContain("ficha-header__table");
+    expect(doc.exercises).toHaveLength(5);
+    expect(doc.exercises.every((ex) => ex.kind === "operation")).toBe(true);
+    expect(doc.html).toContain("ficha-page");
+    expect(doc.html).toContain("Suma");
+    expect(doc.html).not.toContain("ficha-answer");
+    expect(doc.html).toContain("ficha-grid");
+    expect(doc.html).toContain("ficha-grid__cell");
+    expect(doc.html).toContain("ficha-header__table");
   });
 
   it("buildFichaDocument comparte ejercicios entre alumno y soluciones", () => {
@@ -64,27 +96,29 @@ describe("fichaGenerator", () => {
     expect(doc.chunks[0]!.html).toContain("ficha-ordenar__table");
   });
 
-  it("modo soluciones incluye respuestas visibles", () => {
-    const result = generateFicha({
+  it("modo soluciones incluye respuestas visibles (suma vía ejercicios Edge)", () => {
+    const exercises = sumaSheetFromEdgeMirror(5, 42, ["soluciones"], false);
+    const doc = buildFichaDocumentFromExercises({
       activityId: "suma",
       config: baseConfig("suma"),
-      mode: "soluciones",
+      modes: ["soluciones"],
+      exercises,
     });
-    expect(result.html).toContain("ficha-answer");
+    expect(doc.html).toContain("ficha-answer");
   });
 
   it("downloadFichas(alumno+soluciones) exporta PDF con el HTML de la vista previa", async () => {
     const spy = vi.spyOn(pdfExport, "downloadHtmlAsPdf").mockResolvedValue(undefined);
     const exercises = await downloadFichas({
-      activityId: "suma",
-      config: baseConfig("suma"),
+      activityId: "resta",
+      config: baseConfig("resta"),
       modes: ["alumno", "soluciones"],
-      meta: { title: "Suma", grade: "1º" },
+      meta: { title: "Resta", grade: "1º" },
     });
     expect(exercises).toHaveLength(5);
     expect(spy).toHaveBeenCalledOnce();
     const arg = spy.mock.calls[0]![0];
-    expect(arg.filename).toContain("suma");
+    expect(arg.filename).toContain("resta");
     expect(arg.filename).toMatch(/\.pdf$/);
     expect(arg.html).toContain("ficha-page");
     expect((arg.html.match(/ficha-page/g) ?? []).length).toBeGreaterThanOrEqual(2);
@@ -92,10 +126,10 @@ describe("fichaGenerator", () => {
 
   it("misma seed produce el mismo HTML (reproducibilidad byte-a-byte)", () => {
     const input = {
-      activityId: "suma" as const,
-      config: baseConfig("suma"),
+      activityId: "resta" as const,
+      config: baseConfig("resta"),
       mode: "alumno" as const,
-      meta: { title: "Suma", grade: "1º", studentName: true },
+      meta: { title: "Resta", grade: "1º", studentName: true },
     };
     const a = generateFicha(input);
     const b = generateFicha(input);
@@ -105,13 +139,13 @@ describe("fichaGenerator", () => {
 
   it("semilla distinta cambia ejercicios", () => {
     const a = generateFicha({
-      activityId: "suma",
-      config: baseConfig("suma"),
+      activityId: "resta",
+      config: baseConfig("resta"),
       mode: "alumno",
     });
     const b = generateFicha({
-      activityId: "suma",
-      config: { ...baseConfig("suma"), seed: 99 },
+      activityId: "resta",
+      config: { ...baseConfig("resta"), seed: 99 },
       mode: "alumno",
     });
     expect(a.exercises).not.toEqual(b.exercises);
@@ -198,20 +232,30 @@ describe("fichaGenerator", () => {
   });
 
   it("suma easy con imágenes pinta filas de objetos; soluciones sin miniaturas", () => {
-    const alumno = generateFicha({
+    const config = {
+      ...baseConfig("suma"),
+      withImages: true,
+      count: 4,
+      difficulty: "easy" as const,
+    };
+    const alumnoEx = sumaSheetFromEdgeMirror(4, 42, ["alumno"], true, "easy");
+    const alumno = buildFichaDocumentFromExercises({
       activityId: "suma",
-      config: { ...baseConfig("suma"), withImages: true, count: 4, difficulty: "easy" },
-      mode: "alumno",
+      config,
+      modes: ["alumno"],
+      exercises: alumnoEx,
     });
     expect(alumno.exercises.every((ex) => ex.kind === "operation")).toBe(true);
     expect(alumno.exercises.some((ex) => ex.kind === "operation" && ex.imageUrl)).toBe(true);
     expect(alumno.html).toContain("ficha-img-row__thumb");
     expect(alumno.html).not.toContain("ficha-answer");
 
-    const soluciones = generateFicha({
+    const solEx = sumaSheetFromEdgeMirror(4, 42, ["soluciones"], true, "easy");
+    const soluciones = buildFichaDocumentFromExercises({
       activityId: "suma",
-      config: { ...baseConfig("suma"), withImages: true, count: 4, difficulty: "easy" },
-      mode: "soluciones",
+      config,
+      modes: ["soluciones"],
+      exercises: solEx,
     });
     expect(soluciones.html).toContain("ficha-answer");
     expect(soluciones.html).not.toContain("ficha-img-row__thumb");
@@ -290,7 +334,7 @@ describe("fichaGenerator", () => {
 
   it("soluciones: solo respuesta, sin enunciados ni imágenes", () => {
     for (const activityId of [
-      "suma",
+      "resta",
       "seriesNumericas",
       "elKilo",
       "balanza",
@@ -323,9 +367,10 @@ describe("fichaGenerator", () => {
     }
   });
 
-  it("genera ficha para todas las actividades del catálogo", () => {
+  it("genera ficha para todas las actividades locales del catálogo (excluye Edge)", () => {
     const failures: string[] = [];
     for (const manifest of activityManifests) {
+      if (isEdgeContentActivity(manifest.id)) continue;
       try {
         const result = generateFicha({
           activityId: manifest.id,
@@ -341,10 +386,11 @@ describe("fichaGenerator", () => {
     expect(failures, failures.join("\n")).toEqual([]);
   });
 
-  it("alumno+soluciones juntos para todas las actividades con generador", async () => {
+  it("alumno+soluciones juntos para todas las actividades locales con generador", async () => {
     const spy = vi.spyOn(pdfExport, "downloadHtmlAsPdf").mockResolvedValue(undefined);
     const failures: string[] = [];
     for (const manifest of activityManifests) {
+      if (isEdgeContentActivity(manifest.id)) continue;
       try {
         spy.mockClear();
         const exercises = await downloadFichas({

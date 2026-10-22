@@ -106,12 +106,11 @@ describe("D1 suma engine parity (seed determinista)", () => {
     expect(sol.every((e) => e.answer === e.a + e.b)).toBe(true);
   });
 
-  it("documenta: cliente operations.ts consume RNG de imágenes; no es la paridad D1", async () => {
+  it("documenta: generación local de suma está cerrada (D2); paridad es Edge↔espejo", async () => {
     const { generateSession } = await import("../../core/activities/operations");
-    const edge = generateSumaSession("easy", 42).map((e) => `${e.a}+${e.b}`);
-    const client = generateSession("suma", "easy", 42).map((e) => `${e.a}+${e.b}`);
-    // El shuffle de categorías en el cliente avanza el LCG antes de a/b.
-    expect(client).not.toEqual(edge);
+    expect(() => generateSession("suma", "easy", 42)).toThrow(/deshabilitada|content-session/i);
+    const edge = generateSumaSession("easy", 42);
+    expect(edge.length).toBe(10);
   });
 });
 

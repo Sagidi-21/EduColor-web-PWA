@@ -1,58 +1,17 @@
 ﻿import { describe, it, expect } from "vitest";
-import { generateSession, validateAnswer, showImageSupport } from "./operations";
+import {
+  attachSumaImages,
+  generateSession,
+  validateAnswer,
+  showImageSupport,
+  type OperationsExercise,
+} from "./operations";
 
 describe("operations/engine", () => {
   describe("generateSession", () => {
-    describe("suma", () => {
-      it("produce 10 ejercicios por sesión", () => {
-        const exercises = generateSession("suma", "easy", 42);
-        expect(exercises).toHaveLength(10);
-      });
-
-      it('produce ejercicios con op "suma"', () => {
-        const exercises = generateSession("suma", "easy", 42);
-        exercises.forEach((ex) => expect(ex.op).toBe("suma"));
-      });
-
-      it("el resultado (answer) es siempre la suma correcta", () => {
-        const exercises = generateSession("suma", "easy", 42);
-        exercises.forEach((ex) => {
-          expect(ex.answer).toBe(ex.a + ex.b);
-        });
-      });
-
-      it("respetando rango easy (1-4 + 1-4, maxAnswer 5)", () => {
-        const exercises = generateSession("suma", "easy", 42);
-        exercises.forEach((ex) => {
-          expect(ex.a).toBeGreaterThanOrEqual(1);
-          expect(ex.a).toBeLessThanOrEqual(4);
-          expect(ex.b).toBeGreaterThanOrEqual(1);
-          expect(ex.b).toBeLessThanOrEqual(4);
-          expect(ex.answer).toBeLessThanOrEqual(5);
-        });
-      });
-
-      it("respetando rango expert (1-15, maxAnswer 30)", () => {
-        const exercises = generateSession("suma", "expert", 42);
-        exercises.forEach((ex) => {
-          expect(ex.a).toBeGreaterThanOrEqual(1);
-          expect(ex.a).toBeLessThanOrEqual(15);
-          expect(ex.b).toBeGreaterThanOrEqual(1);
-          expect(ex.b).toBeLessThanOrEqual(15);
-          expect(ex.answer).toBeLessThanOrEqual(30);
-        });
-      });
-
-      it("no repite pares (a, b) dentro de una sesión", () => {
-        const exercises = generateSession("suma", "easy", 42);
-        const keys = new Set(exercises.map((ex) => `${ex.a}-${ex.b}`));
-        expect(keys.size).toBe(exercises.length);
-      });
-
-      it("produces reproducible results with same seed", () => {
-        const a = generateSession("suma", "easy", 42);
-        const b = generateSession("suma", "easy", 42);
-        expect(a).toEqual(b);
+    describe("suma (D2)", () => {
+      it("rechaza generación local de suma", () => {
+        expect(() => generateSession("suma", "easy", 42)).toThrow(/deshabilitada|content-session/i);
       });
     });
 
@@ -111,28 +70,30 @@ describe("operations/engine", () => {
   });
 
   describe("validateAnswer", () => {
-    it("devuelve true para respuesta correcta de suma", () => {
-      const exercises = generateSession("suma", "easy", 42);
-      const ex = exercises[0];
-      expect(validateAnswer(ex, String(ex.answer))).toBe(true);
+    const sample: OperationsExercise = {
+      a: 2,
+      b: 3,
+      op: "suma",
+      answer: 5,
+      imageUrl: "",
+    };
+
+    it("devuelve true para respuesta correcta", () => {
+      expect(validateAnswer(sample, "5")).toBe(true);
     });
 
     it("devuelve true para respuesta correcta de resta", () => {
       const exercises = generateSession("resta", "easy", 42);
-      const ex = exercises[0];
+      const ex = exercises[0]!;
       expect(validateAnswer(ex, String(ex.answer))).toBe(true);
     });
 
     it("devuelve false para respuesta incorrecta", () => {
-      const exercises = generateSession("suma", "easy", 42);
-      const ex = exercises[0];
-      const wrong = String(ex.answer + 1);
-      expect(validateAnswer(ex, wrong)).toBe(false);
+      expect(validateAnswer(sample, "6")).toBe(false);
     });
 
     it("devuelve false para NaN", () => {
-      const exercises = generateSession("suma", "easy", 42);
-      expect(validateAnswer(exercises[0], "abc")).toBe(false);
+      expect(validateAnswer(sample, "abc")).toBe(false);
     });
   });
 
@@ -151,6 +112,19 @@ describe("operations/engine", () => {
 
     it("en resta expert devuelve false", () => {
       expect(showImageSupport("resta", "expert")).toBe(false);
+    });
+  });
+
+  describe("attachSumaImages", () => {
+    it("no inventa a/b; solo rellena imageUrl en easy", () => {
+      const base: OperationsExercise[] = [
+        { a: 1, b: 2, op: "suma", answer: 3, imageUrl: "" },
+        { a: 2, b: 2, op: "suma", answer: 4, imageUrl: "" },
+      ];
+      const withImg = attachSumaImages(base, "easy");
+      expect(withImg.map((e) => `${e.a}+${e.b}`)).toEqual(["1+2", "2+2"]);
+      const noImg = attachSumaImages(base, "medium");
+      expect(noImg.every((e) => e.imageUrl === "")).toBe(true);
     });
   });
 });

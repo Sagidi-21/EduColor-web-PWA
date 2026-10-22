@@ -1,10 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
-import { generateSession, showImageSupport } from "../../../core/activities/operations";
+import {
+  attachSumaImages,
+  generateSession,
+  showImageSupport,
+} from "../../../core/activities/operations";
 import type {
   OperationsExercise,
   OperationType,
   SessionResult,
 } from "../../../core/activities/operations";
+import { ContentClientError, fetchSumaSession } from "../../../platform/content-api/contentClient";
 import type { EngineScreenProps } from "../engine-screens";
 import { playFeedback } from "../../shared/audioFeedback";
 import { LazyDigitCell } from "../../shared/DigitCell";
@@ -29,6 +34,11 @@ interface SessionState {
   activeDigit: number;
 }
 
+type LoadPhase =
+  | { status: "loading" }
+  | { status: "error"; message: string }
+  | { status: "ready"; session: SessionState };
+
 const OP_SYMBOLS: Record<OperationType, string> = { suma: "+", resta: "−" };
 
 function answerLen(answer: number): number {
@@ -50,6 +60,32 @@ function ImageRow({ count, imageUrl }: { count: number; imageUrl: string }): JSX
   );
 }
 
+function sessionFromExercises(exercises: OperationsExercise[]): SessionState {
+  const firstLen = answerLen(exercises[0]!.answer);
+  return {
+    exercises,
+    currentIndex: 0,
+    correctCount: 0,
+    startTime: Date.now(),
+    answerState: "idle",
+    digits: Array(firstLen).fill(""),
+    activeDigit: firstLen - 1,
+  };
+}
+
+function userFacingContentError(err: unknown): string {
+  if (err instanceof ContentClientError) {
+    if (err.code === "unauthorized" || err.code === "forbidden") {
+      return "Necesitas una sesión autorizada para esta actividad.";
+    }
+    if (err.code === "not_configured") {
+      return "El servicio de contenido no está configurado.";
+    }
+    return err.message || "No se pudieron cargar los ejercicios.";
+  }
+  return err instanceof Error ? err.message : "No se pudieron cargar los ejercicios.";
+}
+
 export function OperationsScreen({
   activity,
   difficulty,
@@ -65,32 +101,54 @@ export function OperationsScreen({
   const [canvasKey, setCanvasKey] = useState(0);
 
   const [sessionSeed] = useState(() => seed);
-  const [session, setSession] = useState<SessionState>(() => {
-    const exercises = generateSession(op, difficulty, sessionSeed);
-    const firstLen = answerLen(exercises[0].answer);
-    return {
-      exercises,
-      currentIndex: 0,
-      correctCount: 0,
-      startTime: Date.now(),
-      answerState: "idle",
-      digits: Array(firstLen).fill(""),
-      activeDigit: firstLen - 1,
-    };
+  const [load, setLoad] = useState<LoadPhase>(() => {
+    if (op === "resta") {
+      return {
+        status: "ready",
+        session: sessionFromExercises(generateSession("resta", difficulty, seed)),
+      };
+    }
+    return { status: "loading" };
   });
   const [finished, setFinished] = useState<SessionResult | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
 
-  const current = session.exercises[session.currentIndex];
-  const total = session.exercises.length;
+  useEffect(() => {
+    if (op !== "suma") return;
+    let cancelled = false;
+    setLoad({ status: "loading" });
+    setFinished(null);
+
+    (async () => {
+      try {
+        const raw = await fetchSumaSession({ difficulty, seed: sessionSeed });
+        const exercises = attachSumaImages(raw, difficulty);
+        if (!cancelled) setLoad({ status: "ready", session: sessionFromExercises(exercises) });
+      } catch (err) {
+        if (!cancelled) setLoad({ status: "error", message: userFacingContentError(err) });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [op, difficulty, sessionSeed, reloadToken]);
+
+  const setSession = useCallback((updater: (s: SessionState) => SessionState) => {
+    setLoad((prev) => {
+      if (prev.status !== "ready") return prev;
+      return { status: "ready", session: updater(prev.session) };
+    });
+  }, []);
+
+  const session = load.status === "ready" ? load.session : null;
+  const current = session?.exercises[session.currentIndex];
+  const total = session?.exercises.length ?? 0;
   const showImg = showImageSupport(op, difficulty);
-  const aLen = answerLen(current.answer);
-  const numCols = Math.max(String(current.a).length, String(current.b).length, aLen);
-  const aDigits = padLeft(current.a, numCols);
-  const bDigits = padLeft(current.b, numCols);
-  const sym = OP_SYMBOLS[op];
 
   const submitDigits = useCallback(
     (newDigits: string[]) => {
+      if (!current) return;
       const answer = parseInt(newDigits.join(""), 10);
       const isCorrect = !isNaN(answer) && answer === current.answer;
       playFeedback(isCorrect);
@@ -102,11 +160,12 @@ export function OperationsScreen({
         alreadyFailed: !isCorrect ? true : s.alreadyFailed,
       }));
     },
-    [current],
+    [current, setSession],
   );
 
   const handleCanvasConfirm = useCallback(
     (i: number, digit: string) => {
+      if (!session) return;
       const newDigits = [...session.digits];
       newDigits[i] = digit;
       if (i > 0) {
@@ -115,12 +174,12 @@ export function OperationsScreen({
         submitDigits(newDigits);
       }
     },
-    [session.digits, submitDigits],
+    [session, setSession, submitDigits],
   );
 
   const handleDigit = useCallback(
     (d: string) => {
-      if (session.answerState !== "idle") return;
+      if (!session || session.answerState !== "idle") return;
       const { digits, activeDigit } = session;
       if (activeDigit < 0) return;
       const newDigits = [...digits];
@@ -131,11 +190,11 @@ export function OperationsScreen({
         submitDigits(newDigits);
       }
     },
-    [session, submitDigits],
+    [session, setSession, submitDigits],
   );
 
   const handleDelete = useCallback(() => {
-    if (session.answerState !== "idle") return;
+    if (!session || session.answerState !== "idle") return;
     const { digits, activeDigit } = session;
     const nd = [...digits];
     if (nd[activeDigit]) {
@@ -145,15 +204,16 @@ export function OperationsScreen({
       nd[activeDigit - 1] = "";
       setSession((s) => ({ ...s, digits: nd, activeDigit: activeDigit - 1 }));
     }
-  }, [session]);
+  }, [session, setSession]);
 
   const handleConfirm = useCallback(() => {
-    if (session.answerState !== "idle") return;
+    if (!session || session.answerState !== "idle") return;
     if (session.digits.every((d) => d !== "")) submitDigits([...session.digits]);
   }, [session, submitDigits]);
 
   const handleRetry = useCallback(() => {
-    const curLen = answerLen(session.exercises[session.currentIndex].answer);
+    if (!session) return;
+    const curLen = answerLen(session.exercises[session.currentIndex]!.answer);
     setSession((s) => ({
       ...s,
       answerState: "idle",
@@ -161,9 +221,10 @@ export function OperationsScreen({
       activeDigit: curLen - 1,
       alreadyFailed: true,
     }));
-  }, [session]);
+  }, [session, setSession]);
 
   const handleNext = useCallback(() => {
+    if (!session) return;
     const next = session.currentIndex + 1;
     if (next >= total) {
       setFinished({
@@ -172,7 +233,7 @@ export function OperationsScreen({
         duration: Date.now() - session.startTime,
       });
     } else {
-      const nextLen = answerLen(session.exercises[next].answer);
+      const nextLen = answerLen(session.exercises[next]!.answer);
       setSession((s) => ({
         ...s,
         currentIndex: next,
@@ -182,37 +243,105 @@ export function OperationsScreen({
         alreadyFailed: false,
       }));
     }
-  }, [session, total]);
+  }, [session, total, setSession]);
 
   useEffect(() => {
-    if (session.answerState !== "correct") return;
+    if (!session || session.answerState !== "correct") return;
     const t = setTimeout(handleNext, 900);
     return () => clearTimeout(t);
-  }, [session.answerState, handleNext]);
+  }, [session, handleNext]);
+
+  const restart = useCallback(() => {
+    if (op === "suma") {
+      setReloadToken((n) => n + 1);
+      return;
+    }
+    setFinished(null);
+    setLoad({
+      status: "ready",
+      session: sessionFromExercises(generateSession("resta", difficulty, sessionSeed)),
+    });
+  }, [op, difficulty, sessionSeed]);
+
+  if (load.status === "loading") {
+    return (
+      <div className="ops">
+        <ActivityHeader
+          onExit={onExit}
+          gradeTitle={gradeTitle}
+          className={className}
+          unitTitle={activity.title}
+          mascotUrl={mascotUrl}
+          difficultyStars={difficultyStars}
+          progress="…"
+        />
+        <p className="ops__body" style={{ padding: "1.5rem", textAlign: "center" }}>
+          Cargando ejercicios…
+        </p>
+      </div>
+    );
+  }
+
+  if (load.status === "error") {
+    return (
+      <div className="ops">
+        <ActivityHeader
+          onExit={onExit}
+          gradeTitle={gradeTitle}
+          className={className}
+          unitTitle={activity.title}
+          mascotUrl={mascotUrl}
+          difficultyStars={difficultyStars}
+          progress="—"
+        />
+        <div className="ops__body" style={{ padding: "1.5rem", textAlign: "center" }}>
+          <p>{load.message}</p>
+          <button type="button" className="summary__btn summary__btn--primary" onClick={restart}>
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (finished) {
     return (
       <SummaryScreen
         result={finished}
         onRestart={() => {
-          const exercises = generateSession(op, difficulty, sessionSeed);
           setFinished(null);
-          const restartLen = answerLen(exercises[0].answer);
-          setSession({
-            exercises,
-            currentIndex: 0,
-            correctCount: 0,
-            startTime: Date.now(),
-            answerState: "idle",
-            digits: Array(restartLen).fill(""),
-            activeDigit: restartLen - 1,
-          });
+          restart();
         }}
         onExit={onExit}
         gradeLabel={gradeTitle || "Matemáticas"}
       />
     );
   }
+
+  if (!session || !current) {
+    return (
+      <div className="ops">
+        <ActivityHeader
+          onExit={onExit}
+          gradeTitle={gradeTitle}
+          className={className}
+          unitTitle={activity.title}
+          mascotUrl={mascotUrl}
+          difficultyStars={difficultyStars}
+          progress="—"
+        />
+        <p className="ops__body" style={{ padding: "1.5rem", textAlign: "center" }}>
+          No hay ejercicios disponibles.
+        </p>
+      </div>
+    );
+  }
+
+  const aLen = answerLen(current.answer);
+  const numCols = Math.max(String(current.a).length, String(current.b).length, aLen);
+  const aDigits = padLeft(current.a, numCols);
+  const bDigits = padLeft(current.b, numCols);
+  const sym = OP_SYMBOLS[op];
 
   const stageClass =
     session.answerState === "correct"
@@ -223,7 +352,7 @@ export function OperationsScreen({
 
   const boxValue = (i: number): string => {
     if (session.answerState === "correct") {
-      return String(current.answer).padStart(aLen, "0")[i];
+      return String(current.answer).padStart(aLen, "0")[i]!;
     }
     return session.digits[i] ?? "";
   };
