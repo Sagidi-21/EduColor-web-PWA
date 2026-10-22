@@ -1,0 +1,4 @@
+# Contención P1: /ficha-preview cerrado en el host (antes del fallback SPA).
+# El `!` fuerza la regla aunque exista index.html.
+/ficha-preview    /ficha-preview-unavailable.html   404!
+/ficha-preview/   /ficha-preview-unavailable.html   404!

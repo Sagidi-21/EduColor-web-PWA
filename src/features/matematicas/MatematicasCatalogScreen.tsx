@@ -13,7 +13,7 @@ import type {
 } from "../../core/content/contracts";
 import { canLaunchActivity } from "../../core/content/engine-registry";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
-import { isDemoUnitAllowed } from "../../core/demo/demoMode";
+import { isDemoActivityAllowed } from "../../core/demo/demoMode";
 import { useViewTransition } from "../../core/transition/ViewTransitionContext";
 import { useExerciseSession } from "./ExerciseSessionContext";
 import { CatalogFilterBar } from "./CatalogFilterBar";
@@ -114,8 +114,7 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack, demoMode = fa
             </h2>
             <div className="mat__activities">
               {activities.map((activity) => {
-                const unit = activity.boardCard?.unit ?? block.order;
-                const demoLocked = demoMode && !isDemoUnitAllowed(gradeId, unit);
+                const demoLocked = demoMode && !isDemoActivityAllowed(activity.id);
                 const launchable = canLaunchActivity(activity) && !demoLocked;
                 return (
                   <button

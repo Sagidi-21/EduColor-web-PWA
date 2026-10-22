@@ -14,6 +14,7 @@ import {
   type FichaMode,
 } from "../../core/ficha";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
+import { isDemoActivityAllowed } from "../../core/demo/demoMode";
 import { ModalCloseButton } from "../shared/components/ModalCloseButton";
 import defaultFichaLogoUrl from "../../assets/welcome-logo-bg.png";
 import "./FichaModal.css";
@@ -96,6 +97,10 @@ export function FichaModal({
   const fichaDoc = useMemo((): { doc: FichaDocument } | { error: string } | null => {
     const modes = selectedModes();
     if (modes.length === 0) return null;
+    // Contención DEMO: no generar preview/PDF de actividades no allowlisted.
+    if (demoMode && !isDemoActivityAllowed(activity.id)) {
+      return { error: "Esta actividad no está disponible en modo DEMO." };
+    }
     try {
       const doc = buildFichaDocument({
         activityId: activity.id,
