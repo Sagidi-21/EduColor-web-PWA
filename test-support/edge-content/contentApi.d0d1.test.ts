@@ -1,18 +1,26 @@
+/**
+ * Pruebas del motor/handlers Edge. Importan desde supabase/functions/_shared
+ * (única fuente). No viven bajo src/ para no formar parte del grafo Vite de la app.
+ */
 import { describe, expect, it } from "vitest";
 import {
   authorizeActivity,
   clientAuthFieldsRejected,
   isDemoTokenExpired,
   type ContentCaller,
-} from "./authzPolicy";
-import { handleContentFicha, handleContentSession } from "./contentHandlers";
+} from "../../supabase/functions/_shared/authzPolicy.ts";
+import {
+  handleContentFicha,
+  handleContentSession,
+} from "../../supabase/functions/_shared/contentHandlers.ts";
 import {
   DEMO_ALLOWED_ACTIVITY_IDS,
   isDemoActivityAllowed,
   isEdgeImplementedActivity,
-} from "./demoAllowlist";
-import { generateSumaSession } from "./sumaEngine";
-import { sumaExercisesToSheet } from "./sumSheet";
+} from "../../supabase/functions/_shared/demoAllowlist.ts";
+import { generateSumaSession } from "../../supabase/functions/_shared/engines/suma.ts";
+import { sumaExercisesToSheet } from "../../supabase/functions/_shared/ficha/sumSheet.ts";
+import { generateSession } from "../../src/core/activities/operations";
 
 const registered: ContentCaller = { kind: "registered", userId: "u-1" };
 const demo: ContentCaller = { kind: "demo", demoSessionId: "d-1" };
@@ -106,8 +114,7 @@ describe("D1 suma engine parity (seed determinista)", () => {
     expect(sol.every((e) => e.answer === e.a + e.b)).toBe(true);
   });
 
-  it("documenta: generación local de suma está cerrada (D2); paridad es Edge↔espejo", async () => {
-    const { generateSession } = await import("../../core/activities/operations");
+  it("documenta: generación local de suma está cerrada (D2); paridad es Edge↔espejo", () => {
     expect(() => generateSession("suma", "easy", 42)).toThrow(/deshabilitada|content-session/i);
     const edge = generateSumaSession("easy", 42);
     expect(edge.length).toBe(10);
@@ -186,7 +193,15 @@ describe("D1 content-ficha handler", () => {
     expect(exercises.every((e) => e.answer === undefined)).toBe(true);
   });
 
-  it("soluciones incluye respuestas", () => {
+  it("soluciones incluye respuestas solo tras authz", () => {
+    const denied = handleContentFicha(demo, {
+      activityId: "suma",
+      seed: 42,
+      count: 3,
+      modes: ["soluciones"],
+    });
+    expect(denied.status).toBe(403);
+
     const r = handleContentFicha(registered, {
       activityId: "suma",
       seed: 42,

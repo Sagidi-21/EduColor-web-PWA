@@ -1,2 +1,5 @@
-# Gateway sin JWT: la demo no tiene usuario Auth. Authz propia vía token opaco.
+# verify_jwt = false a propósito (D0):
+# - Emite tokens opacos demo_* para callers sin usuario Auth.
+# - No hay JWT de usuario que el gateway pueda validar en este endpoint.
+# - La autorización de contenido no ocurre aquí: content-session/ficha validan el token hasheado.
 verify_jwt = false

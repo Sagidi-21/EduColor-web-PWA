@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { activityManifests } from "../../manifests/content-registry";
-import { generateSumaSession } from "../../platform/content-api/sumaEngine";
-import { sumaExercisesToSheet } from "../../platform/content-api/sumSheet";
+import { generateSumaSession } from "../../../supabase/functions/_shared/engines/suma.ts";
+import { sumaExercisesToSheet } from "../../../supabase/functions/_shared/ficha/sumSheet.ts";
 import { isEdgeContentActivity } from "./edgeContentActivities";
 import {
   buildFichaDocument,

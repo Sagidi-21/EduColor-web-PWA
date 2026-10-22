@@ -45,6 +45,12 @@ describe("D2 separación suma (cliente vs Edge)", () => {
     expect(src).toMatch(/suma:\s*D2|No registrar motor local/);
   });
 
+  it("src/platform/content-api solo expone el cliente HTTP (sin motor)", () => {
+    const dir = resolve(root, "src/platform/content-api");
+    const files = readdirSync(dir).filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts"));
+    expect(files).toEqual(["contentClient.ts"]);
+  });
+
   it("si existe dist/, el artefacto no empaqueta el motor Edge de suma", () => {
     const js = readDistJs();
     if (!js) return; // skip si no hay build previo

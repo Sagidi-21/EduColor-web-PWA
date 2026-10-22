@@ -1,1 +1,6 @@
+# verify_jwt = false a propósito (D0–D2):
+# - Misma authz que content-session (resolveCaller) protege generación y soluciones.
+# - El gateway JWT bloquearía Authorization: Bearer demo_* usado en sesiones demo.
+# - Sin authz propia no debe generarse contenido: el index llama resolveCaller antes del motor.
+# No activar verify_jwt=true sin mecanismo demo compatible con el gateway.
 verify_jwt = false
