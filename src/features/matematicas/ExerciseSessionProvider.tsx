@@ -5,6 +5,7 @@ import type {
   CurriculumLevelId,
   GradeId,
 } from "../../core/content/contracts";
+import { isDemoActivityAllowed, readDemoMode } from "../../core/demo/demoMode";
 import { ExerciseSessionContext } from "./ExerciseSessionContext";
 import { getCurrentLevelIndex, resolveLevelFromIndex, type LevelIndex } from "./levelSelect";
 
@@ -35,6 +36,11 @@ export function ExerciseSessionProvider({ children }: { children: ReactNode }) {
   const [catalogGradeId, setCatalogGradeId] = useState<GradeId | null>(null);
 
   const launchSession = (data: Omit<ExerciseSession, "seed">) => {
+    // Contención DEMO: no lanzar actividades fuera de la allowlist.
+    // No protege el bundle; solo evita el bypass del catálogo vía consola/estado.
+    if (readDemoMode() && !isDemoActivityAllowed(data.activity.id)) {
+      return;
+    }
     setSession({ ...data, seed: Date.now() });
     // Al lanzar desde 1.º/2.º, al salir el catálogo debe reabrir ese mismo curso.
     if (data.gradeId) setCatalogGradeId(data.gradeId);
