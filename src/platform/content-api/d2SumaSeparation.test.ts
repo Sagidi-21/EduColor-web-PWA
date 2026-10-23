@@ -7,6 +7,11 @@ import { getSessionEngine, sessionEngines } from "../../core/ficha/generators/se
 
 const root = process.cwd();
 
+/** CI o validación explícita: el escaneo de dist/ no puede omitirse. */
+function mustValidateDistArtifact(): boolean {
+  return process.env.CI === "true" || process.env.REQUIRE_DIST === "1";
+}
+
 function readDistJs(): string {
   const assets = resolve(root, "dist/assets");
   if (!existsSync(assets)) return "";
@@ -51,9 +56,17 @@ describe("D2 separación suma (cliente vs Edge)", () => {
     expect(files).toEqual(["contentClient.ts"]);
   });
 
-  it("si existe dist/, el artefacto no empaqueta el motor Edge de suma", () => {
+  it("el artefacto dist/ no empaqueta el motor Edge de suma", () => {
     const js = readDistJs();
-    if (!js) return; // skip si no hay build previo
+    if (!js) {
+      if (mustValidateDistArtifact()) {
+        throw new Error(
+          "dist/assets ausente: ejecuta `npm run build` antes de validar el bundle (CI o REQUIRE_DIST=1).",
+        );
+      }
+      // Local sin build deliberado: no fallar el resto de la suite D2.
+      return;
+    }
     expect(js).not.toContain("generateSumaSession");
     expect(js).not.toContain("Motor puro de");
     expect(js).not.toContain("edge-suma");
