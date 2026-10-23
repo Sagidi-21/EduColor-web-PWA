@@ -1,10 +1,5 @@
 import { test, expect, type Page, type Response } from "@playwright/test";
-import {
-  ensureLoginMode,
-  fillLoginForm,
-  goToSchoolAccess,
-  loginAsOwner,
-} from "./helpers";
+import { ensureLoginMode, fillLoginForm, goToSchoolAccess, loginAsOwner } from "./helpers";
 
 const STAGING_HOST = "inwmxkaazxfavyfanovg.supabase.co";
 const PROD_HOST = "vrvyldqaacyxmarqbayd.supabase.co";
@@ -47,7 +42,10 @@ async function openFichaSuma(page: Page): Promise<void> {
 
 async function waitContentSession(page: Page): Promise<{ status: number; body: unknown }> {
   const res = await page.waitForResponse(
-    (r) => isContentFn(r.url()) && r.url().includes("content-session") && r.request().method() === "POST",
+    (r) =>
+      isContentFn(r.url()) &&
+      r.url().includes("content-session") &&
+      r.request().method() === "POST",
     { timeout: 45_000 },
   );
   assertNoProd(res.url());
@@ -112,8 +110,8 @@ test.describe("P2 suma E2E → Supabase staging", () => {
       expect(u).not.toContain(PROD_HOST);
     }
 
-    const sensitiveLeak = consoleErrors.some(
-      (t) => /service_role|eyJhbGciOi.*service_role/i.test(t),
+    const sensitiveLeak = consoleErrors.some((t) =>
+      /service_role|eyJhbGciOi.*service_role/i.test(t),
     );
     expect(sensitiveLeak).toBe(false);
   });
@@ -196,9 +194,11 @@ test.describe("P2 suma E2E → Supabase staging", () => {
   test("3) demo no puede lanzar suma", async ({ page }) => {
     await goToSchoolAccess(page);
     await page.getByRole("button", { name: /Continuar sin cuenta \(Probar DEMO\)/i }).click();
-    await expect(page.getByRole("heading", { name: /¿Con qué clase trabajamos hoy/i })).toBeVisible({
-      timeout: 20_000,
-    });
+    await expect(page.getByRole("heading", { name: /¿Con qué clase trabajamos hoy/i })).toBeVisible(
+      {
+        timeout: 20_000,
+      },
+    );
     await page.getByRole("button", { name: /1º/i }).first().click();
     await page.getByRole("button", { name: /Pizarra Digital/i }).click();
 
@@ -239,7 +239,9 @@ test.describe("P2 suma E2E → Supabase staging", () => {
     await expect(page.getByRole("alert")).toContainText(/Credenciales inválidas/i, {
       timeout: 20_000,
     });
-    await expect(page.getByRole("heading", { name: /¿Con qué clase trabajamos hoy/i })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: /¿Con qué clase trabajamos hoy/i })).toHaveCount(
+      0,
+    );
     await expect(page.getByRole("button", { name: /La suma/i })).toHaveCount(0);
     expect(schoolLoginOk).toBe(false);
     expect(contentSessionHits).toBe(0);
@@ -274,7 +276,9 @@ test.describe("P2 suma E2E → Supabase staging", () => {
     await expect(page.getByRole("button", { name: /Reintentar/i })).toBeVisible({
       timeout: 30_000,
     });
-    await expect(page.getByText(/No se pudieron cargar|Server error|Error al llamar/i)).toBeVisible();
+    await expect(
+      page.getByText(/No se pudieron cargar|Server error|Error al llamar/i),
+    ).toBeVisible();
     await expect(page.locator(".ops__exercise")).toHaveCount(0);
 
     blockContentSession = false;
@@ -282,9 +286,9 @@ test.describe("P2 suma E2E → Supabase staging", () => {
     await page.getByRole("button", { name: /Reintentar/i }).click();
     const session = await recover;
     expect(session.status).toBe(200);
-    expect(
-      ((session.body as { exercises?: unknown[] })?.exercises ?? []).length,
-    ).toBeGreaterThan(0);
+    expect(((session.body as { exercises?: unknown[] })?.exercises ?? []).length).toBeGreaterThan(
+      0,
+    );
     await expect(page.locator(".ops__exercise")).toBeVisible({ timeout: 20_000 });
   });
 });
