@@ -91,7 +91,8 @@ export function normalizeLocalAccessFlags(
     demoMode: readDemoMode(),
   },
 ): LocalAccessFlags {
-  let { authSkipped, demoMode } = flags;
+  const authSkipped = flags.authSkipped;
+  let demoMode = flags.demoMode;
 
   if (authSkipped && !demoMode) {
     demoMode = true;

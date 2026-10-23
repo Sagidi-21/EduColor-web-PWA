@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ActivityDifficulty } from "../../core/content/contracts";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
@@ -74,6 +74,8 @@ function contentErrorMessage(err: unknown): string {
   return err instanceof Error ? err.message : "Error al generar la ficha";
 }
 
+type PreviewResult = { srcDoc: string | null; error: string | null };
+
 /**
  * Ruta de depuración `/ficha-preview`.
  * Usa el mismo shell HTML/CSS que el PDF y el modal (WYSIWYG).
@@ -87,6 +89,7 @@ export function FichaPreviewScreen(): JSX.Element {
   const manifest = getActivityManifest(opts.activityId);
   const title = manifest?.title ?? opts.activityId;
   const modeLabel = opts.modes.join(" + ");
+  const isEdge = isEdgeContentActivity(opts.activityId);
 
   const config: SheetConfig = {
     activityId: opts.activityId,
@@ -96,52 +99,69 @@ export function FichaPreviewScreen(): JSX.Element {
     seed: opts.seed,
   };
 
-  const [srcDoc, setSrcDoc] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(isEdgeContentActivity(opts.activityId));
-
-  useEffect(() => {
-    let cancelled = false;
-
-    if (!isEdgeContentActivity(opts.activityId)) {
-      try {
-        const doc = buildFichaDocument({
-          activityId: opts.activityId,
-          config,
-          modes: opts.modes,
-          meta: {
-            title,
-            grade: opts.grade,
-            subject: opts.subject,
-            className: opts.className || profile.className || undefined,
-          },
-          logoUrl,
-          accentColor: profile.accentColor,
-        });
-        if (!cancelled) {
-          setSrcDoc(
-            buildPrintDocumentHtml({
-              html: doc.html,
-              css: doc.css,
-              variant: "preview",
-            }),
-          );
-          setError(null);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Error al generar la ficha");
-          setSrcDoc(null);
-          setLoading(false);
-        }
-      }
-      return () => {
-        cancelled = true;
+  const localPreview = useMemo((): PreviewResult | null => {
+    if (isEdge) return null;
+    try {
+      const doc = buildFichaDocument({
+        activityId: opts.activityId,
+        config,
+        modes: opts.modes,
+        meta: {
+          title,
+          grade: opts.grade,
+          subject: opts.subject,
+          className: opts.className || profile.className || undefined,
+        },
+        logoUrl,
+        accentColor: profile.accentColor,
+      });
+      return {
+        srcDoc: buildPrintDocumentHtml({
+          html: doc.html,
+          css: doc.css,
+          variant: "preview",
+        }),
+        error: null,
+      };
+    } catch (err) {
+      return {
+        srcDoc: null,
+        error: err instanceof Error ? err.message : "Error al generar la ficha",
       };
     }
+    // Params de URL + perfil: misma semántica que el effect anterior.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opts.activityId, opts.seed, opts.count, opts.difficulty, opts.withImages, modeLabel]);
 
-    setLoading(true);
+  const edgeKey = [
+    opts.activityId,
+    opts.seed,
+    opts.count,
+    opts.difficulty,
+    opts.withImages,
+    modeLabel,
+  ].join("|");
+
+  const [edgeRemote, setEdgeRemote] = useState<{
+    key: string;
+    loading: boolean;
+    srcDoc: string | null;
+    error: string | null;
+  }>(() =>
+    isEdge
+      ? { key: edgeKey, loading: true, srcDoc: null, error: null }
+      : { key: "", loading: false, srcDoc: null, error: null },
+  );
+
+  if (isEdge && edgeRemote.key !== edgeKey) {
+    setEdgeRemote({ key: edgeKey, loading: true, srcDoc: null, error: null });
+  }
+
+  useEffect(() => {
+    if (!isEdge) return;
+    const key = edgeKey;
+    let cancelled = false;
+
     (async () => {
       try {
         const exercises = await fetchSumaFichaExercises({
@@ -166,21 +186,32 @@ export function FichaPreviewScreen(): JSX.Element {
           logoUrl,
           accentColor: profile.accentColor,
         });
-        setSrcDoc(
-          buildPrintDocumentHtml({
-            html: doc.html,
-            css: doc.css,
-            variant: "preview",
-          }),
+        setEdgeRemote((prev) =>
+          prev.key === key
+            ? {
+                key,
+                loading: false,
+                srcDoc: buildPrintDocumentHtml({
+                  html: doc.html,
+                  css: doc.css,
+                  variant: "preview",
+                }),
+                error: null,
+              }
+            : prev,
         );
-        setError(null);
       } catch (err) {
-        if (!cancelled) {
-          setError(contentErrorMessage(err));
-          setSrcDoc(null);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
+        if (cancelled) return;
+        setEdgeRemote((prev) =>
+          prev.key === key
+            ? {
+                key,
+                loading: false,
+                srcDoc: null,
+                error: contentErrorMessage(err),
+              }
+            : prev,
+        );
       }
     })();
 
@@ -189,7 +220,11 @@ export function FichaPreviewScreen(): JSX.Element {
     };
     // Params de URL + perfil: re-render al abrir; no hace falta reactividad fina.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.activityId, opts.seed, opts.count, opts.difficulty, opts.withImages, modeLabel]);
+  }, [edgeKey, isEdge]);
+
+  const loading = isEdge ? edgeRemote.key !== edgeKey || edgeRemote.loading : false;
+  const srcDoc = isEdge ? edgeRemote.srcDoc : (localPreview?.srcDoc ?? null);
+  const error = isEdge ? edgeRemote.error : (localPreview?.error ?? null);
 
   return (
     <div className="ficha-preview">

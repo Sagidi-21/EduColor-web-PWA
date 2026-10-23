@@ -101,9 +101,6 @@ export function FichaModal({
   const [error, setError] = useState<string | null>(null);
   /** Una sola semilla por apertura del modal → preview y PDF comparten ejercicios. */
   const [seed] = useState(() => randomFichaSeed());
-  const [edgeDoc, setEdgeDoc] = useState<FichaDocResult>(null);
-  const [edgeLoading, setEdgeLoading] = useState(false);
-
   const viewportRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [previewScale, setPreviewScale] = useState(1);
@@ -113,16 +110,15 @@ export function FichaModal({
   const effectiveWithImages = supportsImages && withImages;
   const edgeActivity = isEdgeContentActivity(activity.id);
 
-  const selectedModes = useCallback((): FichaMode[] => {
-    const modes: FichaMode[] = [];
-    if (includeAlumno) modes.push("alumno");
-    if (includeSoluciones) modes.push("soluciones");
-    return modes;
+  const modes = useMemo((): FichaMode[] => {
+    const next: FichaMode[] = [];
+    if (includeAlumno) next.push("alumno");
+    if (includeSoluciones) next.push("soluciones");
+    return next;
   }, [includeAlumno, includeSoluciones]);
 
   const localFichaDoc = useMemo((): FichaDocResult => {
     if (edgeActivity) return null;
-    const modes = selectedModes();
     if (modes.length === 0) return null;
     if (demoMode && !isDemoActivityAllowed(activity.id)) {
       return { error: "Esta actividad no está disponible en modo DEMO." };
@@ -166,35 +162,60 @@ export function FichaModal({
     effectiveWithImages,
     gradeTitle,
     mascotUrl,
+    modes,
     schoolLogoUrl,
     seed,
-    selectedModes,
     subjectTitle,
   ]);
 
-  useEffect(() => {
-    if (!edgeActivity) {
-      setEdgeDoc(null);
-      setEdgeLoading(false);
-      return;
-    }
+  type EdgeGate =
+    | { kind: "inactive" }
+    | { kind: "empty" }
+    | { kind: "error"; error: string }
+    | { kind: "fetch"; modes: FichaMode[] };
 
-    const modes = selectedModes();
-    if (modes.length === 0) {
-      setEdgeDoc(null);
-      setEdgeLoading(false);
-      return;
-    }
-
+  const edgeGate: EdgeGate = useMemo(() => {
+    if (!edgeActivity) return { kind: "inactive" };
+    if (modes.length === 0) return { kind: "empty" };
     if (demoMode && !isDemoActivityAllowed(activity.id)) {
-      setEdgeDoc({ error: "Esta actividad no está disponible en modo DEMO." });
-      setEdgeLoading(false);
-      return;
+      return { kind: "error", error: "Esta actividad no está disponible en modo DEMO." };
     }
+    return { kind: "fetch", modes };
+  }, [activity.id, demoMode, edgeActivity, modes]);
 
+  const edgeFetchModes = edgeGate.kind === "fetch" ? edgeGate.modes : null;
+  const edgeFetchKey = edgeFetchModes
+    ? [
+        activity.id,
+        difficulty,
+        seed,
+        count,
+        effectiveWithImages,
+        edgeFetchModes.join(","),
+        gradeTitle,
+        subjectTitle,
+        className ?? "",
+        mascotUrl ?? "",
+        schoolLogoUrl,
+        accentColor ?? "",
+      ].join("|")
+    : "";
+
+  const [edgeRemote, setEdgeRemote] = useState<{
+    key: string;
+    loading: boolean;
+    doc: FichaDocResult;
+  }>({ key: "", loading: false, doc: null });
+
+  if (edgeFetchModes && edgeRemote.key !== edgeFetchKey) {
+    setEdgeRemote({ key: edgeFetchKey, loading: true, doc: null });
+  }
+
+  useEffect(() => {
+    if (!edgeFetchModes || !edgeFetchKey) return;
+    const key = edgeFetchKey;
+    const fetchModes = edgeFetchModes;
     let cancelled = false;
-    setEdgeLoading(true);
-    setEdgeDoc(null);
 
     (async () => {
       try {
@@ -202,13 +223,13 @@ export function FichaModal({
           difficulty,
           seed,
           count,
-          modes,
+          modes: fetchModes,
           withImages: effectiveWithImages,
         });
         if (cancelled) return;
         const doc = buildFichaDocumentFromExercises({
           activityId: activity.id,
-          modes,
+          modes: fetchModes,
           exercises,
           config: {
             activityId: activity.id,
@@ -227,11 +248,14 @@ export function FichaModal({
           logoUrl: schoolLogoUrl,
           accentColor,
         });
-        setEdgeDoc({ doc });
+        setEdgeRemote((prev) => (prev.key === key ? { key, loading: false, doc: { doc } } : prev));
       } catch (err) {
-        if (!cancelled) setEdgeDoc({ error: contentErrorMessage(err) });
-      } finally {
-        if (!cancelled) setEdgeLoading(false);
+        if (cancelled) return;
+        setEdgeRemote((prev) =>
+          prev.key === key
+            ? { key, loading: false, doc: { error: contentErrorMessage(err) } }
+            : prev,
+        );
       }
     })();
 
@@ -244,17 +268,28 @@ export function FichaModal({
     activity.title,
     className,
     count,
-    demoMode,
     difficulty,
-    edgeActivity,
+    edgeFetchKey,
+    edgeFetchModes,
     effectiveWithImages,
     gradeTitle,
     mascotUrl,
     schoolLogoUrl,
     seed,
-    selectedModes,
     subjectTitle,
   ]);
+
+  const edgeDoc: FichaDocResult =
+    edgeGate.kind === "inactive" || edgeGate.kind === "empty"
+      ? null
+      : edgeGate.kind === "error"
+        ? { error: edgeGate.error }
+        : edgeRemote.key === edgeFetchKey
+          ? edgeRemote.doc
+          : null;
+
+  const edgeLoading =
+    edgeGate.kind === "fetch" && (edgeRemote.key !== edgeFetchKey || edgeRemote.loading);
 
   const fichaDoc: FichaDocResult = edgeActivity ? edgeDoc : localFichaDoc;
 

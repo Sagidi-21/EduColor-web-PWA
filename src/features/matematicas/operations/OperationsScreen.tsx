@@ -113,11 +113,18 @@ export function OperationsScreen({
   const [finished, setFinished] = useState<SessionResult | null>(null);
   const [reloadToken, setReloadToken] = useState(0);
 
+  // Reset al cambiar dificultad/semilla/reintento: ajustar estado en render (no en effect).
+  const sumaRequestKey = `${difficulty}:${sessionSeed}:${reloadToken}`;
+  const [sumaAppliedKey, setSumaAppliedKey] = useState(sumaRequestKey);
+  if (op === "suma" && sumaAppliedKey !== sumaRequestKey) {
+    setSumaAppliedKey(sumaRequestKey);
+    setLoad({ status: "loading" });
+    setFinished(null);
+  }
+
   useEffect(() => {
     if (op !== "suma") return;
     let cancelled = false;
-    setLoad({ status: "loading" });
-    setFinished(null);
 
     (async () => {
       try {
