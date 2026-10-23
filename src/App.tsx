@@ -13,11 +13,8 @@ import { ViewTransition } from "./core/transition/ViewTransition";
 import { AcceptInviteScreen } from "./features/auth/AcceptInviteScreen";
 import { clearInviteFromUrl, readInviteTokenFromUrl } from "./features/auth/inviteUrl";
 import { SchoolAccessScreen } from "./features/auth/SchoolAccessScreen";
-import {
-  clearSetPasswordFromUrl,
-  readSetPasswordFromUrl,
-  SetPasswordScreen,
-} from "./features/auth/SetPasswordScreen";
+import { SetPasswordScreen } from "./features/auth/SetPasswordScreen";
+import { clearSetPasswordFromUrl, readSetPasswordFromUrl } from "./features/auth/setPasswordUrl";
 import {
   MSG_RECOVERY_EXPIRED,
   clearPasswordRecoveryActive,
