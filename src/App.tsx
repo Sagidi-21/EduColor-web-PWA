@@ -82,9 +82,7 @@ function AppShell() {
   const [adminView, setAdminView] = useState<AdminView>("accepted");
   const [inviteToken, setInviteToken] = useState(() => readInviteTokenFromUrl());
   const [bootDone, setBootDone] = useState(false);
-  const [authSkipped, setAuthSkipped] = useState(
-    () => normalizeLocalAccessFlags().authSkipped,
-  );
+  const [authSkipped, setAuthSkipped] = useState(() => normalizeLocalAccessFlags().authSkipped);
   const [demoMode, setDemoMode] = useState(() => normalizeLocalAccessFlags().demoMode);
   const [forceAuth, setForceAuth] = useState(false);
   /** Tras Registrar Docente → abrir SchoolAccess en modo login (no registro). */
