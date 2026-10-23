@@ -12,6 +12,7 @@ import {
   type SheetConfig,
 } from "../../core/ficha";
 import { getActivityManifest } from "../../manifests/content-registry";
+import { fillSumaImageUrls } from "../../core/activities/operations";
 import {
   ContentClientError,
   fetchSumaFichaExercises,
@@ -164,7 +165,7 @@ export function FichaPreviewScreen(): JSX.Element {
 
     (async () => {
       try {
-        const exercises = await fetchSumaFichaExercises({
+        const raw = await fetchSumaFichaExercises({
           difficulty: opts.difficulty,
           seed: opts.seed,
           count: opts.count,
@@ -172,6 +173,7 @@ export function FichaPreviewScreen(): JSX.Element {
           withImages: opts.withImages,
         });
         if (cancelled) return;
+        const exercises = fillSumaImageUrls(raw, opts.withImages);
         const doc = buildFichaDocumentFromExercises({
           activityId: opts.activityId,
           config,

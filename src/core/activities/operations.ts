@@ -152,14 +152,14 @@ export function showImageSupport(
 }
 
 /**
- * Adjunta imagen decorativa a ejercicios de suma ya generados en servidor.
- * No genera a/b: solo elige asset a partir del índice (sin motor premium).
+ * Rellena `imageUrl` desde el catálogo local de assets.
+ * Edge no envía URLs de imagen (D1); pizarra y fichas las adjunta el cliente.
  */
-export function attachSumaImages(
-  exercises: OperationsExercise[],
-  difficulty: "easy" | "medium" | "hard" | "expert",
-): OperationsExercise[] {
-  if (!SUMA_SHOW_IMAGE[difficulty] || IMAGE_CATEGORIES.length === 0) {
+export function fillSumaImageUrls<T extends { imageUrl: string }>(
+  exercises: T[],
+  withImages: boolean,
+): T[] {
+  if (!withImages || IMAGE_CATEGORIES.length === 0) {
     return exercises.map((ex) => ({ ...ex, imageUrl: "" }));
   }
   return exercises.map((ex, i) => {
@@ -167,4 +167,16 @@ export function attachSumaImages(
     const url = cat.images[i % cat.images.length] ?? "";
     return { ...ex, imageUrl: url };
   });
+}
+
+/**
+ * Adjunta imagen decorativa a ejercicios de suma ya generados en servidor.
+ * No genera a/b: solo elige asset a partir del índice (sin motor premium).
+ * En pizarra solo easy tiene apoyo visual.
+ */
+export function attachSumaImages(
+  exercises: OperationsExercise[],
+  difficulty: "easy" | "medium" | "hard" | "expert",
+): OperationsExercise[] {
+  return fillSumaImageUrls(exercises, SUMA_SHOW_IMAGE[difficulty]);
 }

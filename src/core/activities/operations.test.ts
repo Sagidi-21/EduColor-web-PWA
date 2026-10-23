@@ -1,6 +1,7 @@
 ﻿import { describe, it, expect } from "vitest";
 import {
   attachSumaImages,
+  fillSumaImageUrls,
   generateSession,
   validateAnswer,
   showImageSupport,
@@ -125,6 +126,21 @@ describe("operations/engine", () => {
       expect(withImg.map((e) => `${e.a}+${e.b}`)).toEqual(["1+2", "2+2"]);
       const noImg = attachSumaImages(base, "medium");
       expect(noImg.every((e) => e.imageUrl === "")).toBe(true);
+    });
+  });
+
+  describe("fillSumaImageUrls", () => {
+    it("respeta withImages sin tocar a/b", () => {
+      const base = [
+        { a: 1, b: 2, imageUrl: "" },
+        { a: 3, b: 1, imageUrl: "" },
+      ];
+      const off = fillSumaImageUrls(base, false);
+      expect(off.every((e) => e.imageUrl === "")).toBe(true);
+      expect(off.map((e) => `${e.a}+${e.b}`)).toEqual(["1+2", "3+1"]);
+      const on = fillSumaImageUrls(base, true);
+      expect(on.map((e) => `${e.a}+${e.b}`)).toEqual(["1+2", "3+1"]);
+      expect(on).toHaveLength(2);
     });
   });
 });

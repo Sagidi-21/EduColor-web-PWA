@@ -23,6 +23,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@sentry/react": "^11.9.0",
     "@supabase/supabase-js": "^2.118.0",
     "@tensorflow/tfjs": "^4.22.0",
     "axios": "^1.7.2",

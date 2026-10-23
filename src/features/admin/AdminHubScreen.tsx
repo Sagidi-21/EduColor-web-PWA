@@ -10,6 +10,7 @@ import {
   summarizeSecurity,
   type AdminSchoolRow,
 } from "../../platform/supabase/platformAdmin";
+import { isSentryConfigured } from "../../platform/sentry";
 import "../home/HomeScreen.css";
 import "./AdminScreens.css";
 
@@ -182,15 +183,21 @@ export function AdminHubScreen({
       confirmLabel: "Entendido",
     });
 
-  const showErrorsHint = () =>
+  const showErrorsHint = () => {
+    const sentryOn = isSentryConfigured();
     setConfirm({
       kind: "info",
       title: "Estado de la app",
-      text:
-        "Roturas: usaremos Sentry (gratis) + avisos de Netlify.\n" +
-        "De momento no hay telemetría conectada → Sin Fallos.",
+      text: sentryOn
+        ? "Sentry conectado: los errores de la PWA se envían al panel Sentry (Issues).\n" +
+          "Avisos Netlify: aparte, en el dashboard del sitio.\n" +
+          "Guía: docs/SENTRY_SETUP.md"
+        : "Sentry aún sin DSN (VITE_SENTRY_DSN).\n" +
+          "Cuando lo configures en Netlify/.env, los errores de la app llegarán a Sentry.\n" +
+          "Guía: docs/SENTRY_SETUP.md",
       confirmLabel: "Entendido",
     });
+  };
 
   const enterSchool = (school: AdminSchoolRow) => {
     enterSchoolAsAdmin({

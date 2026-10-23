@@ -102,7 +102,7 @@ colegio), no el despliegue antiguo “sin cuenta”.
 1. ~~Auth + E2E + Admin + branding + D12/D15 + Fase 12 G2/G4/D16 + deudas MVP~~.
 2. **Tú ahora:** [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md) (API key + secrets + deploy `school-login`).
 3. Push (recovery + esta pasada) → smoke Olvidé + lockout ops en Netlify.
-4. MFA (G3) — después del piloto. Sentry — más adelante (errores de app).
+4. MFA (G3) — después del piloto. Sentry — [SENTRY_SETUP.md](./SENTRY_SETUP.md) (DSN en Netlify).
 
 ## Notas
 

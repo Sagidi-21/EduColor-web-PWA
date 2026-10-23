@@ -367,6 +367,7 @@
   justify-content: center;
   gap: 6px;
   padding: 28px 24px;
+  min-height: 148px;
   background: var(--color-surface);
   border: 3px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -451,22 +452,26 @@
   justify-content: center;
 }
 
-/* -- Mode cards -- */
+/* -- Mode cards (mismo tamaño que grade-card: 2 cols, max 640px) -- */
 .home__mode-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+  max-width: 640px;
 }
 
 .mode-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
-  gap: 8px;
-  padding: 28px 16px;
+  gap: 6px;
+  padding: 28px 24px;
+  min-height: 148px;
   background: var(--color-surface);
-  border: 2px solid var(--color-border);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius-lg);
   transition: all 0.18s ease;
   box-shadow: var(--shadow);
@@ -539,7 +544,7 @@
 }
 
 .mode-card__label {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--mode-color);
 }
@@ -584,10 +589,11 @@
   flex-shrink: 0;
 }
 
-/* Responsive para tablets */
-@media (max-width: 900px) {
+/* Responsive: en pantallas estrechas, una columna */
+@media (max-width: 520px) {
+  .home__grade-grid,
   .home__mode-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 

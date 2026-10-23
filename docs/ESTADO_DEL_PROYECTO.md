@@ -22,6 +22,7 @@ entre sí.
 | ¿Cómo se opera la Central de colegios?                | [ADMIN_CENTRAL.md](./ADMIN_CENTRAL.md)                                                                                                                                                      |
 | ¿Amenazas / riesgos del piloto?                       | [THREAT_MODEL.md](./THREAT_MODEL.md)                                                                                                                                                        |
 | ¿Cómo activo avisos de lockout por correo?            | [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md)                                                                                                                                              |
+| ¿Cómo conecto Sentry (errores de la app)?             | [SENTRY_SETUP.md](./SENTRY_SETUP.md)                                                                                                                                                        |
 
 El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 `src/core/content/engine-registry.ts`, la suite falla.
@@ -53,7 +54,7 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
   branding por colegio (fondo + logo ficha en Storage), CSP con
   `img-src` Supabase Storage (G5 OK). E2E staff (F1–F6) + Vitest mocks.
   Decisiones D-028–D-037.
-  - **Siguiente:** guía Resend ([OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md))
+  - **Siguiente:** commit + push Sentry → redeploy Netlify → smoke Issues
     → secrets Edge + deploy `school-login`; push → smoke Olvidé + lockout ops.
   - Checklist: [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md).
   - Deuda MVP: **ninguna abierta** (DT-009/017/024/028 cerradas 2026-10-19).

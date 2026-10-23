@@ -21,3 +21,6 @@ blob-report/
 
 # Referencia local del proyecto Electron original — no subir al repositorio
 electron-reference/
+
+# Local Netlify folder
+.netlify

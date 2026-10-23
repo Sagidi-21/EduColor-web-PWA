@@ -18,6 +18,7 @@ import {
 } from "../../core/ficha";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import { isDemoActivityAllowed } from "../../core/demo/demoMode";
+import { fillSumaImageUrls } from "../../core/activities/operations";
 import {
   ContentClientError,
   fetchSumaFichaExercises,
@@ -219,7 +220,7 @@ export function FichaModal({
 
     (async () => {
       try {
-        const exercises = await fetchSumaFichaExercises({
+        const raw = await fetchSumaFichaExercises({
           difficulty,
           seed,
           count,
@@ -227,6 +228,8 @@ export function FichaModal({
           withImages: effectiveWithImages,
         });
         if (cancelled) return;
+        // Edge no envía assets; el cliente adjunta URLs locales si "Incluir imágenes".
+        const exercises = fillSumaImageUrls(raw, effectiveWithImages);
         const doc = buildFichaDocumentFromExercises({
           activityId: activity.id,
           modes: fetchModes,
