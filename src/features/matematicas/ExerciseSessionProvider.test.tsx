@@ -179,4 +179,3 @@ describe("ExerciseSessionProvider — contención DEMO", () => {
     expect(screen.getByTestId("session")).toHaveTextContent("suma");
   });
 });
-
