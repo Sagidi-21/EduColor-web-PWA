@@ -1,52 +1,21 @@
 import { describe, expect, it } from "vitest";
 import { activityManifests } from "../../../manifests/content-registry";
-import type { OperationSheetExercise, SheetConfig } from "../types";
+import { isEdgeContentActivity } from "../edgeContentActivities";
 import { getGenerator } from "./registry";
 import { sessionEngines } from "./session-engines";
 
-const sumaConfig: SheetConfig = {
-  activityId: "suma",
-  difficulty: "easy",
-  count: 10,
-  withImages: true,
-  seed: 42,
-};
-
 describe("getGenerator", () => {
-  it("cubre las 62 actividades del catálogo", () => {
+  it("cubre el catálogo excepto actividades Edge (suma D2)", () => {
     const ids = activityManifests.map((manifest) => manifest.id);
     expect(ids).toHaveLength(62);
-    const missing = ids.filter((id) => !(id in sessionEngines));
+    const missing = ids.filter((id) => !(id in sessionEngines) && !isEdgeContentActivity(id));
     expect(missing, `Faltan motores de ficha: ${missing.join(", ")}`).toEqual([]);
+    expect(sessionEngines.suma).toBeUndefined();
+    expect(isEdgeContentActivity("suma")).toBe(true);
   });
 
-  it("getGenerator('suma').generate devuelve OperationSheetExercise[]", () => {
-    const exercises = getGenerator("suma").generate(sumaConfig);
-
-    expect(exercises).toHaveLength(10);
-    exercises.forEach((ex) => {
-      expect(ex.kind).toBe("operation");
-      const op = ex as OperationSheetExercise;
-      expect(op.op).toBe("+");
-      expect(op.answer).toBe(op.a + op.b);
-    });
-  });
-
-  it("la misma semilla produce la misma ficha de suma", () => {
-    const a = getGenerator("suma").generate(sumaConfig);
-    const b = getGenerator("suma").generate(sumaConfig);
-    expect(a).toEqual(b);
-  });
-
-  it("una semilla distinta cambia la ficha de suma", () => {
-    const a = getGenerator("suma").generate(sumaConfig);
-    const b = getGenerator("suma").generate({ ...sumaConfig, seed: 99 });
-    expect(a).not.toEqual(b);
-  });
-
-  it("respeta count menor que la sesión del motor", () => {
-    const exercises = getGenerator("suma").generate({ ...sumaConfig, count: 3 });
-    expect(exercises).toHaveLength(3);
+  it("getGenerator('suma') falla: sin motor local (D2)", () => {
+    expect(() => getGenerator("suma")).toThrow(/suma/i);
   });
 
   it("amigos10 soporta apoyo visual (ten-frame)", () => {
@@ -92,9 +61,9 @@ describe("getGenerator", () => {
     expect(() => getGenerator("no-existe")).toThrow(/no-existe/);
   });
 
-  it("genera ejercicios tipados para actividades representativas de cada familia", () => {
+  it("genera ejercicios tipados para actividades representativas (sin suma Edge)", () => {
     const samples: Array<{ id: string; kind: string }> = [
-      { id: "suma", kind: "operation" },
+      { id: "resta", kind: "operation" },
       { id: "counting", kind: "counting" },
       { id: "comparison", kind: "comparison" },
       { id: "tresSumandos", kind: "tresSumandos" },

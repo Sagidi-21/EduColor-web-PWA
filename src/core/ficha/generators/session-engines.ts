@@ -35,7 +35,7 @@ import { generateNumeracion1119Session } from "../../activities/numeracion1119";
 import { generateSession as generateNumeracion4059 } from "../../activities/numeracion4059";
 import { generateSession as generateNumeracion6099 } from "../../activities/numeracion6099";
 import { generateSession as generateNumeracion999 } from "../../activities/numeracion999";
-import { generateSession as generateOperations } from "../../activities/operations";
+import { generateSession as generateRestaSession } from "../../activities/operations";
 import { createOrderingSession } from "../../activities/ordering";
 import { generateSession as generateOrdinales } from "../../activities/ordinales";
 import { generateSession as generateParImpar } from "../../activities/parImpar";
@@ -170,7 +170,7 @@ export const sessionEngines: Record<string, SessionEngine> = {
   repartoIgual: std(generateRepartoIgual),
   resta: {
     supportsImages: true,
-    generateSession: (difficulty, seed) => generateOperations("resta", difficulty, seed),
+    generateSession: (difficulty, seed) => generateRestaSession("resta", difficulty, seed),
   },
   restaColumna: std(generateRestaColumna),
   rutaCuadricula: std(generateRutaCuadricula),
@@ -182,10 +182,7 @@ export const sessionEngines: Record<string, SessionEngine> = {
       toList(generateShapes(difficulty, seed, SHAPES_REAL_IMAGES)),
   },
   simetria: std(generateSimetria),
-  suma: {
-    supportsImages: true,
-    generateSession: (difficulty, seed) => generateOperations("suma", difficulty, seed),
-  },
+  // suma: D2 — generación solo vía Edge (content-ficha). No registrar motor local.
   sumaLlevando: std(generateSumaLlevando),
   tablaNumerica: std(generateTablaNumerica),
   tresSumandos: {

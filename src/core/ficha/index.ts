@@ -16,6 +16,7 @@ export type { BuildPrintDocumentHtmlInput, PrintDocumentVariant } from "./printD
 export { downloadHtmlAsWord } from "./wordHtmlExport";
 export {
   buildFichaDocument,
+  buildFichaDocumentFromExercises,
   generateFicha,
   downloadFicha,
   downloadFichas,
@@ -24,6 +25,11 @@ export {
   persistLastFicha,
   randomFichaSeed,
 } from "./fichaGenerator";
+export {
+  EDGE_CONTENT_ACTIVITY_IDS,
+  edgeActivitySupportsImages,
+  isEdgeContentActivity,
+} from "./edgeContentActivities";
 export type {
   BuildFichaDocumentInput,
   FichaDocument,

@@ -1,0 +1,6 @@
+# verify_jwt = false a propósito (D0–D2):
+# - La authz real está en resolveCaller + session_has_app_access / demo_sessions.
+# - El gateway JWT de Supabase rechazaría Bearer demo_<token> (no es un JWT de Auth).
+# - Anónimos y demo deben recibir 401/403 de nuestra capa, no un 401 genérico del gateway.
+# No activar verify_jwt=true sin un diseño aparte para el token demo.
+verify_jwt = false

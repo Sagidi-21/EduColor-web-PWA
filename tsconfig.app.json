@@ -12,5 +12,12 @@
     "jsx": "react-jsx"
   },
   "include": ["src"],
-  "exclude": ["src/server", "node_modules"]
+  "exclude": [
+    "src/server",
+    "node_modules",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx"
+  ]
 }

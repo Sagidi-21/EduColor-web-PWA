@@ -3,11 +3,14 @@ import type { ActivityDifficulty, ActivityManifest } from "../../core/content/co
 import {
   A4_WIDTH_MM,
   buildFichaDocument,
+  buildFichaDocumentFromExercises,
   buildPrintDocumentHtml,
   defaultFichaCount,
   difficultyStars,
   downloadHtmlAsPdf,
+  edgeActivitySupportsImages,
   getGenerator,
+  isEdgeContentActivity,
   persistLastFicha,
   randomFichaSeed,
   type FichaDocument,
@@ -15,16 +18,34 @@ import {
 } from "../../core/ficha";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import { isDemoActivityAllowed } from "../../core/demo/demoMode";
+import {
+  ContentClientError,
+  fetchSumaFichaExercises,
+} from "../../platform/content-api/contentClient";
 import { ModalCloseButton } from "../shared/components/ModalCloseButton";
 import defaultFichaLogoUrl from "../../assets/welcome-logo-bg.png";
 import "./FichaModal.css";
 
 function activitySupportsImages(activityId: string): boolean {
+  if (isEdgeContentActivity(activityId)) return edgeActivitySupportsImages(activityId);
   try {
     return getGenerator(activityId).supportsImages;
   } catch {
     return false;
   }
+}
+
+function contentErrorMessage(err: unknown): string {
+  if (err instanceof ContentClientError) {
+    if (err.code === "unauthorized" || err.code === "forbidden") {
+      return "Necesitas una sesión autorizada para generar esta ficha.";
+    }
+    if (err.code === "not_configured") {
+      return "El servicio de contenido no está configurado.";
+    }
+    return err.message || "No se pudo generar la ficha.";
+  }
+  return err instanceof Error ? err.message : "No se pudo generar la ficha.";
 }
 
 export interface FichaModalProps {
@@ -47,6 +68,8 @@ export interface FichaModalProps {
 }
 
 const DIFFICULTIES: ActivityDifficulty[] = ["easy", "medium", "hard", "expert"];
+
+type FichaDocResult = { doc: FichaDocument } | { error: string } | null;
 
 export function FichaModal({
   activity,
@@ -78,6 +101,8 @@ export function FichaModal({
   const [error, setError] = useState<string | null>(null);
   /** Una sola semilla por apertura del modal → preview y PDF comparten ejercicios. */
   const [seed] = useState(() => randomFichaSeed());
+  const [edgeDoc, setEdgeDoc] = useState<FichaDocResult>(null);
+  const [edgeLoading, setEdgeLoading] = useState(false);
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -86,6 +111,7 @@ export function FichaModal({
 
   const supportsImages = activitySupportsImages(activity.id);
   const effectiveWithImages = supportsImages && withImages;
+  const edgeActivity = isEdgeContentActivity(activity.id);
 
   const selectedModes = useCallback((): FichaMode[] => {
     const modes: FichaMode[] = [];
@@ -94,10 +120,10 @@ export function FichaModal({
     return modes;
   }, [includeAlumno, includeSoluciones]);
 
-  const fichaDoc = useMemo((): { doc: FichaDocument } | { error: string } | null => {
+  const localFichaDoc = useMemo((): FichaDocResult => {
+    if (edgeActivity) return null;
     const modes = selectedModes();
     if (modes.length === 0) return null;
-    // Contención DEMO: no generar preview/PDF de actividades no allowlisted.
     if (demoMode && !isDemoActivityAllowed(activity.id)) {
       return { error: "Esta actividad no está disponible en modo DEMO." };
     }
@@ -136,6 +162,7 @@ export function FichaModal({
     count,
     demoMode,
     difficulty,
+    edgeActivity,
     effectiveWithImages,
     gradeTitle,
     mascotUrl,
@@ -144,6 +171,92 @@ export function FichaModal({
     selectedModes,
     subjectTitle,
   ]);
+
+  useEffect(() => {
+    if (!edgeActivity) {
+      setEdgeDoc(null);
+      setEdgeLoading(false);
+      return;
+    }
+
+    const modes = selectedModes();
+    if (modes.length === 0) {
+      setEdgeDoc(null);
+      setEdgeLoading(false);
+      return;
+    }
+
+    if (demoMode && !isDemoActivityAllowed(activity.id)) {
+      setEdgeDoc({ error: "Esta actividad no está disponible en modo DEMO." });
+      setEdgeLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setEdgeLoading(true);
+    setEdgeDoc(null);
+
+    (async () => {
+      try {
+        const exercises = await fetchSumaFichaExercises({
+          difficulty,
+          seed,
+          count,
+          modes,
+          withImages: effectiveWithImages,
+        });
+        if (cancelled) return;
+        const doc = buildFichaDocumentFromExercises({
+          activityId: activity.id,
+          modes,
+          exercises,
+          config: {
+            activityId: activity.id,
+            difficulty,
+            count,
+            withImages: effectiveWithImages,
+            seed,
+          },
+          meta: {
+            title: activity.title,
+            grade: gradeTitle,
+            subject: subjectTitle,
+            className,
+            mascotUrl,
+          },
+          logoUrl: schoolLogoUrl,
+          accentColor,
+        });
+        setEdgeDoc({ doc });
+      } catch (err) {
+        if (!cancelled) setEdgeDoc({ error: contentErrorMessage(err) });
+      } finally {
+        if (!cancelled) setEdgeLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    accentColor,
+    activity.id,
+    activity.title,
+    className,
+    count,
+    demoMode,
+    difficulty,
+    edgeActivity,
+    effectiveWithImages,
+    gradeTitle,
+    mascotUrl,
+    schoolLogoUrl,
+    seed,
+    selectedModes,
+    subjectTitle,
+  ]);
+
+  const fichaDoc: FichaDocResult = edgeActivity ? edgeDoc : localFichaDoc;
 
   const previewSrcDoc = useMemo(() => {
     if (!fichaDoc || !("doc" in fichaDoc)) return null;
@@ -181,7 +294,6 @@ export function FichaModal({
   }, [updateScale]);
 
   useEffect(() => {
-    // Recalcular altura tras cambiar srcDoc
     const id = window.setTimeout(() => onIframeLoad(), 50);
     return () => window.clearTimeout(id);
   }, [previewSrcDoc, onIframeLoad]);
@@ -214,8 +326,9 @@ export function FichaModal({
     }
   };
 
-  const previewError =
-    fichaDoc === null
+  const previewError = edgeLoading
+    ? null
+    : fichaDoc === null
       ? "Selecciona al menos un tipo: alumno o soluciones."
       : "error" in fichaDoc
         ? fichaDoc.error
@@ -319,7 +432,7 @@ export function FichaModal({
               type="button"
               className="ficha-modal__primary"
               onClick={handleGenerate}
-              disabled={demoMode || busy || !fichaDoc || !("doc" in fichaDoc)}
+              disabled={demoMode || busy || edgeLoading || !fichaDoc || !("doc" in fichaDoc)}
               title={demoMode ? "Guardar PDF no disponible en modo DEMO" : undefined}
             >
               {busy ? "Generando…" : "Guardar PDF"}
@@ -331,7 +444,9 @@ export function FichaModal({
         </aside>
 
         <div className="ficha-modal__preview" ref={viewportRef}>
-          {previewSrcDoc ? (
+          {edgeLoading ? (
+            <p className="ficha-modal__preview-empty">Cargando vista previa…</p>
+          ) : previewSrcDoc ? (
             <div
               className="ficha-modal__preview-scale"
               style={

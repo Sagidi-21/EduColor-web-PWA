@@ -37,11 +37,16 @@ jobs:
       - name: Comprobar tipos
         run: npm run typecheck
 
+      # Build antes de vitest: d2SumaSeparation exige dist/ en CI (CI=true).
+      - name: Crear build de producción
+        run: npm run build
+
       - name: Ejecutar tests
         run: npm test
+        env:
+          CI: true
 
       - name: Comprobar cobertura de src/core/activities
         run: npm run test:coverage
-
-      - name: Crear build de producción
-        run: npm run build
+        env:
+          CI: true
