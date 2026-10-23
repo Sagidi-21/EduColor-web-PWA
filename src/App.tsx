@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { ClassProfileProvider } from "./core/context/ClassProfileContext";
 import { useClassProfile } from "./core/context/ClassProfileContext";
 import { SchoolAuthProvider, useSchoolAuth } from "./core/context/SchoolAuthContext";
-import { DEMO_ACCENT_COLOR, readDemoMode, writeDemoMode } from "./core/demo/demoMode";
+import {
+  DEMO_ACCENT_COLOR,
+  clearLocalDemoFlags,
+  enterLocalDemoFlags,
+  normalizeLocalAccessFlags,
+} from "./core/demo/demoMode";
+import { isFichaPreviewAllowed, isFichaPreviewPath } from "./core/demo/fichaPreviewAccess";
 import { ViewTransition } from "./core/transition/ViewTransition";
 import { AcceptInviteScreen } from "./features/auth/AcceptInviteScreen";
 import { clearInviteFromUrl, readInviteTokenFromUrl } from "./features/auth/inviteUrl";
@@ -32,11 +38,31 @@ import { WelcomeScreen } from "./features/splash/WelcomeScreen";
 import { FichaPreviewScreen } from "./features/ficha/FichaPreviewScreen";
 import { FichaGeneratorScreen } from "./features/ficha/FichaGeneratorScreen";
 
-const AUTH_SKIP_KEY = "educolor_auth_skip_local";
-
-function isFichaPreviewRoute(): boolean {
-  const path = window.location.pathname.replace(/\/+$/, "") || "/";
-  return path === "/ficha-preview" || path.endsWith("/ficha-preview");
+function FichaPreviewUnavailable() {
+  return (
+    <main
+      className="school-access"
+      style={{
+        background: "#0a1a4a",
+        color: "#f8fafc",
+        display: "grid",
+        placeItems: "center",
+        minHeight: "100vh",
+        padding: "1.5rem",
+        textAlign: "center",
+      }}
+    >
+      <div>
+        <h1>Ruta no disponible</h1>
+        <p>La vista previa de fichas no está disponible en este entorno.</p>
+        <p>
+          <a href="/" style={{ color: "#93c5fd" }}>
+            Volver a EduColor
+          </a>
+        </p>
+      </div>
+    </main>
+  );
 }
 
 function AuthBusyPlaceholder() {
@@ -57,9 +83,9 @@ function AppShell() {
   const [inviteToken, setInviteToken] = useState(() => readInviteTokenFromUrl());
   const [bootDone, setBootDone] = useState(false);
   const [authSkipped, setAuthSkipped] = useState(
-    () => sessionStorage.getItem(AUTH_SKIP_KEY) === "1",
+    () => normalizeLocalAccessFlags().authSkipped,
   );
-  const [demoMode, setDemoMode] = useState(readDemoMode);
+  const [demoMode, setDemoMode] = useState(() => normalizeLocalAccessFlags().demoMode);
   const [forceAuth, setForceAuth] = useState(false);
   /** Tras Registrar Docente → abrir SchoolAccess en modo login (no registro). */
   const [preferLoginAccess, setPreferLoginAccess] = useState(false);
@@ -162,13 +188,14 @@ function AppShell() {
 
   const finishAuthGate = (skipped: boolean) => {
     if (skipped) {
-      sessionStorage.setItem(AUTH_SKIP_KEY, "1");
-      setAuthSkipped(true);
+      // Contención: skip sin cuenta siempre implica DEMO (nunca catálogo completo).
+      const flags = enterLocalDemoFlags();
+      setAuthSkipped(flags.authSkipped);
+      setDemoMode(flags.demoMode);
     } else {
-      sessionStorage.removeItem(AUTH_SKIP_KEY);
-      setAuthSkipped(false);
-      writeDemoMode(false);
-      setDemoMode(false);
+      const flags = clearLocalDemoFlags();
+      setAuthSkipped(flags.authSkipped);
+      setDemoMode(flags.demoMode);
     }
     setForceAuth(false);
     setPreferLoginAccess(false);
@@ -176,25 +203,21 @@ function AppShell() {
   };
 
   const enterDemo = () => {
-    writeDemoMode(true);
-    setDemoMode(true);
     save({ accentColor: DEMO_ACCENT_COLOR });
     finishAuthGate(true);
   };
 
   const exitDemoToRegister = () => {
-    writeDemoMode(false);
-    setDemoMode(false);
-    sessionStorage.removeItem(AUTH_SKIP_KEY);
-    setAuthSkipped(false);
+    const flags = clearLocalDemoFlags();
+    setAuthSkipped(flags.authSkipped);
+    setDemoMode(flags.demoMode);
     setForceAuth(true);
   };
 
   const clearDemoSkip = () => {
-    writeDemoMode(false);
-    setDemoMode(false);
-    sessionStorage.removeItem(AUTH_SKIP_KEY);
-    setAuthSkipped(false);
+    const flags = clearLocalDemoFlags();
+    setAuthSkipped(flags.authSkipped);
+    setDemoMode(flags.demoMode);
   };
 
   const renderSchoolAccess = () => {
@@ -220,10 +243,9 @@ function AppShell() {
         onGoToLogin={() => {
           setInviteToken(null);
           clearInviteFromUrl();
-          sessionStorage.removeItem(AUTH_SKIP_KEY);
-          setAuthSkipped(false);
-          writeDemoMode(false);
-          setDemoMode(false);
+          const flags = clearLocalDemoFlags();
+          setAuthSkipped(flags.authSkipped);
+          setDemoMode(flags.demoMode);
           setPreferLoginAccess(true);
           setForceAuth(true);
           setBootDone(true);
@@ -269,10 +291,9 @@ function AppShell() {
             waiting: false,
             error: "",
           });
-          sessionStorage.removeItem(AUTH_SKIP_KEY);
-          setAuthSkipped(false);
-          writeDemoMode(false);
-          setDemoMode(false);
+          const flags = clearLocalDemoFlags();
+          setAuthSkipped(flags.authSkipped);
+          setDemoMode(flags.demoMode);
           setPreferLoginAccess(true);
           setForceAuth(true);
           setBootDone(true);
@@ -386,7 +407,14 @@ function AppShell() {
 }
 
 export default function App() {
-  if (isFichaPreviewRoute()) {
+  if (isFichaPreviewPath(window.location.pathname)) {
+    if (!isFichaPreviewAllowed()) {
+      return (
+        <div className="app">
+          <FichaPreviewUnavailable />
+        </div>
+      );
+    }
     return (
       <div className="app">
         <FichaPreviewScreen />

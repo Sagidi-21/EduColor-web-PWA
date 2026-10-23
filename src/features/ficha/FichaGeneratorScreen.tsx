@@ -8,7 +8,7 @@ import {
 import type { ActivityDifficulty, ActivityManifest, GradeId } from "../../core/content/contracts";
 import { canLaunchActivity } from "../../core/content/engine-registry";
 import { useClassProfile } from "../../core/context/ClassProfileContext";
-import { isDemoUnitAllowed } from "../../core/demo/demoMode";
+import { isDemoActivityAllowed } from "../../core/demo/demoMode";
 import { CatalogFilterBar } from "../matematicas/CatalogFilterBar";
 import { FichaModal } from "./FichaModal";
 import "../matematicas/MatematicasCatalogScreen.css";
@@ -93,8 +93,7 @@ export function FichaGeneratorScreen({
             </h2>
             <div className="mat__activities">
               {activities.map((activity) => {
-                const unit = activity.boardCard?.unit ?? block.order;
-                const demoLocked = demoMode && !isDemoUnitAllowed(gradeId, unit);
+                const demoLocked = demoMode && !isDemoActivityAllowed(activity.id);
                 const launchable = canLaunchActivity(activity) && !demoLocked;
                 return (
                   <button
