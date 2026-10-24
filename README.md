@@ -14,8 +14,9 @@ Este repositorio es el entregable técnico del **TFM**. El cliente de escritorio
 | Identidad / colegios              | Alta de centro, login, invitaciones de docentes, Admin Central (piloto)           |
 | DEMO                              | Entrada sin cuenta con catálogo limitado (escaparate)                             |
 | Reconocimiento de dígitos         | Entrada manuscrita en algunas actividades (TensorFlow.js en el cliente)           |
+| Observabilidad                    | Sentry (errores JS), chip Seguridad + Resend (lockouts)                           |
 
-Stack principal: **React 18 + TypeScript + Vite**, PWA (`vite-plugin-pwa`), **Supabase** (Auth, Postgres, Edge Functions, Storage), despliegue típico en **Netlify**. Opcional: **Sentry** (errores de la PWA) y **Resend** (avisos ops de lockout).
+Stack principal: **React 18 + TypeScript + Vite**, PWA (`vite-plugin-pwa`), **Supabase** (Auth, Postgres, Edge Functions, Storage), despliegue en **Netlify**, **Sentry** integrado para errores de la PWA (DSN en Netlify; ver [`docs/SENTRY_SETUP.md`](docs/SENTRY_SETUP.md)) y **Resend** para avisos ops de lockout (Edge; ver [`docs/OPS_ALERTS_RESEND.md`](docs/OPS_ALERTS_RESEND.md)).
 
 Estado y decisiones: [`docs/ESTADO_DEL_PROYECTO.md`](docs/ESTADO_DEL_PROYECTO.md), [`docs/DECISIONES.md`](docs/DECISIONES.md).
 
@@ -51,7 +52,7 @@ En Windows (PowerShell): `Copy-Item .env.example .env`
 | `VITE_SUPABASE_URL`      | Proyecto Supabase                        | No para UI/DEMO; sí para login real |
 | `VITE_SUPABASE_ANON_KEY` | Clave anon / publishable                 | Igual                            |
 | `HF_TOKEN`               | Generación de mascota (Hugging Face)     | No (solo feature Compañero IA)   |
-| `VITE_SENTRY_DSN`        | Errores en Sentry                        | No                               |
+| `VITE_SENTRY_DSN`        | Sentry (ya integrado en código y en prod)| No en local: sin DSN la app arranca igual; en Netlify sí está configurado |
 
 Sin Supabase puedes revisar la interfaz y la **DEMO**. El login de colegio y Admin Central requieren un proyecto Supabase configurado (ver `docs/CHECKLIST_CALIDAD_AUTH.md`).
 
