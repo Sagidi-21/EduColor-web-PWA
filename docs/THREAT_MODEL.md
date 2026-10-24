@@ -53,12 +53,16 @@ Admin Central: mismos login y app; emails en `platform_admins`.
 ## Pendiente consciente (no bloquea piloto)
 
 - MFA owner (G3) — después del piloto.
-- Sentry / pantalla de roturas — más adelante (errores de app, no lockouts).
 - SMTP Auth propio — solo si el cupo Free 2 correos/h no basta.
+
+Sentry (errores de app) está integrado; ver [SENTRY_SETUP.md](./SENTRY_SETUP.md)
+y el mapa [AUTH_ALERTAS_Y_CORREOS.md](./AUTH_ALERTAS_Y_CORREOS.md).
 
 ## Referencias
 
 - [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md)
 - [ADMIN_CENTRAL.md](./ADMIN_CENTRAL.md)
+- [AUTH_ALERTAS_Y_CORREOS.md](./AUTH_ALERTAS_Y_CORREOS.md)
 - [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md)
+- [SENTRY_SETUP.md](./SENTRY_SETUP.md)
 - [DEUDA_TECNICA.md](./DEUDA_TECNICA.md) DT-028

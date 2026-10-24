@@ -112,5 +112,6 @@ colegio), no el despliegue antiguo “sin cuenta”.
 - Lockout: contador por **email** (`ip_hash` auditoría); solo Entrar al Colegio (D-037).
 - SMTP Auth Free: **2 emails/hora** — aceptado para piloto (sesiones largas en portátil).
 - Avisos ops lockout: Resend (no gasta cupo Auth) — [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md).
+- Mapa correos / lockout / Sentry: [AUTH_ALERTAS_Y_CORREOS.md](./AUTH_ALERTAS_Y_CORREOS.md).
 - SQL Editor DDL: `reset role` en el **mismo Run** ([ADMIN_CENTRAL.md](./ADMIN_CENTRAL.md)).
 - GitHub: Dependabot alerts **ON** (2026-10-19). Secret scanning suele no salir en repo privado personal gratis.

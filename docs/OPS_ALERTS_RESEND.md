@@ -4,6 +4,9 @@ Cuando alguien falla el login **3 veces**, EduColor bloquea 15 minutos y puede
 enviar correo de contraseña nueva al usuario. **Además**, avisa a ops por
 correo (D16) usando **Resend** (plan gratis).
 
+**Mapa de todos los flujos** (lockout, Olvidé, Auth, Sentry):
+[AUTH_ALERTAS_Y_CORREOS.md](./AUTH_ALERTAS_Y_CORREOS.md).
+
 **Destinatario (piloto, sin dominio propio):**
 
 - `salvadorginestarhernandez@gmail.com` (mismo email de la cuenta Resend)
@@ -11,8 +14,8 @@ correo (D16) usando **Resend** (plan gratis).
 Con `onboarding@resend.dev` no se puede avisar a otros correos. Cuando verifiques
 un dominio, podrás ampliar `OPS_ALERT_EMAILS` (lista separada por comas).
 
-Sentry **no** sustituye esto: Sentry es para errores de la app; el lockout es
-un aviso de seguridad. Guía aparte cuando montéis Sentry.
+Sentry **no** sustituye esto: Sentry es para errores de la app
+([SENTRY_SETUP.md](./SENTRY_SETUP.md)); el lockout es un aviso de seguridad.
 
 ---
 
