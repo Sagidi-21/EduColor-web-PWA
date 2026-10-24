@@ -104,6 +104,7 @@ GitHub Actions ejecuta las comprobaciones principales al enviar cambios a `main`
 
 | Documento                                                         | Contenido                                      |
 | ----------------------------------------------------------------- | ---------------------------------------------- |
+| [`docs/PLAN_ENTREGA_TFM.md`](docs/PLAN_ENTREGA_TFM.md)             | Requisitos oficiales y checklist de entrega    |
 | [`docs/ESTADO_DEL_PROYECTO.md`](docs/ESTADO_DEL_PROYECTO.md)       | Punto de trabajo y enlaces canónicos           |
 | [`docs/ARQUITECTURA_INICIAL.md`](docs/ARQUITECTURA_INICIAL.md)     | Arquitectura                                   |
 | [`docs/INVENTARIO_MIGRACION_ACTIVIDADES.md`](docs/INVENTARIO_MIGRACION_ACTIVIDADES.md) | 62 actividades / paridad            |

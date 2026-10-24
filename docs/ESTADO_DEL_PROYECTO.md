@@ -24,6 +24,7 @@ entre sí.
 | ¿Qué correos / alertas hay (lockout, Olvidé, Sentry)? | [AUTH_ALERTAS_Y_CORREOS.md](./AUTH_ALERTAS_Y_CORREOS.md)                                                                                                                                    |
 | ¿Cómo activo avisos de lockout por correo?            | [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md)                                                                                                                                              |
 | ¿Cómo conecto Sentry (errores de la app)?             | [SENTRY_SETUP.md](./SENTRY_SETUP.md)                                                                                                                                                        |
+| ¿Qué hay que entregar para el TFM y en qué estado va? | [PLAN_ENTREGA_TFM.md](./PLAN_ENTREGA_TFM.md)                                                                                                                                                |
 
 El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
 `src/core/content/engine-registry.ts`, la suite falla.
