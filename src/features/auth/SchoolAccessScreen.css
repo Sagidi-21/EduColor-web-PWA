@@ -543,6 +543,23 @@
   background: #fef2f2;
 }
 
+/* Error / info dentro del panel (debajo de Entrar o Registrar) */
+.sa__status--in-pane {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.78rem;
+}
+
+.sa__status--in-pane[role="alert"] {
+  border: 1px solid #fecaca;
+}
+
+.sa__status--in-pane[role="status"] {
+  border: 1px solid #bfdbfe;
+}
+
 .sa__modal {
   position: fixed;
   inset: 0;
@@ -689,7 +706,16 @@
   /* Baja Entrar hasta la misma banda que Registrar Colegio del panel azul */
   .sa__card--login .sa__pane--login .sa__btn--primary {
     margin-top: 0;
-    margin-bottom: 4.375rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Hueco entre Entrar y «Olvidé…»: ahí va el mensaje de error */
+  .sa__card--login .sa__pane--login .sa__status--in-pane {
+    margin-bottom: 0.5rem;
+  }
+
+  .sa__card--login .sa__pane--login .sa__forgot {
+    margin-top: auto;
   }
 
   .sa__row {

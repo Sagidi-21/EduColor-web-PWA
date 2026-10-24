@@ -398,6 +398,15 @@ export function SchoolAccessScreen({
                     Continuar sin cuenta (Probar DEMO)
                   </button>
                 </div>
+                {!isLoginMode && (error || info || !configured) && (
+                  <div className="sa__status sa__status--in-pane" role={error ? "alert" : "status"}>
+                    {error ||
+                      info ||
+                      (!configured
+                        ? "Supabase no está configurado. Puedes probar la DEMO más adelante."
+                        : null)}
+                  </div>
+                )}
               </form>
 
               <div className="sa__mobile-switch">
@@ -466,6 +475,15 @@ export function SchoolAccessScreen({
                 <button type="submit" className="sa__btn sa__btn--primary" disabled={busy}>
                   {busy && isLoginMode ? "Espera…" : "Entrar"}
                 </button>
+                {isLoginMode && (error || info || !configured) && (
+                  <div className="sa__status sa__status--in-pane" role={error ? "alert" : "status"}>
+                    {error ||
+                      info ||
+                      (!configured
+                        ? "Supabase no está configurado. Puedes probar la DEMO más adelante."
+                        : null)}
+                  </div>
+                )}
                 <button
                   type="button"
                   className="sa__text-link sa__forgot"
@@ -513,16 +531,6 @@ export function SchoolAccessScreen({
               </div>
             </div>
           </div>
-
-          {(error || info || !configured) && (
-            <div className="sa__status" role={error ? "alert" : "status"}>
-              {error ||
-                info ||
-                (!configured
-                  ? "Supabase no está configurado. Puedes probar la DEMO más adelante."
-                  : null)}
-            </div>
-          )}
         </div>
       </div>
     </div>
