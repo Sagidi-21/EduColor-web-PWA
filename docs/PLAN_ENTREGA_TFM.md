@@ -117,17 +117,17 @@ momento; fuera del plazo de la edición los tiempos de corrección pueden variar
 
 Marcar conforme se cierre cada entregable. Actualizar este bloque al avanzar.
 
-| Entregable                                             | Estado                   | Notas / dónde vive                                                                                            |
-| ------------------------------------------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| README: descripción, stack, instalación, ejecución     | ✅ En curso / base lista | [`README.md`](../README.md)                                                                                   |
-| README: estructura del proyecto                        | ⬜ Revisar               | Ampliar sección o enlazar a `docs/ARQUITECTURA_INICIAL.md` + árbol `src/`                                     |
-| README: funcionalidades principales                    | ✅                       | Tabla «Qué es la app» en README                                                                               |
-| Usuario / contraseña de prueba (login)                 | ⬜ Pendiente             | Credenciales de demo/piloto; **no** secretos reales en git; documentar en README o nota privada al formulario |
-| Repo GitHub (público o privado justificado)            | ✅                       | Público: `Sagidi-21/EduColor-web-PWA`                                                                         |
-| Despliegue (URL en docs)                               | ⬜ Pendiente             | Añadir URL Netlify prod al README cuando esté estable para el tribunal                                        |
-| Slides + URL/archivo en docs                           | ⬜ Pendiente             | Crear presentación; enlazar aquí y en README                                                                  |
-| Vídeo (pantalla obligatoria) + URL en docs             | ⬜ Pendiente             | Grabar demo + explicación; enlazar aquí y en README                                                           |
-| Docs técnicas de apoyo (arquitectura, auth, amenazas…) | ✅ Base sólida           | Ver tabla en README «Documentación útil para la revisión del TFM»                                             |
+| Entregable                                             | Estado         | Notas / dónde vive                                                      |
+| ------------------------------------------------------ | -------------- | ----------------------------------------------------------------------- |
+| README: descripción, stack, instalación, ejecución     | ✅             | [`README.md`](../README.md)                                             |
+| README: estructura del proyecto                        | ✅             | Sección «Estructura del proyecto» en README + enlace a arquitectura     |
+| README: funcionalidades principales                    | ✅             | Tabla «Qué es la app» en README                                         |
+| Usuario / contraseña de prueba (login)                 | ⬜ Pendiente   | Las genera el alumno para el tribunal; documentar en README al tenerlas |
+| Repo GitHub (público o privado justificado)            | ✅             | Público: `Sagidi-21/EduColor-web-PWA`                                   |
+| Despliegue (URL en docs)                               | ⬜ Pendiente   | Añadir URL Netlify prod al README cuando esté estable para el tribunal  |
+| Slides + URL/archivo en docs                           | ⬜ Pendiente   | Crear presentación; enlazar aquí y en README                            |
+| Vídeo (pantalla obligatoria) + URL en docs             | ⬜ Pendiente   | Grabar demo + explicación; enlazar aquí y en README                     |
+| Docs técnicas de apoyo (arquitectura, auth, amenazas…) | ✅ Base sólida | Ver tabla en README «Documentación útil para la revisión del TFM»       |
 
 ### URLs a rellenar antes del formulario
 

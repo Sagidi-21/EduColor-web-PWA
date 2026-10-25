@@ -20,6 +20,30 @@ Stack principal: **React 18 + TypeScript + Vite**, PWA (`vite-plugin-pwa`), **Su
 
 Estado y decisiones: [`docs/ESTADO_DEL_PROYECTO.md`](docs/ESTADO_DEL_PROYECTO.md), [`docs/DECISIONES.md`](docs/DECISIONES.md).
 
+## Estructura del proyecto
+
+```text
+EduColor-web-PWA/
+├── src/
+│   ├── app/           # Composición del arranque (AppShell, boot, sesión)
+│   ├── core/          # Dominio (activities/content) + núcleo de producto (contexts, transiciones)
+│   ├── features/      # Pantallas y UI React (home, matemáticas, auth, admin…)
+│   ├── platform/      # Supabase, PWA, red, reconocimiento de dígitos
+│   ├── manifests/     # Contratos versionados de actividades / currículo
+│   ├── shared/        # Componentes y utilidades transversales
+│   └── server/        # Servidor local del Compañero IA (dev)
+├── supabase/          # Migraciones, Edge Functions, políticas
+├── docs/              # Arquitectura, decisiones, auth, plan de entrega TFM
+├── tests/             # E2E (Playwright) y soporte de pruebas
+├── public/            # Estáticos PWA (iconos, etc.)
+├── electron-reference/# Cliente Electron original (solo referencia; no arranca la PWA)
+├── package.json       # Scripts npm
+├── vite.config.ts     # Build Vite + PWA
+└── README.md          # Este documento
+```
+
+Detalle de capas y dependencias: [`docs/ARQUITECTURA_INICIAL.md`](docs/ARQUITECTURA_INICIAL.md).
+
 ## Requisitos
 
 - **Node.js 22 LTS** (recomendado) y **npm**
@@ -106,7 +130,7 @@ GitHub Actions ejecuta las comprobaciones principales al enviar cambios a `main`
 | ----------------------------------------------------------------- | ---------------------------------------------- |
 | [`docs/PLAN_ENTREGA_TFM.md`](docs/PLAN_ENTREGA_TFM.md)             | Requisitos oficiales y checklist de entrega    |
 | [`docs/ESTADO_DEL_PROYECTO.md`](docs/ESTADO_DEL_PROYECTO.md)       | Punto de trabajo y enlaces canónicos           |
-| [`docs/ARQUITECTURA_INICIAL.md`](docs/ARQUITECTURA_INICIAL.md)     | Arquitectura                                   |
+| [`docs/ARQUITECTURA_INICIAL.md`](docs/ARQUITECTURA_INICIAL.md)     | Capas, dominio vs núcleo UI, composición `src/app/` |
 | [`docs/INVENTARIO_MIGRACION_ACTIVIDADES.md`](docs/INVENTARIO_MIGRACION_ACTIVIDADES.md) | 62 actividades / paridad            |
 | [`docs/CHECKLIST_CALIDAD_AUTH.md`](docs/CHECKLIST_CALIDAD_AUTH.md) | Auth / prod                                    |
 | [`docs/AUTH_ALERTAS_Y_CORREOS.md`](docs/AUTH_ALERTAS_Y_CORREOS.md) | Lockout, correos Auth/Resend, Sentry           |

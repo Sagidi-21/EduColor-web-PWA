@@ -9,33 +9,61 @@ UI React/PWA
   ├── núcleo de actividades (generadores, validadores, resultados)
   ├── manifiestos versionados (curso, materia, parámetros y recursos)
   ├── almacenamiento local (sesión/offline/adaptación)
-  └── API futura (identidad, actividades, datos de centro y progreso)
-        └── Workers + D1/R2 o infraestructura equivalente
+  └── API / identidad (Supabase Auth, Edge, Storage) + observabilidad (Sentry)
 ```
+
+Esta arquitectura es **por capas orientada a dominio**, alineada con Clean
+Architecture y SOLID de forma **pragmática** (no un hexagonal dogmático con
+carpetas `domain` / `application` / `adapters` en cada feature).
 
 ## Límites de capas
 
-- `src/core`: lógica determinista sin React ni navegador, cubierta con pruebas.
-- `src/core/content`: contratos estables de currículo, actividades y resultados.
-- `src/features`: renderizadores React y pantallas docentes.
-- `src/platform`: PWA, IndexedDB, red y adaptadores de API.
-- `src/manifests`: descripciones versionadas de currículo y actividades.
-- `src/shared`: componentes y utilidades realmente transversales.
-- `docs`: arquitectura y trazabilidad de migración.
+| Carpeta         | Rol                                                             |
+| --------------- | --------------------------------------------------------------- |
+| `src/core`      | Ver subzonas abajo (dominio vs núcleo de producto)              |
+| `src/features`  | Pantallas React y flujos docentes (auth UI, home, matemáticas…) |
+| `src/app`       | Composición del arranque (`AppShell`, sesión autenticada, boot) |
+| `src/platform`  | PWA, IndexedDB, red, adaptadores Supabase / Sentry              |
+| `src/manifests` | Descripciones versionadas de currículo y actividades            |
+| `src/shared`    | Componentes y utilidades realmente transversales                |
+| `src/server`    | Express local del Compañero IA (fuera del core educativo MVP)   |
+| `docs`          | Arquitectura, decisiones y trazabilidad                         |
+
+### Dos zonas dentro de `src/core` (importante)
+
+La regla histórica «`core` sin React» aplica al **dominio educativo**, no a
+todo lo que hoy vive bajo `src/core/`. Para el TFM se documentan dos zonas:
+
+1. **Dominio puro (sin React / navegador / red)**
+   - `src/core/activities/` — generadores, validadores, resultados.
+   - `src/core/content/` — contratos de currículo, registry de motores.
+   - `src/core/demo/` — reglas de DEMO / acceso (lógica, no UI).
+   - Parte de `src/core/ficha/` (generadores, contratos).  
+     Cubierta por Vitest; es el corazón testeable del producto pedagógico.
+
+2. **Núcleo de producto / UI compartida (puede usar React)**
+   - `src/core/transition/` — `ViewTransition` (Framer Motion).
+   - `src/core/context/` — contextos de aula / auth de sesión.
+   - Renderers React de fichas bajo `src/core/ficha/renderers/`.
+
+No se reubican en bloque ahora (coste alto, riesgo de regresión). La regla de
+dependencias para **código nuevo** de dominio sigue siendo: sin React ni
+`platform` dentro de `activities` / contratos de `content`.
 
 ### Dirección permitida de dependencias
 
 ```text
+app ───────► features, core, platform, shared
 features ──► core, shared, platform
-platform ──► core, shared
+platform ──► core (contratos), shared
 manifests ─► core (solo contratos públicos)
 shared ────► (sin dependencias de las capas anteriores)
-core ──────► (sin React, navegador, red ni almacenamiento)
+core/activities + content ──► (sin React, navegador, red ni almacenamiento)
 ```
 
-`App.tsx` y `main.tsx` son composición temporal del arranque. El vertical
-slice de conteo no se mueve todavía: hacerlo sin el formato de manifiesto de la
-Fase 1 sería reorganización prematura.
+`App.tsx` y `main.tsx` son el borde de composición: providers + ruta de
+preview de fichas. La orquestación de welcome / auth / sesión vive en
+`src/app/` (`AppShell`, `BootAccessFlow`, `AuthenticatedSession`).
 
 ## Navegación y transiciones de pantalla
 
@@ -89,17 +117,11 @@ Ya no es el único: el catálogo V1 completo sigue este contrato. El número exa
 y el estado por actividad están en
 [INVENTARIO_MIGRACION_ACTIVIDADES.md](INVENTARIO_MIGRACION_ACTIVIDADES.md).
 
-## Siguientes decisiones
+## Siguientes decisiones (estado)
 
-Estas cuatro se escribieron al arrancar el proyecto, en la Fase 0. Su estado:
-
-1. ~~Definir manifiestos de actividad y migrar el registro manual.~~ **Hecho en
-   la Fase 1:** los 62 manifiestos están en `src/manifests/activities/` y validados
-   contra `schema/activity-manifest.schema.json` con Ajv. Los motores lanzables
-   viven en `src/core/content/engine-registry.ts` (ver inventario).
-2. Validar Pointer Events, tamaños y reconocimiento en la pizarra real.
-   **En curso** según pases con el profesorado; el inventario marca las ya
-   verificadas en pizarra.
-3. Acordar con colegio/DPD el modelo de datos y despliegue. **Pendiente.**
-4. Implementar autenticación y autorización antes de datos de alumnado.
-   **Pendiente.**
+1. ~~Definir manifiestos de actividad y migrar el registro manual.~~ **Hecho**
+   (Fase 1): 62 manifiestos + `engine-registry`.
+2. Validar Pointer Events / pizarra real. **En curso** con el profesorado.
+3. Acordar con colegio/DPD el modelo RGPD formal. **Cuando el piloto lo exija.**
+4. ~~Auth / autorización de profesorado.~~ **Hecho** (Fase 10, D-028–D-037);
+   MFA owner deferido post-piloto.
