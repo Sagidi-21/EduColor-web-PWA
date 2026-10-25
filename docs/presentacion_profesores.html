@@ -1,943 +1,1034 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduColor — Presentación para profesores</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet" />
-  <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --green: #2ecc71;
-      --yellow: #f1c40f;
-      --red: #e74c3c;
-      --blue: #3498db;
-      --magenta: #c0392b;
-      --dark: #0f1117;
-      --dark2: #171b24;
-      --dark3: #1e2433;
-      --card: #252b3b;
-      --text: #e8eaf0;
-      --muted: #8892a4;
-      --accent: #6c5ce7;
-    }
-
-    html {
-      font-size: 118%;
-    }
-
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      background: var(--dark);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      overflow: hidden;
-    }
-
-    .slideshow {
-      width: 100vw;
-      height: 100vh;
-      position: relative;
-    }
-
-    .slide {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 48px 64px;
-      opacity: 0;
-      transform: translateX(60px);
-      transition: opacity .45s ease, transform .45s ease;
-      pointer-events: none;
-      /* Mismo fondo que WelcomeScreen (`src/assets/welcome-bg.png`) */
-      background-image: url('welcome-bg.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    .slide.active {
-      opacity: 1;
-      transform: translateX(0);
-      pointer-events: all;
-    }
-
-    .slide.out {
-      opacity: 0;
-      transform: translateX(-60px);
-    }
-
-    .logo-badge {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 32px;
-    }
-
-    .logo-ring {
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      background: conic-gradient(#e74c3c, #f1c40f, #2ecc71, #3498db, #c0392b, #e74c3c);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px;
-      flex-shrink: 0;
-    }
-
-    .logo-inner {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #0f1117 60%, #1a1060);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Outfit', sans-serif;
-      font-size: 22px;
-      font-weight: 900;
-    }
-
-    .logo-cc {
-      letter-spacing: -4px;
-      color: white;
-    }
-
-    .logo-text {
-      font-family: 'Outfit', sans-serif;
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: .5px;
-    }
-
-    .logo-text span {
-      color: var(--yellow);
-    }
-
-    h1 {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(2.8rem, 6vw, 4.6rem);
-      font-weight: 900;
-      line-height: 1.1;
-      text-align: center;
-    }
-
-    h2 {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(2rem, 4.2vw, 3.2rem);
-      font-weight: 700;
-      margin-bottom: 32px;
-      text-align: center;
-    }
-
-    .subtitle {
-      font-size: 1.4rem;
-      color: var(--muted);
-      text-align: center;
-      max-width: 820px;
-      line-height: 1.65;
-      margin-top: 18px;
-    }
-
-    .label {
-      font-size: .95rem;
-      font-weight: 700;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: #f5f7fb;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, .75), 0 0 18px rgba(0, 0, 0, .45);
-      margin-bottom: 14px;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 14px;
-      border-radius: 999px;
-      font-size: .8rem;
-      font-weight: 600;
-      background: rgba(255, 255, 255, .07);
-      border: 1px solid rgba(255, 255, 255, .12);
-      margin-bottom: 20px;
-    }
-
-    .pill-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      display: inline-block;
-    }
-
-    .cards {
-      display: flex;
-      gap: 24px;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
-      max-width: 1180px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid rgba(255, 255, 255, .08);
-      border-radius: 20px;
-      padding: 34px 30px;
-      flex: 1;
-      min-width: 260px;
-      max-width: 340px;
-      transition: transform .2s, border-color .2s;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255, 255, 255, .2);
-    }
-
-    .card-icon {
-      font-size: 2.8rem;
-      margin-bottom: 14px;
-    }
-
-    .card h3 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.35rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      font-size: 1.05rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .problem-list {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      width: 100%;
-      max-width: 900px;
-    }
-
-    .problem-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 20px;
-      background: var(--card);
-      border-radius: 16px;
-      padding: 26px 30px;
-      border-left: 5px solid var(--red);
-    }
-
-    .problem-item-icon {
-      font-size: 2rem;
-      flex-shrink: 0;
-    }
-
-    .problem-item-text strong {
-      display: block;
-      font-size: 1.25rem;
-      margin-bottom: 6px;
-    }
-
-    .problem-item-text span {
-      font-size: 1.05rem;
-      color: var(--muted);
-    }
-
-    .steps {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-      max-width: 1100px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      flex: 1;
-      min-width: 160px;
-    }
-
-    .step-circle {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      margin-bottom: 14px;
-    }
-
-    .step p {
-      font-size: 1.05rem;
-      color: #d8dde8;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, .6);
-      max-width: 160px;
-    }
-
-    .step strong {
-      font-size: 1.2rem;
-      color: #fff;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, .55);
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    .step-arrow {
-      font-size: 1.8rem;
-      color: var(--muted);
-      align-self: flex-start;
-      padding-top: 20px;
-      flex-shrink: 0;
-    }
-
-    .topic-row {
-      display: flex;
-      gap: 12px;
-      width: 100%;
-      max-width: 880px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .topic-card {
-      background: var(--card);
-      border: 1px solid rgba(255, 255, 255, .08);
-      border-radius: 14px;
-      padding: 22px 20px;
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .topic-card .course {
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .topic-card h4 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .topic-card ul {
-      list-style: none;
-    }
-
-    .topic-card ul li {
-      font-size: .83rem;
-      color: var(--muted);
-      padding: 3px 0;
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-    }
-
-    .topic-card ul li::before {
-      content: "•";
-      color: var(--yellow);
-      flex-shrink: 0;
-    }
-
-    .feedback-box {
-      background: var(--card);
-      border: 1px solid rgba(255, 255, 255, .1);
-      border-radius: 18px;
-      padding: 32px 40px;
-      max-width: 660px;
-      text-align: center;
-    }
-
-    .feedback-box .big-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-    }
-
-    .feedback-box p {
-      color: var(--muted);
-      line-height: 1.7;
-      font-size: .95rem;
-    }
-
-    .email-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(52, 152, 219, .15);
-      border: 1px solid rgba(52, 152, 219, .4);
-      border-radius: 999px;
-      padding: 8px 20px;
-      font-size: .9rem;
-      font-weight: 600;
-      color: #3498db;
-      margin-top: 18px;
-    }
-
-    .cta-open {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 40px;
-      padding: 20px 52px;
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, .22);
-      background: linear-gradient(135deg, #6c5ce7, #3498db);
-      background-size: 160% 160%;
-      color: #fff;
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.4rem;
-      font-weight: 700;
-      letter-spacing: .04em;
-      text-decoration: none;
-      overflow: hidden;
-      box-shadow: 0 8px 28px rgba(108, 92, 231, .4);
-      transition: transform .22s cubic-bezier(.34, 1.4, .64, 1), box-shadow .22s ease, filter .22s ease, background .22s ease;
-      animation: cta-idle 2.8s ease-in-out infinite;
-    }
-
-    .cta-open::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -120%;
-      width: 60%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .35), transparent);
-      transform: skewX(-18deg);
-      transition: none;
-      pointer-events: none;
-    }
-
-    .cta-open:hover {
-      transform: translateY(-4px) scale(1.06);
-      filter: brightness(1.08);
-      background: linear-gradient(135deg, #27ae60, #2ecc71);
-      box-shadow:
-        0 14px 36px rgba(46, 204, 113, .55),
-        0 0 0 4px rgba(46, 204, 113, .28),
-        0 0 40px rgba(39, 174, 96, .45);
-      animation: none;
-      background-position: 100% 50%;
-    }
-
-    .cta-open:hover::before {
-      animation: cta-shine .7s ease forwards;
-    }
-
-    .cta-open:active {
-      transform: translateY(1px) scale(.96);
-      filter: brightness(.95);
-      background: linear-gradient(135deg, #219a52, #27ae60);
-      box-shadow: 0 4px 14px rgba(46, 204, 113, .4);
-      transition-duration: .08s;
-    }
-
-    @keyframes cta-idle {
-      0%,
-      100% {
-        box-shadow: 0 8px 28px rgba(108, 92, 231, .4);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduColor — Presentación para profesores</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
 
-      50% {
-        box-shadow: 0 10px 34px rgba(108, 92, 231, .55), 0 0 22px rgba(52, 152, 219, .3);
+      :root {
+        --green: #2ecc71;
+        --yellow: #f1c40f;
+        --red: #e74c3c;
+        --blue: #3498db;
+        --magenta: #c0392b;
+        --dark: #0f1117;
+        --dark2: #171b24;
+        --dark3: #1e2433;
+        --card: #252b3b;
+        --text: #e8eaf0;
+        --muted: #8892a4;
+        --accent: #6c5ce7;
       }
-    }
 
-    @keyframes cta-shine {
-      from {
+      html {
+        font-size: 118%;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background: var(--dark);
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+      }
+
+      .slideshow {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 48px 64px;
+        opacity: 0;
+        transform: translateX(60px);
+        transition:
+          opacity 0.45s ease,
+          transform 0.45s ease;
+        pointer-events: none;
+        /* Mismo fondo que WelcomeScreen (`src/assets/welcome-bg.png`) */
+        background-image: url("welcome-bg.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      .slide.active {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: all;
+      }
+
+      .slide.out {
+        opacity: 0;
+        transform: translateX(-60px);
+      }
+
+      .logo-badge {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 32px;
+      }
+
+      .logo-ring {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        background: conic-gradient(#e74c3c, #f1c40f, #2ecc71, #3498db, #c0392b, #e74c3c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        flex-shrink: 0;
+      }
+
+      .logo-inner {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0f1117 60%, #1a1060);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Outfit", sans-serif;
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .logo-cc {
+        letter-spacing: -4px;
+        color: white;
+      }
+
+      .logo-text {
+        font-family: "Outfit", sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+
+      .logo-text span {
+        color: var(--yellow);
+      }
+
+      h1 {
+        font-family: "Outfit", sans-serif;
+        font-size: clamp(2.8rem, 6vw, 4.6rem);
+        font-weight: 900;
+        line-height: 1.1;
+        text-align: center;
+      }
+
+      h2 {
+        font-family: "Outfit", sans-serif;
+        font-size: clamp(2rem, 4.2vw, 3.2rem);
+        font-weight: 700;
+        margin-bottom: 32px;
+        text-align: center;
+      }
+
+      .subtitle {
+        font-size: 1.4rem;
+        color: var(--muted);
+        text-align: center;
+        max-width: 820px;
+        line-height: 1.65;
+        margin-top: 18px;
+      }
+
+      .label {
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        color: #f5f7fb;
+        text-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.75),
+          0 0 18px rgba(0, 0, 0, 0.45);
+        margin-bottom: 14px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 14px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        margin-bottom: 20px;
+      }
+
+      .pill-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--green);
+        display: inline-block;
+      }
+
+      .cards {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        max-width: 1180px;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 34px 30px;
+        flex: 1;
+        min-width: 260px;
+        max-width: 340px;
+        transition:
+          transform 0.2s,
+          border-color 0.2s;
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .card-icon {
+        font-size: 2.8rem;
+        margin-bottom: 14px;
+      }
+
+      .card h3 {
+        font-family: "Outfit", sans-serif;
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .card p {
+        font-size: 1.05rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .problem-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+        max-width: 900px;
+      }
+
+      .problem-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        background: var(--card);
+        border-radius: 16px;
+        padding: 26px 30px;
+        border-left: 5px solid var(--red);
+      }
+
+      .problem-item-icon {
+        font-size: 2rem;
+        flex-shrink: 0;
+      }
+
+      .problem-item-text strong {
+        display: block;
+        font-size: 1.25rem;
+        margin-bottom: 6px;
+      }
+
+      .problem-item-text span {
+        font-size: 1.05rem;
+        color: var(--muted);
+      }
+
+      .steps {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        max-width: 1100px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        flex: 1;
+        min-width: 160px;
+      }
+
+      .step-circle {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-bottom: 14px;
+      }
+
+      .step p {
+        font-size: 1.05rem;
+        color: #d8dde8;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+        max-width: 160px;
+      }
+
+      .step strong {
+        font-size: 1.2rem;
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .step-arrow {
+        font-size: 1.8rem;
+        color: var(--muted);
+        align-self: flex-start;
+        padding-top: 20px;
+        flex-shrink: 0;
+      }
+
+      .topic-row {
+        display: flex;
+        gap: 12px;
+        width: 100%;
+        max-width: 880px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .topic-card {
+        background: var(--card);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 22px 20px;
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .topic-card .course {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .topic-card h4 {
+        font-family: "Outfit", sans-serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+
+      .topic-card ul {
+        list-style: none;
+      }
+
+      .topic-card ul li {
+        font-size: 0.83rem;
+        color: var(--muted);
+        padding: 3px 0;
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+      }
+
+      .topic-card ul li::before {
+        content: "•";
+        color: var(--yellow);
+        flex-shrink: 0;
+      }
+
+      .feedback-box {
+        background: var(--card);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 18px;
+        padding: 32px 40px;
+        max-width: 660px;
+        text-align: center;
+      }
+
+      .feedback-box .big-icon {
+        font-size: 3rem;
+        margin-bottom: 16px;
+      }
+
+      .feedback-box p {
+        color: var(--muted);
+        line-height: 1.7;
+        font-size: 0.95rem;
+      }
+
+      .email-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(52, 152, 219, 0.15);
+        border: 1px solid rgba(52, 152, 219, 0.4);
+        border-radius: 999px;
+        padding: 8px 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #3498db;
+        margin-top: 18px;
+      }
+
+      .cta-open {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 40px;
+        padding: 20px 52px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: linear-gradient(135deg, #6c5ce7, #3498db);
+        background-size: 160% 160%;
+        color: #fff;
+        font-family: "Outfit", sans-serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(108, 92, 231, 0.4);
+        transition:
+          transform 0.22s cubic-bezier(0.34, 1.4, 0.64, 1),
+          box-shadow 0.22s ease,
+          filter 0.22s ease,
+          background 0.22s ease;
+        animation: cta-idle 2.8s ease-in-out infinite;
+      }
+
+      .cta-open::before {
+        content: "";
+        position: absolute;
+        top: 0;
         left: -120%;
+        width: 60%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+        transform: skewX(-18deg);
+        transition: none;
+        pointer-events: none;
       }
 
-      to {
-        left: 140%;
-      }
-    }
-
-    .date-badge {
-      background: linear-gradient(135deg, var(--green), #27ae60);
-      border-radius: 20px;
-      padding: 28px 48px;
-      text-align: center;
-      margin-top: 24px;
-    }
-
-    .date-badge .date-label {
-      font-size: .8rem;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      opacity: .8;
-    }
-
-    .date-badge .date-val {
-      font-family: 'Outfit', sans-serif;
-      font-size: 2.2rem;
-      font-weight: 900;
-      margin-top: 4px;
-    }
-
-    .c-green {
-      color: var(--green);
-    }
-
-    .c-yellow {
-      color: var(--yellow);
-    }
-
-    .c-red {
-      color: var(--red);
-    }
-
-    .c-blue {
-      color: var(--blue);
-    }
-
-    .bg-green {
-      background: rgba(46, 204, 113, .15);
-    }
-
-    .bg-yellow {
-      background: rgba(241, 196, 15, .15);
-    }
-
-    .bg-blue {
-      background: rgba(52, 152, 219, .15);
-    }
-
-    .grad {
-      background: linear-gradient(135deg, var(--yellow) 0%, #f39c12 40%, #e056fd 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .grad-green {
-      background: linear-gradient(135deg, var(--green) 0%, #27ae60 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .nav {
-      position: fixed;
-      bottom: 28px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(30, 36, 51, .85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, .1);
-      border-radius: 999px;
-      padding: 6px 14px;
-      z-index: 100;
-    }
-
-    .nav-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text);
-      font-size: .9rem;
-      padding: 4px 8px;
-      border-radius: 8px;
-      transition: background .2s;
-    }
-
-    .nav-btn:hover {
-      background: rgba(255, 255, 255, .1);
-    }
-
-    .nav-btn:disabled {
-      opacity: .3;
-      cursor: not-allowed;
-    }
-
-    .nav-counter {
-      font-size: .7rem;
-      color: var(--muted);
-      min-width: 44px;
-      text-align: center;
-    }
-
-    .dots {
-      position: fixed;
-      bottom: 90px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 6px;
-      z-index: 100;
-    }
-
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, .2);
-      transition: background .3s, width .3s;
-      cursor: pointer;
-    }
-
-    .dot.active {
-      background: var(--yellow);
-      width: 22px;
-      border-radius: 4px;
-    }
-
-    .slide-num {
-      position: fixed;
-      top: 22px;
-      right: 28px;
-      font-size: .65rem;
-      color: var(--muted);
-      font-weight: 500;
-      z-index: 100;
-      opacity: .85;
-    }
-
-    .guion-toggle {
-      position: fixed;
-      top: 28px;
-      left: 36px;
-      background: rgba(30, 36, 51, .85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, .1);
-      border-radius: 10px;
-      padding: 8px 16px;
-      font-size: .8rem;
-      color: var(--muted);
-      cursor: pointer;
-      z-index: 100;
-      transition: background .2s;
-    }
-
-    .guion-toggle:hover {
-      background: rgba(255, 255, 255, .1);
-    }
-
-    .guion-panel {
-      position: fixed;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      width: 340px;
-      background: var(--dark2);
-      border-right: 1px solid rgba(255, 255, 255, .08);
-      padding: 60px 28px 100px;
-      overflow-y: auto;
-      transform: translateX(-100%);
-      transition: transform .35s ease;
-      z-index: 200;
-    }
-
-    .guion-panel.open {
-      transform: translateX(0);
-    }
-
-    .guion-panel h3 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.1rem;
-      margin-bottom: 16px;
-      color: var(--yellow);
-    }
-
-    .guion-panel p {
-      font-size: .87rem;
-      line-height: 1.75;
-      color: #b0bac9;
-      margin-bottom: 10px;
-    }
-
-    .guion-panel .close-guion {
-      position: absolute;
-      top: 18px;
-      right: 20px;
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-
-    .hint {
-      position: fixed;
-      bottom: 32px;
-      right: 36px;
-      font-size: .72rem;
-      color: rgba(255, 255, 255, .18);
-      z-index: 100;
-    }
-
-    hr.div {
-      border: none;
-      border-top: 1px solid rgba(255, 255, 255, .07);
-      margin: 20px 0;
-      width: 100%;
-      max-width: 720px;
-    }
-
-    @keyframes float {
-
-      0%,
-      100% {
-        transform: translateY(0)
+      .cta-open:hover {
+        transform: translateY(-4px) scale(1.06);
+        filter: brightness(1.08);
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        box-shadow:
+          0 14px 36px rgba(46, 204, 113, 0.55),
+          0 0 0 4px rgba(46, 204, 113, 0.28),
+          0 0 40px rgba(39, 174, 96, 0.45);
+        animation: none;
+        background-position: 100% 50%;
       }
 
-      50% {
-        transform: translateY(-10px)
+      .cta-open:hover::before {
+        animation: cta-shine 0.7s ease forwards;
       }
-    }
 
-    .float {
-      animation: float 4s ease-in-out infinite;
-    }
-  </style>
-</head>
+      .cta-open:active {
+        transform: translateY(1px) scale(0.96);
+        filter: brightness(0.95);
+        background: linear-gradient(135deg, #219a52, #27ae60);
+        box-shadow: 0 4px 14px rgba(46, 204, 113, 0.4);
+        transition-duration: 0.08s;
+      }
 
-<body>
+      @keyframes cta-idle {
+        0%,
+        100% {
+          box-shadow: 0 8px 28px rgba(108, 92, 231, 0.4);
+        }
 
-  <div class="slideshow" id="slideshow">
+        50% {
+          box-shadow:
+            0 10px 34px rgba(108, 92, 231, 0.55),
+            0 0 22px rgba(52, 152, 219, 0.3);
+        }
+      }
 
-    <!-- SLIDE 1: PORTADA -->
-    <div class="slide bg-hero active"
-      data-guion="Empezad con calma. Dejad que el logo y el nombre hagan su trabajo 5 segundos. Luego decid: 'Buenos días a todos. Hoy os voy a presentar algo en lo que he estado trabajando este año para vosotros y para el colegio.'">
-      <div class="logo-badge float">
-        <img src="logo3.png" alt="Logo EduColor"
-          style="height: 380px; width: auto; object-fit: contain; border-radius: 28px; filter: drop-shadow(0 0 18px rgba(241,196,15,.35));" />
+      @keyframes cta-shine {
+        from {
+          left: -120%;
+        }
+
+        to {
+          left: 140%;
+        }
+      }
+
+      .date-badge {
+        background: linear-gradient(135deg, var(--green), #27ae60);
+        border-radius: 20px;
+        padding: 28px 48px;
+        text-align: center;
+        margin-top: 24px;
+      }
+
+      .date-badge .date-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        opacity: 0.8;
+      }
+
+      .date-badge .date-val {
+        font-family: "Outfit", sans-serif;
+        font-size: 2.2rem;
+        font-weight: 900;
+        margin-top: 4px;
+      }
+
+      .c-green {
+        color: var(--green);
+      }
+
+      .c-yellow {
+        color: var(--yellow);
+      }
+
+      .c-red {
+        color: var(--red);
+      }
+
+      .c-blue {
+        color: var(--blue);
+      }
+
+      .bg-green {
+        background: rgba(46, 204, 113, 0.15);
+      }
+
+      .bg-yellow {
+        background: rgba(241, 196, 15, 0.15);
+      }
+
+      .bg-blue {
+        background: rgba(52, 152, 219, 0.15);
+      }
+
+      .grad {
+        background: linear-gradient(135deg, var(--yellow) 0%, #f39c12 40%, #e056fd 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .grad-green {
+        background: linear-gradient(135deg, var(--green) 0%, #27ae60 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .nav {
+        position: fixed;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(30, 36, 51, 0.85);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        padding: 6px 14px;
+        z-index: 100;
+      }
+
+      .nav-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text);
+        font-size: 0.9rem;
+        padding: 4px 8px;
+        border-radius: 8px;
+        transition: background 0.2s;
+      }
+
+      .nav-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      .nav-counter {
+        font-size: 0.7rem;
+        color: var(--muted);
+        min-width: 44px;
+        text-align: center;
+      }
+
+      .dots {
+        position: fixed;
+        bottom: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 6px;
+        z-index: 100;
+      }
+
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transition:
+          background 0.3s,
+          width 0.3s;
+        cursor: pointer;
+      }
+
+      .dot.active {
+        background: var(--yellow);
+        width: 22px;
+        border-radius: 4px;
+      }
+
+      .slide-num {
+        position: fixed;
+        top: 22px;
+        right: 28px;
+        font-size: 0.65rem;
+        color: var(--muted);
+        font-weight: 500;
+        z-index: 100;
+        opacity: 0.85;
+      }
+
+      .guion-toggle {
+        position: fixed;
+        top: 28px;
+        left: 36px;
+        background: rgba(30, 36, 51, 0.85);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 8px 16px;
+        font-size: 0.8rem;
+        color: var(--muted);
+        cursor: pointer;
+        z-index: 100;
+        transition: background 0.2s;
+      }
+
+      .guion-toggle:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .guion-panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 340px;
+        background: var(--dark2);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 60px 28px 100px;
+        overflow-y: auto;
+        transform: translateX(-100%);
+        transition: transform 0.35s ease;
+        z-index: 200;
+      }
+
+      .guion-panel.open {
+        transform: translateX(0);
+      }
+
+      .guion-panel h3 {
+        font-family: "Outfit", sans-serif;
+        font-size: 1.1rem;
+        margin-bottom: 16px;
+        color: var(--yellow);
+      }
+
+      .guion-panel p {
+        font-size: 0.87rem;
+        line-height: 1.75;
+        color: #b0bac9;
+        margin-bottom: 10px;
+      }
+
+      .guion-panel .close-guion {
+        position: absolute;
+        top: 18px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: var(--muted);
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+
+      .hint {
+        position: fixed;
+        bottom: 32px;
+        right: 36px;
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.18);
+        z-index: 100;
+      }
+
+      hr.div {
+        border: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+        margin: 20px 0;
+        width: 100%;
+        max-width: 720px;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .float {
+        animation: float 4s ease-in-out infinite;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="slideshow" id="slideshow">
+      <!-- SLIDE 1: PORTADA -->
+      <div
+        class="slide bg-hero active"
+        data-guion="Empezad con calma. Dejad que el logo y el nombre hagan su trabajo 5 segundos. Luego decid: 'Buenos días a todos. Hoy os voy a presentar algo en lo que he estado trabajando este año para vosotros y para el colegio.'"
+      >
+        <div class="logo-badge float">
+          <img
+            src="logo3.png"
+            alt="Logo EduColor"
+            style="
+              height: 380px;
+              width: auto;
+              object-fit: contain;
+              border-radius: 28px;
+              filter: drop-shadow(0 0 18px rgba(241, 196, 15, 0.35));
+            "
+          />
+        </div>
+        <h1>La herramienta digital<br />que os apoyará en clase</h1>
       </div>
-      <h1>La herramienta digital<br />que os apoyará en clase</h1>
 
-    </div>
-
-    <!-- SLIDE 2: EL PROBLEMA -->
-    <div class="slide bg-problem"
-      data-guion="Empezad por el dolor real. Preguntad: '¿Cuánto tiempo os lleva preparar las fichas de la semana?' Dejad que respondan. Luego decid: 'Eso es exactamente lo que EduColor resuelve.' No habléis de tecnología todavía.">
-      <div class="label">¿Por qué me decidí por esta app?</div>
-      <h2>Quería ayudar al colegio a resolver problemas del día a día</h2>
-      <div class="problem-list">
-        <div class="problem-item">
-          <div class="problem-item-icon">🕐</div>
-          <div class="problem-item-text">
-            <strong>Exceso de tiempo en la preparación de fichas</strong>
-            <span>Cada semana, horas buscando, adaptando y maquetando ejercicios desde casa.</span>
+      <!-- SLIDE 2: EL PROBLEMA -->
+      <div
+        class="slide bg-problem"
+        data-guion="Empezad por el dolor real. Preguntad: '¿Cuánto tiempo os lleva preparar las fichas de la semana?' Dejad que respondan. Luego decid: 'Eso es exactamente lo que EduColor resuelve.' No habléis de tecnología todavía."
+      >
+        <div class="label">¿Por qué me decidí por esta app?</div>
+        <h2>Quería ayudar al colegio a resolver problemas del día a día</h2>
+        <div class="problem-list">
+          <div class="problem-item">
+            <div class="problem-item-icon">🕐</div>
+            <div class="problem-item-text">
+              <strong>Exceso de tiempo en la preparación de fichas</strong>
+              <span
+                >Cada semana, horas buscando, adaptando y maquetando ejercicios desde casa.</span
+              >
+            </div>
+          </div>
+          <div class="problem-item">
+            <div class="problem-item-icon">📺</div>
+            <div class="problem-item-text">
+              <strong>Aprovechar al máximo la pizarra digital</strong>
+              <span>Falta de actividades interactivas que lanzar en clase. </span>
+            </div>
+          </div>
+          <div class="problem-item">
+            <div class="problem-item-icon">🔄</div>
+            <div class="problem-item-text">
+              <strong>No hay forma de reutilizar lo ya preparado</strong>
+              <span
+                >Cada año se vuelve a empezar. Los ejercicios del año pasado no se reutilizan
+                fácilmente.</span
+              >
+            </div>
           </div>
         </div>
-        <div class="problem-item">
-          <div class="problem-item-icon">📺</div>
-          <div class="problem-item-text">
-            <strong>Aprovechar al máximo la pizarra digital</strong>
-            <span>Falta de actividades interactivas que lanzar en clase.
-            </span>
+      </div>
+
+      <!-- SLIDE 3: QUÉ ES EDUCOLOR -->
+      <div
+        class="slide bg-what"
+        data-guion="Descripción breve: herramienta de aula (pizarra + fichas). El alcance por cursos/materias lo explicáis vosotros en el vídeo; aquí no lo fijéis."
+      >
+        <div class="label">Qué es</div>
+        <h2>EduColor en una frase</h2>
+        <p
+          class="subtitle"
+          style="font-size: 1.45rem; color: var(--text); max-width: 900px; margin-bottom: 40px"
+        >
+          Una <span class="c-yellow">aplicación web (PWA)</span> para el aula:
+          <span class="c-green">actividades en la pizarra</span> y
+          <span class="c-yellow">fichas imprimibles</span> desde el mismo catálogo.
+        </p>
+        <div class="cards">
+          <div class="card">
+            <div class="card-icon">🌐</div>
+            <h3>En el navegador</h3>
+            <p>
+              Pensada para Chrome o Edge en el portátil del cole conectado a la pizarra. Sin
+              instalador .exe.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">👩‍🏫</div>
+            <h3>Solo para el profesorado</h3>
+            <p>
+              Vosotros la controláis. Los alumnos ven lo que proyectáis; en esta versión no hay
+              datos de alumnado.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">📚</div>
+            <h3>62 actividades</h3>
+            <p>La misma actividad sirve en pizarra y en generador de fichas.</p>
           </div>
         </div>
-        <div class="problem-item">
-          <div class="problem-item-icon">🔄</div>
-          <div class="problem-item-text">
-            <strong>No hay forma de reutilizar lo ya preparado</strong>
-            <span>Cada año se vuelve a empezar. Los ejercicios del año pasado no se reutilizan fácilmente.</span>
+      </div>
+
+      <!-- SLIDE 4: DOS MODOS -->
+      <div
+        class="slide bg-modes"
+        data-guion="Este slide es el más importante antes de la demo. Explicad bien los dos modos. Modo Pizarra = clase en vivo. Generador = fichas imprimibles desde el mismo catálogo."
+      >
+        <div class="label">Cómo funciona</div>
+        <h2>Dos modos, dos momentos</h2>
+        <div class="cards" style="max-width: 800px; gap: 28px">
+          <div
+            class="card"
+            style="border-color: rgba(241, 196, 15, 0.4); max-width: 400px; padding: 40px 34px"
+          >
+            <div class="card-icon">🖥️</div>
+            <h3 class="c-yellow" style="font-size: 1.5rem; margin-bottom: 14px">Modo Pizarra</h3>
+            <p style="font-size: 1.1rem; margin-bottom: 16px">
+              Para usar en clase, en pantalla completa táctil.
+            </p>
+            <ul style="list-style: none; font-size: 1.05rem; color: var(--muted)">
+              <li style="padding: 4px 0">✅ Actividad interactiva para toda la clase</li>
+              <li style="padding: 4px 0">✅ Corrección y resumen de la sesión</li>
+              <li style="padding: 4px 0">
+                ✅ Entrada manuscrita de dígitos en algunas actividades
+              </li>
+            </ul>
+          </div>
+          <div
+            class="card"
+            style="border-color: rgba(52, 152, 219, 0.4); max-width: 400px; padding: 40px 34px"
+          >
+            <div class="card-icon">🖨️</div>
+            <h3 class="c-blue" style="font-size: 1.5rem; margin-bottom: 14px">
+              Generador de fichas
+            </h3>
+            <p style="font-size: 1.1rem; margin-bottom: 16px">
+              Configuráis la ficha e imprimís desde la app.
+            </p>
+            <ul style="list-style: none; font-size: 1.05rem; color: var(--muted)">
+              <li style="padding: 4px 0">✅ Mismo catálogo que la pizarra (62 actividades)</li>
+              <li style="padding: 4px 0">✅ Dificultad y cantidad configurables</li>
+              <li style="padding: 4px 0">✅ Vista previa fiel a lo que se imprime</li>
+              <li style="padding: 4px 0">✅ Branding del colegio (logo / fondo) en el piloto</li>
+            </ul>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- SLIDE 3: QUÉ ES EDUCOLOR -->
-    <div class="slide bg-what"
-      data-guion="Descripción breve: herramienta de aula (pizarra + fichas). El alcance por cursos/materias lo explicáis vosotros en el vídeo; aquí no lo fijéis.">
-      <div class="label">Qué es</div>
-      <h2>EduColor en una frase</h2>
-      <p class="subtitle" style="font-size:1.45rem; color: var(--text); max-width:900px; margin-bottom:40px;">
-        Una <span class="c-yellow">aplicación web (PWA)</span> para el aula:
-        <span class="c-green">actividades en la pizarra</span> y
-        <span class="c-yellow">fichas imprimibles</span> desde el mismo catálogo.
-      </p>
-      <div class="cards">
-        <div class="card">
-          <div class="card-icon">🌐</div>
-          <h3>En el navegador</h3>
-          <p>Pensada para Chrome o Edge en el portátil del cole conectado a la pizarra. Sin instalador .exe.</p>
+      <!-- SLIDE 5: FLUJO DEL PROFESOR -->
+      <div
+        class="slide bg-flow"
+        data-guion="Explicad el flujo despacio. El mensaje es: 'En casa preparáis la ficha o ensayáis la actividad; en clase la lanzáis desde el catálogo.' La corrección os deja guiar sin perder el ritmo."
+      >
+        <div class="label">Vuestro flujo de trabajo</div>
+        <h2>Cómo se usa en el día a día</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-circle bg-blue"><span>🖥️</span></div>
+            <strong>En clase</strong>
+            <p>Elegís la actividad del catálogo y la lanzáis en la pizarra</p>
+          </div>
+          <div class="step-arrow">→</div>
+          <div class="step">
+            <div class="step-circle bg-green"><span>✅</span></div>
+            <strong>Corrección</strong>
+            <p>La app marca fallo o acierto y vosotros dais la explicación</p>
+          </div>
+          <div class="step-arrow">→</div>
+          <div class="step">
+            <div class="step-circle" style="background: rgba(231, 76, 60, 0.15)">
+              <span>♻️</span>
+            </div>
+            <strong>Reutilizar</strong>
+            <p>La misma actividad se vuelve a generar con nuevos ejercicios al instante</p>
+          </div>
         </div>
-        <div class="card">
-          <div class="card-icon">👩‍🏫</div>
-          <h3>Solo para el profesorado</h3>
-          <p>Vosotros la controláis. Los alumnos ven lo que proyectáis; en esta versión no hay datos de alumnado.</p>
-        </div>
-        <div class="card">
-          <div class="card-icon">📚</div>
-          <h3>62 actividades</h3>
-          <p>La misma actividad sirve en pizarra y en generador de fichas.</p>
-        </div>
+        <hr class="div" style="margin-top: 36px" />
+        <p
+          style="
+            font-size: 1.15rem;
+            color: #f0f2f7;
+            text-align: center;
+            max-width: 780px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+          "
+        >
+          🔑 Principio clave:
+          <strong style="color: #fff"
+            >la velocidad de generación de ejercicios es la clave para que podáis trabajar de forma
+            dinámica en el aula.</strong
+          ><br />
+        </p>
+      </div>
+
+      <!-- SLIDE 6: DEMO -->
+      <div
+        class="slide bg-hero"
+        data-guion="Señal para abrir la app. Orden sugerido: inicio / login o DEMO → catálogo → ejercicio en pizarra → generador de fichas."
+      >
+        <img
+          src="logo3.png"
+          alt="Logo EduColor"
+          class="float"
+          style="
+            height: 380px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 28px;
+            margin-bottom: 32px;
+            filter: drop-shadow(0 0 24px rgba(241, 196, 15, 0.4));
+          "
+        />
+        <h1 class="grad" style="font-size: clamp(3rem, 7vw, 5.2rem)">Vamos a la app</h1>
+        <p class="subtitle" style="font-size: 1.45rem; margin-top: 24px">
+          Ahora abrimos EduColor y la recorremos juntos.
+        </p>
+        <a
+          class="cta-open"
+          href="https://peppy-cactus-71f921.netlify.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Abrir</a
+        >
       </div>
     </div>
+    <!-- /slideshow -->
 
-    <!-- SLIDE 4: DOS MODOS -->
-    <div class="slide bg-modes"
-      data-guion="Este slide es el más importante antes de la demo. Explicad bien los dos modos. Modo Pizarra = clase en vivo. Generador = fichas imprimibles desde el mismo catálogo.">
-      <div class="label">Cómo funciona</div>
-      <h2>Dos modos, dos momentos</h2>
-      <div class="cards" style="max-width:800px; gap:28px;">
-        <div class="card" style="border-color: rgba(241,196,15,.4); max-width:400px; padding:40px 34px;">
-          <div class="card-icon">🖥️</div>
-          <h3 class="c-yellow" style="font-size:1.5rem; margin-bottom:14px;">Modo Pizarra</h3>
-          <p style="font-size:1.1rem; margin-bottom:16px;">Para usar en clase, en pantalla completa táctil.</p>
-          <ul style="list-style:none; font-size:1.05rem; color: var(--muted);">
-            <li style="padding:4px 0">✅ Actividad interactiva para toda la clase</li>
-            <li style="padding:4px 0">✅ Corrección y resumen de la sesión</li>
-            <li style="padding:4px 0">✅ Entrada manuscrita de dígitos en algunas actividades</li>
-          </ul>
-        </div>
-        <div class="card" style="border-color: rgba(52,152,219,.4); max-width:400px; padding:40px 34px;">
-          <div class="card-icon">🖨️</div>
-          <h3 class="c-blue" style="font-size:1.5rem; margin-bottom:14px;">Generador de fichas</h3>
-          <p style="font-size:1.1rem; margin-bottom:16px;">Configuráis la ficha e imprimís desde la app.</p>
-          <ul style="list-style:none; font-size:1.05rem; color: var(--muted);">
-            <li style="padding:4px 0">✅ Mismo catálogo que la pizarra (62 actividades)</li>
-            <li style="padding:4px 0">✅ Dificultad y cantidad configurables</li>
-            <li style="padding:4px 0">✅ Vista previa fiel a lo que se imprime</li>
-            <li style="padding:4px 0">✅ Branding del colegio (logo / fondo) en el piloto</li>
-          </ul>
-        </div>
-      </div>
+    <div class="slide-num" id="slideNum">1 / 6</div>
+
+    <div class="dots" id="dots"></div>
+
+    <div class="nav">
+      <button class="nav-btn" id="prevBtn" disabled>←</button>
+      <span class="nav-counter" id="navCounter">1 / 6</span>
+      <button class="nav-btn" id="nextBtn">→</button>
     </div>
 
-    <!-- SLIDE 5: FLUJO DEL PROFESOR -->
-    <div class="slide bg-flow"
-      data-guion="Explicad el flujo despacio. El mensaje es: 'En casa preparáis la ficha o ensayáis la actividad; en clase la lanzáis desde el catálogo.' La corrección os deja guiar sin perder el ritmo.">
-      <div class="label">Vuestro flujo de trabajo</div>
-      <h2>Cómo se usa en el día a día</h2>
-      <div class="steps">
-        <div class="step">
-          <div class="step-circle bg-blue"><span>🖥️</span></div>
-          <strong>En clase</strong>
-          <p>Elegís la actividad del catálogo y la lanzáis en la pizarra</p>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-          <div class="step-circle bg-green"><span>✅</span></div>
-          <strong>Corrección</strong>
-          <p>La app marca fallo o acierto y vosotros dais la explicación</p>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-          <div class="step-circle" style="background:rgba(231,76,60,.15)"><span>♻️</span></div>
-          <strong>Reutilizar</strong>
-          <p>La misma actividad se vuelve a generar con nuevos ejercicios al instante</p>
-        </div>
-      </div>
-      <hr class="div" style="margin-top:36px;" />
-      <p style="font-size:1.15rem; color:#f0f2f7; text-align:center; max-width:780px; text-shadow:0 1px 3px rgba(0,0,0,.7);">
-        🔑 Principio clave: <strong style="color:#fff">la velocidad de generación de ejercicios es la clave
-          para que podáis trabajar de forma dinámica en el aula.</strong><br />
-      </p>
-    </div>
+    <div class="hint">← → teclas</div>
 
-    <!-- SLIDE 6: DEMO -->
-    <div class="slide bg-hero"
-      data-guion="Señal para abrir la app. Orden sugerido: inicio / login o DEMO → catálogo → ejercicio en pizarra → generador de fichas.">
-      <img src="logo3.png" alt="Logo EduColor" class="float"
-        style="height: 380px; width: auto; object-fit: contain; border-radius: 28px; margin-bottom: 32px; filter: drop-shadow(0 0 24px rgba(241,196,15,.4));" />
-      <h1 class="grad" style="font-size:clamp(3rem,7vw,5.2rem);">Vamos a la app</h1>
-      <p class="subtitle" style="font-size:1.45rem; margin-top:24px;">
-        Ahora abrimos EduColor y la recorremos juntos.
-      </p>
-      <a class="cta-open" href="https://peppy-cactus-71f921.netlify.app" target="_blank"
-        rel="noopener noreferrer">Abrir</a>
-    </div>
+    <script>
+      const slides = document.querySelectorAll(".slide");
+      const dotsEl = document.getElementById("dots");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const navCounter = document.getElementById("navCounter");
+      const slideNum = document.getElementById("slideNum");
 
-  </div><!-- /slideshow -->
+      let current = 0;
+      const total = slides.length;
 
-  <div class="slide-num" id="slideNum">1 / 6</div>
+      slides.forEach((_, i) => {
+        const d = document.createElement("div");
+        d.className = "dot" + (i === 0 ? " active" : "");
+        d.addEventListener("click", () => goTo(i));
+        dotsEl.appendChild(d);
+      });
 
-  <div class="dots" id="dots"></div>
+      function goTo(idx) {
+        slides[current].classList.remove("active");
+        slides[current].classList.add("out");
+        const prev = current;
+        current = idx;
+        setTimeout(() => slides[prev].classList.remove("out"), 450);
+        slides[current].classList.add("active");
 
-  <div class="nav">
-    <button class="nav-btn" id="prevBtn" disabled>←</button>
-    <span class="nav-counter" id="navCounter">1 / 6</span>
-    <button class="nav-btn" id="nextBtn">→</button>
-  </div>
-
-  <div class="hint">← → teclas</div>
-
-  <script>
-    const slides = document.querySelectorAll('.slide');
-    const dotsEl = document.getElementById('dots');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const navCounter = document.getElementById('navCounter');
-    const slideNum = document.getElementById('slideNum');
-
-    let current = 0;
-    const total = slides.length;
-
-    slides.forEach((_, i) => {
-      const d = document.createElement('div');
-      d.className = 'dot' + (i === 0 ? ' active' : '');
-      d.addEventListener('click', () => goTo(i));
-      dotsEl.appendChild(d);
-    });
-
-    function goTo(idx) {
-      slides[current].classList.remove('active');
-      slides[current].classList.add('out');
-      const prev = current;
-      current = idx;
-      setTimeout(() => slides[prev].classList.remove('out'), 450);
-      slides[current].classList.add('active');
-
-      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
-      const label = (current + 1) + ' / ' + total;
-      navCounter.textContent = label;
-      slideNum.textContent = label;
-      prevBtn.disabled = current === 0;
-      nextBtn.disabled = current === total - 1;
-    }
-
-    prevBtn.addEventListener('click', () => { if (current > 0) goTo(current - 1); });
-    nextBtn.addEventListener('click', () => { if (current < total - 1) goTo(current + 1); });
-
-    document.addEventListener('keydown', e => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
-        e.preventDefault();
-        if (current < total - 1) goTo(current + 1);
+        document
+          .querySelectorAll(".dot")
+          .forEach((d, i) => d.classList.toggle("active", i === current));
+        const label = current + 1 + " / " + total;
+        navCounter.textContent = label;
+        slideNum.textContent = label;
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === total - 1;
       }
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        e.preventDefault();
+
+      prevBtn.addEventListener("click", () => {
         if (current > 0) goTo(current - 1);
-      }
-    });
+      });
+      nextBtn.addEventListener("click", () => {
+        if (current < total - 1) goTo(current + 1);
+      });
 
-  </script>
-</body>
-
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === " ") {
+          e.preventDefault();
+          if (current < total - 1) goTo(current + 1);
+        }
+        if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          e.preventDefault();
+          if (current > 0) goTo(current - 1);
+        }
+      });
+    </script>
+  </body>
 </html>
