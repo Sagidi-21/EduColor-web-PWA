@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const allowed = await userHasAppAccess(admin, signed.user.id, email);
+    const allowed = await userHasAppAccess(admin, signed.user, email);
     if (!allowed) {
       try {
         await userClient.auth.signOut();
@@ -104,9 +104,14 @@ Deno.serve(async (req) => {
   }
 });
 
+type AuthUser = {
+  id: string;
+  user_metadata?: Record<string, unknown> | null;
+};
+
 async function userHasAppAccess(
   admin: ReturnType<typeof createClient>,
-  userId: string,
+  user: AuthUser,
   emailNorm: string,
 ): Promise<boolean> {
   const { data: adminRow } = await admin
@@ -116,19 +121,29 @@ async function userHasAppAccess(
     .maybeSingle();
   if (adminRow) return true;
 
-  const { data: rpcOk } = await admin.rpc("session_has_app_access", { p_user_id: userId });
+  const { data: rpcOk } = await admin.rpc("session_has_app_access", { p_user_id: user.id });
   if (rpcOk === true) return true;
 
   // Fallback si la RPC aún no está desplegada.
   const { data, error } = await admin
     .from("school_memberships")
     .select("role, is_active")
-    .eq("user_id", userId);
-  if (error || !data?.length) return false;
-  return data.some(
-    (row: { role: string; is_active: boolean | null }) =>
-      row.role === "owner" || row.is_active === true || row.is_active === null,
-  );
+    .eq("user_id", user.id);
+  if (!error && data?.length) {
+    const active = data.some(
+      (row: { role: string; is_active: boolean | null }) =>
+        row.role === "owner" || row.is_active === true || row.is_active === null,
+    );
+    if (active) return true;
+  }
+
+  // Alta post-confirm: permite sesión para bootstrap create_school + WaitingApproval
+  // (AppShell no deja entrar al home mientras status=pending).
+  const pending =
+    typeof user.user_metadata?.pending_school_name === "string"
+      ? user.user_metadata.pending_school_name.trim()
+      : "";
+  return pending.length >= 2;
 }
 
 async function loadGuard(admin: ReturnType<typeof createClient>, email: string) {
