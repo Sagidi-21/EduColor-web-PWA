@@ -394,9 +394,12 @@ export function SchoolAccessScreen({
                   >
                     {busy && !isLoginMode ? "Espera…" : "Registrar Colegio"}
                   </button>
-                  <button type="button" className="sa__local" onClick={() => onContinueLocal?.()}>
-                    Continuar sin cuenta (Probar DEMO)
-                  </button>
+                  {/* Absolute bajo el CTA: ocultar si hay status para no solaparse. */}
+                  {!(error || info || !configured) ? (
+                    <button type="button" className="sa__local" onClick={() => onContinueLocal?.()}>
+                      Continuar sin cuenta (Probar DEMO)
+                    </button>
+                  ) : null}
                 </div>
                 {!isLoginMode && (error || info || !configured) && (
                   <div className="sa__status sa__status--in-pane" role={error ? "alert" : "status"}>

@@ -10,6 +10,8 @@ Misma app y mismo login. Si tu email está en `platform_admins`, tras entrar ves
 - Chip **Pendientes** → aceptar / rechazar solicitudes
 - Entrar en un colegio **como OW**
 - Desactivar / eliminar con doble confirmación
+- **Eliminar o rechazar** un colegio también borra las cuentas Auth de sus
+  miembros (emails libres para un alta futura; D-039). No borra platform admins.
 
 **No (usan herramientas gratis, no pantallas propias):**
 
@@ -33,9 +35,11 @@ select public.add_platform_admin('tu-email-admin@ejemplo.com');
 
 - `supabase/migrations/20261019130000_platform_admin.sql`
 - `supabase/migrations/20261019140000_school_branding.sql` (columnas `background_url` / `logo_ficha_url` + bucket Storage `school-branding`)
-- Redesplegar Edge `school-login` (admins sin membresía de colegio).
+- `supabase/migrations/20261025110000_admin_delete_school_removes_auth_users.sql` (D-039: borrar colegio → borrar Auth de miembros)
+- Redesplegar Edge `school-login` (admins sin membresía; también `pending_school_name` → WaitingApproval).
 
 Las altas nuevas de «Registrar Colegio» quedan `pending` hasta que las aceptes.
+Pantalla del solicitante: **Solicitud en revisión** (WaitingApproval).
 
 ## SQL Editor: `must be owner of table …`
 

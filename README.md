@@ -82,6 +82,22 @@ Sin Supabase puedes revisar la interfaz y la **DEMO**. El login de colegio y Adm
 
 **No** subas `.env` ni secretos de Edge (`RESEND_*`, service role) al repositorio.
 
+## Despliegue (producción)
+
+URL estable del piloto: **[https://peppy-cactus-71f921.netlify.app](https://peppy-cactus-71f921.netlify.app)** (Netlify).
+
+## Credenciales de prueba (tribunal / revisión TFM)
+
+Cuenta de colegio de demostración en el entorno de producción:
+
+| Campo        | Valor                         |
+| ------------ | ----------------------------- |
+| Colegio      | BigSchoolTFM                  |
+| Usuario      | `sagidiappcursor2@gmail.com`  |
+| Contraseña   | `.6RXSUuyphZYz4!`             |
+
+Entrar con **Entrar al Colegio** (no el registro). Si el centro está pendiente de aceptación por Admin Central, verás la pantalla de solicitud en revisión hasta que un platform admin lo active.
+
 ## Arranque local
 
 Instalación reproducible:

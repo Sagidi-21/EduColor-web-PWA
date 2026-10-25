@@ -8,7 +8,7 @@ el mapa.
 | ---------------------------- | ---------------------------------------------------------------- |
 | Activar Resend (ops lockout) | [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md)                   |
 | Activar / comprobar Sentry   | [SENTRY_SETUP.md](./SENTRY_SETUP.md)                             |
-| Decisiones                   | [DECISIONES.md](./DECISIONES.md) D-036, D-037, D-038             |
+| Decisiones                   | [DECISIONES.md](./DECISIONES.md) D-036–D-039                     |
 | Checklist calidad            | [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md) D12–D16 |
 | Amenazas                     | [THREAT_MODEL.md](./THREAT_MODEL.md)                             |
 
@@ -83,9 +83,17 @@ Sentry **no** sustituye Resend ni Auth. Resend **no** sustituye Auth.
 
 ### E. Login correcto
 
-1. Sesión OK + acceso a app (owner / docente activo / platform admin) → se
-   **borra** el guard de ese email.
-2. Entra a Home / Admin Central según rol.
+1. Sesión OK + acceso a app (owner / docente activo / platform admin / alta con
+   `pending_school_name`) → se **borra** el guard de ese email.
+2. Entra a Home / Admin Central / **WaitingApproval** (colegio `pending`) según
+   rol (D-039).
+
+### E2. Baja o rechazo de colegio (D-039)
+
+1. Platform admin **elimina** o **rechaza** el colegio → RPC `admin_delete_school`.
+2. Se borra el colegio (cascade staff/invites) **y** las cuentas Auth de sus
+   miembros (no platform admins).
+3. Esos emails quedan libres para un **nuevo** «Registrar Colegio» más adelante.
 
 ### F. Otros correos Auth (no son lockout)
 

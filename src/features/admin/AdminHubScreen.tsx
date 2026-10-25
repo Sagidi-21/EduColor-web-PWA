@@ -100,7 +100,7 @@ export function AdminHubScreen({
         kind: "deleteFinal",
         school,
         title: "Confirmación final",
-        text: `Se borrará «${school.name}» y todos sus datos de staff. Esta acción no se puede deshacer.`,
+        text: `Se borrará «${school.name}», el staff y las cuentas de acceso (emails). Podrán volver a registrarse más adelante con el mismo correo. Esta acción no se puede deshacer.`,
         confirmLabel: "Eliminar definitivamente",
         danger: true,
       });
@@ -149,7 +149,7 @@ export function AdminHubScreen({
       kind: "delete",
       school,
       title: "Eliminar colegio",
-      text: `¿Eliminar permanentemente «${school.name}»?`,
+      text: `¿Eliminar permanentemente «${school.name}»? Se liberarán los emails del staff para un posible re-registro.`,
       confirmLabel: "Continuar",
       danger: true,
     });
@@ -168,7 +168,7 @@ export function AdminHubScreen({
       kind: "reject",
       school,
       title: "Rechazar solicitud",
-      text: `¿Rechazar y eliminar la solicitud de «${school.name}»?`,
+      text: `¿Rechazar y eliminar la solicitud de «${school.name}»? También se borrará la cuenta del solicitante para que pueda registrarse de nuevo con el mismo email.`,
       confirmLabel: "Rechazar",
       danger: true,
     });
