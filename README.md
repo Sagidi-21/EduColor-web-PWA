@@ -6,15 +6,15 @@ Este repositorio es el entregable técnico del **TFM**. El cliente de escritorio
 
 ## Qué es la app (visión rápida)
 
-| Capacidad                         | Descripción breve                                                                 |
-| --------------------------------- | --------------------------------------------------------------------------------- |
-| Catálogo matemático V1            | **62** actividades migradas (pizarra + fichas)                                    |
-| Sesión de aula                    | Ejercicios, corrección, resumen; uso orientado a pizarra digital                  |
-| Fichas PDF                        | Generación de fichas para imprimir desde el mismo catálogo                        |
-| Identidad / colegios              | Alta de centro, login, invitaciones de docentes, Admin Central (piloto)           |
-| DEMO                              | Entrada sin cuenta con catálogo limitado (escaparate)                             |
-| Reconocimiento de dígitos         | Entrada manuscrita en algunas actividades (TensorFlow.js en el cliente)           |
-| Observabilidad                    | Sentry (errores JS), chip Seguridad + Resend (lockouts)                           |
+| Capacidad                 | Descripción breve                                                       |
+| ------------------------- | ----------------------------------------------------------------------- |
+| Catálogo matemático V1    | **62** actividades migradas (pizarra + fichas)                          |
+| Sesión de aula            | Ejercicios, corrección, resumen; uso orientado a pizarra digital        |
+| Fichas PDF                | Generación de fichas para imprimir desde el mismo catálogo              |
+| Identidad / colegios      | Alta de centro, login, invitaciones de docentes, Admin Central (piloto) |
+| DEMO                      | Entrada sin cuenta con catálogo limitado (escaparate)                   |
+| Reconocimiento de dígitos | Entrada manuscrita en algunas actividades (TensorFlow.js en el cliente) |
+| Observabilidad            | Sentry (errores JS), chip Seguridad + Resend (lockouts)                 |
 
 Stack principal: **React 18 + TypeScript + Vite**, PWA (`vite-plugin-pwa`), **Supabase** (Auth, Postgres, Edge Functions, Storage), despliegue en **Netlify**, **Sentry** integrado para errores de la PWA (DSN en Netlify; ver [`docs/SENTRY_SETUP.md`](docs/SENTRY_SETUP.md)) y **Resend** para avisos ops de lockout (Edge; ver [`docs/OPS_ALERTS_RESEND.md`](docs/OPS_ALERTS_RESEND.md)).
 
@@ -71,12 +71,12 @@ En Windows (PowerShell): `Copy-Item .env.example .env`
 
 2. Rellena al menos (claves **publishable / anon**, nunca la `service_role`):
 
-| Variable                 | Uso                                      | ¿Obligatoria para arrancar?      |
-| ------------------------ | ---------------------------------------- | -------------------------------- |
-| `VITE_SUPABASE_URL`      | Proyecto Supabase                        | No para UI/DEMO; sí para login real |
-| `VITE_SUPABASE_ANON_KEY` | Clave anon / publishable                 | Igual                            |
-| `HF_TOKEN`               | Generación de mascota (Hugging Face)     | No (solo feature Compañero IA)   |
-| `VITE_SENTRY_DSN`        | Sentry (ya integrado en código y en prod)| No en local: sin DSN la app arranca igual; en Netlify sí está configurado |
+| Variable                 | Uso                                       | ¿Obligatoria para arrancar?                                               |
+| ------------------------ | ----------------------------------------- | ------------------------------------------------------------------------- |
+| `VITE_SUPABASE_URL`      | Proyecto Supabase                         | No para UI/DEMO; sí para login real                                       |
+| `VITE_SUPABASE_ANON_KEY` | Clave anon / publishable                  | Igual                                                                     |
+| `HF_TOKEN`               | Generación de mascota (Hugging Face)      | No (solo feature Compañero IA)                                            |
+| `VITE_SENTRY_DSN`        | Sentry (ya integrado en código y en prod) | No en local: sin DSN la app arranca igual; en Netlify sí está configurado |
 
 Sin Supabase puedes revisar la interfaz y la **DEMO**. El login de colegio y Admin Central requieren un proyecto Supabase configurado (ver `docs/CHECKLIST_CALIDAD_AUTH.md`).
 
@@ -90,11 +90,11 @@ URL estable del piloto: **[https://peppy-cactus-71f921.netlify.app](https://pepp
 
 Cuenta de colegio de demostración en el entorno de producción:
 
-| Campo        | Valor                         |
-| ------------ | ----------------------------- |
-| Colegio      | BigSchoolTFM                  |
-| Usuario      | `sagidiappcursor2@gmail.com`  |
-| Contraseña   | `.6RXSUuyphZYz4!`             |
+| Campo      | Valor                        |
+| ---------- | ---------------------------- |
+| Colegio    | BigSchoolTFM                 |
+| Usuario    | `sagidiappcursor2@gmail.com` |
+| Contraseña | `.6RXSUuyphZYz4!`            |
 
 Entrar con **Entrar al Colegio** (no el registro). Si el centro está pendiente de aceptación por Admin Central, verás la pantalla de solicitud en revisión hasta que un platform admin lo active.
 
@@ -130,30 +130,30 @@ npm test
 npm run build
 ```
 
-| Comando              | Uso                                      |
-| -------------------- | ---------------------------------------- |
-| `npm run format`     | Formatea el código                       |
-| `npm run lint:fix`   | Correcciones automáticas de ESLint       |
+| Comando                 | Uso                                   |
+| ----------------------- | ------------------------------------- |
+| `npm run format`        | Formatea el código                    |
+| `npm run lint:fix`      | Correcciones automáticas de ESLint    |
 | `npm run test:coverage` | Cobertura Vitest                      |
-| `npm run test:e2e`   | Playwright (opcional; ver vars E2E)      |
-| `npm run preview`    | Sirve la build de producción en local    |
+| `npm run test:e2e`      | Playwright (opcional; ver vars E2E)   |
+| `npm run preview`       | Sirve la build de producción en local |
 
 GitHub Actions ejecuta las comprobaciones principales al enviar cambios a `main`.
 
 ## Documentación útil para la revisión del TFM
 
-| Documento                                                         | Contenido                                      |
-| ----------------------------------------------------------------- | ---------------------------------------------- |
-| [`docs/PLAN_ENTREGA_TFM.md`](docs/PLAN_ENTREGA_TFM.md)             | Requisitos oficiales y checklist de entrega    |
-| [`docs/ESTADO_DEL_PROYECTO.md`](docs/ESTADO_DEL_PROYECTO.md)       | Punto de trabajo y enlaces canónicos           |
-| [`docs/ARQUITECTURA_INICIAL.md`](docs/ARQUITECTURA_INICIAL.md)     | Capas, dominio vs núcleo UI, composición `src/app/` |
-| [`docs/INVENTARIO_MIGRACION_ACTIVIDADES.md`](docs/INVENTARIO_MIGRACION_ACTIVIDADES.md) | 62 actividades / paridad            |
-| [`docs/CHECKLIST_CALIDAD_AUTH.md`](docs/CHECKLIST_CALIDAD_AUTH.md) | Auth / prod                                    |
-| [`docs/AUTH_ALERTAS_Y_CORREOS.md`](docs/AUTH_ALERTAS_Y_CORREOS.md) | Lockout, correos Auth/Resend, Sentry           |
-| [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md)                     | Amenazas del piloto                            |
-| [`docs/DECISIONES.md`](docs/DECISIONES.md)                         | Decisiones de producto/técnicas                |
-| [`docs/DEFINITION_OF_DONE.md`](docs/DEFINITION_OF_DONE.md)         | Criterios de cierre                            |
-| [`docs/DEUDA_TECNICA.md`](docs/DEUDA_TECNICA.md)                   | Deuda (MVP sin filas abiertas)                 |
+| Documento                                                                              | Contenido                                           |
+| -------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| [`docs/PLAN_ENTREGA_TFM.md`](docs/PLAN_ENTREGA_TFM.md)                                 | Requisitos oficiales y checklist de entrega         |
+| [`docs/ESTADO_DEL_PROYECTO.md`](docs/ESTADO_DEL_PROYECTO.md)                           | Punto de trabajo y enlaces canónicos                |
+| [`docs/ARQUITECTURA_INICIAL.md`](docs/ARQUITECTURA_INICIAL.md)                         | Capas, dominio vs núcleo UI, composición `src/app/` |
+| [`docs/INVENTARIO_MIGRACION_ACTIVIDADES.md`](docs/INVENTARIO_MIGRACION_ACTIVIDADES.md) | 62 actividades / paridad                            |
+| [`docs/CHECKLIST_CALIDAD_AUTH.md`](docs/CHECKLIST_CALIDAD_AUTH.md)                     | Auth / prod                                         |
+| [`docs/AUTH_ALERTAS_Y_CORREOS.md`](docs/AUTH_ALERTAS_Y_CORREOS.md)                     | Lockout, correos Auth/Resend, Sentry                |
+| [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md)                                         | Amenazas del piloto                                 |
+| [`docs/DECISIONES.md`](docs/DECISIONES.md)                                             | Decisiones de producto/técnicas                     |
+| [`docs/DEFINITION_OF_DONE.md`](docs/DEFINITION_OF_DONE.md)                             | Criterios de cierre                                 |
+| [`docs/DEUDA_TECNICA.md`](docs/DEUDA_TECNICA.md)                                       | Deuda (MVP sin filas abiertas)                      |
 
 Guías operativas: [`docs/SENTRY_SETUP.md`](docs/SENTRY_SETUP.md), [`docs/OPS_ALERTS_RESEND.md`](docs/OPS_ALERTS_RESEND.md), [`docs/ADMIN_CENTRAL.md`](docs/ADMIN_CENTRAL.md).
 
