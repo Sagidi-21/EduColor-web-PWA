@@ -117,28 +117,28 @@ momento; fuera del plazo de la edición los tiempos de corrección pueden variar
 
 Marcar conforme se cierre cada entregable. Actualizar este bloque al avanzar.
 
-| Entregable                                             | Estado         | Notas / dónde vive                                                                                            |
-| ------------------------------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------- |
-| README: descripción, stack, instalación, ejecución     | ✅             | [`README.md`](../../README.md)                                                                                |
-| README: estructura del proyecto                        | ✅             | Sección «Estructura del proyecto» en README + enlace a arquitectura                                           |
-| README: funcionalidades principales                    | ✅             | Tabla «Qué es la app» en README                                                                               |
-| Usuario / contraseña de prueba (login)                 | ✅             | README «Credenciales de prueba»: `sagidiappcursor2@gmail.com` / `.6RXSUuyphZYz4!` (colegio BigSchoolTFM)      |
-| Repo GitHub (público o privado justificado)            | ✅             | Público: `Sagidi-21/EduColor-web-PWA`                                                                         |
-| Despliegue (URL en docs)                               | ✅             | [`https://peppy-cactus-71f921.netlify.app`](https://peppy-cactus-71f921.netlify.app) (README + esta página)   |
-| Slides + URL/archivo en docs                           | ⬜ En curso    | Archivo: [`presentacion_profesores.html`](../presentacion_profesores.html); falta URL pública (Drive/Netlify) |
-| Vídeo (pantalla obligatoria) + URL en docs             | ⬜ Pendiente   | Grabar demo + explicación; enlazar aquí y en README                                                           |
-| Docs técnicas de apoyo (arquitectura, auth, amenazas…) | ✅ Base sólida | Ver tabla en README «Documentación útil para la revisión del TFM»                                             |
+| Entregable                                             | Estado         | Notas / dónde vive                                                                                                                                                                                                                                                  |
+| ------------------------------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| README: descripción, stack, instalación, ejecución     | ✅             | [`README.md`](../../README.md)                                                                                                                                                                                                                                      |
+| README: estructura del proyecto                        | ✅             | Sección «Estructura del proyecto» en README + enlace a arquitectura                                                                                                                                                                                                 |
+| README: funcionalidades principales                    | ✅             | Tabla «Qué es la app» en README                                                                                                                                                                                                                                     |
+| Usuario / contraseña de prueba (login)                 | ✅             | README «Credenciales de prueba»: `sagidiappcursor2@gmail.com` / `.6RXSUuyphZYz4!` (colegio BigSchoolTFM)                                                                                                                                                            |
+| Repo GitHub (público o privado justificado)            | ✅             | Público: `Sagidi-21/EduColor-web-PWA`                                                                                                                                                                                                                               |
+| Despliegue (URL en docs)                               | ✅             | [`https://peppy-cactus-71f921.netlify.app`](https://peppy-cactus-71f921.netlify.app) (README + esta página)                                                                                                                                                         |
+| Slides + URL/archivo en docs                           | ✅             | HTML en Drive (explicado en el vídeo). Público «cualquiera con el enlace»: [carpeta Drive](https://drive.google.com/drive/folders/1dfHOtTUi4VPFsQmXB8UxU9kCb50opmPx?usp=drive_link). Copia local: [`presentacion_profesores.html`](../presentacion_profesores.html) |
+| Vídeo (pantalla obligatoria) + URL en docs             | ⬜ Pendiente   | Misma carpeta Drive; grabar demo + explicación de las slides; enlazar aquí y en README                                                                                                                                                                              |
+| Docs técnicas de apoyo (arquitectura, auth, amenazas…) | ✅ Base sólida | Ver tabla en README «Documentación útil para la revisión del TFM»                                                                                                                                                                                                   |
 
 ### URLs a rellenar antes del formulario
 
-| Recurso              | URL                                             |
-| -------------------- | ----------------------------------------------- |
-| Repositorio          | `https://github.com/Sagidi-21/EduColor-web-PWA` |
-| Despliegue           | `https://peppy-cactus-71f921.netlify.app`       |
-| Slides               | _pendiente_                                     |
-| Vídeo                | _pendiente_                                     |
-| Usuario de prueba    | `sagidiappcursor2@gmail.com`                    |
-| Contraseña de prueba | `.6RXSUuyphZYz4!` (también en README)           |
+| Recurso              | URL                                                                                                                                      |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Repositorio          | `https://github.com/Sagidi-21/EduColor-web-PWA`                                                                                          |
+| Despliegue           | `https://peppy-cactus-71f921.netlify.app`                                                                                                |
+| Slides (HTML)        | [Drive TFM](https://drive.google.com/drive/folders/1dfHOtTUi4VPFsQmXB8UxU9kCb50opmPx?usp=drive_link) (público: cualquiera con el enlace) |
+| Vídeo                | Misma carpeta Drive — _pendiente de grabar/subir_                                                                                        |
+| Usuario de prueba    | `sagidiappcursor2@gmail.com`                                                                                                             |
+| Contraseña de prueba | `.6RXSUuyphZYz4!` (también en README)                                                                                                    |
 
 ---
 
@@ -147,8 +147,8 @@ Marcar conforme se cierre cada entregable. Actualizar este bloque al avanzar.
 1. **Cerrar producto revisable** — build verde, login/demo usable, docs alineadas.
 2. **Publicar URL estable** — ✅ `https://peppy-cactus-71f921.netlify.app` (README + esta página).
 3. **Credenciales de prueba** — ✅ documentadas en README / esta página (`sagidiappcursor2@gmail.com`). No mezclar con secretos de ops (service role, Resend).
-4. **Slides** — problema, solución, stack, arquitectura, demo, aprendizajes; enlace público.
-5. **Vídeo** — pantalla compartida, recorrido de la app + decisiones técnicas clave.
+4. **Slides** — ✅ [carpeta Drive](https://drive.google.com/drive/folders/1dfHOtTUi4VPFsQmXB8UxU9kCb50opmPx?usp=drive_link) (HTML; se explican en el vídeo; compartido con cualquiera con el enlace).
+5. **Vídeo** — pantalla compartida explicando las slides + demo de la app; subir a la misma carpeta Drive.
 6. **Pass final del README** — que un revisor externo pueda clonar, arrancar y entender el alcance sin preguntar.
 7. **Formulario** — rellenar todas las URLs y entregar.
 
