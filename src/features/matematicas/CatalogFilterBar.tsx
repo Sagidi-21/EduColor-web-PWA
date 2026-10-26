@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect, useCallback } from "react";
+﻿import { useState, useRef, useEffect, useCallback, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import type {
   Subject,
@@ -24,6 +24,34 @@ interface CatalogFilterBarProps {
 
 type OpenColumn = "materia" | "curso" | "bloque" | null;
 
+/** Tamaño natural de `pizarra.png` (la zona útil se calibra contra esto). */
+const PIZARRA_NATURAL = { width: 1376, height: 768 } as const;
+/**
+ * Caja del listado sobre la pizarra a tamaño natural.
+ * Se escala con el tamaño renderizado de la imagen (evita el desfase en
+ * portátiles / viewports distintos al monitor de calibración).
+ */
+const CONTENT_BOX_NATURAL = { top: 49, left: 229, width: 818, height: 481 } as const;
+
+type ContentBox = { top: number; left: number; width: number; height: number };
+
+function scaleFactors(bounds: { width: number; height: number }) {
+  return {
+    sx: bounds.width / PIZARRA_NATURAL.width,
+    sy: bounds.height / PIZARRA_NATURAL.height,
+  };
+}
+
+function scaleContentBox(bounds: { width: number; height: number }): ContentBox {
+  const { sx, sy } = scaleFactors(bounds);
+  return {
+    top: Math.round(CONTENT_BOX_NATURAL.top * sy),
+    left: Math.round(CONTENT_BOX_NATURAL.left * sx),
+    width: Math.round(CONTENT_BOX_NATURAL.width * sx),
+    height: Math.round(CONTENT_BOX_NATURAL.height * sy),
+  };
+}
+
 export function CatalogFilterBar({
   subjects,
   grades,
@@ -40,8 +68,8 @@ export function CatalogFilterBar({
   const [isAnimating, setIsAnimating] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
 
-  // Chalkboard adjustment state
-  const [geometry, setGeometry] = useState({ top: 49, left: 229, width: 818, height: 481 });
+  // Chalkboard adjustment state (píxeles sobre la imagen renderizada)
+  const [geometry, setGeometry] = useState<ContentBox>(CONTENT_BOX_NATURAL);
   const [imageBounds, setImageBounds] = useState<{
     left: number;
     top: number;
@@ -84,7 +112,7 @@ export function CatalogFilterBar({
     }
   }, [openColumn, closeAll]);
 
-  // Update image bounds when image loads or viewport resizes
+  // Update image bounds when image loads or viewport resizes (PC, portátil, tablet)
   const updateImageBounds = useCallback(() => {
     const image = imageRef.current;
     const stage = stageRef.current;
@@ -107,31 +135,40 @@ export function CatalogFilterBar({
       updateImageBounds();
     }
     const handleLoad = () => updateImageBounds();
-    const handleResize = () => updateImageBounds();
+    const handleViewportChange = () => {
+      // rAF: en tablet la barra del navegador / giro acaban de asentar el layout
+      requestAnimationFrame(updateImageBounds);
+    };
     image?.addEventListener("load", handleLoad);
-    window.addEventListener("resize", handleResize);
-    const ro = new ResizeObserver(updateImageBounds);
+    window.addEventListener("resize", handleViewportChange);
+    window.addEventListener("orientationchange", handleViewportChange);
+    const vv = window.visualViewport;
+    vv?.addEventListener("resize", handleViewportChange);
+    vv?.addEventListener("scroll", handleViewportChange);
+    const ro = new ResizeObserver(handleViewportChange);
     if (stage) ro.observe(stage);
+    if (image) ro.observe(image);
     return () => {
       image?.removeEventListener("load", handleLoad);
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleViewportChange);
+      window.removeEventListener("orientationchange", handleViewportChange);
+      vv?.removeEventListener("resize", handleViewportChange);
+      vv?.removeEventListener("scroll", handleViewportChange);
       ro.disconnect();
     };
   }, [openColumn, updateImageBounds]);
 
-  // Initialize geometry when image bounds are known
+  // Reescalar la caja del listado cuando cambia el tamaño renderizado de la pizarra
   useEffect(() => {
-    if (imageBounds && geometry.width === 0) {
-      const inset = Math.min(imageBounds.width, imageBounds.height) * 0.1;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setGeometry({
-        top: Math.round(inset),
-        left: Math.round(inset),
-        width: Math.round(imageBounds.width - 2 * inset),
-        height: Math.round(imageBounds.height - 2 * inset),
-      });
-    }
-  }, [imageBounds, geometry.width]);
+    if (!imageBounds) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setGeometry(scaleContentBox(imageBounds));
+  }, [imageBounds]);
+
+  const { sx: chalkboardScaleX, sy: chalkboardScaleY } = imageBounds
+    ? scaleFactors(imageBounds)
+    : { sx: 1, sy: 1 };
+  const chalkboardScale = Math.min(chalkboardScaleX, chalkboardScaleY);
 
   const adjustGeometry = useCallback(
     (delta: Partial<{ top: number; left: number; width: number; height: number }>) => {
@@ -409,12 +446,15 @@ export function CatalogFilterBar({
                 >
                   <div
                     className="chalkboard-content"
-                    style={{
-                      top: geometry.top,
-                      left: geometry.left,
-                      width: geometry.width,
-                      height: geometry.height,
-                    }}
+                    style={
+                      {
+                        top: geometry.top,
+                        left: geometry.left,
+                        width: geometry.width,
+                        height: geometry.height,
+                        ["--chalkboard-scale"]: String(chalkboardScale),
+                      } as CSSProperties
+                    }
                     ref={chalkboardContentRef}
                   >
                     {renderChalkboardOptions()}
