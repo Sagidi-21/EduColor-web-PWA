@@ -1,15 +1,13 @@
 ﻿# Componentes compartidos
 
 Catálogo del **mobiliario común de una actividad**: las piezas que ya existen y que
-hay que reutilizar en lugar de reescribir. Es la segunda mitad de la fuente de verdad,
-junto a `electron-reference/`, que dice **qué** se migra, y este documento, que dice
-**con qué** se construye en la PWA.
+hay que reutilizar en lugar de reescribir. Describe **con qué** se construyen las
+pantallas y fichas en la PWA.
 
 Las dos reglas que lo rigen:
 
 - Si una pieza de esta lista no te sirve tal cual, **no la clones**: extiende la
-  compartida o crea la tuya al lado y aplícala al catálogo. Ver
-  [AGENT_RULES.md](./ops/AGENT_RULES.md) §17, "Regla de unificación".
+  compartida o crea la tuya al lado y documenta el cambio.
 - Si creas una pieza nueva que dos activities van a usar, **añádela aquí el mismo día**.
   Un componente compartido que no está en este documento se acaba duplicando.
 
@@ -40,7 +38,7 @@ Las decisiones de **por qué** cada pieza es como es están en
 
 ## 1. Cabecera — `ActivityHeader`
 
-Sustituye a `ExerciseHeader` de Electron. Lleva salir, título de la unidad, avatar de la
+Cabecera estándar de actividad. Lleva salir, título de la unidad, avatar de la
 mascota, estrellas de dificultad y el progreso `3/12`.
 
 El `InputModeToggle` va **como hijo** del `ActivityHeader`, nunca suelto al lado.
@@ -97,8 +95,8 @@ import { ActivityCelebration } from "../components/ActivityCelebration";
 import { Numpad } from "../../shared/components/Numpad";
 ```
 
-**Nunca un numpad local**, por muy bloqueante que parezca en el renderer original de
-Electron. Props: `onDigit`, `onDelete`, `onConfirm` y `disabled`.
+**Nunca un numpad local** dentro de un renderer. Props: `onDigit`, `onDelete`,
+`onConfirm` y `disabled`.
 
 Solo se monta en modo numpad. Cuando el modo es lienzo, en su lugar van las casillas
 de escritura a mano (§5).
@@ -143,9 +141,9 @@ const boxes = useDigitBoxes({ length: casillas, answer: String(current.answer), 
 
 ## 5. Escritura a mano — `LazyDigitCell`
 
-Sustituye a `DrawableAnswerBox` de Electron. Carga TensorFlow.js (~890 kB) en diferido,
-así que **siempre** se importa en lazy. Envuélvelo en `ActivityErrorBoundary` (§8): si
-ese trozo falla, la pantalla se queda vacía.
+Casilla de dígito manuscrito. Carga TensorFlow.js (~890 kB) en diferido, así que
+**siempre** se importa en lazy. Envuélvelo en `ActivityErrorBoundary` (§8): si ese
+trozo falla, la pantalla se queda vacía.
 
 ## 6. Selector de modo — `InputModeToggle` + `useInputMode`
 
@@ -154,8 +152,7 @@ activities de la familia.
 
 ## 7. Resumen final — `SummaryScreen`
 
-Siempre el compartido. No copies el resumen inline que tengan algunos renderers
-originales de Electron.
+Siempre el compartido. No copies un resumen inline dentro del renderer.
 
 ## 8. Pantalla de nivel y dificultad — `DifficultyReveal`
 

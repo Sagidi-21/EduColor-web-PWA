@@ -2,13 +2,14 @@
 
 Aplicación web progresiva (PWA) de **EduColor** para Matemáticas de **1.º y 2.º de Primaria**: pizarra digital interactiva, generador de fichas imprimibles y acceso multi-colegio para profesorado (sin datos de alumnado en esta versión).
 
-Este repositorio es el entregable técnico del **TFM**. El cliente de escritorio Electron original se conserva solo como referencia de migración (`electron-reference/`, no forma parte del arranque habitual).
+Este repositorio es el entregable técnico del **TFM**: la PWA EduColor tal como
+se despliega y se usa en el piloto.
 
 ## Qué es la app (visión rápida)
 
 | Capacidad                 | Descripción breve                                                       |
 | ------------------------- | ----------------------------------------------------------------------- |
-| Catálogo matemático V1    | **62** actividades migradas (pizarra + fichas)                          |
+| Catálogo matemático       | **62** actividades (pizarra + fichas)                                   |
 | Sesión de aula            | Ejercicios, corrección, resumen; uso orientado a pizarra digital        |
 | Fichas PDF                | Generación de fichas para imprimir desde el mismo catálogo              |
 | Identidad / colegios      | Alta de centro, login, invitaciones de docentes, Admin Central (piloto) |
@@ -32,11 +33,11 @@ EduColor-web-PWA/
 │   ├── manifests/     # Contratos versionados de actividades / currículo
 │   ├── shared/        # Componentes y utilidades transversales
 │   └── server/        # Servidor local del Compañero IA (dev)
-├── supabase/          # Migraciones, Edge Functions, políticas
-├── docs/              # Doc de producto (TFM) + docs/ops/ (runbooks y planes)
-├── tests/             # E2E (Playwright) y soporte de pruebas
+├── supabase/          # SQL, Edge Functions, políticas (Supabase)
+├── docs/              # Doc de producto (TFM) + docs/ops/ (runbooks internos)
+├── tests/             # E2E (Playwright)
+├── test-support/      # Tests de apoyo (p. ej. Edge content)
 ├── public/            # Estáticos PWA (iconos, etc.)
-├── electron-reference/# Cliente Electron original (solo referencia; no arranca la PWA)
 ├── package.json       # Scripts npm
 ├── vite.config.ts     # Build Vite + PWA
 └── README.md          # Este documento
@@ -48,7 +49,7 @@ Detalle de capas y dependencias: [`docs/ARQUITECTURA_INICIAL.md`](docs/ARQUITECT
 
 - **Node.js 22 LTS** (recomendado) y **npm**
 - Git
-- Navegador **Chrome** o **Edge** actual (objetivo V1: portátil Windows → pizarra HDMI/USB Touch)
+- Navegador **Chrome** o **Edge** (ver [Navegadores y pizarra](#navegadores-y-pizarra))
 
 ## Obtener el código
 
@@ -155,10 +156,23 @@ Runbooks, planes de ejecución, checklists y estado operativo: carpeta [`docs/op
 
 ## Navegadores y pizarra
 
-- **Objetivo V1:** Chrome/Edge en portátil Windows conectado a pizarra digital.
-- Validación física de toque / pantalla completa / PWA instalada: pendiente de feedback de aula (Fase 4).
-- Safari, Firefox, tabletas y Android: no comprometidos en V1.
+Esta es la **primera versión** de EduColor como PWA. En aula se usa con
+**Chrome o Edge** en un **portátil Windows** conectado a la pizarra digital
+(HDMI o USB Touch). Se abre en el navegador; no hay que instalar nada en la
+pizarra.
 
-## Alcance V1 (recordatorio)
+| Entorno                              | En esta primera versión        |
+| ------------------------------------ | ------------------------------ |
+| Chrome / Edge (Windows, aula)        | Entorno soportado              |
+| Safari, Firefox                      | No soportados                  |
+| Tabletas / Android / iOS             | No soportados                  |
+| Toque y pantalla completa en pizarra | Previstos en el diseño de aula |
 
-Incluye Matemáticas 1.º/2.º, profesorado, pizarra, fichas, sesiones de aula y dígitos. **No** incluye datos de alumnos, familias ni tareas individuales en esta versión. El piloto multi-colegio (D-028) gestiona centros y accesos de profesorado.
+La app desplegada en Netlify se puede revisar en Chrome o Edge de escritorio
+sin pizarra física.
+
+## Alcance de esta primera versión
+
+Incluye Matemáticas 1.º/2.º, profesorado, pizarra, fichas, sesiones de aula y
+reconocimiento de dígitos. **No** incluye datos de alumnos, familias ni tareas
+individuales. El acceso multi-colegio gestiona centros y docentes.

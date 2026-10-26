@@ -5,19 +5,22 @@ completa del repositorio en cada cambio: se revisan las filas abiertas de este
 documento y los archivos que haya tocado el cambio actual.
 
 **Qué es este registro:** la deuda técnica y las reservas de recursos, una fila
-por asunto. **Qué no es:** el estado de la migración de actividades, que está en
-[INVENTARIO_MIGRACION_ACTIVIDADES.md]. Las cifras de suite que aparecen en la columna
-de evidencia son la medición del día en que se cerró cada fila y no se actualizan
-al migrar una actividad nueva; la medición vigente está en el inventario.
+por asunto. El catálogo de actividades y su verificación contra el código viven
+en el inventario operativo
+([INVENTARIO…](./ops/INVENTARIO_MIGRACION_ACTIVIDADES.md)). Las cifras de suite
+en la columna de evidencia son la medición del día en que se cerró cada fila.
+
+**Nota TFM:** las filas **cerradas** pueden citar historial interno de
+desarrollo; no forman parte del relato de producto. Lo relevante para la
+entrega es que no queden filas **Abierta** / **En curso** sin plan.
 
 ## Estados
 
 - **Abierta:** compromiso técnico conocido que debe resolverse.
 - **En curso:** ya tiene una acción activa dentro de la fase indicada.
 - **Cerrada:** resuelta y verificada; se conserva como evidencia breve.
-- **Reserva trazable:** recurso aún no importado por la PWA, pero requerido por
-  un motor original identificado. No es deuda mientras mantenga propietario y
-  fase.
+- **Reserva trazable:** recurso aún no importado por la PWA, con propietario y
+  fase asignados. No es deuda abierta mientras mantenga ese trazado.
 
 ## Revisión rápida antes de un commit
 

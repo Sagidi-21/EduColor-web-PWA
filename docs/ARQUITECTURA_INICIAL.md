@@ -1,8 +1,10 @@
-# Arquitectura inicial de EduColor web
+# Arquitectura de EduColor web PWA
 
 ## Objetivo
 
-Construir una PWA para profesorado y pizarra digital que conserve el dominio educativo del proyecto Electron sin heredar su acoplamiento a Windows ni su IPC.
+PWA para profesorado y pizarra digital: catálogo de actividades matemáticas,
+sesiones de aula, fichas imprimibles e identidad multi-colegio, con dominio
+educativo separado de la UI y de la infraestructura.
 
 ```text
 UI React/PWA
@@ -18,21 +20,21 @@ carpetas `domain` / `application` / `adapters` en cada feature).
 
 ## Límites de capas
 
-| Carpeta         | Rol                                                             |
-| --------------- | --------------------------------------------------------------- |
-| `src/core`      | Ver subzonas abajo (dominio vs núcleo de producto)              |
-| `src/features`  | Pantallas React y flujos docentes (auth UI, home, matemáticas…) |
-| `src/app`       | Composición del arranque (`AppShell`, sesión autenticada, boot) |
-| `src/platform`  | PWA, IndexedDB, red, adaptadores Supabase / Sentry              |
-| `src/manifests` | Descripciones versionadas de currículo y actividades            |
-| `src/shared`    | Componentes y utilidades realmente transversales                |
-| `src/server`    | Express local del Compañero IA (fuera del core educativo MVP)   |
-| `docs`          | Arquitectura, decisiones y trazabilidad                         |
+| Carpeta         | Rol                                                               |
+| --------------- | ----------------------------------------------------------------- |
+| `src/core`      | Ver subzonas abajo (dominio vs núcleo de producto)                |
+| `src/features`  | Pantallas React y flujos docentes (auth UI, home, matemáticas…)   |
+| `src/app`       | Composición del arranque (`AppShell`, sesión autenticada, boot)   |
+| `src/platform`  | PWA, IndexedDB, red, adaptadores Supabase / Sentry                |
+| `src/manifests` | Descripciones versionadas de currículo y actividades              |
+| `src/shared`    | Componentes y utilidades realmente transversales                  |
+| `src/server`    | Express local del Compañero IA (fuera del core educativo MVP)     |
+| `docs`          | Arquitectura y decisiones de producto (TFM); `docs/ops/` runbooks |
 
 ### Dos zonas dentro de `src/core` (importante)
 
-La regla histórica «`core` sin React» aplica al **dominio educativo**, no a
-todo lo que hoy vive bajo `src/core/`. Para el TFM se documentan dos zonas:
+La regla «dominio sin React» aplica al **dominio educativo**, no a todo lo que
+hoy vive bajo `src/core/`. Para el TFM se documentan dos zonas:
 
 1. **Dominio puro (sin React / navegador / red)**
    - `src/core/activities/` — generadores, validadores, resultados.
@@ -46,9 +48,8 @@ todo lo que hoy vive bajo `src/core/`. Para el TFM se documentan dos zonas:
    - `src/core/context/` — contextos de aula / auth de sesión.
    - Renderers React de fichas bajo `src/core/ficha/renderers/`.
 
-No se reubican en bloque ahora (coste alto, riesgo de regresión). La regla de
-dependencias para **código nuevo** de dominio sigue siendo: sin React ni
-`platform` dentro de `activities` / contratos de `content`.
+La regla de dependencias para **código nuevo** de dominio sigue siendo: sin
+React ni `platform` dentro de `activities` / contratos de `content`.
 
 ### Dirección permitida de dependencias
 
@@ -109,19 +110,9 @@ Este patrón evita el renderizado inline de `EngineScreen` dentro del
 catálogo, permitiendo que ambas vistas participen en la transición 3D como
 paneles hermanos del `ViewTransition`.
 
-## Vertical slice incluido
+## Contrato de una actividad
 
-`counting` demuestra el contrato: generador determinista, validador, vista React, PWA y prueba. Se inspira en el motor Electron, pero no importa Electron.
-
-Ya no es el único: el catálogo V1 completo sigue este contrato. El número exacto
-y el estado por actividad están en
-[INVENTARIO_MIGRACION_ACTIVIDADES.md](INVENTARIO_MIGRACION_ACTIVIDADES.md).
-
-## Siguientes decisiones (estado)
-
-1. ~~Definir manifiestos de actividad y migrar el registro manual.~~ **Hecho**
-   (Fase 1): 62 manifiestos + `engine-registry`.
-2. Validar Pointer Events / pizarra real. **En curso** con el profesorado.
-3. Acordar con colegio/DPD el modelo RGPD formal. **Cuando el piloto lo exija.**
-4. ~~Auth / autorización de profesorado.~~ **Hecho** (Fase 10, D-028–D-037);
-   MFA owner deferido post-piloto.
+Cada actividad del catálogo V1 sigue el mismo contrato: generador
+determinista, validador, pantalla React, y (cuando aplica) ficha imprimible.
+Hay **62** actividades en Matemáticas 1.º/2.º; el registro vive en
+`src/core/content/engine-registry.ts` y los manifiestos en `src/manifests/`.
