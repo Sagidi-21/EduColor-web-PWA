@@ -3,7 +3,7 @@
  * autorización antes de generar contenido. Falla si se añade una carpeta
  * content-* sin ese flujo.
  */
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, type Dirent } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
@@ -20,8 +20,8 @@ const functionsRoot = resolve(root, "supabase/functions");
 
 function listContentFunctionNames(): string[] {
   return readdirSync(functionsRoot, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && d.name.startsWith("content-"))
-    .map((d) => d.name)
+    .filter((d: Dirent) => d.isDirectory() && d.name.startsWith("content-"))
+    .map((d: Dirent) => d.name)
     .sort();
 }
 
