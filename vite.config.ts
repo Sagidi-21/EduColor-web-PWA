@@ -106,6 +106,15 @@ export default defineConfig({
   ],
   test: {
     environment: "happy-dom",
+    // happy-dom ≥21 desactiva iframes por defecto (mitigación SSRF). Los tests
+    // de PDF montan iframes about:blank; hay que reactivar solo en Vitest.
+    environmentOptions: {
+      happyDOM: {
+        settings: {
+          enableIframePageLoading: true,
+        },
+      },
+    },
     // `pool: "vmThreads"` en vez del fork por defecto: en Windows los workers
     // de Vitest (forks de Node) se cuelgan con el código 0xC0000045 cuando la
     // suite es grande (126 archivos de test), aunque todos los tests pasen.
