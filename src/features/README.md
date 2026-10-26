@@ -1,4 +1,4 @@
-# Features
+﻿# Features
 
 Pantallas y componentes React organizados por caso de uso: actividades,
 sesiones, fichas, inicio y configuración docente.
@@ -9,4 +9,4 @@ sesiones, fichas, inicio y configuración docente.
   dominio que corresponde a `core`.
 
 Las pantallas de Matemáticas viven en `src/features/matematicas/`. El estado de
-cada actividad migrada está en `docs/INVENTARIO_MIGRACION_ACTIVIDADES.md`.
+cada actividad migrada está en `docs/ops/INVENTARIO_MIGRACION_ACTIVIDADES.md`.

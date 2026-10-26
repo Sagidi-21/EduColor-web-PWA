@@ -1,16 +1,16 @@
-# Auth: correos, lockout y alertas (mapa de flujos)
+﻿# Auth: correos, lockout y alertas (mapa de flujos)
 
 Documento **canónico** de qué correos y avisos existen en el piloto, quién los
 envía y qué ve el usuario. Las guías de configuración viven aparte; aquí está
 el mapa.
 
-| Tema                         | Documento                                                        |
-| ---------------------------- | ---------------------------------------------------------------- |
-| Activar Resend (ops lockout) | [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md)                   |
-| Activar / comprobar Sentry   | [SENTRY_SETUP.md](./SENTRY_SETUP.md)                             |
-| Decisiones                   | [DECISIONES.md](./DECISIONES.md) D-036–D-039                     |
-| Checklist calidad            | [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md) D12–D16 |
-| Amenazas                     | [THREAT_MODEL.md](./THREAT_MODEL.md)                             |
+| Tema                         | Documento                                                            |
+| ---------------------------- | -------------------------------------------------------------------- |
+| Activar Resend (ops lockout) | [OPS_ALERTS_RESEND.md](./ops/OPS_ALERTS_RESEND.md)                   |
+| Activar / comprobar Sentry   | [SENTRY_SETUP.md](./ops/SENTRY_SETUP.md)                             |
+| Decisiones                   | [DECISIONES.md](./DECISIONES.md) D-036–D-039                         |
+| Checklist calidad            | [CHECKLIST_CALIDAD_AUTH.md](./ops/CHECKLIST_CALIDAD_AUTH.md) D12–D16 |
+| Amenazas                     | [THREAT_MODEL.md](./ops/THREAT_MODEL.md)                             |
 
 ---
 
@@ -114,7 +114,7 @@ por Olvidé y reset disparado por lockout. El aviso ops Resend **no** cuenta aqu
 
 ### H. Errores de la PWA → Sentry
 
-Ver sección siguiente y [SENTRY_SETUP.md](./SENTRY_SETUP.md).
+Ver sección siguiente y [SENTRY_SETUP.md](./ops/SENTRY_SETUP.md).
 
 ---
 

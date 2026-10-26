@@ -1,4 +1,4 @@
-# Ejecución paso a paso — EduColor web PWA
+﻿# Ejecución paso a paso — EduColor web PWA
 
 Este documento desarrolla el [roadmap de ejecución](ROADMAP_DE_EJECUCION_DETALLADO.md). No se empieza una fase hasta cumplir sus dependencias y no se marca como cerrada sin su validación.
 
@@ -38,7 +38,7 @@ cuerpo, y por eso los hitos que sí tienen fecha viven en el changelog, no aquí
 
 ## Pasos
 
-1. Mantener el seguimiento en `docs/ESTADO_DEL_PROYECTO.md` y definir responsables de aprobación pedagógica y técnica. **Completado:** director del colegio (pedagógica), Salvador (técnica), con feedback de los profesores de Matemáticas de 1.º y 2.º.
+1. Mantener el seguimiento en `docs/ops/ESTADO_DEL_PROYECTO.md` y definir responsables de aprobación pedagógica y técnica. **Completado:** director del colegio (pedagógica), Salvador (técnica), con feedback de los profesores de Matemáticas de 1.º y 2.º.
 2. Crear `docs/DECISIONES.md`; registrar alcance V1, exclusiones, fecha, autor y razón de cada decisión relevante.
 3. Confirmar V1: 1.º/2.º, Matemáticas, profesorado, pizarra, fichas, sesión local y offline. Registrar explícitamente que alumnos, tareas y multi-colegio quedan fuera. **Completado:** la sesión offline mantiene y recupera actividad, ejercicios, respuestas, corrección y resumen cuando no hay Internet. El alcance se registra en `ESTADO_DEL_PROYECTO.md` y la decisión D-003 en `DECISIONES.md`.
 4. Mantener la estructura de capas: `core` para lógica pura, `features` para React, `platform` para navegador/PWA y `docs` para decisiones. **Completado:** se crean además `manifests` y `shared`, con reglas de dependencia en `ARQUITECTURA_INICIAL.md`; el vertical slice no se mueve todavía.

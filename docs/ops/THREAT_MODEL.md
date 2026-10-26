@@ -1,4 +1,4 @@
-# Modelo de amenazas (piloto) — EduColor PWA
+﻿# Modelo de amenazas (piloto) — EduColor PWA
 
 Documento corto de Fase 12 (checklist G2). Lenguaje de producto; sin SIEM propio.
 
@@ -56,13 +56,13 @@ Admin Central: mismos login y app; emails en `platform_admins`.
 - SMTP Auth propio — solo si el cupo Free 2 correos/h no basta.
 
 Sentry (errores de app) está integrado; ver [SENTRY_SETUP.md](./SENTRY_SETUP.md)
-y el mapa [AUTH_ALERTAS_Y_CORREOS.md](./AUTH_ALERTAS_Y_CORREOS.md).
+y el mapa [AUTH_ALERTAS_Y_CORREOS.md](../AUTH_ALERTAS_Y_CORREOS.md).
 
 ## Referencias
 
 - [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md)
 - [ADMIN_CENTRAL.md](./ADMIN_CENTRAL.md)
-- [AUTH_ALERTAS_Y_CORREOS.md](./AUTH_ALERTAS_Y_CORREOS.md)
+- [AUTH_ALERTAS_Y_CORREOS.md](../AUTH_ALERTAS_Y_CORREOS.md)
 - [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md)
 - [SENTRY_SETUP.md](./SENTRY_SETUP.md)
-- [DEUDA_TECNICA.md](./DEUDA_TECNICA.md) DT-028
+- [DEUDA_TECNICA.md](../DEUDA_TECNICA.md) DT-028

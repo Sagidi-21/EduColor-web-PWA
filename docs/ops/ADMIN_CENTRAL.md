@@ -1,4 +1,4 @@
-# Central de administración (platform admin)
+﻿# Central de administración (platform admin)
 
 Misma app y mismo login. Si tu email está en `platform_admins`, tras entrar ves la **Central**.
 
@@ -18,7 +18,7 @@ Misma app y mismo login. Si tu email está en `platform_admins`, tras entrar ves
 - Consola de ciberataques → chip Seguridad OK/KO = resumen 24 h + ir a **Supabase**
 - Correo ops en cada **lockout** → Resend ([OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md)); no Sentry
 - Pantalla de roturas → chip Sin Fallos; errores de app → **Sentry** ([SENTRY_SETUP.md](./SENTRY_SETUP.md)) + Netlify
-- Mapa de flujos (login, correos, Sentry): [AUTH_ALERTAS_Y_CORREOS.md](./AUTH_ALERTAS_Y_CORREOS.md)
+- Mapa de flujos (login, correos, Sentry): [AUTH_ALERTAS_Y_CORREOS.md](../AUTH_ALERTAS_Y_CORREOS.md)
 
 ## Cómo crear el admin (una vez)
 

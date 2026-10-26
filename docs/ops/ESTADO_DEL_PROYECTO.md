@@ -3,8 +3,10 @@
 **Verificado contra el código el 2026-10-19.** Este documento es una página de
 estado: dice en qué punto va el proyecto y **enlaza** a quien tiene el detalle. No
 mantiene su propia lista de actividades migradas ni sus propias cifras, porque
-esa duplicación es lo que hacía que los documentos de `docs/` se contradijeran
-entre sí.
+esa duplicación es lo que hacía que los documentos se contradijeran entre sí.
+
+Vive en `docs/ops/` (runbooks y planes). La doc de producto para el TFM está en
+[`docs/`](../) (arquitectura, decisiones, alertas, deuda, slides).
 
 ## Dónde vive cada dato
 
@@ -13,15 +15,15 @@ entre sí.
 | ¿Qué actividades hay migradas y cuál es la siguiente? | [INVENTARIO_MIGRACION_ACTIVIDADES.md](./INVENTARIO_MIGRACION_ACTIVIDADES.md)                                                                                                                |
 | ¿Dónde acabó cada archivo de Electron?                | [MIGRACION_MAP.md](./MIGRACION_MAP.md)                                                                                                                                                      |
 | ¿Cómo se migra una actividad, paso a paso?            | [EJECUCION_PASO_A_PASO.md](./EJECUCION_PASO_A_PASO.md) y [AGENT_RULES.md](./AGENT_RULES.md)                                                                                                 |
-| ¿Qué falta y con qué calidad cierro?                  | [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) y [DEUDA_TECNICA.md](./DEUDA_TECNICA.md)                                                                                                   |
-| ¿Por qué se decidió así?                              | [DECISIONES.md](./DECISIONES.md)                                                                                                                                                            |
+| ¿Qué falta y con qué calidad cierro?                  | [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) y [DEUDA_TECNICA.md](../DEUDA_TECNICA.md)                                                                                                  |
+| ¿Por qué se decidió así?                              | [DECISIONES.md](../DECISIONES.md)                                                                                                                                                           |
 | ¿Cuál es el ID en inglés y el título en castellano?   | [CATALOGO_IDS_ACTIVIDADES.md](./CATALOGO_IDS_ACTIVIDADES.md)                                                                                                                                |
-| ¿Qué puede reutilizar un renderer?                    | [COMPONENTES_COMPARTIDOS.md](./COMPONENTES_COMPARTIDOS.md)                                                                                                                                  |
+| ¿Qué puede reutilizar un renderer?                    | [COMPONENTES_COMPARTIDOS.md](../COMPONENTES_COMPARTIDOS.md)                                                                                                                                 |
 | ¿Hacia dónde va el producto a largo plazo?            | [ROADMAP_DE_EJECUCION_DETALLADO.md](./ROADMAP_DE_EJECUCION_DETALLADO.md) y [EJECUCION_PASO_A_PASO.md](./EJECUCION_PASO_A_PASO.md) ([ROADMAP_MAESTRO.md](./ROADMAP_MAESTRO.md) es histórico) |
 | ¿Auth / calidad login listos para prod?               | [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md)                                                                                                                                    |
 | ¿Cómo se opera la Central de colegios?                | [ADMIN_CENTRAL.md](./ADMIN_CENTRAL.md)                                                                                                                                                      |
 | ¿Amenazas / riesgos del piloto?                       | [THREAT_MODEL.md](./THREAT_MODEL.md)                                                                                                                                                        |
-| ¿Qué correos / alertas hay (lockout, Olvidé, Sentry)? | [AUTH_ALERTAS_Y_CORREOS.md](./AUTH_ALERTAS_Y_CORREOS.md)                                                                                                                                    |
+| ¿Qué correos / alertas hay (lockout, Olvidé, Sentry)? | [AUTH_ALERTAS_Y_CORREOS.md](../AUTH_ALERTAS_Y_CORREOS.md)                                                                                                                                   |
 | ¿Cómo activo avisos de lockout por correo?            | [OPS_ALERTS_RESEND.md](./OPS_ALERTS_RESEND.md)                                                                                                                                              |
 | ¿Cómo conecto Sentry (errores de la app)?             | [SENTRY_SETUP.md](./SENTRY_SETUP.md)                                                                                                                                                        |
 | ¿Qué hay que entregar para el TFM y en qué estado va? | [PLAN_ENTREGA_TFM.md](./PLAN_ENTREGA_TFM.md)                                                                                                                                                |
@@ -57,7 +59,7 @@ El inventario se recalcula en cada `npm test`: si un ✅ no coincide con
   `img-src` Supabase Storage (G5 OK). E2E staff (F1–F6) + Vitest mocks.
   Decisiones D-028–D-037.
   - **Siguiente:** redeploy Netlify (Sentry en bundle) → smoke Issues + Olvidé +
-    lockout ops. Mapa: [AUTH_ALERTAS_Y_CORREOS.md](./AUTH_ALERTAS_Y_CORREOS.md).
+    lockout ops. Mapa: [AUTH_ALERTAS_Y_CORREOS.md](../AUTH_ALERTAS_Y_CORREOS.md).
   - Checklist: [CHECKLIST_CALIDAD_AUTH.md](./CHECKLIST_CALIDAD_AUTH.md).
   - Deuda MVP: **ninguna abierta** (DT-009/017/024/028 cerradas 2026-10-19).
 - **Siguiente motor:** **ninguno**.
@@ -97,11 +99,11 @@ antes de considerar cerrada su fase pedagógica.
 ## Decisiones registradas
 
 Las decisiones completas, su estado y sus consecuencias se mantienen en
-[DECISIONES.md](DECISIONES.md). Esta tabla resume solamente los acuerdos de
+[DECISIONES.md](../DECISIONES.md). Esta tabla resume solamente los acuerdos de
 seguimiento.
 
 La deuda técnica y las reservas de recursos se controlan en
-[DEUDA_TECNICA.md](DEUDA_TECNICA.md). Las revisiones ordinarias consultan ese
+[DEUDA_TECNICA.md](../DEUDA_TECNICA.md). Las revisiones ordinarias consultan ese
 registro y el ámbito del cambio; la auditoría completa se reserva para el
 cierre de fase o una release.
 
@@ -146,4 +148,4 @@ Al elegir una actividad del catálogo, el popup de selección de nivel se sustit
 - **Audio:** `src/shared/utils/audioSFX.ts` sintetiza los efectos con Web Audio API pura, sin dependencias externas ni ficheros de audio: `playBackpackOpenSFX()` (whoosh + brillo ascendente) y `playCardsBurstSFX()` (ráfaga de cartas). El contexto se crea de forma perezosa, se reanuda ante las políticas de autoplay y degrade silenciosamente si no hay `AudioContext`.
 - **Estado:** implementado y verificado. La suite completa está en verde (medido el 2026-10-01; el recuento vive en la tabla de verificación del [inventario](./INVENTARIO_MIGRACION_ACTIVIDADES.md)), junto con lint, typecheck, build y formato Prettier. Queda pendiente la validación pedagógica del profesorado sobre la claridad de las cartas de nivel antes de darlo por cerrado.
 
-- **Deuda abierta:** ninguna en esta feature. Los assets de mascota se optimizaron el 2026-09-28 con un criterio único WebP (calidad 82): las 32 tarjetas del cuestionario de 1376×768 a 640 px (21,1 MB → 1,02 MB) y las 21 variantes a 512 px (5,5 MB → 0,58 MB), además de borrar las hojas de origen y los duplicados. Las imágenes de `dist` pasan de 43,38 MB a 18,99 MB. Cerrado como `DT-012` en [DEUDA_TECNICA.md](DEUDA_TECNICA.md).
+- **Deuda abierta:** ninguna en esta feature. Los assets de mascota se optimizaron el 2026-09-28 con un criterio único WebP (calidad 82): las 32 tarjetas del cuestionario de 1376×768 a 640 px (21,1 MB → 1,02 MB) y las 21 variantes a 512 px (5,5 MB → 0,58 MB), además de borrar las hojas de origen y los duplicados. Las imágenes de `dist` pasan de 43,38 MB a 18,99 MB. Cerrado como `DT-012` en [DEUDA_TECNICA.md](../DEUDA_TECNICA.md).

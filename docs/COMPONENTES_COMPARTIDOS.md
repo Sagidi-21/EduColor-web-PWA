@@ -1,4 +1,4 @@
-# Componentes compartidos
+﻿# Componentes compartidos
 
 Catálogo del **mobiliario común de una actividad**: las piezas que ya existen y que
 hay que reutilizar en lugar de reescribir. Es la segunda mitad de la fuente de verdad,
@@ -9,7 +9,7 @@ Las dos reglas que lo rigen:
 
 - Si una pieza de esta lista no te sirve tal cual, **no la clones**: extiende la
   compartida o crea la tuya al lado y aplícala al catálogo. Ver
-  [AGENT_RULES.md](./AGENT_RULES.md) §17, "Regla de unificación".
+  [AGENT_RULES.md](./ops/AGENT_RULES.md) §17, "Regla de unificación".
 - Si creas una pieza nueva que dos activities van a usar, **añádela aquí el mismo día**.
   Un componente compartido que no está en este documento se acaba duplicando.
 

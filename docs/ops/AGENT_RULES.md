@@ -1,4 +1,4 @@
-# Reglas de Comportamiento del Agente (AGENT_RULES.md)
+﻿# Reglas de Comportamiento del Agente (AGENT_RULES.md)
 
 Este documento define el contrato estricto para cualquier agente de programación (Cursor, Claude Code, Antigravity, etc.) que participe en la migración de la aplicación EduColor de Electron a web PWA.
 
@@ -193,7 +193,7 @@ mapeo estándar **documentado** del proyecto:
 | `props.difficulty` y `props.title` en Electron          | `activity.title` + `difficulty` de `EngineScreenProps`, no cambies su semántica                                                                                                                                                                                                                                                                                                                    |
 
 **Además de `electron-reference/`, la otra fuente de verdad es
-[`docs/COMPONENTES_COMPARTIDOS.md`](./COMPONENTES_COMPARTIDOS.md)**: el catálogo del
+[`docs/COMPONENTES_COMPARTIDOS.md`](../COMPONENTES_COMPARTIDOS.md)**: el catálogo del
 mobiliario común de una actividad (cabecera, botones, numpad, casillas, selector de
 nivel, barrera de error y layout). Léelo junto al Paso 1. Si una pieza de la tabla
 anterior no está en ese catálogo y la necesitas, busca primero en
@@ -204,8 +204,8 @@ Pieces del catálogo que es fácil reinventar por error:
 
 | Necesitas…                            | Usa                                                                       | Documentado en              |
 | ------------------------------------- | ------------------------------------------------------------------------- | --------------------------- |
-| Botones de reintentar / siguiente     | `ActionButtons` (y **solo** `ActionButtons`)                              | [D-018](./DECISIONES.md)    |
-| Teclear un número, casilla por cifra  | `DigitBoxes` + `useDigitBoxes`, con `order` según se vea en vertical o no | [D-017](./DECISIONES.md)    |
+| Botones de reintentar / siguiente     | `ActionButtons` (y **solo** `ActionButtons`)                              | [D-018](../DECISIONES.md)   |
+| Teclear un número, casilla por cifra  | `DigitBoxes` + `useDigitBoxes`, con `order` según se vea en vertical o no | [D-017](../DECISIONES.md)   |
 | Elegir nivel y dificultad             | `DifficultyReveal`                                                        | COMPONENTES_COMPARTIDOS §8  |
 | Aspa de cerrar un modal               | `ModalCloseButton` (y **solo** `ModalCloseButton`)                        | COMPONENTES_COMPARTIDOS §8b |
 | Que la pantalla no se quede en blanco | `ActivityErrorBoundary` + `NoExerciseNotice`; **nunca** `return null`     | COMPONENTES_COMPARTIDOS §9  |
@@ -297,7 +297,7 @@ Antes de dar una migración de renderer por terminada, marca:
 - [ ] He añadido `import "../operations/OperationsScreen.css"` si el renderer usa las clases `.ops__*`.
 - [ ] Los tipos de `EngineScreenProps` (`activity`, `difficulty`, `seed`, `onExit`, `gradeTitle`, `className`, `mascotUrl`, `difficultyStars`) se pasan todos al `ActivityHeader` cuando aplican.
 - [ ] `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test` y `npm run build` pasan.
-- [ ] Si era una actividad del inventario, he actualizado `docs/INVENTARIO_MIGRACION_ACTIVIDADES.md` y he añadido su fila a la tabla de verificación. **No he tocado `EJECUCION_PASO_A_PASO.md`**: su sección de seguimiento es una bitácora histórica y no lleva el estado (ver §7).
+- [ ] Si era una actividad del inventario, he actualizado `docs/ops/INVENTARIO_MIGRACION_ACTIVIDADES.md` y he añadido su fila a la tabla de verificación. **No he tocado `EJECUCION_PASO_A_PASO.md`**: su sección de seguimiento es una bitácora histórica y no lleva el estado (ver §7).
 
 ### Paso 5 — Si en esta migración has unificado algo, documéntalo [V1] · CRÍTICA
 

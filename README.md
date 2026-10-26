@@ -16,9 +16,9 @@ Este repositorio es el entregable técnico del **TFM**. El cliente de escritorio
 | Reconocimiento de dígitos | Entrada manuscrita en algunas actividades (TensorFlow.js en el cliente) |
 | Observabilidad            | Sentry (errores JS), chip Seguridad + Resend (lockouts)                 |
 
-Stack principal: **React 18 + TypeScript + Vite**, PWA (`vite-plugin-pwa`), **Supabase** (Auth, Postgres, Edge Functions, Storage), despliegue en **Netlify**, **Sentry** integrado para errores de la PWA (DSN en Netlify; ver [`docs/SENTRY_SETUP.md`](docs/SENTRY_SETUP.md)) y **Resend** para avisos ops de lockout (Edge; ver [`docs/OPS_ALERTS_RESEND.md`](docs/OPS_ALERTS_RESEND.md)).
+Stack principal: **React 18 + TypeScript + Vite**, PWA (`vite-plugin-pwa`), **Supabase** (Auth, Postgres, Edge Functions, Storage), despliegue en **Netlify**, **Sentry** (errores JS de la PWA) y **Resend** (avisos ops de lockout).
 
-Estado y decisiones: [`docs/ESTADO_DEL_PROYECTO.md`](docs/ESTADO_DEL_PROYECTO.md), [`docs/DECISIONES.md`](docs/DECISIONES.md).
+Decisiones de producto: [`docs/DECISIONES.md`](docs/DECISIONES.md). Mapa de alertas/correos: [`docs/AUTH_ALERTAS_Y_CORREOS.md`](docs/AUTH_ALERTAS_Y_CORREOS.md).
 
 ## Estructura del proyecto
 
@@ -33,7 +33,7 @@ EduColor-web-PWA/
 │   ├── shared/        # Componentes y utilidades transversales
 │   └── server/        # Servidor local del Compañero IA (dev)
 ├── supabase/          # Migraciones, Edge Functions, políticas
-├── docs/              # Arquitectura, decisiones, auth, plan de entrega TFM
+├── docs/              # Doc de producto (TFM) + docs/ops/ (runbooks y planes)
 ├── tests/             # E2E (Playwright) y soporte de pruebas
 ├── public/            # Estáticos PWA (iconos, etc.)
 ├── electron-reference/# Cliente Electron original (solo referencia; no arranca la PWA)
@@ -78,7 +78,7 @@ En Windows (PowerShell): `Copy-Item .env.example .env`
 | `HF_TOKEN`               | Generación de mascota (Hugging Face)      | No (solo feature Compañero IA)                                            |
 | `VITE_SENTRY_DSN`        | Sentry (ya integrado en código y en prod) | No en local: sin DSN la app arranca igual; en Netlify sí está configurado |
 
-Sin Supabase puedes revisar la interfaz y la **DEMO**. El login de colegio y Admin Central requieren un proyecto Supabase configurado (ver `docs/CHECKLIST_CALIDAD_AUTH.md`).
+Sin Supabase puedes revisar la interfaz y la **DEMO**. El login de colegio y Admin Central requieren un proyecto Supabase configurado (ver `docs/ops/CHECKLIST_CALIDAD_AUTH.md`).
 
 **No** subas `.env` ni secretos de Edge (`RESEND_*`, service role) al repositorio.
 
@@ -140,22 +140,18 @@ npm run build
 
 GitHub Actions ejecuta las comprobaciones principales al enviar cambios a `main`.
 
-## Documentación útil para la revisión del TFM
+## Documentación del proyecto (revisión TFM)
 
-| Documento                                                                              | Contenido                                           |
-| -------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| [`docs/PLAN_ENTREGA_TFM.md`](docs/PLAN_ENTREGA_TFM.md)                                 | Requisitos oficiales y checklist de entrega         |
-| [`docs/ESTADO_DEL_PROYECTO.md`](docs/ESTADO_DEL_PROYECTO.md)                           | Punto de trabajo y enlaces canónicos                |
-| [`docs/ARQUITECTURA_INICIAL.md`](docs/ARQUITECTURA_INICIAL.md)                         | Capas, dominio vs núcleo UI, composición `src/app/` |
-| [`docs/INVENTARIO_MIGRACION_ACTIVIDADES.md`](docs/INVENTARIO_MIGRACION_ACTIVIDADES.md) | 62 actividades / paridad                            |
-| [`docs/CHECKLIST_CALIDAD_AUTH.md`](docs/CHECKLIST_CALIDAD_AUTH.md)                     | Auth / prod                                         |
-| [`docs/AUTH_ALERTAS_Y_CORREOS.md`](docs/AUTH_ALERTAS_Y_CORREOS.md)                     | Lockout, correos Auth/Resend, Sentry                |
-| [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md)                                         | Amenazas del piloto                                 |
-| [`docs/DECISIONES.md`](docs/DECISIONES.md)                                             | Decisiones de producto/técnicas                     |
-| [`docs/DEFINITION_OF_DONE.md`](docs/DEFINITION_OF_DONE.md)                             | Criterios de cierre                                 |
-| [`docs/DEUDA_TECNICA.md`](docs/DEUDA_TECNICA.md)                                       | Deuda (MVP sin filas abiertas)                      |
+| Documento                                                                | Contenido                                           |
+| ------------------------------------------------------------------------ | --------------------------------------------------- |
+| [`docs/ARQUITECTURA_INICIAL.md`](docs/ARQUITECTURA_INICIAL.md)           | Capas, dominio vs núcleo UI, composición `src/app/` |
+| [`docs/DECISIONES.md`](docs/DECISIONES.md)                               | Decisiones de producto/técnicas                     |
+| [`docs/AUTH_ALERTAS_Y_CORREOS.md`](docs/AUTH_ALERTAS_Y_CORREOS.md)       | Mapa de lockout, correos Auth/Resend y Sentry       |
+| [`docs/DEUDA_TECNICA.md`](docs/DEUDA_TECNICA.md)                         | Deuda técnica (MVP sin filas abiertas)              |
+| [`docs/COMPONENTES_COMPARTIDOS.md`](docs/COMPONENTES_COMPARTIDOS.md)     | Componentes reutilizables                           |
+| [`docs/presentacion_profesores.html`](docs/presentacion_profesores.html) | Slides de presentación                              |
 
-Guías operativas: [`docs/SENTRY_SETUP.md`](docs/SENTRY_SETUP.md), [`docs/OPS_ALERTS_RESEND.md`](docs/OPS_ALERTS_RESEND.md), [`docs/ADMIN_CENTRAL.md`](docs/ADMIN_CENTRAL.md).
+Runbooks, planes de ejecución, checklists y estado operativo: carpeta [`docs/ops/`](docs/ops/).
 
 ## Navegadores y pizarra
 

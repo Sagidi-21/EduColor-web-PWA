@@ -1,10 +1,10 @@
-# Sentry (errores de la app) — guía e integración
+﻿# Sentry (errores de la app) — guía e integración
 
 Sentry avisa cuando la **PWA se rompe** (error de JavaScript), no cuando alguien
 falla el login (eso es el chip Seguridad + Resend).
 
 Mapa completo de correos / lockout / Sentry:
-[AUTH_ALERTAS_Y_CORREOS.md](./AUTH_ALERTAS_Y_CORREOS.md).
+[AUTH_ALERTAS_Y_CORREOS.md](../AUTH_ALERTAS_Y_CORREOS.md).
 
 Plan **gratis** vale para el piloto.
 
@@ -81,4 +81,4 @@ El DSN es clave **pública de cliente**; no es la Auth Token de Sentry.
 - Session Replay (grabación de pantalla) — desactivado a propósito.
 - Source maps en CI — más adelante si hace falta depurar líneas minificadas.
 - Errores del servidor Express / Edge Functions — solo la PWA en el navegador.
-- Lockouts / fallos de login — ver [AUTH_ALERTAS_Y_CORREOS.md](./AUTH_ALERTAS_Y_CORREOS.md).
+- Lockouts / fallos de login — ver [AUTH_ALERTAS_Y_CORREOS.md](../AUTH_ALERTAS_Y_CORREOS.md).

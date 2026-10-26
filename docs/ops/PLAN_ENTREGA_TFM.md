@@ -1,4 +1,4 @@
-# Plan de entrega del TFM
+﻿# Plan de entrega del TFM
 
 Documento canónico con los **requisitos oficiales de entrega** del Trabajo de
 Fin de Máster y el **seguimiento** respecto a EduColor web PWA.
@@ -45,7 +45,7 @@ Debe cubrir:
 | e   | Funcionalidades principales                                 |
 | f   | Usuario y contraseña de prueba (si el proyecto tiene login) |
 
-Punto de entrada en este repo: [`README.md`](../README.md). Detalle técnico
+Punto de entrada en este repo: [`README.md`](../../README.md). Detalle técnico
 adicional en `docs/` (arquitectura, auth, amenazas, estado, etc.).
 
 ### 2. Código fuente
@@ -117,17 +117,17 @@ momento; fuera del plazo de la edición los tiempos de corrección pueden variar
 
 Marcar conforme se cierre cada entregable. Actualizar este bloque al avanzar.
 
-| Entregable                                             | Estado         | Notas / dónde vive                                                                                           |
-| ------------------------------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------ |
-| README: descripción, stack, instalación, ejecución     | ✅             | [`README.md`](../README.md)                                                                                  |
-| README: estructura del proyecto                        | ✅             | Sección «Estructura del proyecto» en README + enlace a arquitectura                                          |
-| README: funcionalidades principales                    | ✅             | Tabla «Qué es la app» en README                                                                              |
-| Usuario / contraseña de prueba (login)                 | ✅             | README «Credenciales de prueba»: `sagidiappcursor2@gmail.com` / `.6RXSUuyphZYz4!` (colegio BigSchoolTFM)     |
-| Repo GitHub (público o privado justificado)            | ✅             | Público: `Sagidi-21/EduColor-web-PWA`                                                                        |
-| Despliegue (URL en docs)                               | ✅             | [`https://peppy-cactus-71f921.netlify.app`](https://peppy-cactus-71f921.netlify.app) (README + esta página)  |
-| Slides + URL/archivo en docs                           | ⬜ En curso    | Archivo: [`presentacion_profesores.html`](./presentacion_profesores.html); falta URL pública (Drive/Netlify) |
-| Vídeo (pantalla obligatoria) + URL en docs             | ⬜ Pendiente   | Grabar demo + explicación; enlazar aquí y en README                                                          |
-| Docs técnicas de apoyo (arquitectura, auth, amenazas…) | ✅ Base sólida | Ver tabla en README «Documentación útil para la revisión del TFM»                                            |
+| Entregable                                             | Estado         | Notas / dónde vive                                                                                            |
+| ------------------------------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------- |
+| README: descripción, stack, instalación, ejecución     | ✅             | [`README.md`](../../README.md)                                                                                |
+| README: estructura del proyecto                        | ✅             | Sección «Estructura del proyecto» en README + enlace a arquitectura                                           |
+| README: funcionalidades principales                    | ✅             | Tabla «Qué es la app» en README                                                                               |
+| Usuario / contraseña de prueba (login)                 | ✅             | README «Credenciales de prueba»: `sagidiappcursor2@gmail.com` / `.6RXSUuyphZYz4!` (colegio BigSchoolTFM)      |
+| Repo GitHub (público o privado justificado)            | ✅             | Público: `Sagidi-21/EduColor-web-PWA`                                                                         |
+| Despliegue (URL en docs)                               | ✅             | [`https://peppy-cactus-71f921.netlify.app`](https://peppy-cactus-71f921.netlify.app) (README + esta página)   |
+| Slides + URL/archivo en docs                           | ⬜ En curso    | Archivo: [`presentacion_profesores.html`](../presentacion_profesores.html); falta URL pública (Drive/Netlify) |
+| Vídeo (pantalla obligatoria) + URL en docs             | ⬜ Pendiente   | Grabar demo + explicación; enlazar aquí y en README                                                           |
+| Docs técnicas de apoyo (arquitectura, auth, amenazas…) | ✅ Base sólida | Ver tabla en README «Documentación útil para la revisión del TFM»                                             |
 
 ### URLs a rellenar antes del formulario
 

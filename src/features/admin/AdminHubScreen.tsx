@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type CSSProperties } from "react";
+﻿import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import logoUrl from "../../assets/splash-logo.png";
 import defaultSchoolBgUrl from "../../assets/demo-school-exterior.jpg";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
@@ -191,10 +191,10 @@ export function AdminHubScreen({
       text: sentryOn
         ? "Sentry conectado: los errores de la PWA se envían al panel Sentry (Issues).\n" +
           "Avisos Netlify: aparte, en el dashboard del sitio.\n" +
-          "Guía: docs/SENTRY_SETUP.md"
+          "Guía: docs/ops/SENTRY_SETUP.md"
         : "Sentry aún sin DSN (VITE_SENTRY_DSN).\n" +
           "Cuando lo configures en Netlify/.env, los errores de la app llegarán a Sentry.\n" +
-          "Guía: docs/SENTRY_SETUP.md",
+          "Guía: docs/ops/SENTRY_SETUP.md",
       confirmLabel: "Entendido",
     });
   };

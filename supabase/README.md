@@ -1,4 +1,4 @@
-# Supabase (EduColor)
+﻿# Supabase (EduColor)
 
 Esquema de la base de datos remota según **D-028**:
 
@@ -121,7 +121,7 @@ cuenta). En Netlify → Site settings → Environment variables:
 Build command habitual: `npm run build`. Publish directory: `dist`.
 
 Tras el primer deploy: actualizar en Supabase Auth el **Site URL** y
-**Redirect URLs** al dominio Netlify. Checklist: `docs/CHECKLIST_CALIDAD_AUTH.md` §E.
+**Redirect URLs** al dominio Netlify. Checklist: `docs/ops/CHECKLIST_CALIDAD_AUTH.md` §E.
 
 **Cambio de contraseña / lockout (D-036 / D-037):** el usuario siempre **elige
 una contraseña nueva**. Login vía Edge `school-login` (3 fallos → 15 min).

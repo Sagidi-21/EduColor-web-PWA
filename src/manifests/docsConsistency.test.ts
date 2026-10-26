@@ -1,4 +1,4 @@
-// El estado de la migración está en un solo sitio: el inventario. Este test lo
+﻿// El estado de la migración está en un solo sitio: el inventario. Este test lo
 // comprueba contra el código, para que esa tabla no se pueda quedar atrás.
 //
 // Deriva el estado de `getEngineRegistration()` (qué motores se pueden lanzar) y de
@@ -135,7 +135,7 @@ describe("El estado de la migración está en un solo sitio", () => {
   });
 
   it("el inventario marca migrada exactamente lo que el registro da como lanzable", () => {
-    const filas = filasDeCatalogo(leido("docs/INVENTARIO_MIGRACION_ACTIVIDADES.md"));
+    const filas = filasDeCatalogo(leido("docs/ops/INVENTARIO_MIGRACION_ACTIVIDADES.md"));
 
     const repetidas = idsCatalogo.filter((id) => (filas.get(id)?.length ?? 0) > 1);
     expect(repetidas, `Filas repetidas en el inventario: ${repetidas.join(", ")}`).toEqual([]);
@@ -165,7 +165,7 @@ describe("El estado de la migración está en un solo sitio", () => {
   });
 
   it("la tabla de verificación cubre las 62 migradas y sus ficheros existen", () => {
-    const verificacion = filasDeVerificacion(leido("docs/INVENTARIO_MIGRACION_ACTIVIDADES.md"));
+    const verificacion = filasDeVerificacion(leido("docs/ops/INVENTARIO_MIGRACION_ACTIVIDADES.md"));
 
     const fuera = [...verificacion.keys()].filter((id) => !migrados.has(id)).sort();
     const ausente = [...migrados].filter((id) => !verificacion.has(id)).sort();
@@ -203,7 +203,7 @@ describe("El estado de la migración está en un solo sitio", () => {
     // comprueba que cada fichero de núcleo tenga su test, en vez de buscar
     // `<id>.test.ts`.
     const nucleos =
-      leido("docs/INVENTARIO_MIGRACION_ACTIVIDADES.md")
+      leido("docs/ops/INVENTARIO_MIGRACION_ACTIVIDADES.md")
         .split("## Verificación de la PWA")[1]
         ?.split(/\r?\n/)
         .map((l) => l.match(/^\| `[A-Za-z0-9]+` \| `([A-Za-z0-9]+\.ts)`/)?.[1])
@@ -218,7 +218,7 @@ describe("El estado de la migración está en un solo sitio", () => {
   });
 
   it("MIGRACION_MAP.md cubre las 62 y no se contradice con el registro", () => {
-    const filas = filasDeMapa(leido("docs/MIGRACION_MAP.md"));
+    const filas = filasDeMapa(leido("docs/ops/MIGRACION_MAP.md"));
 
     const ausentes = idsCatalogo.filter((id) => !filas.some((f) => f.engineId === id));
     expect(ausentes, `El mapa no mapea: ${ausentes.join(", ")}`).toEqual([]);
@@ -246,7 +246,7 @@ describe("El estado de la migración está en un solo sitio", () => {
       // celda de motor dice "comparte renderer con `laberintoMatematico`", que no
       // lleva barra, así que `motorElectron` queda vacía y esta comprobación no lo
       // mira. Una fila que sí nombre una carpeta debe nombrarla de verdad.
-      const inventadas = filasDeMapa(leido("docs/MIGRACION_MAP.md"))
+      const inventadas = filasDeMapa(leido("docs/ops/MIGRACION_MAP.md"))
         .filter((f) => f.motorElectron !== "")
         .filter((f) => !existsSync(join(ENGINES_ELECTRON, f.motorElectron.split("/")[0])))
         .map((f) => f.motorElectron.split("/")[0]);
@@ -263,10 +263,10 @@ describe("El estado de la migración está en un solo sitio", () => {
     // que un documento tenga su propia lista de "migradas", y la forma de
     // evitarlo es que enlace a quien la tiene.
     const conLista = [
-      "docs/ESTADO_DEL_PROYECTO.md",
-      "docs/ROADMAP_DE_EJECUCION_DETALLADO.md",
-      "docs/EJECUCION_PASO_A_PASO.md",
-      "docs/ROADMAP_MAESTRO.md",
+      "docs/ops/ESTADO_DEL_PROYECTO.md",
+      "docs/ops/ROADMAP_DE_EJECUCION_DETALLADO.md",
+      "docs/ops/EJECUCION_PASO_A_PASO.md",
+      "docs/ops/ROADMAP_MAESTRO.md",
     ];
     const sinEnlace = conLista.filter(
       (doc) => !leido(doc).includes("INVENTARIO_MIGRACION_ACTIVIDADES.md"),

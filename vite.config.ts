@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+﻿import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 import { configDefaults } from "vitest/config";
@@ -139,7 +139,7 @@ export default defineConfig({
       // mezclan con las de los demás.
       reporter: ["text-summary", ["text", { skipFull: false }], "html"],
       reportsDirectory: "coverage",
-      // Estándar de cobertura: docs/DEFINITION_OF_DONE.md y DEUDA_TECNICA.md DT-014.
+      // Estándar de cobertura: docs/ops/DEFINITION_OF_DONE.md y DEUDA_TECNICA.md DT-014.
       //
       // El umbral se fija solo sobre `src/core/activities/`, que es donde vive la
       // lógica matemática que decide si la respuesta del alumno es correcta. Todas
