@@ -353,25 +353,37 @@
 }
 
 .cfg__aula-pill {
+  --aula-accent: var(--color-primary);
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 700;
-  border: 2px solid #e2e8f0;
+  border: 1.5px solid var(--aula-accent);
   border-radius: 10px;
   background: #fff;
-  color: #475569;
+  color: var(--aula-accent);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.15s ease;
 }
-.cfg__aula-pill:hover {
-  border-color: #6366f1;
-  color: #6366f1;
+.cfg__aula-pill:hover,
+.cfg__aula-pill:focus-visible {
+  background: var(--aula-accent);
+  color: #fff;
+  border-color: #fff;
+  outline: 1.5px solid var(--aula-accent);
+  outline-offset: 0;
 }
 .cfg__aula-pill--active {
-  border-color: #6366f1;
-  background: #ede9fe;
-  color: #4f46e5;
+  background: var(--aula-accent);
+  color: #fff;
+  border-color: var(--aula-accent);
   font-weight: 700;
+  outline: none;
+}
+.cfg__aula-pill--active:hover,
+.cfg__aula-pill--active:focus-visible {
+  filter: brightness(0.9);
+  border-color: #fff;
+  outline: 1.5px solid var(--aula-accent);
 }
 
 /* ── Gestión de aulas ───────────────────────────── */
@@ -500,6 +512,34 @@
   font-size: 13px;
   color: #ef4444;
   margin: 8px 0 0;
+}
+
+/* CTA primary: borde ↔ relleno al hover (como Cerrar sesión) */
+.cfg__primary-btn {
+  margin-top: 12px;
+  padding: 9px 22px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1.5px solid var(--color-primary);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  align-self: flex-start;
+}
+.cfg__primary-btn:hover,
+.cfg__primary-btn:focus-visible {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: #fff;
+  outline: 1.5px solid var(--color-primary);
+  outline-offset: 0;
+}
+.cfg__primary-btn:active {
+  background: var(--color-primary-dark);
+  color: #fff;
+  border-color: #fff;
 }
 
 .cfg__mascota-btn {

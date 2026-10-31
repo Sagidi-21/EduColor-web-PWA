@@ -162,7 +162,7 @@ export function ConfiguracionScreen({
               </p>
               <button
                 type="button"
-                className="cfg__mascota-btn"
+                className="cfg__primary-btn"
                 onClick={() => onNavigate?.("profesorado")}
               >
                 Acceder
@@ -278,15 +278,21 @@ export function ConfiguracionScreen({
           <div className="cfg__aula-selector">
             <span className="cfg__aula-selector-label">Editando el perfil de:</span>
             <div className="cfg__aula-pills">
-              {aulas.map((aula) => (
-                <button
-                  key={aula.id}
-                  className={`cfg__aula-pill ${activeAulaId === aula.id ? "cfg__aula-pill--active" : ""}`}
-                  onClick={() => changeAula(aula.id)}
-                >
-                  {getAulaLabel(aula, aulas)}
-                </button>
-              ))}
+              {aulas.map((aula) => {
+                const aulaAccent =
+                  aula.id === activeAulaId ? color : getProfile(aula.id).accentColor;
+                return (
+                  <button
+                    key={aula.id}
+                    type="button"
+                    className={`cfg__aula-pill ${activeAulaId === aula.id ? "cfg__aula-pill--active" : ""}`}
+                    style={{ ["--aula-accent" as string]: aulaAccent }}
+                    onClick={() => changeAula(aula.id)}
+                  >
+                    {getAulaLabel(aula, aulas)}
+                  </button>
+                );
+              })}
             </div>
             <button
               className="cfg__mascota-btn cfg__mascota-btn--disabled"
