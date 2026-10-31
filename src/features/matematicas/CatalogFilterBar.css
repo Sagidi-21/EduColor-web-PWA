@@ -482,6 +482,11 @@
   box-sizing: border-box;
   pointer-events: auto;
   background: transparent;
+  display: flex;
+  flex-direction: column;
+  /* Necesario para que el listado interno haga scroll en flex */
+  min-height: 0;
+  overflow: hidden;
 }
 
 .filter-chalkboard-controls {
@@ -573,30 +578,32 @@
   margin-top: -4px;
 }
 
-.chalkboard-content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  pointer-events: auto;
-}
-
 .chalkboard-options {
   display: flex;
   flex-direction: column;
   height: 100%;
-  /* Escala con la pizarra (PC / portátil / tablet) */
-  padding: calc(24px * var(--chalkboard-scale, 1));
-  gap: calc(16px * var(--chalkboard-scale, 1));
+  min-height: 0;
+  /* Sin padding derecho: la barra de scroll pega al borde de la caja */
+  /* Top un poco mayor: el título baja al verde; gap mínimo con la 1ª línea */
+  padding: 41px 0 16px;
+  gap: 4px;
   font-family: var(--font-chalk);
   color: #f5f0e1;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .chalkboard-title {
-  margin: 0 0 calc(8px * var(--chalkboard-scale, 1));
-  font-size: calc(28px * var(--chalkboard-scale, 1));
+  /* Centrado en todo el ancho de la caja (borde a borde), no en la zona del listado */
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  align-self: stretch;
+  font-size: 28px;
   font-weight: 700;
   text-align: center;
+  flex-shrink: 0;
+  line-height: 1.15;
   text-shadow:
     0 1px 2px rgba(0, 0, 0, 0.6),
     0 0 8px rgba(0, 0, 0, 0.4);
@@ -606,28 +613,35 @@
 .chalkboard-list {
   display: flex;
   flex-direction: column;
-  gap: calc(10px * var(--chalkboard-scale, 1));
-  flex: 1;
+  gap: 5px;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
-  padding-right: calc(8px * var(--chalkboard-scale, 1));
+  overflow-x: hidden;
+  padding: 0;
+  margin: 0;
+  overscroll-behavior: contain;
+  scrollbar-gutter: auto;
 }
 
 .chalkboard-option {
   background: transparent;
   border: none;
   border-radius: 0;
-  padding: calc(14px * var(--chalkboard-scale, 1)) calc(20px * var(--chalkboard-scale, 1));
+  /* Texto con margen izquierdo (+10px vs base 24); derecha mínima para el thumb */
+  padding: 14px 6px 14px 34px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: calc(16px * var(--chalkboard-scale, 1));
+  gap: 12px;
   font-family: var(--font-chalk);
-  font-size: calc(22px * var(--chalkboard-scale, 1));
+  font-size: 22px;
   font-weight: 600;
   color: #f5f0e1;
   width: 100%;
   text-align: left;
+  flex-shrink: 0;
   transition: all 0.15s ease;
   position: relative;
   text-shadow:
@@ -664,12 +678,12 @@
 }
 
 .chalkboard-check {
-  width: calc(28px * var(--chalkboard-scale, 1));
-  height: calc(28px * var(--chalkboard-scale, 1));
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: linear-gradient(135deg, #f59e0b, #d97706);
   color: #1a1a1a;
-  font-size: calc(16px * var(--chalkboard-scale, 1));
+  font-size: 16px;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -720,12 +734,12 @@
 }
 .chalkboard-list::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+  border-radius: 0;
 }
 .chalkboard-list::-webkit-scrollbar-thumb {
-  background: rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.55);
   border-radius: 4px;
-  border: 1px solid #e2e8f0;
+  border: none;
 }
 
 /* Transición de entrada por la izquierda */

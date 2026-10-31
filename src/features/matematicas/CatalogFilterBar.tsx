@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect, useCallback, type CSSProperties } from "react";
+﻿import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import type {
   Subject,
@@ -8,6 +8,7 @@ import type {
   GradeId,
 } from "../../core/content/contracts";
 import pizarraImg from "../../assets/pizarra.png";
+import { PIZARRA_CONTENT_PCT } from "./chalkboardOverlayLayout";
 import "./CatalogFilterBar.css";
 
 interface CatalogFilterBarProps {
@@ -24,33 +25,7 @@ interface CatalogFilterBarProps {
 
 type OpenColumn = "materia" | "curso" | "bloque" | null;
 
-/** Tamaño natural de `pizarra.png` (la zona útil se calibra contra esto). */
-const PIZARRA_NATURAL = { width: 1376, height: 768 } as const;
-/**
- * Caja del listado sobre la pizarra a tamaño natural.
- * Se escala con el tamaño renderizado de la imagen (evita el desfase en
- * portátiles / viewports distintos al monitor de calibración).
- */
-const CONTENT_BOX_NATURAL = { top: 49, left: 229, width: 818, height: 481 } as const;
-
-type ContentBox = { top: number; left: number; width: number; height: number };
-
-function scaleFactors(bounds: { width: number; height: number }) {
-  return {
-    sx: bounds.width / PIZARRA_NATURAL.width,
-    sy: bounds.height / PIZARRA_NATURAL.height,
-  };
-}
-
-function scaleContentBox(bounds: { width: number; height: number }): ContentBox {
-  const { sx, sy } = scaleFactors(bounds);
-  return {
-    top: Math.round(CONTENT_BOX_NATURAL.top * sy),
-    left: Math.round(CONTENT_BOX_NATURAL.left * sx),
-    width: Math.round(CONTENT_BOX_NATURAL.width * sx),
-    height: Math.round(CONTENT_BOX_NATURAL.height * sy),
-  };
-}
+type ImageBounds = { left: number; top: number; width: number; height: number };
 
 export function CatalogFilterBar({
   subjects,
@@ -68,18 +43,10 @@ export function CatalogFilterBar({
   const [isAnimating, setIsAnimating] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
 
-  // Chalkboard adjustment state (píxeles sobre la imagen renderizada)
-  const [geometry, setGeometry] = useState<ContentBox>(CONTENT_BOX_NATURAL);
-  const [imageBounds, setImageBounds] = useState<{
-    left: number;
-    top: number;
-    width: number;
-    height: number;
-  } | null>(null);
+  const [imageBounds, setImageBounds] = useState<ImageBounds | null>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const chalkboardContentRef = useRef<HTMLDivElement>(null);
-  const [copyStatus, setCopyStatus] = useState("");
 
   const closeAll = useCallback(() => {
     if (isAnimating) return; // Prevenir doble clic
@@ -89,6 +56,7 @@ export function CatalogFilterBar({
       setOpenColumn(null);
       setIsExiting(false);
       setIsAnimating(false);
+      setImageBounds(null);
     }, 1200);
   }, [isAnimating]);
 
@@ -112,13 +80,14 @@ export function CatalogFilterBar({
     }
   }, [openColumn, closeAll]);
 
-  // Update image bounds when image loads or viewport resizes (PC, portátil, tablet)
+  // Medir la imagen renderizada (letterbox) para anclar el listado encima.
   const updateImageBounds = useCallback(() => {
     const image = imageRef.current;
     const stage = stageRef.current;
     if (!image || !stage) return;
     const imageRect = image.getBoundingClientRect();
     const stageRect = stage.getBoundingClientRect();
+    if (imageRect.width < 2 || imageRect.height < 2) return;
     setImageBounds({
       left: imageRect.left - stageRect.left,
       top: imageRect.top - stageRect.top,
@@ -131,99 +100,29 @@ export function CatalogFilterBar({
     if (!openColumn) return;
     const image = imageRef.current;
     const stage = stageRef.current;
-    if (image && image.complete) {
-      updateImageBounds();
-    }
-    const handleLoad = () => updateImageBounds();
-    const handleViewportChange = () => {
-      // rAF: en tablet la barra del navegador / giro acaban de asentar el layout
-      requestAnimationFrame(updateImageBounds);
+    const measure = () => {
+      requestAnimationFrame(() => requestAnimationFrame(updateImageBounds));
     };
+    if (image?.complete) measure();
+    const handleLoad = () => measure();
     image?.addEventListener("load", handleLoad);
-    window.addEventListener("resize", handleViewportChange);
-    window.addEventListener("orientationchange", handleViewportChange);
+    window.addEventListener("resize", measure);
+    window.addEventListener("orientationchange", measure);
     const vv = window.visualViewport;
-    vv?.addEventListener("resize", handleViewportChange);
-    vv?.addEventListener("scroll", handleViewportChange);
-    const ro = new ResizeObserver(handleViewportChange);
+    vv?.addEventListener("resize", measure);
+    vv?.addEventListener("scroll", measure);
+    const ro = new ResizeObserver(measure);
     if (stage) ro.observe(stage);
     if (image) ro.observe(image);
     return () => {
       image?.removeEventListener("load", handleLoad);
-      window.removeEventListener("resize", handleViewportChange);
-      window.removeEventListener("orientationchange", handleViewportChange);
-      vv?.removeEventListener("resize", handleViewportChange);
-      vv?.removeEventListener("scroll", handleViewportChange);
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("orientationchange", measure);
+      vv?.removeEventListener("resize", measure);
+      vv?.removeEventListener("scroll", measure);
       ro.disconnect();
     };
   }, [openColumn, updateImageBounds]);
-
-  // Reescalar la caja del listado cuando cambia el tamaño renderizado de la pizarra
-  useEffect(() => {
-    if (!imageBounds) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setGeometry(scaleContentBox(imageBounds));
-  }, [imageBounds]);
-
-  const { sx: chalkboardScaleX, sy: chalkboardScaleY } = imageBounds
-    ? scaleFactors(imageBounds)
-    : { sx: 1, sy: 1 };
-  const chalkboardScale = Math.min(chalkboardScaleX, chalkboardScaleY);
-
-  const adjustGeometry = useCallback(
-    (delta: Partial<{ top: number; left: number; width: number; height: number }>) => {
-      setGeometry((prev) => {
-        const next = { ...prev, ...delta };
-        if (imageBounds) {
-          // clamp within image bounds
-          next.width = Math.max(20, Math.min(next.width, imageBounds.width - next.left));
-          next.height = Math.max(20, Math.min(next.height, imageBounds.height - next.top));
-          next.left = Math.max(0, Math.min(next.left, imageBounds.width - next.width));
-          next.top = Math.max(0, Math.min(next.top, imageBounds.height - next.height));
-        }
-        return next;
-      });
-    },
-    [imageBounds],
-  );
-
-  const moveStep = 2;
-  const resizeStep = 4;
-
-  const copyCss = async () => {
-    if (!imageBounds) return;
-    const css = [
-      ".chalkboard-content {",
-      "  position: absolute;",
-      `  top: ${geometry.top}px;`,
-      `  left: ${geometry.left}px;`,
-      `  width: ${geometry.width}px;`,
-      `  height: ${geometry.height}px;`,
-      "  border: 3px solid #ff0000;",
-      "  box-sizing: border-box;",
-      "  pointer-events: none;",
-      "}",
-    ].join("\n");
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(css);
-      } else {
-        const textarea = document.createElement("textarea");
-        textarea.value = css;
-        textarea.style.position = "fixed";
-        textarea.style.opacity = "0";
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand("copy");
-        textarea.remove();
-      }
-      setCopyStatus("Valores copiados al portapapeles");
-      setTimeout(() => setCopyStatus(""), 2000);
-    } catch {
-      setCopyStatus("Error al copiar");
-      setTimeout(() => setCopyStatus(""), 2000);
-    }
-  };
 
   const renderChalkboardOptions = () => {
     if (!openColumn) return null;
@@ -446,127 +345,18 @@ export function CatalogFilterBar({
                 >
                   <div
                     className="chalkboard-content"
-                    style={
-                      {
-                        top: geometry.top,
-                        left: geometry.left,
-                        width: geometry.width,
-                        height: geometry.height,
-                        ["--chalkboard-scale"]: String(chalkboardScale),
-                      } as CSSProperties
-                    }
+                    style={{
+                      top: `${PIZARRA_CONTENT_PCT.top}%`,
+                      left: `${PIZARRA_CONTENT_PCT.left}%`,
+                      width: `${PIZARRA_CONTENT_PCT.width}%`,
+                      height: `${PIZARRA_CONTENT_PCT.height}%`,
+                    }}
                     ref={chalkboardContentRef}
                   >
                     {renderChalkboardOptions()}
                   </div>
                 </div>
               )}
-            </div>
-            <div className="filter-chalkboard-controls" onClick={(e) => e.stopPropagation()}>
-              <div className="control-group">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    adjustGeometry({ top: geometry.top - moveStep });
-                  }}
-                  aria-label="Mover arriba"
-                >
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    adjustGeometry({ top: geometry.top + moveStep });
-                  }}
-                  aria-label="Mover abajo"
-                >
-                  ↓
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    adjustGeometry({ left: geometry.left - moveStep });
-                  }}
-                  aria-label="Mover izquierda"
-                >
-                  ←
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    adjustGeometry({ left: geometry.left + moveStep });
-                  }}
-                  aria-label="Mover derecha"
-                >
-                  →
-                </button>
-              </div>
-              <div className="control-group">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    adjustGeometry({ width: geometry.width - resizeStep });
-                  }}
-                  aria-label="Disminuir anchura"
-                >
-                  − Ancho
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    adjustGeometry({ width: geometry.width + resizeStep });
-                  }}
-                  aria-label="Aumentar anchura"
-                >
-                  + Ancho
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    adjustGeometry({ height: geometry.height - resizeStep });
-                  }}
-                  aria-label="Disminuir altura"
-                >
-                  − Alto
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    adjustGeometry({ height: geometry.height + resizeStep });
-                  }}
-                  aria-label="Aumentar altura"
-                >
-                  + Alto
-                </button>
-              </div>
-              <div className="control-values">
-                <span>Top: {geometry.top}px</span>
-                <span>Left: {geometry.left}px</span>
-                <span>Width: {geometry.width}px</span>
-                <span>Height: {geometry.height}px</span>
-                {imageBounds && (
-                  <>
-                    <span>
-                      Right: {Math.round(imageBounds.width - geometry.left - geometry.width)}px
-                    </span>
-                    <span>
-                      Bottom: {Math.round(imageBounds.height - geometry.top - geometry.height)}px
-                    </span>
-                  </>
-                )}
-              </div>
-              <button className="copy-btn" onClick={copyCss}>
-                Copiar valores CSS
-              </button>
-              {copyStatus && <span className="copy-status">{copyStatus}</span>}
             </div>
           </div>,
           document.body,
