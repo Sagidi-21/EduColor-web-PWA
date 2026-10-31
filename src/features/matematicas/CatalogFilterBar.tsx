@@ -25,8 +25,6 @@ interface CatalogFilterBarProps {
 
 type OpenColumn = "materia" | "curso" | "bloque" | null;
 
-type ImageBounds = { left: number; top: number; width: number; height: number };
-
 export function CatalogFilterBar({
   subjects,
   grades,
@@ -42,10 +40,6 @@ export function CatalogFilterBar({
   const [isExiting, setIsExiting] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
-
-  const [imageBounds, setImageBounds] = useState<ImageBounds | null>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
   const chalkboardContentRef = useRef<HTMLDivElement>(null);
 
   const closeAll = useCallback(() => {
@@ -56,7 +50,6 @@ export function CatalogFilterBar({
       setOpenColumn(null);
       setIsExiting(false);
       setIsAnimating(false);
-      setImageBounds(null);
     }, 1200);
   }, [isAnimating]);
 
@@ -79,50 +72,6 @@ export function CatalogFilterBar({
       return () => document.removeEventListener("mousedown", handleClick);
     }
   }, [openColumn, closeAll]);
-
-  // Medir la imagen renderizada (letterbox) para anclar el listado encima.
-  const updateImageBounds = useCallback(() => {
-    const image = imageRef.current;
-    const stage = stageRef.current;
-    if (!image || !stage) return;
-    const imageRect = image.getBoundingClientRect();
-    const stageRect = stage.getBoundingClientRect();
-    if (imageRect.width < 2 || imageRect.height < 2) return;
-    setImageBounds({
-      left: imageRect.left - stageRect.left,
-      top: imageRect.top - stageRect.top,
-      width: imageRect.width,
-      height: imageRect.height,
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!openColumn) return;
-    const image = imageRef.current;
-    const stage = stageRef.current;
-    const measure = () => {
-      requestAnimationFrame(() => requestAnimationFrame(updateImageBounds));
-    };
-    if (image?.complete) measure();
-    const handleLoad = () => measure();
-    image?.addEventListener("load", handleLoad);
-    window.addEventListener("resize", measure);
-    window.addEventListener("orientationchange", measure);
-    const vv = window.visualViewport;
-    vv?.addEventListener("resize", measure);
-    vv?.addEventListener("scroll", measure);
-    const ro = new ResizeObserver(measure);
-    if (stage) ro.observe(stage);
-    if (image) ro.observe(image);
-    return () => {
-      image?.removeEventListener("load", handleLoad);
-      window.removeEventListener("resize", measure);
-      window.removeEventListener("orientationchange", measure);
-      vv?.removeEventListener("resize", measure);
-      vv?.removeEventListener("scroll", measure);
-      ro.disconnect();
-    };
-  }, [openColumn, updateImageBounds]);
 
   const renderChalkboardOptions = () => {
     if (!openColumn) return null;
@@ -327,36 +276,28 @@ export function CatalogFilterBar({
             aria-modal="true"
             aria-label="Pizarra de selección"
           >
-            <div
-              className="filter-chalkboard-stage"
-              ref={stageRef}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <img ref={imageRef} className="filter-chalkboard-image" src={pizarraImg} alt="" />
-              {imageBounds && (
+            <div className="filter-chalkboard-stage" onClick={(e) => e.stopPropagation()}>
+              {/* Contenedor relativo = proporción de la <img>; lista en % sobre la imagen */}
+              <div className="filter-chalkboard-frame">
+                <img
+                  className="filter-chalkboard-image"
+                  src={pizarraImg}
+                  alt=""
+                  draggable={false}
+                />
                 <div
-                  className="filter-chalkboard-image-area"
+                  className="chalkboard-content"
                   style={{
-                    left: imageBounds.left,
-                    top: imageBounds.top,
-                    width: imageBounds.width,
-                    height: imageBounds.height,
+                    top: `${PIZARRA_CONTENT_PCT.top}%`,
+                    left: `${PIZARRA_CONTENT_PCT.left}%`,
+                    width: `${PIZARRA_CONTENT_PCT.width}%`,
+                    height: `${PIZARRA_CONTENT_PCT.height}%`,
                   }}
+                  ref={chalkboardContentRef}
                 >
-                  <div
-                    className="chalkboard-content"
-                    style={{
-                      top: `${PIZARRA_CONTENT_PCT.top}%`,
-                      left: `${PIZARRA_CONTENT_PCT.left}%`,
-                      width: `${PIZARRA_CONTENT_PCT.width}%`,
-                      height: `${PIZARRA_CONTENT_PCT.height}%`,
-                    }}
-                    ref={chalkboardContentRef}
-                  >
-                    {renderChalkboardOptions()}
-                  </div>
+                  {renderChalkboardOptions()}
                 </div>
-              )}
+              </div>
             </div>
           </div>,
           document.body,

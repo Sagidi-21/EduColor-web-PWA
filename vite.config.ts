@@ -101,7 +101,9 @@ export default defineConfig({
         clientsClaim: true,
         skipWaiting: true,
       },
-      devOptions: { enabled: true },
+      // En local el SW de VitePWA cacheaba CSS/JS y ocultaba cambios (HMR “fantasma”).
+      // La PWA real solo se registra en build/prod (`serviceWorkerRegistration.ts`).
+      devOptions: { enabled: false },
     }),
   ],
   test: {
