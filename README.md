@@ -143,14 +143,14 @@ GitHub Actions ejecuta las comprobaciones principales al enviar cambios a `main`
 
 ## Documentación del proyecto (revisión TFM)
 
-| Documento                                                                | Contenido                                           |
-| ------------------------------------------------------------------------ | --------------------------------------------------- |
-| [`docs/ARQUITECTURA_INICIAL.md`](docs/ARQUITECTURA_INICIAL.md)           | Capas, dominio vs núcleo UI, composición `src/app/` |
-| [`docs/DECISIONES.md`](docs/DECISIONES.md)                               | Decisiones de producto/técnicas                     |
-| [`docs/AUTH_ALERTAS_Y_CORREOS.md`](docs/AUTH_ALERTAS_Y_CORREOS.md)       | Mapa de lockout, correos Auth/Resend y Sentry       |
-| [`docs/DEUDA_TECNICA.md`](docs/DEUDA_TECNICA.md)                         | Deuda técnica (MVP sin filas abiertas)              |
-| [`docs/COMPONENTES_COMPARTIDOS.md`](docs/COMPONENTES_COMPARTIDOS.md) | Componentes reutilizables |
-| [Slides (Drive)](https://drive.google.com/drive/folders/1dfHOtTUi4VPFsQmXB8UxU9kCb50opmPx?usp=drive_link) | Presentación HTML del TFM (fuera del repo) |
+| Documento                                                                                                 | Contenido                                           |
+| --------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| [`docs/ARQUITECTURA_INICIAL.md`](docs/ARQUITECTURA_INICIAL.md)                                            | Capas, dominio vs núcleo UI, composición `src/app/` |
+| [`docs/DECISIONES.md`](docs/DECISIONES.md)                                                                | Decisiones de producto/técnicas                     |
+| [`docs/AUTH_ALERTAS_Y_CORREOS.md`](docs/AUTH_ALERTAS_Y_CORREOS.md)                                        | Mapa de lockout, correos Auth/Resend y Sentry       |
+| [`docs/DEUDA_TECNICA.md`](docs/DEUDA_TECNICA.md)                                                          | Deuda técnica (MVP sin filas abiertas)              |
+| [`docs/COMPONENTES_COMPARTIDOS.md`](docs/COMPONENTES_COMPARTIDOS.md)                                      | Componentes reutilizables                           |
+| [Slides (Drive)](https://drive.google.com/drive/folders/1dfHOtTUi4VPFsQmXB8UxU9kCb50opmPx?usp=drive_link) | Presentación HTML del TFM (fuera del repo)          |
 
 Runbooks, planes de ejecución, checklists y estado operativo: carpeta [`docs/ops/`](docs/ops/).
 
