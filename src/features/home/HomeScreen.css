@@ -316,6 +316,13 @@
   margin: 0;
 }
 
+/* Solo esta frase: más grande sin desplazar el resto (compensa el alto extra) */
+.home__section-title--class {
+  font-size: 28px;
+  line-height: 1.15;
+  margin-bottom: -8px;
+}
+
 /* Misma lógica que grade-card, colores invertidos (turquesa relleno → blanco al hover) */
 .home__exit-demo {
   --exit-demo-color: #0d9488;
@@ -352,6 +359,16 @@
 }
 
 /* -- Grade cards -- */
+.home__preview-banner {
+  margin: -4px 0 12px;
+  max-width: 640px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
 .home__grade-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -360,29 +377,165 @@
 }
 
 .grade-card {
+  --rx: 0deg;
+  --ry: 0deg;
   position: relative;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 28px 24px;
+  gap: 2px;
+  padding: 10px 16px 12px;
+  height: 148px;
   min-height: 148px;
+  max-height: 148px;
   background: var(--color-surface);
   border: 3px solid var(--color-border);
   border-radius: var(--radius-lg);
-  transition: all 0.18s ease;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   box-shadow: var(--shadow);
+}
+
+/* Destello blanco que atraviesa la tarjeta al hover (EduApps fx-shine-sweep) */
+.grade-card__sheen {
+  position: absolute;
+  inset: -40% auto -40% -60%;
+  width: 45%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 20%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 80%,
+    transparent 100%
+  );
+  transform: translateX(-120%) rotate(12deg);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.grade-card:hover .grade-card__sheen {
+  animation: grade-shine-sweep 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes grade-shine-sweep {
+  0% {
+    transform: translateX(-120%) rotate(12deg);
+  }
+  100% {
+    transform: translateX(420%) rotate(12deg);
+  }
+}
+
+.grade-card__icon-wrap,
+.grade-card__title,
+.grade-card__age {
+  position: relative;
+  z-index: 3;
+}
+
+.grade-card__title {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1;
+}
+
+.grade-card__check {
+  z-index: 3;
+}
+
+/* Balanceo 3D de la tarjeta (hacia atrás / lados según el ratón) */
+.grade-card--tilt {
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateZ(0);
+  transform-style: preserve-3d;
+}
+
+.grade-card__icon-wrap {
+  position: relative;
+  flex: 0 0 52px;
+  width: 88px;
+  height: 52px;
+  transform-origin: 50% 70%;
+  animation: grade-icon-float 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.18));
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.grade-card__icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 88px;
+  height: 88px;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+@keyframes grade-icon-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grade-card__icon-wrap {
+    animation: none;
+  }
+
+  .grade-card:hover .grade-card__sheen {
+    animation: none;
+  }
+
+  .grade-card--tilt,
+  .grade-card--tilt:hover,
+  .grade-card--tilt.grade-card--selected {
+    transform: none !important;
+  }
 }
 
 .grade-card:hover {
   border-color: var(--grade-color);
   background: var(--grade-color-hover, var(--grade-color));
   color: #fff;
-  transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
+.grade-card--tilt:hover {
+  /* Seguimiento rápido del ratón mientras está encima */
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s linear;
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(-2px);
+  will-change: transform;
+}
+
+.grade-card:hover .grade-card__icon-wrap {
+  animation: none;
+  transform: translateY(-2px) scale(1.04) rotate(-3deg);
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.22));
+}
+
+.grade-card:hover .grade-card__num,
 .grade-card:hover .grade-card__label,
 .grade-card:hover .grade-card__age,
 .grade-card:hover .grade-card__emoji {
@@ -393,10 +546,14 @@
   border-color: var(--grade-color) !important;
   background: var(--grade-color-hover, var(--grade-color));
   color: #fff;
-  transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
+.grade-card--tilt.grade-card--selected {
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(-2px);
+}
+
+.grade-card--selected .grade-card__num,
 .grade-card--selected .grade-card__label,
 .grade-card--selected .grade-card__age,
 .grade-card--selected .grade-card__emoji {
@@ -425,10 +582,20 @@
   line-height: 1;
 }
 
+.grade-card__num {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--grade-color);
+  line-height: 1;
+}
+
 .grade-card__label {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--grade-color);
+  opacity: 0.92;
+  line-height: 1;
 }
 
 .grade-card__age {
@@ -461,51 +628,125 @@
 }
 
 .mode-card {
+  --rx: 0deg;
+  --ry: 0deg;
   position: relative;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  gap: 6px;
-  padding: 28px 24px;
+  gap: 2px;
+  padding: 10px 16px 12px;
+  height: 148px;
   min-height: 148px;
+  max-height: 148px;
   background: var(--color-surface);
   border: 3px solid var(--color-border);
   border-radius: var(--radius-lg);
-  transition: all 0.18s ease;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   box-shadow: var(--shadow);
+}
+
+.mode-card--tilt {
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateZ(0);
+  transform-style: preserve-3d;
+}
+
+.mode-card__sheen {
+  position: absolute;
+  inset: -40% auto -40% -60%;
+  width: 45%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 20%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 80%,
+    transparent 100%
+  );
+  transform: translateX(-120%) rotate(12deg);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.mode-card:hover .mode-card__sheen {
+  animation: grade-shine-sweep 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.mode-card__icon-wrap,
+.mode-card__label,
+.mode-card__desc {
+  position: relative;
+  z-index: 3;
+}
+
+.mode-card__icon-wrap {
+  position: relative;
+  flex: 0 0 52px;
+  width: 88px;
+  height: 52px;
+  transform-origin: 50% 70%;
+  animation: grade-icon-float 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.18));
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .mode-card:hover {
   background: var(--mode-color-hover, var(--mode-color));
   border-color: var(--mode-color);
   color: #fff;
-  transform: translateY(-3px);
   box-shadow: 0 12px 20px -4px rgba(0, 0, 0, 0.12);
 }
 
+.mode-card--tilt:hover {
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s linear;
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(-3px);
+  will-change: transform;
+}
+
 .mode-card:hover .mode-card__label,
-.mode-card:hover .mode-card__desc,
-.mode-card:hover .mode-card__icon {
+.mode-card:hover .mode-card__desc {
   color: #fff;
+}
+
+.mode-card:hover .mode-card__icon-wrap {
+  animation: none;
+  transform: translateY(-2px) scale(1.04) rotate(-3deg);
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.22));
 }
 
 .mode-card--selected {
   background: var(--mode-color-hover, var(--mode-color));
   border-color: var(--mode-color);
   color: #fff;
-  transform: translateY(-3px);
   box-shadow: 0 12px 20px -4px rgba(0, 0, 0, 0.12);
+}
+
+.mode-card--tilt.mode-card--selected {
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(-3px);
 }
 
 .mode-card__check {
   display: none;
+  z-index: 3;
 }
 
 .mode-card--selected .mode-card__label,
-.mode-card--selected .mode-card__desc,
-.mode-card--selected .mode-card__icon {
+.mode-card--selected .mode-card__desc {
   color: #fff;
 }
 
@@ -538,9 +779,20 @@
   box-shadow: none;
 }
 
+.mode-card--dimmed:hover .mode-card__sheen {
+  animation: none;
+}
+
 .mode-card__icon {
-  font-size: 40px;
-  line-height: 1;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 88px;
+  height: 88px;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
 }
 
 .mode-card__label {
@@ -553,6 +805,22 @@
   font-size: 13px;
   color: var(--color-text-muted);
   line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mode-card__icon-wrap {
+    animation: none;
+  }
+
+  .mode-card:hover .mode-card__sheen {
+    animation: none;
+  }
+
+  .mode-card--tilt,
+  .mode-card--tilt:hover,
+  .mode-card--tilt.mode-card--selected {
+    transform: none !important;
+  }
 }
 
 /* -- Footer -- */

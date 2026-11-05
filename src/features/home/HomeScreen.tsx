@@ -1,10 +1,31 @@
-import { useState, type CSSProperties } from "react";
+import { useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import logoUrl from "../../assets/splash-logo.png";
 import defaultSchoolBgUrl from "../../assets/demo-school-exterior.jpg";
+import grade1Icon from "../../assets/course-preview/mochila.png";
+import grade2Icon from "../../assets/course-preview/cuaderno.png";
+import pizarraModeIcon from "../../assets/course-preview/pantalla.png";
+import generadorModeIcon from "../../assets/course-preview/generador.png";
 import { getAulaLabel, useClassProfile } from "../../core/context/ClassProfileContext";
 import { useSchoolAuth } from "../../core/context/SchoolAuthContext";
 import { OWNER_AVATAR_COLOR, avatarTextColor } from "../shared/teacherAvatar";
 import "./HomeScreen.css";
+
+/** Tilt 3D al estilo EduApps (fx-tilt): la tarjeta se inclina hacia atrás según el ratón. */
+function setCardTilt(el: HTMLButtonElement, clientX: number, clientY: number) {
+  const rect = el.getBoundingClientRect();
+  if (rect.width < 2 || rect.height < 2) return;
+  const px = (clientX - rect.left) / rect.width;
+  const py = (clientY - rect.top) / rect.height;
+  const ry = (px - 0.5) * 12;
+  const rx = (0.5 - py) * 14;
+  el.style.setProperty("--rx", `${rx.toFixed(2)}deg`);
+  el.style.setProperty("--ry", `${ry.toFixed(2)}deg`);
+}
+
+function resetCardTilt(el: HTMLButtonElement) {
+  el.style.setProperty("--rx", "0deg");
+  el.style.setProperty("--ry", "0deg");
+}
 
 export type AppView =
   "home" | "configuration" | "profesorado" | "mathematics" | "generator" | "mascota";
@@ -19,20 +40,22 @@ const modes: readonly {
     id: "mathematics",
     label: "Pizarra Digital",
     description: "Actividades interactivas para clase",
-    icon: "🖥️",
+    icon: pizarraModeIcon,
     color: "#eab308",
   },
   {
     id: "generator",
     label: "Generador de Fichas",
     description: "Crea ejercicios imprimibles",
-    icon: "📄",
+    icon: generadorModeIcon,
     color: "#16a34a",
   },
 ];
-const gradeMetadata = {
-  1: { color: "#2563eb", light: "#dbeafe", emoji: "⭐", age: "6-7 años" },
-  2: { color: "#7c3aed", light: "#ede9fe", emoji: "🌟", age: "7-8 años" },
+
+/** Preview rama: solo cursos con contenido (1º y 2º). Color/hover propios + icono flotante. */
+const gradeMetadata: Record<1 | 2, { color: string; light: string; icon: string; age: string }> = {
+  1: { color: "#2563eb", light: "#dbeafe", icon: grade1Icon, age: "6-7 años" },
+  2: { color: "#7c3aed", light: "#ede9fe", icon: grade2Icon, age: "7-8 años" },
 };
 
 export function HomeScreen({
@@ -165,25 +188,50 @@ export function HomeScreen({
       ) : null}
       <main className="home__main">
         <section className="home__section">
-          <h2 className="home__section-title">¿Con qué clase trabajamos hoy?</h2>
+          <h2 className="home__section-title home__section-title--class">
+            ¿Con qué clase trabajamos hoy?
+          </h2>
+          <p className="home__preview-banner" role="note">
+            Vista previa · tarjetas de curso (rama feature/course-cards-preview)
+          </p>
           <div className="home__grade-grid">
             {aulas.map((aula) => {
-              const meta = gradeMetadata[aula.grade];
+              const meta = gradeMetadata[aula.grade as 1 | 2];
+              if (!meta) return null;
+              const fullLabel = getAulaLabel(aula, aulas);
+              const sameGradeCount = aulas.filter((item) => item.grade === aula.grade).length;
+              const subtitle = sameGradeCount === 1 ? "Primaria" : aula.letter;
               return (
                 <button
                   key={aula.id}
-                  className={`grade-card ${selectedId === aula.id ? "grade-card--selected" : ""}`}
+                  type="button"
+                  className={`grade-card grade-card--tilt ${selectedId === aula.id ? "grade-card--selected" : ""}`}
+                  aria-label={fullLabel}
                   style={
                     {
                       "--grade-color": meta.color,
                       "--grade-color-hover": `${meta.color}99`,
                       "--grade-color-light": meta.light,
+                      "--rx": "0deg",
+                      "--ry": "0deg",
                     } as React.CSSProperties
                   }
+                  onPointerMove={(e: ReactPointerEvent<HTMLButtonElement>) => {
+                    setCardTilt(e.currentTarget, e.clientX, e.clientY);
+                  }}
+                  onPointerLeave={(e: ReactPointerEvent<HTMLButtonElement>) => {
+                    resetCardTilt(e.currentTarget);
+                  }}
                   onClick={() => selectAula(aula.id)}
                 >
-                  <span className="grade-card__emoji">{meta.emoji}</span>
-                  <span className="grade-card__label">{getAulaLabel(aula, aulas)}</span>
+                  <span className="grade-card__sheen" aria-hidden />
+                  <span className="grade-card__icon-wrap" aria-hidden>
+                    <img className="grade-card__icon" src={meta.icon} alt="" draggable={false} />
+                  </span>
+                  <span className="grade-card__title">
+                    <span className="grade-card__num">{aula.grade}º</span>
+                    <span className="grade-card__label">{subtitle}</span>
+                  </span>
                   <span className="grade-card__age">{meta.age}</span>
                   {selectedId === aula.id && <span className="grade-card__check">✓</span>}
                 </button>
@@ -203,17 +251,30 @@ export function HomeScreen({
               return (
                 <button
                   key={mode.id}
-                  className={`mode-card ${blocked ? "mode-card--dimmed" : ""}`}
+                  type="button"
+                  className={`mode-card mode-card--tilt ${blocked ? "mode-card--dimmed" : ""}`}
                   style={
                     {
                       "--mode-color": mode.color,
                       "--mode-color-hover": `${mode.color}99`,
+                      "--rx": "0deg",
+                      "--ry": "0deg",
                     } as React.CSSProperties
                   }
                   disabled={blocked}
+                  onPointerMove={(e: ReactPointerEvent<HTMLButtonElement>) => {
+                    if (blocked) return;
+                    setCardTilt(e.currentTarget, e.clientX, e.clientY);
+                  }}
+                  onPointerLeave={(e: ReactPointerEvent<HTMLButtonElement>) => {
+                    resetCardTilt(e.currentTarget);
+                  }}
                   onClick={() => onNavigate(mode.id)}
                 >
-                  <span className="mode-card__icon">{mode.icon}</span>
+                  <span className="mode-card__sheen" aria-hidden />
+                  <span className="mode-card__icon-wrap" aria-hidden>
+                    <img className="mode-card__icon" src={mode.icon} alt="" draggable={false} />
+                  </span>
                   <span className="mode-card__label">{mode.label}</span>
                   <span className="mode-card__desc">{mode.description}</span>
                   <span className="mode-card__check">✓</span>
