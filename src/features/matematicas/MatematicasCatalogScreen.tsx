@@ -91,64 +91,70 @@ export function MatematicasCatalogScreen({ initialGradeId, onBack, demoMode = fa
       </header>
 
       <div className="mat__body">
-        <CatalogFilterBar
-          subjects={subjects}
-          grades={grades}
-          blocks={blocks}
-          subjectId={subjectId}
-          gradeId={gradeId}
-          blockId={blockId}
-          onSubjectChange={(id) => setSubjectId(id)}
-          onGradeChange={(id) => {
-            setGradeId(id);
-            setCatalogGradeId(id);
-            setBlockId("");
-          }}
-          onBlockChange={setBlockId}
-        />
+        <div className="mat__filters-dock">
+          <CatalogFilterBar
+            subjects={subjects}
+            grades={grades}
+            blocks={blocks}
+            subjectId={subjectId}
+            gradeId={gradeId}
+            blockId={blockId}
+            onSubjectChange={(id) => setSubjectId(id)}
+            onGradeChange={(id) => {
+              setGradeId(id);
+              setCatalogGradeId(id);
+              setBlockId("");
+            }}
+            onBlockChange={setBlockId}
+          />
+        </div>
 
-        {activityGroups.map(({ block, activities }) => (
-          <section key={block.id} className="mat__section">
-            <h2 className="mat__section-title">
-              {block.description} — {block.title}
-            </h2>
-            <div className="mat__activities">
-              {activities.map((activity) => {
-                const demoLocked = demoMode && !isDemoActivityAllowed(activity.id);
-                const launchable = canLaunchActivity(activity) && !demoLocked;
-                return (
-                  <button
-                    key={activity.id}
-                    className={`activity-card edu-glow ${launchable ? "" : "activity-card--soon edu-glow--soon"}`}
-                    disabled={!launchable}
-                    onClick={() => {
-                      if (!launchable) return;
-                      setSelected(activity);
-                      setDifficulty("easy");
-                      if (
-                        activity.engineId === "counting" ||
-                        activity.engineId === "tresSumandos"
-                      ) {
-                        setLevelId(getCurriculumLevelsForGrade(activity, gradeId)[0]!);
-                      } else {
-                        setLevelId(null);
-                      }
-                    }}
-                  >
-                    <span className="activity-card__icon">{activity.boardCard?.icon ?? "🔢"}</span>
-                    <span className="activity-card__title">{activity.title}</span>
-                    <span className="activity-card__desc">{activity.description}</span>
-                    {demoLocked ? (
-                      <span className="activity-card__soon">No disponible en DEMO</span>
-                    ) : (
-                      !launchable && <span className="activity-card__soon">En migración PWA</span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-        ))}
+        <div className="mat__scroll">
+          {activityGroups.map(({ block, activities }) => (
+            <section key={block.id} className="mat__section">
+              <h2 className="mat__section-title">
+                {block.description} — {block.title}
+              </h2>
+              <div className="mat__activities">
+                {activities.map((activity) => {
+                  const demoLocked = demoMode && !isDemoActivityAllowed(activity.id);
+                  const launchable = canLaunchActivity(activity) && !demoLocked;
+                  return (
+                    <button
+                      key={activity.id}
+                      className={`activity-card edu-glow ${launchable ? "" : "activity-card--soon edu-glow--soon"}`}
+                      disabled={!launchable}
+                      onClick={() => {
+                        if (!launchable) return;
+                        setSelected(activity);
+                        setDifficulty("easy");
+                        if (
+                          activity.engineId === "counting" ||
+                          activity.engineId === "tresSumandos"
+                        ) {
+                          setLevelId(getCurriculumLevelsForGrade(activity, gradeId)[0]!);
+                        } else {
+                          setLevelId(null);
+                        }
+                      }}
+                    >
+                      <span className="activity-card__icon">
+                        {activity.boardCard?.icon ?? "🔢"}
+                      </span>
+                      <span className="activity-card__title">{activity.title}</span>
+                      <span className="activity-card__desc">{activity.description}</span>
+                      {demoLocked ? (
+                        <span className="activity-card__soon">No disponible en DEMO</span>
+                      ) : (
+                        !launchable && <span className="activity-card__soon">En migración PWA</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          ))}
+        </div>
       </div>
 
       {selected && (
