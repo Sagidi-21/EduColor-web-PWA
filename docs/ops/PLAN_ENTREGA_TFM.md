@@ -126,7 +126,7 @@ Marcar conforme se cierre cada entregable. Actualizar este bloque al avanzar.
 | Repo GitHub (público o privado justificado)            | ✅             | Público: `Sagidi-21/EduColor-web-PWA`                                                                                                                                                |
 | Despliegue (URL en docs)                               | ✅             | [`https://peppy-cactus-71f921.netlify.app`](https://peppy-cactus-71f921.netlify.app) (README + esta página)                                                                          |
 | Slides + URL/archivo en docs                           | ✅             | HTML en Drive (explicado en el vídeo). Público «cualquiera con el enlace»: [carpeta Drive](https://drive.google.com/drive/folders/1dfHOtTUi4VPFsQmXB8UxU9kCb50opmPx?usp=drive_link). |
-| Vídeo (pantalla obligatoria) + URL en docs             | ✅             | [Vídeo TFM (Drive)](https://drive.google.com/file/d/1GuwNnTFjLD1c51sdGei6PFP5oXDy3Sdr/view?usp=drive_link) — pantalla + explicación; también en README                               |
+| Vídeo (pantalla obligatoria) + URL en docs             | ✅             | Misma [carpeta Drive](https://drive.google.com/drive/folders/1dfHOtTUi4VPFsQmXB8UxU9kCb50opmPx?usp=drive_link) que las slides; también en README                                     |
 | Docs técnicas de apoyo (arquitectura, auth, amenazas…) | ✅ Base sólida | Ver tabla en README «Documentación útil para la revisión del TFM»                                                                                                                    |
 
 ### URLs a rellenar antes del formulario
@@ -136,7 +136,7 @@ Marcar conforme se cierre cada entregable. Actualizar este bloque al avanzar.
 | Repositorio          | `https://github.com/Sagidi-21/EduColor-web-PWA`                                                                                          |
 | Despliegue           | `https://peppy-cactus-71f921.netlify.app`                                                                                                |
 | Slides (HTML)        | [Drive TFM](https://drive.google.com/drive/folders/1dfHOtTUi4VPFsQmXB8UxU9kCb50opmPx?usp=drive_link) (público: cualquiera con el enlace) |
-| Vídeo                | [Drive](https://drive.google.com/file/d/1GuwNnTFjLD1c51sdGei6PFP5oXDy3Sdr/view?usp=drive_link) (público: cualquiera con el enlace)       |
+| Vídeo                | Misma carpeta Drive que slides (público: cualquiera con el enlace)                                                                       |
 | Usuario de prueba    | `sagidiappcursor2@gmail.com`                                                                                                             |
 | Contraseña de prueba | `.6RXSUuyphZYz4!` (también en README)                                                                                                    |
 
@@ -148,7 +148,7 @@ Marcar conforme se cierre cada entregable. Actualizar este bloque al avanzar.
 2. **Publicar URL estable** — ✅ `https://peppy-cactus-71f921.netlify.app` (README + esta página).
 3. **Credenciales de prueba** — ✅ documentadas en README / esta página (`sagidiappcursor2@gmail.com`). No mezclar con secretos de ops (service role, Resend).
 4. **Slides** — ✅ [carpeta Drive](https://drive.google.com/drive/folders/1dfHOtTUi4VPFsQmXB8UxU9kCb50opmPx?usp=drive_link) (HTML; se explican en el vídeo; compartido con cualquiera con el enlace).
-5. **Vídeo** — ✅ [Drive](https://drive.google.com/file/d/1GuwNnTFjLD1c51sdGei6PFP5oXDy3Sdr/view?usp=drive_link) (pantalla + explicación de slides/demo).
+5. **Vídeo** — ✅ misma [carpeta Drive](https://drive.google.com/drive/folders/1dfHOtTUi4VPFsQmXB8UxU9kCb50opmPx?usp=drive_link) (pantalla + explicación de slides/demo).
 6. **Pass final del README** — que un revisor externo pueda clonar, arrancar y entender el alcance sin preguntar.
 7. **Formulario** — rellenar todas las URLs y entregar.
 
