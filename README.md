@@ -151,6 +151,7 @@ GitHub Actions ejecuta las comprobaciones principales al enviar cambios a `main`
 | [`docs/DEUDA_TECNICA.md`](docs/DEUDA_TECNICA.md)                                                          | Deuda técnica (MVP sin filas abiertas)              |
 | [`docs/COMPONENTES_COMPARTIDOS.md`](docs/COMPONENTES_COMPARTIDOS.md)                                      | Componentes reutilizables                           |
 | [Slides (Drive)](https://drive.google.com/drive/folders/1dfHOtTUi4VPFsQmXB8UxU9kCb50opmPx?usp=drive_link) | Presentación HTML del TFM (fuera del repo)          |
+| [Vídeo (Drive)](https://drive.google.com/file/d/1GuwNnTFjLD1c51sdGei6PFP5oXDy3Sdr/view?usp=drive_link)   | Explicación del TFM con captura de pantalla         |
 
 Runbooks, planes de ejecución, checklists y estado operativo: carpeta [`docs/ops/`](docs/ops/).
 
