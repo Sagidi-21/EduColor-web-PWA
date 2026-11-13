@@ -40,8 +40,12 @@ Deno.serve(async (req) => {
       return json({ ok: false, message: "Servidor no configurado." }, 500);
     }
 
-    const siteOrigin =
-      req.headers.get("origin") || Deno.env.get("SITE_URL") || "http://localhost:5173";
+    // Preferir SITE_URL (prod Netlify) para que el enlace del correo abra la PWA correcta.
+    const siteOrigin = (
+      Deno.env.get("SITE_URL") ||
+      req.headers.get("origin") ||
+      "http://localhost:5173"
+    ).replace(/\/$/, "");
 
     const ipHash = await hashIp(clientIp(req));
     const admin = createClient(supabaseUrl, serviceKey, {

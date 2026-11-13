@@ -35,6 +35,16 @@ describe("setPasswordUrl", () => {
       window.history.replaceState({}, "", "/?setPassword=true");
       expect(readSetPasswordFromUrl()).toEqual({ active: false, source: "forgot" });
     });
+
+    it("activa con type=recovery en el hash (redirect Auth sin setPassword)", () => {
+      window.history.replaceState({}, "", "/#access_token=abc&type=recovery");
+      expect(readSetPasswordFromUrl()).toEqual({ active: true, source: "forgot" });
+    });
+
+    it("activa con type=recovery en la query", () => {
+      window.history.replaceState({}, "", "/?type=recovery&src=lockout");
+      expect(readSetPasswordFromUrl()).toEqual({ active: true, source: "lockout" });
+    });
   });
 
   describe("clearSetPasswordFromUrl", () => {

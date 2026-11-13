@@ -24,6 +24,7 @@ import {
   isPasswordRecoveryActive,
   markPasswordRecoveryActive,
 } from "../../features/auth/passwordRecovery";
+import { readSetPasswordFromUrl } from "../../features/auth/setPasswordUrl";
 import {
   OWNER_AVATAR_COLOR,
   OWNER_AVATAR_INITIALS,
@@ -187,8 +188,8 @@ export function SchoolAuthProvider({ children }: { children: ReactNode }) {
         return;
       }
       // Recovery de contraseña: no expulsar la sesión (hace falta para updateUser).
-      const hash = typeof window !== "undefined" ? window.location.hash : "";
-      if (hash.includes("type=recovery")) {
+      // Incluye ?setPassword=1 (redirect Netlify) y type=recovery en hash/query.
+      if (typeof window !== "undefined" && readSetPasswordFromUrl().active) {
         markPasswordRecoveryActive();
       }
       if (isPasswordRecoveryActive()) {

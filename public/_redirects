@@ -2,3 +2,6 @@
 # El `!` fuerza la regla aunque exista index.html.
 /ficha-preview    /ficha-preview-unavailable.html   404!
 /ficha-preview/   /ficha-preview-unavailable.html   404!
+
+# SPA: cualquier ruta de la PWA (p. ej. deep links Auth) sirve index.html.
+/*    /index.html   200

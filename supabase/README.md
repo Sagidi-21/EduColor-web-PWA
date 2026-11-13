@@ -139,13 +139,18 @@ npx supabase functions deploy clear-login-guard --no-verify-jwt
 
 1. **URL Configuration:** Site URL = dominio Netlify (`https://….netlify.app`).
 2. **Redirect URLs:** Netlify `/**` + `http://localhost:5173/**` (solo entornos reales).
-3. Solo **Publishable / anon key** en Netlify (nunca la Secret key).
-4. Ejecutar migraciones, incluida `20261017230000_owasp_auth_hardening.sql`
+   Incluye explícitamente `https://….netlify.app/?setPassword=1&src=*` o el comodín `/**`.
+3. Edge secret **`SITE_URL`** = URL Netlify (sin barra final). Lo usan
+   `request-new-password` y `school-login` para el `redirectTo` del correo de
+   contraseña nueva. Sin esto el enlace puede apuntar mal y no abrir
+   `SetPasswordScreen`.
+4. Solo **Publishable / anon key** en Netlify (nunca la Secret key).
+5. Ejecutar migraciones, incluida `20261017230000_owasp_auth_hardening.sql`
    (revoca sondeo email/nombre + tabla `auth_security_events`).
-5. Auth → Rate limits revisados; Confirm email ON.
-6. Opcional en Auth → Password: longitud mínima ≥ 8 (la app exige
+6. Auth → Rate limits revisados; Confirm email ON.
+7. Opcional en Auth → Password: longitud mínima ≥ 8 (la app exige
    8–24 + mayúsc/minúsc/número/símbolo).
-7. **Mailer OTP expiration = 3600** (1 hora) — se configura en el panel de Supabase.
+8. **Mailer OTP expiration = 3600** (1 hora) — se configura en el panel de Supabase.
 
 ## Alcance aceptado (producto)
 

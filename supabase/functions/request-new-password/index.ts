@@ -37,12 +37,13 @@ Deno.serve(async (req) => {
       return json({ ok: true, message: MSG_NEUTRAL });
     }
 
-    const origin =
-      req.headers.get("origin") ||
+    // Preferir SITE_URL (prod Netlify) sobre Origin: el correo debe abrir la PWA publicada.
+    const origin = (
       Deno.env.get("SITE_URL") ||
-      supabaseUrl.replace(".supabase.co", "") ||
-      "http://localhost:5173";
-    const redirectTo = `${origin.replace(/\/$/, "")}/?setPassword=1&src=forgot`;
+      req.headers.get("origin") ||
+      "http://localhost:5173"
+    ).replace(/\/$/, "");
+    const redirectTo = `${origin}/?setPassword=1&src=forgot`;
 
     const anon = createClient(supabaseUrl, anonKey, {
       auth: { autoRefreshToken: false, persistSession: false },

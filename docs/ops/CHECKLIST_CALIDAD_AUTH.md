@@ -67,14 +67,15 @@ Estado del proyecto: [ESTADO_DEL_PROYECTO.md](./ESTADO_DEL_PROYECTO.md).
 La build publicada debe ser la PWA **con gate de login** (Welcome → acceso
 colegio), no el despliegue antiguo “sin cuenta”.
 
-| #   | Ítem                                            | Estado                                                                    |
-| --- | ----------------------------------------------- | ------------------------------------------------------------------------- |
-| E1  | Build con las env de Supabase                   | [x]                                                                       |
-| E2  | Site URL Supabase = URL Netlify                 | [x]                                                                       |
-| E3  | Redirect Netlify en allow-list                  | [x]                                                                       |
-| E4  | Probar registro/login real desde la URL pública | [x]                                                                       |
-| E5  | Edge Functions desplegadas en el proyecto       | [x] accept, manage, school-login, request-new-password, clear-login-guard |
-| E6  | Deploy automático en push a `main`              | [x]                                                                       |
+| #   | Ítem                                            | Estado                                                                        |
+| --- | ----------------------------------------------- | ----------------------------------------------------------------------------- |
+| E1  | Build con las env de Supabase                   | [x]                                                                           |
+| E2  | Site URL Supabase = URL Netlify                 | [x]                                                                           |
+| E2b | Edge secret `SITE_URL`                          | [x] local `http://localhost:5173` (2026-11-13); cambiar a Netlify al publicar |
+| E3  | Redirect Netlify en allow-list                  | [x]                                                                           |
+| E4  | Probar registro/login real desde la URL pública | [x]                                                                           |
+| E5  | Edge Functions desplegadas en el proyecto       | [x] accept, manage, school-login, request-new-password, clear-login-guard     |
+| E6  | Deploy automático en push a `main`              | [x]                                                                           |
 
 ## F. E2E Playwright staff (`npm run test:e2e`)
 

@@ -79,13 +79,44 @@ export function AppShell() {
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
     let cancelled = false;
+    let settled = false;
+    let timeoutId: number | undefined;
+    let pollId: number | undefined;
 
-    const activateRecovery = async () => {
+    const stopWaiting = () => {
+      if (pollId) window.clearInterval(pollId);
+      if (timeoutId) window.clearTimeout(timeoutId);
+      pollId = undefined;
+      timeoutId = undefined;
+    };
+
+    const recoveryIntent = () => readSetPasswordFromUrl().active || isPasswordRecoveryActive();
+
+    /**
+     * No depender solo de PASSWORD_RECOVERY: en PKCE / redirects a Netlify a veces
+     * solo llega SIGNED_IN o la sesión ya está lista antes de suscribirse.
+     */
+    const activateRecovery = async (opts?: { requireIntent?: boolean }) => {
+      if (settled || cancelled) return;
+      const requireIntent = opts?.requireIntent !== false;
+      if (requireIntent && !recoveryIntent()) return;
+
       const {
         data: { session },
       } = await getSupabase().auth.getSession();
-      if (cancelled) return;
+      if (cancelled || settled) return;
       if (!session?.access_token) {
+        // PKCE aún intercambiando code: seguir esperando si la URL pide recovery.
+        if (readSetPasswordFromUrl().active || isPasswordRecoveryActive()) {
+          setSetPasswordFlow((prev) => ({
+            ...prev,
+            waiting: true,
+            source: prev.source || readSetPasswordFromUrl().source || "forgot",
+          }));
+          return;
+        }
+        settled = true;
+        stopWaiting();
         clearPasswordRecoveryActive();
         clearSetPasswordFromUrl();
         setSetPasswordFlow({
@@ -96,6 +127,8 @@ export function AppShell() {
         });
         return;
       }
+      settled = true;
+      stopWaiting();
       markPasswordRecoveryActive();
       setSetPasswordFlow((prev) => ({
         active: true,
@@ -109,18 +142,30 @@ export function AppShell() {
       data: { subscription },
     } = getSupabase().auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
+        void activateRecovery({ requireIntent: false });
+        return;
+      }
+      // Fallback: sesión lista con ?setPassword=1 / type=recovery / flag local.
+      if (event === "SIGNED_IN" || event === "INITIAL_SESSION" || event === "TOKEN_REFRESHED") {
         void activateRecovery();
       }
     });
 
+    void activateRecovery();
+
     const fromUrl = readSetPasswordFromUrl();
-    let timeoutId: number | undefined;
-    if (fromUrl.active && !isPasswordRecoveryActive()) {
+    if (fromUrl.active || isPasswordRecoveryActive()) {
+      pollId = window.setInterval(() => {
+        void activateRecovery();
+      }, 400);
       timeoutId = window.setTimeout(() => {
-        if (cancelled) return;
+        stopWaiting();
+        if (cancelled || settled) return;
+        settled = true;
         setSetPasswordFlow((prev) => {
           if (prev.active) return prev;
           clearSetPasswordFromUrl();
+          clearPasswordRecoveryActive();
           return {
             active: false,
             source: "forgot",
@@ -128,13 +173,13 @@ export function AppShell() {
             error: MSG_RECOVERY_EXPIRED,
           };
         });
-      }, 8000);
+      }, 12_000);
     }
 
     return () => {
       cancelled = true;
       subscription.unsubscribe();
-      if (timeoutId) window.clearTimeout(timeoutId);
+      stopWaiting();
     };
   }, []);
 
