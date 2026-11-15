@@ -43,6 +43,16 @@ function randInt(rng: () => number, min: number, max: number): number {
   return min + Math.floor(rng() * (max - min + 1));
 }
 
+/**
+ * Llevada de algoritmo en columna (p. ej. 12+8): algún sumando ≥ 10
+ * y unidades ≥ 10. Las sumas de una cifra que pasan de 10 (7+8) no cuentan.
+ * Esas llevadas pertenecen a «Sumamos llevando», no a «La suma».
+ */
+export function hasColumnCarry(a: number, b: number): boolean {
+  if (a < 10 && b < 10) return false;
+  return (a % 10) + (b % 10) >= 10;
+}
+
 export function generateSumaSession(difficulty: SumaDifficulty, seed: number): SumaExercise[] {
   const cfg = CONFIGS[difficulty];
   const rng = lcg(seed);
@@ -50,11 +60,12 @@ export function generateSumaSession(difficulty: SumaDifficulty, seed: number): S
   const exercises: SumaExercise[] = [];
   let attempts = 0;
 
-  while (exercises.length < cfg.count && attempts < cfg.count * 20) {
+  while (exercises.length < cfg.count && attempts < cfg.count * 40) {
     attempts++;
     const a = randInt(rng, cfg.minA, cfg.maxA);
     const b = randInt(rng, cfg.minB, Math.min(cfg.maxB, cfg.maxAnswer - a));
     if (a + b > cfg.maxAnswer || a + b < 1) continue;
+    if (hasColumnCarry(a, b)) continue;
 
     const key = `${a}-${b}`;
     if (seen.has(key)) continue;
